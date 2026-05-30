@@ -1,0 +1,723 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>兩點求直線與方程式畫線</title>
+  <style>
+    :root {
+      --bg-a: #f0fdf4;
+      --bg-b: #eff6ff;
+      --panel: #ffffff;
+      --line: #cbd5e1;
+      --text: #0f172a;
+      --sub: #475569;
+      --ok: #166534;
+      --main: #0369a1;
+      --main-strong: #075985;
+      --accent: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background: linear-gradient(145deg, var(--bg-a), var(--bg-b));
+      min-height: 100vh;
+      padding: 18px;
+    }
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+      padding: 16px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .back {
+      text-decoration: none;
+      background: var(--main);
+      color: #fff;
+      border: 1px solid var(--main);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 700;
+    }
+    .back:hover { background: var(--main-strong); }
+    h1 { margin: 0; font-size: clamp(24px, 4vw, 34px); }
+    .lead { margin: 6px 0 12px; color: var(--sub); line-height: 1.75; }
+    .layout {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 340px 1fr;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+    h2 { margin: 0 0 8px; font-size: 21px; }
+    .mode {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .mode button {
+      border: 1px solid #94a3b8;
+      background: #f8fafc;
+      color: #0f172a;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mode button.active {
+      background: #e0f2fe;
+      border-color: #38bdf8;
+      color: #0c4a6e;
+    }
+    .group {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fcfdff;
+    }
+    .group h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      color: #0f172a;
+    }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: #334155;
+      margin-bottom: 2px;
+    }
+    input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-size: 16px;
+      font-family: inherit;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .actions button {
+      border: 1px solid var(--main);
+      background: var(--main);
+      color: #fff;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .actions button.secondary {
+      border-color: #94a3b8;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .status {
+      margin-top: 8px;
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #1e293b;
+      line-height: 1.65;
+      min-height: 52px;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .bad { color: var(--accent); font-weight: 700; }
+    .canvas-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #ffffff;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      max-width: 780px;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #ffffff;
+      cursor: crosshair;
+    }
+    .hint {
+      margin-top: 8px;
+      color: var(--sub);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .points-list {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #0f172a;
+      line-height: 1.7;
+      max-height: 120px;
+      overflow: auto;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 8px;
+      background: #f8fafc;
+    }
+    .points-list table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    .points-list th, .points-list td {
+      border-bottom: 1px solid #dbe4ef;
+      text-align: center;
+      padding: 4px 6px;
+    }
+    .points-list th {
+      position: sticky;
+      top: 0;
+      background: #eaf4ff;
+    }
+    .result-box {
+      margin-top: 8px;
+      border: 1px solid #dbe4ef;
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <a class="back" href="./index.html">回首頁</a>
+      <h1>兩點求直線 + 方程式畫線</h1>
+    </div>
+    <p class="lead">教學版功能：輸入兩點可自動求直線方程式，並標出範圍內在線上的整點；也可直接輸入 <strong>ax + by + c = 0</strong> 畫出直線。</p>
+
+    <section class="layout">
+      <aside class="panel">
+        <h2>操作區</h2>
+        <div class="mode">
+          <button id="modePoints" class="active" type="button">模式A：給兩點</button>
+          <button id="modeEq" type="button">模式B：給方程式</button>
+        </div>
+
+        <div id="pointsBox" class="group">
+          <h3>兩點座標</h3>
+          <div class="grid2">
+            <div><label for="x1">x1</label><input id="x1" type="number" step="any" value="-4" /></div>
+            <div><label for="y1">y1</label><input id="y1" type="number" step="any" value="-1" /></div>
+            <div><label for="x2">x2</label><input id="x2" type="number" step="any" value="6" /></div>
+            <div><label for="y2">y2</label><input id="y2" type="number" step="any" value="4" /></div>
+          </div>
+          <div class="actions">
+            <button id="drawByPoints" type="button">求方程式並畫線</button>
+          </div>
+        </div>
+
+        <div id="eqBox" class="group" style="display:none;">
+          <h3>直線方程式（ax + by + c = 0）</h3>
+          <div class="grid2">
+            <div><label for="a">a</label><input id="a" type="number" step="any" value="1" /></div>
+            <div><label for="b">b</label><input id="b" type="number" step="any" value="-2" /></div>
+            <div><label for="c">c</label><input id="c" type="number" step="any" value="3" /></div>
+          </div>
+          <div class="actions">
+            <button id="drawByEq" type="button">用方程式畫線</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>圖形範圍</h3>
+          <div class="grid2">
+            <div><label for="minX">最小 x</label><input id="minX" type="number" step="1" value="-10" /></div>
+            <div><label for="maxX">最大 x</label><input id="maxX" type="number" step="1" value="10" /></div>
+            <div><label for="minY">最小 y</label><input id="minY" type="number" step="1" value="-10" /></div>
+            <div><label for="maxY">最大 y</label><input id="maxY" type="number" step="1" value="10" /></div>
+          </div>
+          <div class="actions">
+            <button id="refresh" class="secondary" type="button">重畫座標格</button>
+          </div>
+        </div>
+
+        <div id="status" class="status">請先選模式，然後按下按鈕。</div>
+        <div id="resultBox" class="result-box">目前兩點與方程式會顯示在這裡。</div>
+        <div id="pointsList" class="points-list">線上整點表格會顯示在這裡。</div>
+      </aside>
+
+      <section class="canvas-wrap">
+        <canvas id="plane" width="780" height="780"></canvas>
+        <p class="hint">顏色說明：藍色是直線、紅點是輸入的兩點、綠點是範圍內在線上的整點。</p>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('plane');
+    const ctx = canvas.getContext('2d');
+
+    const el = {
+      modePoints: document.getElementById('modePoints'),
+      modeEq: document.getElementById('modeEq'),
+      pointsBox: document.getElementById('pointsBox'),
+      eqBox: document.getElementById('eqBox'),
+      x1: document.getElementById('x1'),
+      y1: document.getElementById('y1'),
+      x2: document.getElementById('x2'),
+      y2: document.getElementById('y2'),
+      a: document.getElementById('a'),
+      b: document.getElementById('b'),
+      c: document.getElementById('c'),
+      minX: document.getElementById('minX'),
+      maxX: document.getElementById('maxX'),
+      minY: document.getElementById('minY'),
+      maxY: document.getElementById('maxY'),
+      status: document.getElementById('status'),
+      pointsList: document.getElementById('pointsList'),
+      resultBox: document.getElementById('resultBox')
+    };
+
+    let mode = 'points';
+    let currentLine = null;
+    let highlightPoints = [];
+    let draggingIndex = -1;
+
+    function n(v) { return Number(v); }
+
+    function getRange() {
+      const minX = Math.floor(n(el.minX.value));
+      const maxX = Math.ceil(n(el.maxX.value));
+      const minY = Math.floor(n(el.minY.value));
+      const maxY = Math.ceil(n(el.maxY.value));
+      if (!(minX < maxX && minY < maxY)) {
+        throw new Error('座標範圍需滿足：最小值 < 最大值');
+      }
+      return { minX, maxX, minY, maxY };
+    }
+
+    function worldToCanvas(x, y, r) {
+      const pad = 36;
+      const w = canvas.width - pad * 2;
+      const h = canvas.height - pad * 2;
+      const px = pad + ((x - r.minX) / (r.maxX - r.minX)) * w;
+      const py = pad + ((r.maxY - y) / (r.maxY - r.minY)) * h;
+      return { px, py };
+    }
+
+    function canvasToWorld(px, py, r) {
+      const pad = 36;
+      const w = canvas.width - pad * 2;
+      const h = canvas.height - pad * 2;
+      const x = r.minX + ((px - pad) / w) * (r.maxX - r.minX);
+      const y = r.maxY - ((py - pad) / h) * (r.maxY - r.minY);
+      return { x, y };
+    }
+
+    function drawAxes(r) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      for (let x = r.minX; x <= r.maxX; x += 1) {
+        const p1 = worldToCanvas(x, r.minY, r);
+        const p2 = worldToCanvas(x, r.maxY, r);
+        ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke();
+      }
+      for (let y = r.minY; y <= r.maxY; y += 1) {
+        const p1 = worldToCanvas(r.minX, y, r);
+        const p2 = worldToCanvas(r.maxX, y, r);
+        ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke();
+      }
+
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2;
+      if (r.minY <= 0 && r.maxY >= 0) {
+        const p1 = worldToCanvas(r.minX, 0, r);
+        const p2 = worldToCanvas(r.maxX, 0, r);
+        ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke();
+      }
+      if (r.minX <= 0 && r.maxX >= 0) {
+        const p1 = worldToCanvas(0, r.minY, r);
+        const p2 = worldToCanvas(0, r.maxY, r);
+        ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawLineABC(a, b, c, r) {
+      const pts = [];
+      const eps = 1e-10;
+
+      if (Math.abs(b) > eps) {
+        const yAtMinX = (-a * r.minX - c) / b;
+        const yAtMaxX = (-a * r.maxX - c) / b;
+        if (yAtMinX >= r.minY - 1e-9 && yAtMinX <= r.maxY + 1e-9) pts.push({ x: r.minX, y: yAtMinX });
+        if (yAtMaxX >= r.minY - 1e-9 && yAtMaxX <= r.maxY + 1e-9) pts.push({ x: r.maxX, y: yAtMaxX });
+      }
+      if (Math.abs(a) > eps) {
+        const xAtMinY = (-b * r.minY - c) / a;
+        const xAtMaxY = (-b * r.maxY - c) / a;
+        if (xAtMinY >= r.minX - 1e-9 && xAtMinY <= r.maxX + 1e-9) pts.push({ x: xAtMinY, y: r.minY });
+        if (xAtMaxY >= r.minX - 1e-9 && xAtMaxY <= r.maxX + 1e-9) pts.push({ x: xAtMaxY, y: r.maxY });
+      }
+
+      const unique = [];
+      for (const p of pts) {
+        if (!unique.some(q => Math.abs(q.x - p.x) < 1e-8 && Math.abs(q.y - p.y) < 1e-8)) unique.push(p);
+      }
+      if (unique.length < 2) return false;
+
+      const p1 = worldToCanvas(unique[0].x, unique[0].y, r);
+      const p2 = worldToCanvas(unique[1].x, unique[1].y, r);
+      ctx.save();
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(p1.px, p1.py);
+      ctx.lineTo(p2.px, p2.py);
+      ctx.stroke();
+      ctx.restore();
+      return true;
+    }
+
+    function drawPoint(x, y, r, color, radius = 5) {
+      const p = worldToCanvas(x, y, r);
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(p.px, p.py, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function gcd(a, b) {
+      a = Math.abs(Math.round(a));
+      b = Math.abs(Math.round(b));
+      while (b) {
+        const t = a % b;
+        a = b;
+        b = t;
+      }
+      return a || 1;
+    }
+
+    function formatLine(a, b, c) {
+      function term(coef, varName, first) {
+        if (coef === 0) return '';
+        const sign = coef > 0 ? (first ? '' : ' + ') : (first ? '-' : ' - ');
+        const absV = Math.abs(coef);
+        const coefText = absV === 1 ? '' : String(absV);
+        return sign + coefText + varName;
+      }
+      let s = '';
+      s += term(a, 'x', true);
+      s += term(b, 'y', s === '');
+      if (c !== 0) {
+        const sign = c > 0 ? (s === '' ? '' : ' + ') : (s === '' ? '-' : ' - ');
+        s += sign + Math.abs(c);
+      }
+      if (s === '') s = '0';
+      return s + ' = 0';
+    }
+
+    function simplifyABC(a, b, c) {
+      const allInt = Number.isInteger(a) && Number.isInteger(b) && Number.isInteger(c);
+      if (!allInt) return { a, b, c };
+      const g = gcd(gcd(a, b), c);
+      a /= g; b /= g; c /= g;
+      if (a < 0 || (a === 0 && b < 0)) {
+        a = -a; b = -b; c = -c;
+      }
+      return { a, b, c };
+    }
+
+    function setPointInputsFromHighlights() {
+      if (highlightPoints.length < 2) return;
+      el.x1.value = Number(highlightPoints[0].x.toFixed(3));
+      el.y1.value = Number(highlightPoints[0].y.toFixed(3));
+      el.x2.value = Number(highlightPoints[1].x.toFixed(3));
+      el.y2.value = Number(highlightPoints[1].y.toFixed(3));
+    }
+
+    function setEqInputsFromLine(line) {
+      el.a.value = Number(line.a.toFixed(6));
+      el.b.value = Number(line.b.toFixed(6));
+      el.c.value = Number(line.c.toFixed(6));
+    }
+
+    function getTwoPointsFromLineInRange(a, b, c, r) {
+      const pts = [];
+      const eps = 1e-10;
+      if (Math.abs(b) > eps) {
+        pts.push({ x: r.minX, y: (-a * r.minX - c) / b });
+        pts.push({ x: r.maxX, y: (-a * r.maxX - c) / b });
+      }
+      if (Math.abs(a) > eps) {
+        pts.push({ x: (-b * r.minY - c) / a, y: r.minY });
+        pts.push({ x: (-b * r.maxY - c) / a, y: r.maxY });
+      }
+      const valid = pts.filter(p => p.x >= r.minX - 1e-8 && p.x <= r.maxX + 1e-8 && p.y >= r.minY - 1e-8 && p.y <= r.maxY + 1e-8);
+      const unique = [];
+      for (const p of valid) {
+        if (!unique.some(q => Math.abs(q.x - p.x) < 1e-8 && Math.abs(q.y - p.y) < 1e-8)) unique.push(p);
+      }
+      return unique.slice(0, 2);
+    }
+
+    function latticePointsOnLine(a, b, c, r) {
+      const pts = [];
+      const eps = 1e-8;
+      for (let x = Math.ceil(r.minX); x <= Math.floor(r.maxX); x++) {
+        if (Math.abs(b) < eps) {
+          if (Math.abs(a) < eps) break;
+          const x0 = -c / a;
+          if (Math.abs(x - x0) < eps) {
+            for (let y = Math.ceil(r.minY); y <= Math.floor(r.maxY); y++) {
+              pts.push({ x, y });
+            }
+            break;
+          }
+        } else {
+          const y = (-a * x - c) / b;
+          const yRound = Math.round(y);
+          if (Math.abs(y - yRound) < eps && yRound >= r.minY && yRound <= r.maxY) {
+            pts.push({ x, y: yRound });
+          }
+        }
+      }
+      return pts;
+    }
+
+    function render() {
+      try {
+        const r = getRange();
+        drawAxes(r);
+        if (!currentLine) {
+          el.pointsList.textContent = '線上整點表格會顯示在這裡。';
+          return;
+        }
+
+        const { a, b, c } = currentLine;
+        renderResultBox(a, b, c);
+        const ok = drawLineABC(a, b, c, r);
+        if (!ok) {
+          el.status.innerHTML = '<span class="bad">直線沒有經過目前顯示範圍。</span> 可調整座標範圍再試。';
+          return;
+        }
+
+        for (const p of highlightPoints) drawPoint(p.x, p.y, r, '#b91c1c', 6);
+
+        const lattice = latticePointsOnLine(a, b, c, r);
+        for (const p of lattice) drawPoint(p.x, p.y, r, '#166534', 3.8);
+
+        if (lattice.length === 0) {
+          el.pointsList.innerHTML = '此範圍內沒有在線上的整點。';
+        } else {
+          renderPointsTable(lattice);
+        }
+      } catch (err) {
+        el.status.innerHTML = `<span class="bad">${err.message}</span>`;
+      }
+    }
+
+    function renderResultBox(a, b, c) {
+      let pText = '目前無兩點資料';
+      if (highlightPoints.length >= 2) {
+        const p1 = highlightPoints[0];
+        const p2 = highlightPoints[1];
+        pText = `P1=(${Number(p1.x.toFixed(3))}, ${Number(p1.y.toFixed(3))})，P2=(${Number(p2.x.toFixed(3))}, ${Number(p2.y.toFixed(3))})`;
+      }
+      el.resultBox.innerHTML = `<strong>目前兩點：</strong>${pText}<br><strong>目前方程式：</strong>${formatLine(a, b, c)}`;
+    }
+
+    function renderPointsTable(points) {
+      const selected = points
+        .slice()
+        .sort((p, q) => {
+          const sp = Math.abs(p.x) + Math.abs(p.y);
+          const sq = Math.abs(q.x) + Math.abs(q.y);
+          if (sp !== sq) return sp - sq;
+          if (Math.abs(p.x) !== Math.abs(q.x)) return Math.abs(p.x) - Math.abs(q.x);
+          return Math.abs(p.y) - Math.abs(q.y);
+        })
+        .slice(0, 5);
+      const xRow = selected.map(p => `<td>${p.x}</td>`).join('');
+      const yRow = selected.map(p => `<td>${p.y}</td>`).join('');
+      el.pointsList.innerHTML = `
+        <div>整數解總筆數：<strong>${points.length}</strong>（下表顯示絕對值較小的前 ${selected.length} 組）</div>
+        <table>
+          <tbody>
+            <tr><th>x</th>${xRow}</tr>
+            <tr><th>y</th>${yRow}</tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    function setMode(next) {
+      mode = next;
+      const isPoints = mode === 'points';
+      el.modePoints.classList.toggle('active', isPoints);
+      el.modeEq.classList.toggle('active', !isPoints);
+      el.pointsBox.style.display = isPoints ? '' : 'none';
+      el.eqBox.style.display = isPoints ? 'none' : '';
+      el.status.textContent = isPoints ? '模式A：輸入或拖曳兩點，會即時更新直線。' : '模式B：輸入 a, b, c，會即時更新直線與兩點。';
+    }
+
+    function computeFromPoints() {
+      const x1 = n(el.x1.value), y1 = n(el.y1.value);
+      const x2 = n(el.x2.value), y2 = n(el.y2.value);
+      if (![x1, y1, x2, y2].every(Number.isFinite)) throw new Error('兩點座標需為有效數字');
+      if (Math.abs(x1 - x2) < 1e-12 && Math.abs(y1 - y2) < 1e-12) throw new Error('兩點不可重合');
+
+      const a0 = y1 - y2;
+      const b0 = x2 - x1;
+      const c0 = x1 * y2 - x2 * y1;
+      const line = simplifyABC(a0, b0, c0);
+      currentLine = line;
+      highlightPoints = [{ x: x1, y: y1 }, { x: x2, y: y2 }];
+      setEqInputsFromLine(line);
+      el.status.innerHTML = `<span class="ok">方程式：</span> ${formatLine(line.a, line.b, line.c)}`;
+      render();
+    }
+
+    function computeFromEq() {
+      const a = n(el.a.value), b = n(el.b.value), c = n(el.c.value);
+      if (![a, b, c].every(Number.isFinite)) throw new Error('a, b, c 需為有效數字');
+      if (Math.abs(a) < 1e-12 && Math.abs(b) < 1e-12) throw new Error('a 與 b 不可同時為 0');
+      const line = simplifyABC(a, b, c);
+      currentLine = line;
+      const r = getRange();
+      const pts = getTwoPointsFromLineInRange(line.a, line.b, line.c, r);
+      highlightPoints = pts.length >= 2 ? pts : [];
+      setPointInputsFromHighlights();
+      el.status.innerHTML = `<span class="ok">方程式：</span> ${formatLine(line.a, line.b, line.c)}`;
+      render();
+    }
+
+    document.getElementById('drawByPoints').addEventListener('click', () => {
+      try { computeFromPoints(); } catch (err) { el.status.innerHTML = `<span class="bad">${err.message}</span>`; }
+    });
+    document.getElementById('drawByEq').addEventListener('click', () => {
+      try { computeFromEq(); } catch (err) { el.status.innerHTML = `<span class="bad">${err.message}</span>`; }
+    });
+    document.getElementById('refresh').addEventListener('click', render);
+    el.modePoints.addEventListener('click', () => setMode('points'));
+    el.modeEq.addEventListener('click', () => setMode('eq'));
+
+    ['x1', 'y1', 'x2', 'y2'].forEach(id => {
+      el[id].addEventListener('input', () => {
+        try { computeFromPoints(); } catch (_) {}
+      });
+    });
+    ['a', 'b', 'c'].forEach(id => {
+      el[id].addEventListener('input', () => {
+        try { computeFromEq(); } catch (_) {}
+      });
+    });
+    ['minX', 'maxX', 'minY', 'maxY'].forEach(id => {
+      el[id].addEventListener('input', () => {
+        try {
+          if (currentLine) {
+            const r = getRange();
+            const pts = getTwoPointsFromLineInRange(currentLine.a, currentLine.b, currentLine.c, r);
+            if (pts.length >= 2) {
+              highlightPoints = pts;
+              setPointInputsFromHighlights();
+            }
+          }
+          render();
+        } catch (_) {}
+      });
+    });
+
+    function findPointHit(mx, my, r) {
+      for (let i = 0; i < highlightPoints.length; i++) {
+        const p = worldToCanvas(highlightPoints[i].x, highlightPoints[i].y, r);
+        const d2 = (p.px - mx) * (p.px - mx) + (p.py - my) * (p.py - my);
+        if (d2 <= 10 * 10) return i;
+      }
+      return -1;
+    }
+
+    function onPointerDown(e) {
+      if (highlightPoints.length < 2) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const mx = (e.clientX - rect.left) * scaleX;
+      const my = (e.clientY - rect.top) * scaleY;
+      const r = getRange();
+      const idx = findPointHit(mx, my, r);
+      if (idx >= 0) {
+        draggingIndex = idx;
+        canvas.setPointerCapture(e.pointerId);
+      }
+    }
+
+    function onPointerMove(e) {
+      if (draggingIndex < 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const mx = (e.clientX - rect.left) * scaleX;
+      const my = (e.clientY - rect.top) * scaleY;
+      const r = getRange();
+      const w = canvasToWorld(mx, my, r);
+      const x = Math.max(r.minX, Math.min(r.maxX, w.x));
+      const y = Math.max(r.minY, Math.min(r.maxY, w.y));
+      highlightPoints[draggingIndex] = { x, y };
+      setPointInputsFromHighlights();
+      try { computeFromPoints(); } catch (_) {}
+    }
+
+    function onPointerUp(e) {
+      if (draggingIndex >= 0) {
+        draggingIndex = -1;
+        canvas.releasePointerCapture(e.pointerId);
+      }
+    }
+
+    canvas.addEventListener('pointerdown', onPointerDown);
+    canvas.addEventListener('pointermove', onPointerMove);
+    canvas.addEventListener('pointerup', onPointerUp);
+    canvas.addEventListener('pointercancel', onPointerUp);
+
+    setMode('points');
+    drawAxes(getRange());
+    computeFromPoints();
+  </script>
+</body>
+</html>

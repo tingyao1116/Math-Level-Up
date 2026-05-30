@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>記憶挑戰小遊戲</title>
+  <style>
+    :root {
+      --card: #ffffff;
+      --text: #1f2937;
+      --main: #0f766e;
+      --main-dark: #115e59;
+      --ok: #15803d;
+      --bad: #b91c1c;
+      --border: #dbe4ef;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(135deg, #ecfeff, #eff6ff);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+    .app {
+      width: 100%;
+      max-width: 920px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      padding: 20px;
+    }
+    h1 { margin: 0 0 12px; font-size: 28px; }
+    .desc { margin: 0 0 16px; line-height: 1.6; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      margin-bottom: 16px;
+    }
+    label { font-weight: 700; }
+    select, button {
+      font-family: inherit;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+    }
+    button {
+      cursor: pointer;
+      background: var(--main);
+      color: #fff;
+      border-color: var(--main);
+      font-weight: 700;
+    }
+    button:hover { background: var(--main-dark); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 14px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .display {
+      min-height: 120px;
+      border: 2px dashed #94a3b8;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(36px, 8vw, 72px);
+      font-weight: 800;
+      margin-bottom: 14px;
+      background: #fff;
+    }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+      gap: 8px;
+    }
+    .choice-btn {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid #cbd5e1;
+      padding: 10px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .choice-btn:hover { background: #eef2ff; }
+    .result-ok { color: var(--ok); font-weight: 800; }
+    .result-bad { color: var(--bad); font-weight: 800; }
+
+    .jumpscare {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #1f2937 0%, #000 60%, #000 100%);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .jumpscare.show {
+      display: flex;
+      animation: flashBg 0.18s steps(2, end) 10;
+    }
+    .sadako-face {
+      width: min(88vw, 520px);
+      aspect-ratio: 3 / 4;
+      border-radius: 18px;
+      border: 2px solid #111;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,.94) 0 36%, rgba(0,0,0,.12) 60% 100%),
+        radial-gradient(circle at 34% 42%, #fff 0 8px, #000 8px 14px, transparent 15px),
+        radial-gradient(circle at 66% 42%, #fff 0 8px, #000 8px 14px, transparent 15px),
+        radial-gradient(ellipse at 50% 72%, #7f1d1d 0 16px, transparent 17px),
+        linear-gradient(135deg, #111, #2b2b2b);
+      box-shadow: 0 0 0 999px rgba(0,0,0,.55), 0 28px 50px rgba(0,0,0,.65);
+      position: relative;
+      animation: shake 0.08s infinite alternate;
+    }
+    .sadako-face::before {
+      content: "貞子來了";
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      letter-spacing: 4px;
+      color: #f8fafc;
+      font-weight: 900;
+      font-size: clamp(22px, 4.2vw, 34px);
+      text-shadow: 0 0 10px rgba(239, 68, 68, 0.75);
+    }
+    @keyframes shake {
+      from { transform: translate(-2px, -1px) scale(1.01); }
+      to { transform: translate(2px, 1px) scale(0.995); }
+    }
+    @keyframes flashBg {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.8); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>記憶挑戰小遊戲</h1>
+    <p class="desc">
+      規則：每 3 秒顯示 1 個項目。看完後依原順序點選。連續全對就升級，長度 +1；答錯就結束。
+    </p>
+    <div class="toolbar">
+      <label for="modeSelect">模式：</label>
+      <select id="modeSelect"></select>
+      <label for="startLevel">起始關卡（需記憶幾個）：</label>
+      <select id="startLevel"></select>
+      <button id="startBtn">開始挑戰</button>
+      <button id="restartBtn">重新開始</button>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="display" id="display">準備開始</div>
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <div class="jumpscare" id="jumpscare">
+    <div class="sadako-face"></div>
+  </div>
+
+  <script>
+    const zodiac = ["鼠", "牛", "虎", "兔", "龍", "蛇", "馬", "羊", "猴", "雞", "狗", "豬"];
+
+    const modes = {
+      classic: {
+        label: "模式1：左右+生肖(1~9)",
+        description: "隨機顯示 左右與生肖搭配 1~9。",
+        universe: ["左", "右", ...zodiac].flatMap((p) =>
+          [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `${p}${n}`)
+        ),
+        choiceOrder: "shuffle"
+      },
+      zodiacSorted: {
+        label: "模式2：鼠0~9 到豬0~9（排序）",
+        description: "按鈕固定排序：鼠0~9、牛0~9...到豬0~9。",
+        universe: zodiac.flatMap((z) => [0,1,2,3,4,5,6,7,8,9].map((n) => `${z}${n}`)),
+        choiceOrder: "sorted"
+      },
+      jpKo: {
+        label: "模式3：前日文後韓文（100種）",
+        description: "前面日文數字 0~9，後面韓文數字 0~9，交叉配對共 100 種。",
+        universe: (() => {
+          const jp = ["れい", "いち", "に", "さん", "よん", "ご", "ろく", "なな", "はち", "きゅう"];
+          const ko = ["영", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"];
+          return jp.flatMap((j) => ko.map((k) => `${j}${k}`));
+        })(),
+        choiceOrder: "shuffle"
+      }
+    };
+
+    const startLevelEl = document.getElementById("startLevel");
+    const modeSelectEl = document.getElementById("modeSelect");
+    const startBtn = document.getElementById("startBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const statusEl = document.getElementById("status");
+    const displayEl = document.getElementById("display");
+    const choicesEl = document.getElementById("choices");
+    const jumpscareEl = document.getElementById("jumpscare");
+
+    for (let i = 1; i <= 12; i++) {
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = `${i} 個`;
+      if (i === 3) opt.selected = true;
+      startLevelEl.appendChild(opt);
+    }
+
+    Object.entries(modes).forEach(([key, mode]) => {
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = mode.label;
+      modeSelectEl.appendChild(opt);
+    });
+
+    let level = 3;
+    let sequence = [];
+    let currentUniverse = modes.classic.universe;
+    let currentChoiceOrder = modes.classic.choiceOrder;
+    let currentDescription = modes.classic.description;
+    let answerIndex = 0;
+    let score = 0;
+    let showing = false;
+    let timer = null;
+    let ended = false;
+
+    function updateStatus(extra = "") {
+      statusEl.innerHTML = `
+        <div>目前模式：<strong>${modeSelectEl.options[modeSelectEl.selectedIndex].text}</strong></div>
+        <div>目前關卡：<strong>${level}</strong>（需記憶 ${level} 個）</div>
+        <div>目前得分：<strong>${score}</strong></div>
+        <div>模式說明：${currentDescription}</div>
+        <div>${extra}</div>
+      `;
+    }
+
+    function clearTimer() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function randomItem() {
+      return currentUniverse[Math.floor(Math.random() * currentUniverse.length)];
+    }
+
+    function buildSequence(len) {
+      return Array.from({ length: len }, randomItem);
+    }
+
+    function lockControls(isLocked) {
+      startBtn.disabled = isLocked;
+      startLevelEl.disabled = isLocked;
+      modeSelectEl.disabled = isLocked;
+    }
+
+    function showSequence() {
+      showing = true;
+      let i = 0;
+      displayEl.textContent = sequence[i];
+      updateStatus(`記憶中：第 ${i + 1} / ${sequence.length} 個`);
+      clearTimer();
+      timer = setInterval(() => {
+        i += 1;
+        if (i >= sequence.length) {
+          clearTimer();
+          showing = false;
+          displayEl.textContent = "請依序作答";
+          renderChoices();
+          updateStatus("請按出現順序點選。");
+          return;
+        }
+        displayEl.textContent = sequence[i];
+        updateStatus(`記憶中：第 ${i + 1} / ${sequence.length} 個`);
+      }, 3000);
+    }
+
+    function startRound() {
+      ended = false;
+      answerIndex = 0;
+      sequence = buildSequence(level);
+      choicesEl.innerHTML = "";
+      displayEl.textContent = "請專心記憶";
+      updateStatus("即將開始出題...");
+      showSequence();
+    }
+
+    function renderChoices() {
+      const renderedChoices = [...currentUniverse];
+      if (currentChoiceOrder === "shuffle") {
+        renderedChoices.sort(() => Math.random() - 0.5);
+      }
+      choicesEl.innerHTML = "";
+      renderedChoices.forEach((item) => {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.textContent = item;
+        btn.addEventListener("click", () => handleChoice(item));
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function playFailSound() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const audioCtx = new AudioCtx();
+      const now = audioCtx.currentTime;
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const osc3 = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const master = audioCtx.createGain();
+
+      osc1.type = "sawtooth";
+      osc2.type = "square";
+      osc3.type = "triangle";
+      osc1.frequency.setValueAtTime(420, now);
+      osc1.frequency.exponentialRampToValueAtTime(65, now + 2.2);
+      osc2.frequency.setValueAtTime(160, now);
+      osc2.frequency.exponentialRampToValueAtTime(38, now + 2.2);
+      osc3.frequency.setValueAtTime(520, now + 0.12);
+      osc3.frequency.exponentialRampToValueAtTime(90, now + 2.5);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.35, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.22, now + 1.4);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.55);
+
+      master.gain.setValueAtTime(0.7, now);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      osc3.connect(gain);
+      gain.connect(master);
+      master.connect(audioCtx.destination);
+      osc1.start(now);
+      osc2.start(now);
+      osc3.start(now + 0.12);
+      osc1.stop(now + 2.6);
+      osc2.stop(now + 2.6);
+      osc3.stop(now + 2.6);
+    }
+
+    function showJumpscare() {
+      jumpscareEl.classList.add("show");
+      setTimeout(() => jumpscareEl.classList.remove("show"), 2600);
+    }
+
+    function handleChoice(item) {
+      if (showing || ended) return;
+      const target = sequence[answerIndex];
+      if (item === target) {
+        answerIndex += 1;
+        displayEl.innerHTML = `<span class="result-ok">答對 ${answerIndex}/${sequence.length}</span>`;
+        if (answerIndex === sequence.length) {
+          score += sequence.length;
+          level += 1;
+          choicesEl.innerHTML = "";
+          displayEl.innerHTML = `<span class="result-ok">本關全對，進入下一關</span>`;
+          updateStatus("3 秒後開始下一關...");
+          setTimeout(startRound, 3000);
+        }
+      } else {
+        ended = true;
+        playFailSound();
+        showJumpscare();
+        choicesEl.innerHTML = "";
+        displayEl.innerHTML = `<span class="result-bad">挑戰結束</span>`;
+        updateStatus(
+          `<span class="result-bad">答錯：你按了 ${item}，正確應為 ${target}。最高完成關卡：${level - 1}</span>`
+        );
+        lockControls(false);
+      }
+    }
+
+    function resetGame() {
+      clearTimer();
+      const selectedMode = modes[modeSelectEl.value];
+      level = Number(startLevelEl.value);
+      currentUniverse = selectedMode.universe;
+      currentChoiceOrder = selectedMode.choiceOrder;
+      currentDescription = selectedMode.description;
+      score = 0;
+      sequence = [];
+      answerIndex = 0;
+      showing = false;
+      ended = false;
+      choicesEl.innerHTML = "";
+      displayEl.textContent = "準備開始";
+      updateStatus("按下開始挑戰。");
+      lockControls(false);
+    }
+
+    startBtn.addEventListener("click", () => {
+      resetGame();
+      lockControls(true);
+      startRound();
+    });
+    restartBtn.addEventListener("click", resetGame);
+
+    updateStatus("可先選模式與起始關卡，再按開始挑戰。");
+  </script>
+</body>
+</html>
