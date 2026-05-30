@@ -115,6 +115,29 @@
     }
     .result-ok { color: var(--ok); font-weight: 800; }
     .result-bad { color: var(--bad); font-weight: 800; }
+    .jumpscare {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      background: radial-gradient(circle, #1f2937 0%, #000 65%, #000 100%);
+    }
+    .jumpscare.show { display: flex; }
+    .sadako-face {
+      width: min(80vw, 420px);
+      aspect-ratio: 3 / 4;
+      border-radius: 16px;
+      border: 2px solid #111;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,.92) 0 36%, rgba(0,0,0,.12) 60% 100%),
+        radial-gradient(circle at 34% 42%, #fff 0 8px, #000 8px 14px, transparent 15px),
+        radial-gradient(circle at 66% 42%, #fff 0 8px, #000 8px 14px, transparent 15px),
+        radial-gradient(ellipse at 50% 72%, #7f1d1d 0 16px, transparent 17px),
+        linear-gradient(135deg, #111, #2b2b2b);
+      box-shadow: 0 0 0 999px rgba(0,0,0,.55), 0 20px 45px rgba(0,0,0,.7);
+    }
   </style>
 </head>
 <body>
@@ -137,6 +160,7 @@
     <div id="pairCompose"></div>
     <div class="choices" id="choices"></div>
   </div>
+  <div class="jumpscare" id="jumpscare"><div class="sadako-face"></div></div>
 
   <script>
     const zodiac = ["鼠", "牛", "虎", "兔", "龍", "蛇", "馬", "羊", "猴", "雞", "狗", "豬"];
@@ -183,6 +207,7 @@
     const displayEl = document.getElementById("display");
     const choicesEl = document.getElementById("choices");
     const pairComposeEl = document.getElementById("pairCompose");
+    const jumpscareEl = document.getElementById("jumpscare");
     const BEST_SCORE_KEY = "memory_game_best_score_v1";
     const BEST_LEVEL_KEY = "memory_game_best_level_v1";
 
@@ -370,6 +395,8 @@
         }
       } else {
         ended = true;
+        playFailSound();
+        showJumpscare();
         if (score > bestScore) bestScore = score;
         const completedLevel = level - 1;
         if (completedLevel > bestLevel) bestLevel = completedLevel;
@@ -378,9 +405,37 @@
         choicesEl.innerHTML = "";
         pairComposeEl.innerHTML = "";
         displayEl.innerHTML = `<span class="result-bad">挑戰結束</span>`;
-        updateStatus(`<span class="result-bad">答錯：你選了 ${answerToken}，正確應為 ${target}。本次最高完成關卡：${completedLevel}</span>`);
+        const fullAnswer = sequence.join(" → ");
+        updateStatus(`<span class="result-bad">答錯：你選了 ${answerToken}，正確應為 ${target}。本次最高完成關卡：${completedLevel}<br>正確完整順序：${fullAnswer}</span>`);
         lockControls(false);
       }
+    }
+
+    function playFailSound() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      const o1 = ctx.createOscillator();
+      const o2 = ctx.createOscillator();
+      const g = ctx.createGain();
+      o1.type = "sawtooth";
+      o2.type = "square";
+      o1.frequency.setValueAtTime(420, now);
+      o1.frequency.exponentialRampToValueAtTime(70, now + 2.1);
+      o2.frequency.setValueAtTime(180, now);
+      o2.frequency.exponentialRampToValueAtTime(45, now + 2.1);
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(0.35, now + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+      o1.connect(g); o2.connect(g); g.connect(ctx.destination);
+      o1.start(now); o2.start(now);
+      o1.stop(now + 2.25); o2.stop(now + 2.25);
+    }
+
+    function showJumpscare() {
+      jumpscareEl.classList.add("show");
+      setTimeout(() => jumpscareEl.classList.remove("show"), 2500);
     }
 
     function startRound() {

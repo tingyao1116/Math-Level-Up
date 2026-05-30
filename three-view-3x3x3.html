@@ -1,56 +1,50 @@
 ﻿<!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3×3 三視圖互動頁</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3x3 三視圖互動頁（Three.js）</title>
   <style>
     :root {
       --line: #cbd5e1;
       --text: #0f172a;
       --sub: #475569;
       --main: #0f766e;
-      --cube-top: #ff3b30;
-      --cube-bottom: #b91c1c;
-      --cube-front: #0ea5e9;
-      --cube-back: #0284c7;
-      --cube-left: #fde047;
-      --cube-right: #fde047;
+      --bg: #f8fafc;
+      --front: #0ea5e9;
+      --right: #fde047;
+      --top: #ef4444;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-      background: linear-gradient(135deg, #ecfeff, #eef2ff);
-      color: var(--text);
       padding: 20px;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, #ecfeff, #eef2ff);
     }
     .wrap {
-      max-width: 1160px;
+      max-width: 1180px;
       margin: 0 auto;
+      background: #fff;
       border: 1px solid var(--line);
       border-radius: 16px;
-      background: #fff;
-      box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
       padding: 18px;
+      box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
     }
+    h1 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 34px); }
+    .lead { margin: 0 0 12px; line-height: 1.7; color: var(--sub); }
     .back {
       display: inline-block;
+      margin-bottom: 12px;
+      padding: 7px 12px;
+      border-radius: 10px;
       text-decoration: none;
       color: #fff;
       background: var(--main);
-      border-radius: 10px;
-      padding: 7px 12px;
-      font-weight: 700;
-      margin-bottom: 10px;
+      font-weight: 800;
     }
-    h1 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 34px); }
-    .lead { margin: 0 0 14px; line-height: 1.7; color: var(--sub); }
-    .layout {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: 1.25fr 1fr;
-    }
+    .layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; }
     .panel {
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -58,209 +52,28 @@
       background: #fff;
     }
     h2 { margin: 0 0 8px; font-size: 21px; }
-    .control-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(60px, 80px));
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .pos-btn {
+    .control-grid { display: grid; grid-template-columns: repeat(3, minmax(62px, 84px)); gap: 8px; margin-bottom: 10px; }
+    .pos-btn, .rotate-btn {
       border: 1px solid #94a3b8;
       border-radius: 10px;
       background: #f8fafc;
-      padding: 8px 4px;
+      cursor: pointer;
       font-weight: 800;
-      cursor: pointer;
+      font-family: inherit;
+      padding: 7px 8px;
     }
-    .pos-btn:hover { background: #e2e8f0; }
-    .rotate-controls {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .rotate-btn {
-      border: 1px solid #94a3b8;
-      background: #fff;
-      border-radius: 8px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-    .iso-wrap {
-      perspective: 1100px;
-      min-height: 460px;
+    .rotate-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .legend-item { font-size: 13px; border: 1px solid #cbd5e1; border-radius: 999px; padding: 3px 9px; }
+    .stage {
       border: 1px dashed #94a3b8;
       border-radius: 10px;
-      background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-      touch-action: none;
+      background: var(--bg);
+      min-height: 500px;
+      position: relative;
       overflow: hidden;
-      cursor: grab;
-      overscroll-behavior: contain;
-      position: relative;
     }
-    .face-legend {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 4px 0 10px;
-    }
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: #334155;
-      border: 1px solid #cbd5e1;
-      border-radius: 999px;
-      padding: 3px 9px;
-      background: #fff;
-      font-weight: 700;
-    }
-    .swatch {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-      border: 1px solid rgba(15, 23, 42, 0.35);
-    }
-    .iso-wrap.dragging { cursor: grabbing; }
-    .scene {
-      width: 340px;
-      height: 340px;
-      transform-style: preserve-3d;
-      position: relative;
-    }
-    .cube-stack {
-      position: relative;
-      width: 340px;
-      height: 340px;
-      transform-style: preserve-3d;
-      transform: translateZ(-20px);
-    }
-    .axis-layer {
-      position: absolute;
-      inset: 0;
-      transform-style: preserve-3d;
-      pointer-events: none;
-    }
-    .floor-grid {
-      position: absolute;
-      left: 70px;
-      top: 56px;
-      width: 168px;
-      height: 168px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      transform: translateZ(-46px);
-    }
-    .floor-cell {
-      border: 2px dashed #9ca3af;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      color: #6b7280;
-      font-size: 22px;
-      font-weight: 900;
-      padding-bottom: 4px;
-      line-height: 1;
-    }
-    .axis {
-      position: absolute;
-      left: 70px;
-      top: 56px;
-      transform-style: preserve-3d;
-    }
-    .axis-line {
-      position: absolute;
-      width: 80px;
-      height: 4px;
-      border-radius: 999px;
-      transform-origin: 0 50%;
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.15);
-    }
-    .axis-line::after {
-      content: "";
-      position: absolute;
-      right: -8px;
-      top: -4px;
-      border-left: 10px solid currentColor;
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-    }
-    .axis-label {
-      position: absolute;
-      font-size: 14px;
-      font-weight: 900;
-      color: #0f172a;
-      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.65);
-      white-space: nowrap;
-    }
-    .axis-front, .axis-right, .axis-up { display: block; }
-    .axis-front .axis-line { color: #0284c7; background: #0284c7; transform: rotate(140deg); width: 120px; }
-    .axis-right .axis-line { color: #f59e0b; background: #f59e0b; transform: rotate(28deg); width: 120px; }
-    .axis-up .axis-line { color: #22c55e; background: #22c55e; transform: rotate(-90deg); width: 95px; }
-    .axis-front .axis-label { left: -96px; top: 72px; }
-    .axis-right .axis-label { left: 118px; top: 48px; }
-    .axis-up .axis-label { left: -8px; top: -104px; }
-    .guide-layer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 4;
-      transform-style: preserve-3d;
-      transform-origin: 50% 50%;
-      display: none;
-    }
-    .guide-text {
-      position: absolute;
-      font-size: 26px;
-      font-weight: 900;
-      color: #0f172a;
-      text-shadow: 0 1px 1px rgba(255,255,255,0.75);
-      transform-style: preserve-3d;
-      transform-origin: 50% 50%;
-      z-index: 4;
-      display: none;
-    }
-    .guide-front { left: 68px; bottom: 12px; }
-    .guide-right { right: 26px; top: 202px; }
-    .guide-up { left: 160px; top: 54px; }
-    .version-tag {
-      position: absolute;
-      right: 8px;
-      bottom: 6px;
-      font-size: 11px;
-      color: #475569;
-      background: rgba(255,255,255,0.85);
-      border: 1px solid #cbd5e1;
-      border-radius: 999px;
-      padding: 1px 6px;
-    }
-    .mini-cube {
-      position: absolute;
-      width: 52px;
-      height: 52px;
-      transform-style: preserve-3d;
-    }
-    .face {
-      position: absolute;
-      width: 52px;
-      height: 52px;
-      border: 1px solid rgba(15, 23, 42, 0.45);
-      backface-visibility: hidden;
-    }
-    .top { background: var(--cube-top); transform: rotateX(90deg) translateZ(26px); }
-    .bottom { background: var(--cube-bottom); transform: rotateX(-90deg) translateZ(26px); }
-    .front { background: var(--cube-front); transform: translateZ(26px); }
-    .back { background: var(--cube-back); transform: rotateY(180deg) translateZ(26px); }
-    .left { background: var(--cube-left); transform: rotateY(-90deg) translateZ(26px); }
-    .right { background: var(--cube-right); transform: rotateY(90deg) translateZ(26px); }
+    #threeHost { width: 100%; height: 500px; }
     .views { display: grid; gap: 10px; }
     .view-title { margin: 0 0 4px; font-size: 15px; font-weight: 700; }
     .grid3 {
@@ -279,382 +92,256 @@
       justify-content: center;
       font-size: 12px;
       font-weight: 700;
-      color: #0f172a;
     }
     .filled { background: #86efac; }
     .hint { margin-top: 10px; color: var(--sub); line-height: 1.7; font-size: 14px; }
     @media (max-width: 940px) {
       .layout { grid-template-columns: 1fr; }
+      #threeHost { height: 420px; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <h1>3×3 三視圖互動頁</h1>
-    <p class="lead">按下 1~9 位置按鈕可切換該位置高度（0 → 1 → 2 → 3 → 0）。左側立體可拖曳旋轉，右側三視圖會同步更新。</p>
+    <h1>3x3 三視圖互動頁（原點=1號最低點）</h1>
+    <p class="lead">座標定義：前後為 x 軸、左右為 y 軸、上下為 z 軸，原點在 1 號位置最低點（左後下角）。</p>
     <a class="back" href="./index.html">回到主頁</a>
 
     <section class="layout">
       <article class="panel">
-        <h2>高度控制與立體旋轉</h2>
+        <h2>高度控制與立體圖</h2>
         <div class="control-grid" id="controlGrid"></div>
         <div class="rotate-controls">
           <button class="rotate-btn" id="leftBtn">向左轉</button>
           <button class="rotate-btn" id="rightBtn">向右轉</button>
           <button class="rotate-btn" id="upBtn">向上轉</button>
           <button class="rotate-btn" id="downBtn">向下轉</button>
-          <button class="rotate-btn" id="invertBtn">方向反轉：關</button>
           <button class="rotate-btn" id="resetBtn">重設視角</button>
         </div>
-        <div class="face-legend">
-          <span class="legend-item"><span class="swatch" style="background: var(--cube-top)"></span>上面 Top</span>
-          <span class="legend-item"><span class="swatch" style="background: var(--cube-front)"></span>前面 Front</span>
-          <span class="legend-item"><span class="swatch" style="background: var(--cube-right)"></span>右面 Right</span>
+        <div class="legend">
+          <span class="legend-item">x+（前）藍軸</span>
+          <span class="legend-item">y+（右）黃軸</span>
+          <span class="legend-item">z+（上）綠軸</span>
         </div>
-        <div class="iso-wrap" id="isoWrap">
-          <div class="scene" id="scene">
-            <div class="cube-stack" id="cubeStack"></div>
-            <div class="axis-layer">
-              <div class="floor-grid" id="floorGrid"></div>
-              <div class="axis axis-front">
-                <div class="axis-line"></div>
-                <div class="axis-label">x+（前）</div>
-              </div>
-              <div class="axis axis-right">
-                <div class="axis-line"></div>
-                <div class="axis-label">y+（右）</div>
-              </div>
-              <div class="axis axis-up">
-                <div class="axis-line"></div>
-                <div class="axis-label">z+（上）</div>
-              </div>
-              <div class="version-tag">view v3</div>
-            </div>
-          </div>
-          <svg class="guide-layer" viewBox="0 0 340 340" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <marker id="arrBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-                <path d="M0,0 L10,5 L0,10 Z" fill="#0284c7"></path>
-              </marker>
-              <marker id="arrOrange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-                <path d="M0,0 L10,5 L0,10 Z" fill="#f59e0b"></path>
-              </marker>
-              <marker id="arrGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-                <path d="M0,0 L10,5 L0,10 Z" fill="#22c55e"></path>
-              </marker>
-            </defs>
-            <line x1="170" y1="170" x2="28" y2="286" stroke="#0284c7" stroke-width="4" marker-end="url(#arrBlue)"></line>
-            <line x1="170" y1="170" x2="314" y2="246" stroke="#f59e0b" stroke-width="4" marker-end="url(#arrOrange)"></line>
-            <line x1="170" y1="170" x2="170" y2="72" stroke="#22c55e" stroke-width="4" marker-end="url(#arrGreen)"></line>
-          </svg>
-          <div class="guide-text guide-front">x+（前）</div>
-          <div class="guide-text guide-right">y+（右）</div>
-          <div class="guide-text guide-up">z+（上）</div>
-        </div>
+        <div class="stage"><div id="threeHost"></div></div>
       </article>
 
       <article class="panel">
         <h2>三視圖</h2>
         <div class="views">
           <div>
-            <p class="view-title">前視圖（顯示各欄高度）</p>
+            <p class="view-title">前視圖（沿 x 看）</p>
             <div class="grid3" id="frontView"></div>
           </div>
           <div>
-            <p class="view-title">俯視圖（只看有無方塊）</p>
+            <p class="view-title">俯視圖（沿 z 看）</p>
             <div class="grid3" id="topView"></div>
           </div>
           <div>
-            <p class="view-title">右視圖（顯示各列高度）</p>
+            <p class="view-title">右視圖（沿 y 看）</p>
             <div class="grid3" id="rightView"></div>
           </div>
         </div>
-        <p class="hint">
-          建議課堂操作：<br>
-          1. 先按幾個位置改高度，請學生先猜前視圖。<br>
-          2. 再轉動立體確認，最後看右視圖比較差異。<br>
-          3. 俯視圖只管「有沒有」，不管高度數字。<br>
-          4. 面向對照：藍色=上面、綠色=前面、橘色=右面。<br>
-          5. 座標約定：前後=x 軸、左右=y 軸、上下=z 軸，左後下角為原點。
-        </p>
       </article>
     </section>
   </main>
 
-  <script>
-    const cubeStack = document.getElementById("cubeStack");
-    const frontView = document.getElementById("frontView");
-    const topView = document.getElementById("topView");
-    const rightView = document.getElementById("rightView");
-    const controlGrid = document.getElementById("controlGrid");
-    const scene = document.getElementById("scene");
-    const isoWrap = document.getElementById("isoWrap");
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.165.0/examples/jsm/controls/OrbitControls.js';
 
     const heights = [
       [3, 2, 1],
       [2, 2, 1],
       [1, 1, 1]
     ];
-    const controlButtons = [];
-    const floorGrid = document.getElementById("floorGrid");
 
-    let rotX = 62;
-    let rotY = -32;
-    let targetX = rotX;
-    let targetY = rotY;
-    let velX = 0;
-    let velY = 0;
-    let inverted = false;
+    const controlGrid = document.getElementById('controlGrid');
+    const frontView = document.getElementById('frontView');
+    const topView = document.getElementById('topView');
+    const rightView = document.getElementById('rightView');
+    const host = document.getElementById('threeHost');
 
-    function applyRotation() {
-      scene.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    host.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf3f4f6);
+
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 1000);
+    camera.position.set(-10, -13, 10);
+    camera.up.set(0, 0, 1);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.target.set(3.2, 3.2, 2.2);
+
+    const lightA = new THREE.DirectionalLight(0xffffff, 0.95);
+    lightA.position.set(8, -10, 16);
+    scene.add(lightA);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+
+    // 原點 O: 1號格最低點（左後下角）= (0,0,0)
+    const originDot = new THREE.Mesh(
+      new THREE.SphereGeometry(0.14, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0x111827 })
+    );
+    originDot.position.set(0, 0, 0);
+    scene.add(originDot);
+
+    const axisLen = 8.2;
+    scene.add(new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), axisLen, 0x0284c7, 0.5, 0.28));
+    scene.add(new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), axisLen, 0xf59e0b, 0.5, 0.28));
+    scene.add(new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), 6.5, 0x22c55e, 0.45, 0.24));
+
+    function labelSprite(text, color = '#0f172a') {
+      const c = document.createElement('canvas');
+      c.width = 220; c.height = 70;
+      const g = c.getContext('2d');
+      g.clearRect(0, 0, c.width, c.height);
+      g.fillStyle = color;
+      g.font = 'bold 40px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+      g.fillText(text, 6, 48);
+      const tex = new THREE.CanvasTexture(c);
+      const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+      const sp = new THREE.Sprite(mat);
+      sp.scale.set(2.8, 0.9, 1);
+      return sp;
     }
 
-    function clampX(v) {
-      return Math.max(10, Math.min(88, v));
+    const lx = labelSprite('x+（前）', '#0284c7'); lx.position.set(axisLen + 0.8, 0, 0.2); scene.add(lx);
+    const ly = labelSprite('y+（右）', '#b45309'); ly.position.set(0, axisLen + 0.8, 0.2); scene.add(ly);
+    const lz = labelSprite('z+（上）', '#15803d'); lz.position.set(0, 0, 7.2); scene.add(lz);
+    const lo = labelSprite('O（1號最低點）', '#111827'); lo.position.set(1.9, 0.5, 0.5); scene.add(lo);
+
+    const floor = new THREE.Group();
+    scene.add(floor);
+    for (let i = 0; i <= 3; i++) {
+      const mat = new THREE.LineBasicMaterial({ color: 0x9ca3af });
+      const g1 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i * 2, 0, 0), new THREE.Vector3(i * 2, 6, 0)]);
+      const g2 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, i * 2, 0), new THREE.Vector3(6, i * 2, 0)]);
+      floor.add(new THREE.Line(g1, mat));
+      floor.add(new THREE.Line(g2, mat));
     }
 
-    function smoothLoop() {
-      // 拖曳放手後的慣性
-      if (!dragging) {
-        targetY += velY;
-        targetX = clampX(targetX + velX);
-        velX *= 0.9;
-        velY *= 0.9;
-        if (Math.abs(velX) < 0.001) velX = 0;
-        if (Math.abs(velY) < 0.001) velY = 0;
-      }
+    const cubeGroup = new THREE.Group();
+    scene.add(cubeGroup);
 
-      // 阻尼補間，讓旋轉更順
-      rotX += (targetX - rotX) * 0.18;
-      rotY += (targetY - rotY) * 0.18;
-      applyRotation();
-      requestAnimationFrame(smoothLoop);
-    }
+    const geo = new THREE.BoxGeometry(2, 2, 2);
+    const mats = [
+      new THREE.MeshStandardMaterial({ color: 0xfde047 }),
+      new THREE.MeshStandardMaterial({ color: 0xfde047 }),
+      new THREE.MeshStandardMaterial({ color: 0x22c55e }),
+      new THREE.MeshStandardMaterial({ color: 0x0284c7 }),
+      new THREE.MeshStandardMaterial({ color: 0xef4444 }),
+      new THREE.MeshStandardMaterial({ color: 0xb91c1c })
+    ];
 
-    function buildControls() {
-      controlGrid.innerHTML = "";
+    function drawCells(target, fn) {
+      target.innerHTML = '';
       for (let r = 0; r < 3; r++) {
         for (let c = 0; c < 3; c++) {
-          const n = r * 3 + c + 1;
-          const btn = document.createElement("button");
-          btn.className = "pos-btn";
-          btn.dataset.r = String(r);
-          btn.dataset.c = String(c);
-          btn.textContent = `${n}：${heights[r][c]}層`;
-          btn.addEventListener("click", () => {
-            cycleHeightByIndex(n);
-          });
-          controlGrid.appendChild(btn);
-          controlButtons[n] = btn;
-        }
-      }
-    }
-
-    function buildFloorGrid() {
-      // 地板最底層直接顯示 1~9
-      const labels = [
-        "1", "2", "3",
-        "4", "5", "6",
-        "7", "8", "9"
-      ];
-      floorGrid.innerHTML = "";
-      labels.forEach((txt) => {
-        const cell = document.createElement("div");
-        cell.className = "floor-cell";
-        cell.textContent = txt;
-        floorGrid.appendChild(cell);
-      });
-    }
-
-    function cycleHeightByIndex(n) {
-      if (n < 1 || n > 9) return;
-      const idx = n - 1;
-      const r = Math.floor(idx / 3);
-      const c = idx % 3;
-      heights[r][c] = heights[r][c] === 3 ? 0 : heights[r][c] + 1;
-      const btn = controlButtons[n];
-      if (btn) btn.textContent = `${n}：${heights[r][c]}層`;
-      renderAll();
-    }
-
-    function renderCubes() {
-      cubeStack.innerHTML = "";
-      const step = 56;
-      const originX = 70;
-      const originY = 56;
-      for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 3; c++) {
-          const h = heights[r][c];
-          for (let z = 0; z < h; z++) {
-            const cube = document.createElement("div");
-            cube.className = "mini-cube";
-            cube.style.left = `${originX + c * step}px`;
-            cube.style.top = `${originY + r * step}px`;
-            cube.style.transform = `translateZ(${z * step}px)`;
-
-            const faces = ["top", "bottom", "front", "back", "left", "right"];
-            faces.forEach((name) => {
-              const face = document.createElement("div");
-              face.className = `face ${name}`;
-              cube.appendChild(face);
-            });
-            cubeStack.appendChild(cube);
+          const d = document.createElement('div');
+          d.className = 'cell';
+          const v = fn(r, c);
+          if (v > 0) {
+            d.classList.add('filled');
+            d.textContent = String(v);
           }
-        }
-      }
-    }
-
-    function drawView(target, fillFn) {
-      target.innerHTML = "";
-      for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 3; c++) {
-          const cell = document.createElement("div");
-          cell.className = "cell";
-          const value = fillFn(r, c);
-          if (value > 0) {
-            cell.classList.add("filled");
-            cell.textContent = String(value);
-          } else {
-            cell.textContent = "";
-          }
-          target.appendChild(cell);
+          target.appendChild(d);
         }
       }
     }
 
     function renderViews() {
-      // 前視圖：每一欄取最大高度，往上堆疊
-      const frontHeights = [0, 0, 0];
-      for (let c = 0; c < 3; c++) {
-        frontHeights[c] = Math.max(heights[0][c], heights[1][c], heights[2][c]);
-      }
-      drawView(frontView, (r, c) => {
-        const levelFromBottom = 3 - r;
-        return frontHeights[c] >= levelFromBottom ? 1 : 0;
+      // front: fixed y,z with max over x
+      drawCells(frontView, (r, c) => {
+        const zNeed = 3 - r;
+        const y = c;
+        const h = Math.max(heights[0][y], heights[1][y], heights[2][y]);
+        return h >= zNeed ? 1 : 0;
       });
-
-      // 俯視圖：該格有方塊即填滿
-      drawView(topView, (r, c) => (heights[r][c] > 0 ? 1 : 0));
-
-      // 右視圖：每一列取最大高度，往上堆疊
-      const rightHeights = [0, 0, 0];
-      for (let r = 0; r < 3; r++) {
-        rightHeights[r] = Math.max(heights[r][0], heights[r][1], heights[r][2]);
-      }
-      drawView(rightView, (r, c) => {
-        const levelFromBottom = 3 - r;
-        const rowFromFront = 2 - c;
-        return rightHeights[rowFromFront] >= levelFromBottom ? 1 : 0;
+      // top: x-y occupancy, row back->front
+      drawCells(topView, (r, c) => (heights[r][c] > 0 ? 1 : 0));
+      // right: fixed x,z with max over y
+      drawCells(rightView, (r, c) => {
+        const zNeed = 3 - r;
+        const x = c;
+        const h = Math.max(heights[x][0], heights[x][1], heights[x][2]);
+        return h >= zNeed ? 1 : 0;
       });
     }
 
-    function renderAll() {
-      renderCubes();
+    function renderCubes() {
+      cubeGroup.clear();
+      for (let x = 0; x < 3; x++) {
+        for (let y = 0; y < 3; y++) {
+          const h = heights[x][y];
+          for (let z = 0; z < h; z++) {
+            const m = new THREE.Mesh(geo, mats);
+            m.position.set(x * 2 + 1, y * 2 + 1, z * 2 + 1);
+            cubeGroup.add(m);
+          }
+        }
+      }
       renderViews();
     }
 
-    document.getElementById("leftBtn").addEventListener("click", () => {
-      targetY += inverted ? 15 : -15;
-    });
-    document.getElementById("rightBtn").addEventListener("click", () => {
-      targetY += inverted ? -15 : 15;
-    });
-    document.getElementById("upBtn").addEventListener("click", () => {
-      targetX = clampX(targetX + (inverted ? 6 : -6));
-    });
-    document.getElementById("downBtn").addEventListener("click", () => {
-      targetX = clampX(targetX + (inverted ? -6 : 6));
-    });
-    document.getElementById("invertBtn").addEventListener("click", () => {
-      inverted = !inverted;
-      document.getElementById("invertBtn").textContent = `方向反轉：${inverted ? "開" : "關"}`;
-    });
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      targetX = 58;
-      targetY = 0;
-      velX = 0;
-      velY = 0;
-    });
-
-    let dragging = false;
-    let lastX = 0;
-    let lastY = 0;
-
-    function startDrag(x, y) {
-      dragging = true;
-      isoWrap.classList.add("dragging");
-      lastX = x;
-      lastY = y;
-      velX = 0;
-      velY = 0;
+    function buildControls() {
+      controlGrid.innerHTML = '';
+      for (let x = 0; x < 3; x++) {
+        for (let y = 0; y < 3; y++) {
+          const n = x * 3 + y + 1;
+          const btn = document.createElement('button');
+          btn.className = 'pos-btn';
+          btn.textContent = `${n}：${heights[x][y]}層`;
+          btn.addEventListener('click', () => {
+            heights[x][y] = heights[x][y] === 3 ? 0 : heights[x][y] + 1;
+            btn.textContent = `${n}：${heights[x][y]}層`;
+            renderCubes();
+          });
+          controlGrid.appendChild(btn);
+        }
+      }
     }
 
-    function moveDrag(x, y) {
-      if (!dragging) return;
-      const dx = x - lastX;
-      const dy = y - lastY;
-      lastX = x;
-      lastY = y;
-      const sign = inverted ? -1 : 1;
-      const deltaY = dx * 0.65 * sign;
-      const deltaX = dy * 0.4 * sign;
-      targetY += deltaY;
-      targetX = clampX(targetX + deltaX);
-      velY = deltaY * 0.16;
-      velX = deltaX * 0.16;
+    function resize() {
+      const w = host.clientWidth;
+      const h = host.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
     }
 
-    function endDrag() {
-      dragging = false;
-      isoWrap.classList.remove("dragging");
+    function resetView() {
+      camera.position.set(-10, -13, 10);
+      controls.target.set(3.2, 3.2, 2.2);
+      controls.update();
     }
 
-    // Pointer Events
-    isoWrap.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      startDrag(e.clientX, e.clientY);
-      if (isoWrap.setPointerCapture) isoWrap.setPointerCapture(e.pointerId);
+    document.getElementById('leftBtn').addEventListener('click', () => { scene.rotation.z += Math.PI / 12; });
+    document.getElementById('rightBtn').addEventListener('click', () => { scene.rotation.z -= Math.PI / 12; });
+    document.getElementById('upBtn').addEventListener('click', () => { camera.position.z += 1; });
+    document.getElementById('downBtn').addEventListener('click', () => { camera.position.z -= 1; });
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      scene.rotation.set(0, 0, 0);
+      resetView();
     });
-    window.addEventListener("pointermove", (e) => moveDrag(e.clientX, e.clientY));
-    window.addEventListener("pointerup", endDrag);
-    window.addEventListener("pointercancel", endDrag);
 
-    // Mouse fallback
-    isoWrap.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      startDrag(e.clientX, e.clientY);
-    });
-    window.addEventListener("mousemove", (e) => moveDrag(e.clientX, e.clientY));
-    window.addEventListener("mouseup", endDrag);
-
-    // Touch fallback
-    isoWrap.addEventListener("touchstart", (e) => {
-      const t = e.touches[0];
-      if (!t) return;
-      startDrag(t.clientX, t.clientY);
-    }, { passive: false });
-    isoWrap.addEventListener("touchmove", (e) => {
-      const t = e.touches[0];
-      if (!t) return;
-      e.preventDefault();
-      moveDrag(t.clientX, t.clientY);
-    }, { passive: false });
-    window.addEventListener("touchend", endDrag, { passive: false });
-
-    window.addEventListener("keydown", (e) => {
-      if (e.ctrlKey || e.altKey || e.metaKey) return;
-      const n = Number(e.key);
-      if (!Number.isInteger(n) || n < 1 || n > 9) return;
-      e.preventDefault();
-      cycleHeightByIndex(n);
-    });
+    window.addEventListener('resize', resize);
 
     buildControls();
-    buildFloorGrid();
-    applyRotation();
-    requestAnimationFrame(smoothLoop);
-    renderAll();
+    renderCubes();
+    resize();
+    resetView();
+
+    function tick() {
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
   </script>
 </body>
 </html>
