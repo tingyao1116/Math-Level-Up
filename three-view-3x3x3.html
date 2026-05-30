@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -172,8 +172,8 @@
     }
     .axis {
       position: absolute;
-      left: 170px;
-      top: 170px;
+      left: 70px;
+      top: 56px;
       transform-style: preserve-3d;
     }
     .axis-line {
@@ -201,12 +201,21 @@
       text-shadow: 0 1px 1px rgba(255, 255, 255, 0.65);
       white-space: nowrap;
     }
-    .axis-front, .axis-right, .axis-up { display: none; }
+    .axis-front, .axis-right, .axis-up { display: block; }
+    .axis-front .axis-line { color: #0284c7; background: #0284c7; transform: rotate(140deg); width: 120px; }
+    .axis-right .axis-line { color: #f59e0b; background: #f59e0b; transform: rotate(28deg); width: 120px; }
+    .axis-up .axis-line { color: #22c55e; background: #22c55e; transform: rotate(-90deg); width: 95px; }
+    .axis-front .axis-label { left: -96px; top: 72px; }
+    .axis-right .axis-label { left: 118px; top: 48px; }
+    .axis-up .axis-label { left: -8px; top: -104px; }
     .guide-layer {
       position: absolute;
       inset: 0;
       pointer-events: none;
       z-index: 4;
+      transform-style: preserve-3d;
+      transform-origin: 50% 50%;
+      display: none;
     }
     .guide-text {
       position: absolute;
@@ -214,6 +223,10 @@
       font-weight: 900;
       color: #0f172a;
       text-shadow: 0 1px 1px rgba(255,255,255,0.75);
+      transform-style: preserve-3d;
+      transform-origin: 50% 50%;
+      z-index: 4;
+      display: none;
     }
     .guide-front { left: 68px; bottom: 12px; }
     .guide-right { right: 26px; top: 202px; }
@@ -305,15 +318,15 @@
               <div class="floor-grid" id="floorGrid"></div>
               <div class="axis axis-front">
                 <div class="axis-line"></div>
-                <div class="axis-label">前方</div>
+                <div class="axis-label">x+（前）</div>
               </div>
               <div class="axis axis-right">
                 <div class="axis-line"></div>
-                <div class="axis-label">右方</div>
+                <div class="axis-label">y+（右）</div>
               </div>
               <div class="axis axis-up">
                 <div class="axis-line"></div>
-                <div class="axis-label">上方</div>
+                <div class="axis-label">z+（上）</div>
               </div>
               <div class="version-tag">view v3</div>
             </div>
@@ -334,9 +347,9 @@
             <line x1="170" y1="170" x2="314" y2="246" stroke="#f59e0b" stroke-width="4" marker-end="url(#arrOrange)"></line>
             <line x1="170" y1="170" x2="170" y2="72" stroke="#22c55e" stroke-width="4" marker-end="url(#arrGreen)"></line>
           </svg>
-          <div class="guide-text guide-front">前方</div>
-          <div class="guide-text guide-right">右方</div>
-          <div class="guide-text guide-up">上方</div>
+          <div class="guide-text guide-front">x+（前）</div>
+          <div class="guide-text guide-right">y+（右）</div>
+          <div class="guide-text guide-up">z+（上）</div>
         </div>
       </article>
 
@@ -361,7 +374,8 @@
           1. 先按幾個位置改高度，請學生先猜前視圖。<br>
           2. 再轉動立體確認，最後看右視圖比較差異。<br>
           3. 俯視圖只管「有沒有」，不管高度數字。<br>
-          4. 面向對照：藍色=上面、綠色=前面、橘色=右面。
+          4. 面向對照：藍色=上面、綠色=前面、橘色=右面。<br>
+          5. 座標約定：前後=x 軸、左右=y 軸、上下=z 軸，左後下角為原點。
         </p>
       </article>
     </section>
