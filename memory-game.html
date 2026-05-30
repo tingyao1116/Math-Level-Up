@@ -282,6 +282,7 @@
       showing = true;
       let i = 0;
       displayEl.textContent = sequence[i];
+      speakPrompt(sequence[i]);
       updateStatus(`記憶中：第 ${i + 1} / ${sequence.length} 個`);
       clearTimer();
       timer = setInterval(() => {
@@ -295,6 +296,7 @@
           return;
         }
         displayEl.textContent = sequence[i];
+        speakPrompt(sequence[i]);
         updateStatus(`記憶中：第 ${i + 1} / ${sequence.length} 個`);
       }, showIntervalMs);
     }
@@ -438,6 +440,16 @@
       setTimeout(() => jumpscareEl.classList.remove("show"), 2500);
     }
 
+    function speakPrompt(text) {
+      if (!("speechSynthesis" in window)) return;
+      const utter = new SpeechSynthesisUtterance(String(text));
+      utter.lang = "zh-TW";
+      utter.rate = 0.95;
+      utter.pitch = 1;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    }
+
     function startRound() {
       ended = false;
       answerIndex = 0;
@@ -451,6 +463,7 @@
 
     function resetGame() {
       clearTimer();
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       currentMode = modes[modeSelectEl.value];
       level = Number(startLevelEl.value);
       showIntervalMs = Number(intervalSelectEl.value) * 1000;

@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>數學小遊戲主頁</title>
+  <title>數學小遊戲教學首頁</title>
   <style>
     :root {
       --bg1: #f0f9ff;
@@ -25,7 +25,7 @@
       padding: 24px;
     }
     .wrap {
-      max-width: 980px;
+      max-width: 1000px;
       margin: 0 auto;
       background: var(--card);
       border: 1px solid var(--line);
@@ -53,23 +53,30 @@
 </head>
 <body>
   <main class="wrap">
-    <h1>數學小遊戲主頁</h1>
-    <p class="lead">這裡是你後續擴充遊戲的入口。每個遊戲獨立成一個副頁，主頁只負責導覽，方便老師上課快速切換。</p>
+    <h1>數學小遊戲教學首頁</h1>
+    <p class="lead">這裡收集可直接上課展示與學生自學使用的互動頁。每一頁都能操作、觀察、驗證，幫助建立觀念與解題連結。</p>
 
-    <h2 class="section-title">遊戲入口</h2>
+    <h2 class="section-title">互動工具</h2>
     <section class="grid">
       <article class="card">
-        <div class="badge">已完成</div>
-        <h3>記憶挑戰小遊戲</h3>
-        <p>三種模式、可選起始關卡、失敗音效與驚嚇畫面。</p>
-        <a class="btn" href="./memory-game.html">進入遊戲</a>
+        <div class="badge">記憶訓練</div>
+        <h3>記憶翻牌遊戲</h3>
+        <p>訓練專注與短期記憶，適合課堂暖身或課後放鬆。</p>
+        <a class="btn" href="./memory-game.html">開始遊戲</a>
       </article>
 
       <article class="card">
-        <div class="badge">已完成</div>
-        <h3>3×3×3 立體三視圖</h3>
-        <p>包含立體示意與前視圖、俯視圖、右視圖，適合課堂講解三視圖觀念。</p>
-        <a class="btn" href="./three-view-3x3x3.html">開啟三視圖頁面</a>
+        <div class="badge">空間概念</div>
+        <h3>3×3×3 三視圖互動</h3>
+        <p>調整各格高度，觀察立體圖與前視圖、俯視圖、右視圖的對應。</p>
+        <a class="btn" href="./three-view-3x3x3.html">開啟三視圖</a>
+      </article>
+
+      <article class="card">
+        <div class="badge">解析幾何</div>
+        <h3>兩點求直線方程式</h3>
+        <p>可由兩點求方程式，也可由方程式畫直線，並列出整數解表格。</p>
+        <a class="btn" href="./line-from-points.html">開啟直線工具</a>
       </article>
     </section>
   </main>
