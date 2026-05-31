@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>四邊形性質全對應練習</title>
+  <style>
+    :root {
+      --bg-a: #f0f9ff;
+      --bg-b: #fdf2f8;
+      --ink: #0f172a;
+      --line: #cbd5e1;
+      --accent: #0f766e;
+      --ok: #15803d;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--bg-a), var(--bg-b));
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .app {
+      max-width: 1120px;
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.1);
+      padding: 20px;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 34px); }
+    .subtitle { margin: 0 0 14px; line-height: 1.7; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    button, select, a.btn {
+      font: inherit;
+      border-radius: 10px;
+      padding: 9px 12px;
+    }
+    select, button {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+    }
+    .btn-go {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-go:hover { background: #115e59; }
+    .btn-link {
+      text-decoration: none;
+      border: 1px solid #cbd5e1;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .btn-ghost {
+      border: 1px solid #94a3b8;
+      background: #fff;
+      color: #0f172a;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .status {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      line-height: 1.6;
+      font-weight: 700;
+    }
+    .question {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .question-title {
+      font-size: 14px;
+      color: #334155;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .question-body {
+      font-size: clamp(20px, 3vw, 30px);
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+    .board-title {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .card {
+      border: 2px solid #bfdbfe;
+      border-radius: 10px;
+      background: #fff;
+      color: #0f172a;
+      padding: 10px;
+      min-height: 68px;
+      text-align: left;
+      line-height: 1.45;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .card.selected {
+      background: #dbeafe;
+      border-color: #2563eb;
+    }
+    .card.correct {
+      background: #f0fdf4;
+      border-color: #16a34a;
+      color: #14532d;
+    }
+    .card.correct-missed {
+      background: #ecfeff;
+      border-color: #0891b2;
+      color: #0f172a;
+      border-style: dashed;
+    }
+    .card.wrong {
+      background: #fef2f2;
+      border-color: #dc2626;
+      color: #7f1d1d;
+    }
+    .hint {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+      line-height: 1.7;
+      color: #334155;
+    }
+    .matrix-wrap {
+      margin-top: 12px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 12px;
+    }
+    .matrix-wrap[hidden] { display: none; }
+    .matrix-scroll { overflow-x: auto; }
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      background: #fff;
+    }
+    .matrix th, .matrix td {
+      border: 1px solid #cbd5e1;
+      padding: 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .matrix th {
+      background: #f8fafc;
+      font-weight: 800;
+    }
+    .matrix td:first-child, .matrix th:first-child {
+      text-align: left;
+      min-width: 210px;
+    }
+    .tick { color: #15803d; font-weight: 900; }
+    .cross { color: #94a3b8; }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>四邊形性質全對應練習</h1>
+    <p class="subtitle">
+      不是一對一翻牌，而是「全對應」：題目可能是圖形，也可能是性質，你要把所有正確答案一次選齊。
+    </p>
+
+    <div class="toolbar">
+      <label for="modeSelect">題型：</label>
+      <select id="modeSelect">
+        <option value="shape_to_props">圖形 → 選所有符合性質</option>
+        <option value="prop_to_shapes">性質 → 選所有符合圖形</option>
+        <option value="mixed">混合隨機</option>
+      </select>
+      <button class="btn-go" id="checkBtn">檢查答案</button>
+      <button class="btn-go" id="nextBtn">下一題</button>
+      <button class="btn-ghost" id="toggleMatrixBtn" type="button">顯示總對照表</button>
+      <a class="btn-link btn" href="./index.html">回首頁</a>
+    </div>
+
+    <div class="status" id="statusBox">第 1 題｜請先選答案再按「檢查答案」</div>
+
+    <section class="question">
+      <div class="question-title" id="questionTitle"></div>
+      <div class="question-body" id="questionBody"></div>
+    </section>
+
+    <h2 class="board-title" id="boardTitle"></h2>
+    <section class="board" id="board"></section>
+
+    <section class="hint">
+      <strong>教學提醒：</strong>
+      1. 先抓「必有性質」再作答。<br>
+      2. 小心「只一組」和「二組」的差別。<br>
+      3. 菱形的鄰角通常是互補，不是相等（除非是正方形）。<br>
+      4. 箏形與等腰梯形最容易和平行四邊形家族混淆。
+    </section>
+
+    <section class="matrix-wrap" id="matrixWrap" hidden>
+      <h3 style="margin:0 0 8px;">特性 × 圖形總對照表（供老師核對）</h3>
+      <div class="matrix-scroll">
+        <table class="matrix" id="matrixTable"></table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const shapes = ["正方形", "矩形", "菱形", "平行四邊形", "等腰梯形", "箏形"];
+
+    const props = {
+      A: "A. 四邊等長",
+      B: "B. 二組對邊等長",
+      C: "C. 只一組對邊等長",
+      D: "D. 二組鄰邊等長",
+      E: "E. 二組對邊平行",
+      F: "F. 只一組對邊平行",
+      G: "G. 四角垂直",
+      H: "H. 二組對角相等",
+      I: "I. 只一組對角相等",
+      J: "J. 二組鄰角相等",
+      K: "K. 對角線互相平分",
+      L: "L. 對角線互相垂直",
+      M: "M. 對角線等長",
+      N: "N. 二對角線為角平分線",
+      O: "O. 只一對角線為角平分線"
+    };
+
+    // shape -> property codes
+    const shapeToPropCodes = {
+      正方形: ["A", "B", "D", "E", "G", "H", "J", "K", "L", "M", "N"],
+      矩形: ["B", "E", "G", "H", "J", "K", "M"],
+      菱形: ["A", "B", "D", "E", "H", "K", "L", "N"],
+      平行四邊形: ["B", "E", "H", "K"],
+      等腰梯形: ["C", "F", "J", "M"],
+      箏形: ["D", "I", "L", "O"]
+    };
+
+    const modeSelectEl = document.getElementById("modeSelect");
+    const checkBtnEl = document.getElementById("checkBtn");
+    const nextBtnEl = document.getElementById("nextBtn");
+    const toggleMatrixBtnEl = document.getElementById("toggleMatrixBtn");
+    const statusBoxEl = document.getElementById("statusBox");
+    const questionTitleEl = document.getElementById("questionTitle");
+    const questionBodyEl = document.getElementById("questionBody");
+    const boardTitleEl = document.getElementById("boardTitle");
+    const boardEl = document.getElementById("board");
+    const matrixWrapEl = document.getElementById("matrixWrap");
+    const matrixTableEl = document.getElementById("matrixTable");
+
+    let round = 1;
+    let currentQuestion = null;
+    let selected = new Set();
+    let checked = false;
+
+    function sample(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function sorted(arr) {
+      return [...arr].sort((a, b) => a.localeCompare(b, "zh-Hant"));
+    }
+
+    function buildPropToShapesMap() {
+      const map = {};
+      Object.keys(props).forEach((code) => { map[code] = []; });
+      shapes.forEach((shape) => {
+        shapeToPropCodes[shape].forEach((code) => map[code].push(shape));
+      });
+      return map;
+    }
+
+    const propToShapes = buildPropToShapesMap();
+
+    function renderMatrixTable() {
+      const shapeHeaders = shapes.map((s) => `<th>${s}</th>`).join("");
+      const rows = Object.keys(props).map((code) => {
+        const cells = shapes.map((shape) => {
+          const has = shapeToPropCodes[shape].includes(code);
+          return `<td>${has ? '<span class="tick">✓</span>' : '<span class="cross">-</span>'}</td>`;
+        }).join("");
+        return `<tr><th>${props[code]}</th>${cells}</tr>`;
+      }).join("");
+      matrixTableEl.innerHTML = `<thead><tr><th>特性 \\ 圖形</th>${shapeHeaders}</tr></thead><tbody>${rows}</tbody>`;
+    }
+
+    function setStatus(text, type = "") {
+      statusBoxEl.className = `status ${type}`.trim();
+      statusBoxEl.textContent = text;
+    }
+
+    function getMode() {
+      const mode = modeSelectEl.value;
+      if (mode === "mixed") return Math.random() < 0.5 ? "shape_to_props" : "prop_to_shapes";
+      return mode;
+    }
+
+    function makeQuestion() {
+      const mode = getMode();
+      if (mode === "shape_to_props") {
+        const shape = sample(shapes);
+        return {
+          mode,
+          promptTitle: "題目圖形",
+          promptBody: shape,
+          options: Object.keys(props).map((code) => ({ id: code, label: props[code] })),
+          answers: new Set(shapeToPropCodes[shape]),
+          boardTitle: "請選出此圖形的所有正確性質（可複選）"
+        };
+      }
+
+      const code = sample(Object.keys(props));
+      return {
+        mode,
+        promptTitle: "題目性質",
+        promptBody: props[code],
+        options: shapes.map((shape) => ({ id: shape, label: shape })),
+        answers: new Set(propToShapes[code]),
+        boardTitle: "請選出符合此性質的所有圖形（可複選）"
+      };
+    }
+
+    function renderQuestion() {
+      questionTitleEl.textContent = currentQuestion.promptTitle;
+      questionBodyEl.textContent = currentQuestion.promptBody;
+      boardTitleEl.textContent = currentQuestion.boardTitle;
+      boardEl.innerHTML = "";
+      selected = new Set();
+      checked = false;
+
+      currentQuestion.options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "card";
+        btn.dataset.id = opt.id;
+        btn.textContent = opt.label;
+        btn.addEventListener("click", () => toggleSelect(opt.id));
+        boardEl.appendChild(btn);
+      });
+    }
+
+    function toggleSelect(id) {
+      if (checked) return;
+      if (selected.has(id)) selected.delete(id);
+      else selected.add(id);
+      updateSelectedView();
+    }
+
+    function updateSelectedView() {
+      boardEl.querySelectorAll(".card").forEach((el) => {
+        const id = el.dataset.id;
+        el.classList.toggle("selected", selected.has(id));
+      });
+    }
+
+    function setsEqual(a, b) {
+      if (a.size !== b.size) return false;
+      for (const x of a) if (!b.has(x)) return false;
+      return true;
+    }
+
+    function checkAnswer() {
+      if (checked) return;
+      checked = true;
+
+      const isAllCorrect = setsEqual(selected, currentQuestion.answers);
+      const missed = [...currentQuestion.answers].filter((id) => !selected.has(id));
+      const extra = [...selected].filter((id) => !currentQuestion.answers.has(id));
+      boardEl.querySelectorAll(".card").forEach((el) => {
+        const id = el.dataset.id;
+        const inAnswer = currentQuestion.answers.has(id);
+        const inSelected = selected.has(id);
+        if (inAnswer && inSelected) el.classList.add("correct");
+        if (inAnswer && !inSelected) el.classList.add("correct-missed");
+        if (inSelected && !inAnswer) el.classList.add("wrong");
+      });
+
+      if (isAllCorrect) {
+        setStatus(`第 ${round} 題答對，全部選齊。按「下一題」繼續。`, "ok");
+      } else {
+        const missedText = missed.length ? missed.join("、") : "無";
+        const extraText = extra.length ? extra.join("、") : "無";
+        setStatus(`第 ${round} 題未全對。少選：${missedText}；多選：${extraText}`, "bad");
+      }
+    }
+
+    function nextQuestion() {
+      round += 1;
+      currentQuestion = makeQuestion();
+      setStatus(`第 ${round} 題｜請先選答案再按「檢查答案」`);
+      renderQuestion();
+    }
+
+    checkBtnEl.addEventListener("click", checkAnswer);
+    nextBtnEl.addEventListener("click", nextQuestion);
+    modeSelectEl.addEventListener("change", () => {
+      round = 1;
+      currentQuestion = makeQuestion();
+      setStatus("第 1 題｜請先選答案再按「檢查答案」");
+      renderQuestion();
+    });
+
+    toggleMatrixBtnEl.addEventListener("click", () => {
+      const willShow = matrixWrapEl.hasAttribute("hidden");
+      if (willShow) {
+        renderMatrixTable();
+        matrixWrapEl.removeAttribute("hidden");
+        toggleMatrixBtnEl.textContent = "隱藏總對照表";
+      } else {
+        matrixWrapEl.setAttribute("hidden", "");
+        toggleMatrixBtnEl.textContent = "顯示總對照表";
+      }
+    });
+
+    currentQuestion = makeQuestion();
+    renderQuestion();
+  </script>
+</body>
+</html>

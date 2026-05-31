@@ -1,0 +1,542 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>迷宮路徑挑戰（可反向）</title>
+  <style>
+    :root {
+      --bg1: #ecfeff;
+      --bg2: #eef2ff;
+      --card: #ffffff;
+      --line: #dbe4ef;
+      --text: #0f172a;
+      --sub: #475569;
+      --brand: #0f766e;
+      --brand-dark: #115e59;
+      --good: #15803d;
+      --warn: #b45309;
+      --start: #0369a1;
+      --end: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(145deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .app {
+      max-width: 1050px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 40px); }
+    .lead { margin: 0 0 14px; color: var(--sub); line-height: 1.7; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    select, button {
+      font-family: inherit;
+      font-size: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+    button {
+      cursor: pointer;
+      color: #fff;
+      border-color: var(--brand);
+      background: var(--brand);
+      font-weight: 700;
+    }
+    button:hover { background: var(--brand-dark); }
+    .status {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 12px;
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+    .status .ok { color: var(--good); font-weight: 700; }
+    .status .warn { color: var(--warn); font-weight: 700; }
+    .layout {
+      display: grid;
+      grid-template-columns: 1.25fr 0.9fr;
+      gap: 14px;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+    canvas {
+      width: 100%;
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      touch-action: none;
+      display: block;
+    }
+    h2 { margin: 0 0 8px; font-size: 22px; }
+    ul { margin: 8px 0 0 18px; padding: 0; line-height: 1.8; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--sub);
+      font-size: 14px;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      border-radius: 999px;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    .start { background: var(--start); }
+    .end { background: var(--end); }
+    .trail { background: #f59e0b; }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>迷宮路徑挑戰（可反向）</h1>
+    <p class="lead">從起點拖曳到終點，途中不能穿牆。可選難易程度，也可一鍵反向改成「從出口回到入口」，適合課堂競賽與學生自學練習。</p>
+
+    <div class="toolbar">
+      <label for="difficulty">難易程度：</label>
+      <select id="difficulty">
+        <option value="easy">基礎（12 × 12）</option>
+        <option value="medium" selected>進階（18 × 18）</option>
+        <option value="hard">挑戰（26 × 26）</option>
+      </select>
+      <button id="newMazeBtn" type="button">產生新迷宮</button>
+      <button id="reverseBtn" type="button">切換正向 / 反向</button>
+      <button id="clearTrailBtn" type="button">清除路徑</button>
+    </div>
+
+    <section class="status" id="statusBox" aria-live="polite"></section>
+
+    <div class="layout">
+      <section class="panel">
+        <canvas id="mazeCanvas" width="760" height="760" aria-label="迷宮互動畫布"></canvas>
+        <div class="legend">
+          <span><span class="dot start"></span>起點</span>
+          <span><span class="dot end"></span>終點</span>
+          <span><span class="dot trail"></span>已走路徑</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>教學提示</h2>
+        <ul>
+          <li>先觀察大方向：入口與出口在左上、右下，先規劃主幹再微調。</li>
+          <li>錯誤示範：學生常急著鑽小巷，建議先找「不回頭」的主通道。</li>
+          <li>反向模式能訓練逆推能力，等同把已知終點當起點規劃。</li>
+          <li>課堂分層：基礎先求成功率，進階求時間，挑戰可限制回頭次數。</li>
+          <li>可用手指（平板/手機）或滑鼠（桌機）直接拖曳。</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById("mazeCanvas");
+      const ctx = canvas.getContext("2d");
+      const difficultyEl = document.getElementById("difficulty");
+      const statusBox = document.getElementById("statusBox");
+      const newMazeBtn = document.getElementById("newMazeBtn");
+      const reverseBtn = document.getElementById("reverseBtn");
+      const clearTrailBtn = document.getElementById("clearTrailBtn");
+
+      const configs = {
+        easy: { cols: 12, rows: 12 },
+        medium: { cols: 18, rows: 18 },
+        hard: { cols: 26, rows: 26 }
+      };
+
+      let maze = null;
+      let cellSize = 28;
+      let isPointerDown = false;
+      let isCompleted = false;
+      let directionReversed = false;
+      let currentPath = [];
+      let timerStartMs = null;
+      let elapsedMs = 0;
+      let timerId = null;
+
+      function formatElapsed(ms) {
+        return (ms / 1000).toFixed(1);
+      }
+
+      function startTimer() {
+        if (timerStartMs !== null) return;
+        timerStartMs = Date.now() - elapsedMs;
+        if (timerId) clearInterval(timerId);
+        timerId = setInterval(() => {
+          elapsedMs = Date.now() - timerStartMs;
+          updateStatus();
+        }, 100);
+      }
+
+      function stopTimer() {
+        if (timerStartMs === null) return;
+        elapsedMs = Date.now() - timerStartMs;
+        timerStartMs = null;
+        if (timerId) {
+          clearInterval(timerId);
+          timerId = null;
+        }
+      }
+
+      function resetTimer() {
+        timerStartMs = null;
+        elapsedMs = 0;
+        if (timerId) {
+          clearInterval(timerId);
+          timerId = null;
+        }
+      }
+
+      function createGrid(cols, rows) {
+        const grid = [];
+        for (let y = 0; y < rows; y += 1) {
+          const row = [];
+          for (let x = 0; x < cols; x += 1) {
+            row.push({
+              x,
+              y,
+              top: true,
+              right: true,
+              bottom: true,
+              left: true,
+              visited: false
+            });
+          }
+          grid.push(row);
+        }
+        return grid;
+      }
+
+      function shuffled(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function carveMazeDFS(grid, cols, rows) {
+        const stack = [];
+        const start = grid[0][0];
+        start.visited = true;
+        stack.push(start);
+
+        const dirs = [
+          { dx: 0, dy: -1, wall: "top", opposite: "bottom" },
+          { dx: 1, dy: 0, wall: "right", opposite: "left" },
+          { dx: 0, dy: 1, wall: "bottom", opposite: "top" },
+          { dx: -1, dy: 0, wall: "left", opposite: "right" }
+        ];
+
+        while (stack.length > 0) {
+          const current = stack[stack.length - 1];
+          const candidates = [];
+
+          for (const dir of shuffled(dirs)) {
+            const nx = current.x + dir.dx;
+            const ny = current.y + dir.dy;
+            if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+            const next = grid[ny][nx];
+            if (!next.visited) candidates.push({ dir, next });
+          }
+
+          if (candidates.length === 0) {
+            stack.pop();
+            continue;
+          }
+
+          const { dir, next } = candidates[0];
+          current[dir.wall] = false;
+          next[dir.opposite] = false;
+          next.visited = true;
+          stack.push(next);
+        }
+
+        for (let y = 0; y < rows; y += 1) {
+          for (let x = 0; x < cols; x += 1) {
+            grid[y][x].visited = false;
+          }
+        }
+      }
+
+      function buildMaze() {
+        const cfg = configs[difficultyEl.value];
+        const cols = cfg.cols;
+        const rows = cfg.rows;
+        const grid = createGrid(cols, rows);
+        carveMazeDFS(grid, cols, rows);
+
+        const entrance = { x: 0, y: 0 };
+        const exit = { x: cols - 1, y: rows - 1 };
+        grid[entrance.y][entrance.x].left = false;
+        grid[exit.y][exit.x].right = false;
+
+        maze = { cols, rows, grid, entrance, exit };
+        isCompleted = false;
+        resetTimer();
+
+        if (directionReversed) {
+          currentPath = [cellKey(exit.x, exit.y)];
+        } else {
+          currentPath = [cellKey(entrance.x, entrance.y)];
+        }
+
+        resizeCanvas();
+        draw();
+        updateStatus();
+      }
+
+      function resizeCanvas() {
+        const side = Math.min(760, Math.max(320, Math.floor(window.innerWidth * 0.78)));
+        canvas.width = side;
+        canvas.height = side;
+        cellSize = side / maze.cols;
+      }
+
+      function cellKey(x, y) {
+        return `${x},${y}`;
+      }
+
+      function parseKey(key) {
+        const [x, y] = key.split(",").map(Number);
+        return { x, y };
+      }
+
+      function getStartCell() {
+        return directionReversed ? maze.exit : maze.entrance;
+      }
+
+      function getTargetCell() {
+        return directionReversed ? maze.entrance : maze.exit;
+      }
+
+      function updateStatus(message) {
+        const start = getStartCell();
+        const target = getTargetCell();
+        const modeText = directionReversed ? "反向模式：從出口回入口" : "正向模式：從入口到出口";
+        const base = `目前模式：<b>${modeText}</b>。起點在 (${start.x + 1}, ${start.y + 1})，終點在 (${target.x + 1}, ${target.y + 1})。<br>計時：<b>${formatElapsed(elapsedMs)} 秒</b>`;
+
+        if (message) {
+          statusBox.innerHTML = `${base}<br>${message}`;
+          return;
+        }
+
+        if (isCompleted) {
+          statusBox.innerHTML = `${base}<br><span class="ok">成功抵達！本次完成時間：${formatElapsed(elapsedMs)} 秒。可換難度或切換反向再挑戰一次。</span>`;
+        } else {
+          statusBox.innerHTML = `${base}<br><span class="warn">拖曳時請貼著通道走，穿牆會自動忽略該步。</span>`;
+        }
+      }
+
+      function draw() {
+        if (!maze) return;
+        const { cols, rows, grid } = maze;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.lineWidth = Math.max(2, Math.floor(cellSize * 0.08));
+        ctx.strokeStyle = "#0f172a";
+
+        for (let y = 0; y < rows; y += 1) {
+          for (let x = 0; x < cols; x += 1) {
+            const cell = grid[y][x];
+            const x0 = x * cellSize;
+            const y0 = y * cellSize;
+            const x1 = x0 + cellSize;
+            const y1 = y0 + cellSize;
+
+            ctx.beginPath();
+            if (cell.top) { ctx.moveTo(x0, y0); ctx.lineTo(x1, y0); }
+            if (cell.right) { ctx.moveTo(x1, y0); ctx.lineTo(x1, y1); }
+            if (cell.bottom) { ctx.moveTo(x0, y1); ctx.lineTo(x1, y1); }
+            if (cell.left) { ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); }
+            ctx.stroke();
+          }
+        }
+
+        const start = getStartCell();
+        const target = getTargetCell();
+
+        fillCell(start.x, start.y, "#0369a1");
+        fillCell(target.x, target.y, "#dc2626");
+
+        if (currentPath.length > 1) {
+          ctx.strokeStyle = "#f59e0b";
+          ctx.lineWidth = Math.max(3, Math.floor(cellSize * 0.3));
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+          currentPath.forEach((key, index) => {
+            const { x, y } = parseKey(key);
+            const cx = x * cellSize + cellSize / 2;
+            const cy = y * cellSize + cellSize / 2;
+            if (index === 0) ctx.moveTo(cx, cy);
+            else ctx.lineTo(cx, cy);
+          });
+          ctx.stroke();
+        }
+      }
+
+      function fillCell(x, y, color) {
+        const margin = Math.max(2, cellSize * 0.2);
+        ctx.fillStyle = color;
+        ctx.fillRect(
+          x * cellSize + margin,
+          y * cellSize + margin,
+          cellSize - margin * 2,
+          cellSize - margin * 2
+        );
+      }
+
+      function canMove(from, to) {
+        const dx = to.x - from.x;
+        const dy = to.y - from.y;
+        if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
+        const cell = maze.grid[from.y][from.x];
+        if (dx === 1) return !cell.right;
+        if (dx === -1) return !cell.left;
+        if (dy === 1) return !cell.bottom;
+        return !cell.top;
+      }
+
+      function eventToCell(evt) {
+        const rect = canvas.getBoundingClientRect();
+        const point = evt.touches ? evt.touches[0] : evt;
+        const x = Math.floor(((point.clientX - rect.left) / rect.width) * maze.cols);
+        const y = Math.floor(((point.clientY - rect.top) / rect.height) * maze.rows);
+        if (x < 0 || y < 0 || x >= maze.cols || y >= maze.rows) return null;
+        return { x, y };
+      }
+
+      function handlePointerStart(evt) {
+        if (!maze) return;
+        const cell = eventToCell(evt);
+        if (!cell) return;
+
+        const start = getStartCell();
+        if (cell.x !== start.x || cell.y !== start.y) {
+          updateStatus("<span class='warn'>請從起點方塊開始拖曳。</span>");
+          return;
+        }
+
+        isPointerDown = true;
+        isCompleted = false;
+        currentPath = [cellKey(start.x, start.y)];
+        resetTimer();
+        startTimer();
+        draw();
+      }
+
+      function handlePointerMove(evt) {
+        if (!isPointerDown || isCompleted || !maze) return;
+        evt.preventDefault();
+
+        const cell = eventToCell(evt);
+        if (!cell) return;
+
+        const targetKey = cellKey(cell.x, cell.y);
+        const lastKey = currentPath[currentPath.length - 1];
+        if (targetKey === lastKey) return;
+
+        const last = parseKey(lastKey);
+
+        if (currentPath.length > 1 && targetKey === currentPath[currentPath.length - 2]) {
+          currentPath.pop();
+          draw();
+          return;
+        }
+
+        if (!canMove(last, cell)) return;
+
+        currentPath.push(targetKey);
+        draw();
+
+        const target = getTargetCell();
+        if (cell.x === target.x && cell.y === target.y) {
+          isCompleted = true;
+          isPointerDown = false;
+          stopTimer();
+          updateStatus();
+        }
+      }
+
+      function handlePointerEnd() {
+        isPointerDown = false;
+      }
+
+      function clearTrail() {
+        const start = getStartCell();
+        isCompleted = false;
+        currentPath = [cellKey(start.x, start.y)];
+        resetTimer();
+        draw();
+        updateStatus();
+      }
+
+      function toggleDirection() {
+        directionReversed = !directionReversed;
+        clearTrail();
+        updateStatus(directionReversed
+          ? "<span class='ok'>已切換為反向：請從出口出發，走回入口。</span>"
+          : "<span class='ok'>已切換為正向：請從入口出發，走到出口。</span>");
+      }
+
+      newMazeBtn.addEventListener("click", buildMaze);
+      reverseBtn.addEventListener("click", toggleDirection);
+      clearTrailBtn.addEventListener("click", clearTrail);
+
+      canvas.addEventListener("mousedown", handlePointerStart);
+      canvas.addEventListener("mousemove", handlePointerMove);
+      window.addEventListener("mouseup", handlePointerEnd);
+
+      canvas.addEventListener("touchstart", handlePointerStart, { passive: false });
+      canvas.addEventListener("touchmove", handlePointerMove, { passive: false });
+      canvas.addEventListener("touchend", handlePointerEnd);
+      canvas.addEventListener("touchcancel", handlePointerEnd);
+
+      window.addEventListener("resize", () => {
+        if (!maze) return;
+        resizeCanvas();
+        draw();
+      });
+
+      buildMaze();
+    })();
+  </script>
+</body>
+</html>
