@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高一先修：加減乘除次方金字塔</title>
+  <style>
+    :root {
+      --bg-a: #eef6ff;
+      --bg-b: #fff7ea;
+      --card: #ffffff;
+      --text: #1f2937;
+      --sub: #4b5563;
+      --line: #d8dee8;
+      --plus: #dbeafe;
+      --plus-deep: #2563eb;
+      --mul: #dcfce7;
+      --mul-deep: #166534;
+      --pow: #fee2e2;
+      --pow-deep: #b91c1c;
+      --btn: #0f766e;
+      --btn-dark: #115e59;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background: linear-gradient(150deg, var(--bg-a), var(--bg-b));
+      padding: 20px;
+    }
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+    .head {
+      padding: 22px 22px 12px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(170deg, #f8fbff 0%, #fff 100%);
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 38px); }
+    .lead { margin: 0; color: var(--sub); line-height: 1.8; }
+    .main {
+      padding: 18px 22px 24px;
+      display: grid;
+      gap: 18px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+    .title { margin: 0 0 10px; font-size: 22px; }
+    .pyramid {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      margin: 10px 0 4px;
+    }
+    .layer {
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      height: 110px;
+      width: min(520px, 96%);
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      padding-bottom: 14px;
+      text-align: center;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+    .pow { width: min(240px, 52%); background: var(--pow); color: var(--pow-deep); }
+    .mul { width: min(360px, 74%); background: var(--mul); color: var(--mul-deep); }
+    .add { width: min(500px, 96%); background: var(--plus); color: var(--plus-deep); }
+    .note { margin: 0; color: var(--sub); line-height: 1.8; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+    .topic-btn {
+      border: 1px solid #b8ccc8;
+      border-radius: 999px;
+      background: #f8fffd;
+      color: #14514a;
+      padding: 8px 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .topic-btn.active {
+      background: var(--btn);
+      border-color: var(--btn);
+      color: #fff;
+    }
+    .panel h3 { margin: 2px 0 8px; font-size: 20px; }
+    .panel p { margin: 0 0 8px; line-height: 1.8; color: var(--sub); }
+    .panel ul { margin: 0; padding-left: 20px; line-height: 1.8; }
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+      margin-top: 8px;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid #d8e0ea;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f8fafc; }
+    .exercise-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .exercise {
+      border: 1px solid #dfe6f0;
+      border-radius: 12px;
+      padding: 10px;
+      background: #fbfdff;
+    }
+    .exercise h4 { margin: 0 0 8px; font-size: 17px; }
+    .exercise p { margin: 0 0 8px; color: var(--sub); }
+    .exercise input {
+      width: 100%;
+      border: 1px solid #c8d2e2;
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-size: 16px;
+    }
+    .check-btn {
+      margin-top: 8px;
+      border: 1px solid var(--btn);
+      background: var(--btn);
+      color: #fff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .check-btn:hover { background: var(--btn-dark); }
+    .result { margin-top: 6px; min-height: 1.6em; font-weight: 700; }
+    .back {
+      display: inline-block;
+      margin-top: 8px;
+      text-decoration: none;
+      color: #0f766e;
+      font-weight: 700;
+    }
+    @media (max-width: 620px) {
+      .layer { height: 96px; padding-bottom: 10px; font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <h1>高一先修：加減乘除次方金字塔</h1>
+      <p class="lead">用金字塔先建立「哪一層先算」的直覺，再用例題與按鈕切換補上規則、錯誤提醒與分層練習。老師可直接投影講解，學生也可自己按步驟練習。</p>
+    </header>
+
+    <section class="main">
+      <article class="card">
+        <h2 class="title">1. 運算金字塔（先觀念）</h2>
+        <div class="pyramid" aria-label="加減乘除次方金字塔">
+          <div class="layer pow">上層：次方與根號<br>先算最濃縮的重複乘法</div>
+          <div class="layer mul">中層：乘除法<br>處理倍數、平均、分組</div>
+          <div class="layer add">底層：加減法<br>最後做合併與比較</div>
+        </div>
+        <p class="note">課堂提示：先看符號層級，再下手計算。不是「從左到右一路算到底」，而是「高層先、同層再由左到右」。</p>
+      </article>
+
+      <article class="card">
+        <h2 class="title">2. 按鈕切換重點（規則與銜接）</h2>
+        <div class="btn-row">
+          <button class="topic-btn active" data-topic="add">加減法</button>
+          <button class="topic-btn" data-topic="mul">乘除法</button>
+          <button class="topic-btn" data-topic="pow">次方與根號</button>
+          <button class="topic-btn" data-topic="order">綜合順序</button>
+        </div>
+        <div id="topicPanel" class="panel"></div>
+      </article>
+
+      <article class="card">
+        <h2 class="title">3. 常見錯誤對照表（課堂最常卡關）</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>錯誤類型</th>
+                <th>錯誤寫法</th>
+                <th>正確觀念</th>
+                <th>提醒語</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>先加後乘</td>
+                <td>2 + 3 × 4 = 20</td>
+                <td>先算乘法：3 × 4 = 12，最後 2 + 12 = 14</td>
+                <td>先看金字塔高度，不要被左到右騙走。</td>
+              </tr>
+              <tr>
+                <td>分母亂拆</td>
+                <td>(a + b) / c = a + b/c</td>
+                <td>(a + b) 要視為整體，若要拆須同除 c：a/c + b/c</td>
+                <td>分母要同時照顧括號內每一項。</td>
+              </tr>
+              <tr>
+                <td>平方誤拆</td>
+                <td>(a + b)^2 = a^2 + b^2</td>
+                <td>(a + b)^2 = a^2 + 2ab + b^2</td>
+                <td>括號平方不是各自平方後直接相加。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2 class="title">4. 分層練習（基礎 / 進階 / 挑戰）</h2>
+        <div class="exercise-grid">
+          <section class="exercise">
+            <h4>基礎</h4>
+            <p>1) 3 + 5 × 2 = ?</p>
+            <input id="q1" placeholder="輸入答案">
+            <button class="check-btn" data-q="q1" data-a="13">檢查</button>
+            <div id="r1" class="result"></div>
+          </section>
+          <section class="exercise">
+            <h4>進階</h4>
+            <p>2) (2 + 1) × 3^2 = ?</p>
+            <input id="q2" placeholder="輸入答案">
+            <button class="check-btn" data-q="q2" data-a="27">檢查</button>
+            <div id="r2" class="result"></div>
+          </section>
+          <section class="exercise">
+            <h4>挑戰</h4>
+            <p>3) 2 + 3 × (4^2 - 5) = ?</p>
+            <input id="q3" placeholder="輸入答案">
+            <button class="check-btn" data-q="q3" data-a="35">檢查</button>
+            <div id="r3" class="result"></div>
+          </section>
+        </div>
+      </article>
+
+      <a class="back" href="./index.html">← 回到教學首頁</a>
+    </section>
+  </main>
+
+  <script>
+    const topicData = {
+      add: {
+        title: "加減法：合併與比較的最後一步",
+        html: `
+          <p>加減通常放在最後，是因為它在做「總結」：把前面已處理好的數量合併或比較差異。</p>
+          <ul>
+            <li>生活直覺：先算每盒幾顆（乘法），最後再算總共幾顆（加法）。</li>
+            <li>同層規則：只有加減時，才由左到右計算。</li>
+            <li>例題：18 - 6 + 2 = 12 + 2 = 14。</li>
+          </ul>`
+      },
+      mul: {
+        title: "乘除法：倍數、分組與平均",
+        html: `
+          <p>乘除法比加減更高層，常用在「重複相加的壓縮」或「平均分配」。</p>
+          <ul>
+            <li>生活直覺：4 盒每盒 6 顆，先算 4 × 6。</li>
+            <li>同層規則：乘除同層，照左到右。</li>
+            <li>例題：24 ÷ 3 × 2 = 8 × 2 = 16。</li>
+          </ul>`
+      },
+      pow: {
+        title: "次方與根號：最濃縮的運算",
+        html: `
+          <p>次方代表重複乘法，根號是次方的反向概念，所以優先度最高。</p>
+          <ul>
+            <li>生活直覺：3^2 是 3 乘 3，不是 3 乘 2。</li>
+            <li>銜接觀念：先算次方，再把結果帶回乘除加減。</li>
+            <li>例題：2 + 3^2 = 2 + 9 = 11。</li>
+          </ul>`
+      },
+      order: {
+        title: "綜合順序：先括號，再次方，再乘除，最後加減",
+        html: `
+          <p>真正的流程是「看層級」而不是「只看位置」。括號把內容暫時變成最高優先。</p>
+          <ul>
+            <li>示例：2 + 3 × 4^2 = 2 + 3 × 16 = 2 + 48 = 50。</li>
+            <li>若有括號：(2 + 3) × 4^2 = 5 × 16 = 80。</li>
+            <li>最常犯錯：把 2 + 3 先算掉，忘記乘法層級更高。</li>
+          </ul>`
+      }
+    };
+
+    const panel = document.getElementById("topicPanel");
+    const buttons = Array.from(document.querySelectorAll(".topic-btn"));
+
+    function renderTopic(key) {
+      const item = topicData[key];
+      panel.innerHTML = `<h3>${item.title}</h3>${item.html}`;
+      buttons.forEach((btn) => btn.classList.toggle("active", btn.dataset.topic === key));
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => renderTopic(btn.dataset.topic));
+    });
+
+    function checkAnswer(inputId, answer, resultId) {
+      const raw = document.getElementById(inputId).value.trim();
+      const result = document.getElementById(resultId);
+      if (!raw) {
+        result.textContent = "請先輸入答案。";
+        result.style.color = "#b45309";
+        return;
+      }
+      if (Number(raw) === Number(answer)) {
+        result.textContent = "答對了，順序掌握得很好。";
+        result.style.color = "#166534";
+      } else {
+        result.textContent = "再檢查一次層級：次方 → 乘除 → 加減。";
+        result.style.color = "#b91c1c";
+      }
+    }
+
+    const checkButtons = Array.from(document.querySelectorAll(".check-btn"));
+    checkButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const q = btn.dataset.q;
+        const a = btn.dataset.a;
+        const map = { q1: "r1", q2: "r2", q3: "r3" };
+        checkAnswer(q, a, map[q]);
+      });
+    });
+
+    renderTopic("add");
+  </script>
+</body>
+</html>

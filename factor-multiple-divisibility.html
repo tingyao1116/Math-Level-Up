@@ -1,0 +1,473 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>因數倍數教學工具</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --line: #dbe4ef;
+      --text: #0f172a;
+      --sub: #334155;
+      --brand: #0369a1;
+      --ok: #166534;
+      --warn: #9a3412;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, #e0f2fe, transparent 35%),
+        radial-gradient(circle at 95% 10%, #dbeafe, transparent 30%),
+        var(--bg);
+      line-height: 1.7;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 22px; }
+    h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 40px); }
+    h2 { margin: 0 0 10px; font-size: 24px; }
+    h3 { margin: 0 0 8px; font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .lead { color: var(--sub); margin-bottom: 16px; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    }
+    label { display: block; font-weight: 700; margin: 8px 0 4px; }
+    input, select, button {
+      width: 100%;
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      padding: 8px 10px;
+    }
+    button {
+      cursor: pointer;
+      color: #fff;
+      background: var(--brand);
+      border-color: var(--brand);
+      font-weight: 700;
+      margin-top: 8px;
+    }
+    .row { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+    .result {
+      margin-top: 8px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 8px 10px;
+      min-height: 42px;
+      white-space: pre-wrap;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .note {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .back {
+      display: inline-block;
+      margin: 8px 0 14px;
+      color: #0f766e;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .tier {
+      border-left: 4px solid #0284c7;
+      background: #f0f9ff;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">回教學首頁</a>
+    <h1>因數倍數教學工具</h1>
+    <p class="lead">主題包含 9 與 11 倍數判斷、餘數判斷、反向求位數、韓信點兵、質數判斷與標準分解式。適合老師課堂投影講解，也適合學生自學驗算。</p>
+
+    <section class="card" style="margin-bottom:14px;">
+      <h2>先講觀念</h2>
+      <p><strong>1. 9 倍數判斷：</strong>各位數字和是 9 的倍數，原數就是 9 的倍數。</p>
+      <p><strong>2. 11 倍數判斷：</strong>奇位數和與偶位數和的差是 11 的倍數（含 0），原數就是 11 的倍數。</p>
+      <p><strong>3. 餘數與同餘：</strong>像「除以 9 的餘數」可先看數字和對 9 的餘數；韓信點兵本質是同餘聯立。</p>
+      <p><strong>4. 質數與標準分解式：</strong>質數只有 1 和自己兩個正因數；標準分解式是把整數拆成質因數乘積。</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h3>9 與 11 倍數判斷</h3>
+        <label for="checkNum">輸入整數</label>
+        <input id="checkNum" type="text" placeholder="例如 1287">
+        <button id="checkBtn">判斷</button>
+        <div id="checkOut" class="result"></div>
+      </article>
+
+      <article class="card">
+        <h3>餘數判斷（除以 9 或 11）</h3>
+        <label for="remNum">輸入整數</label>
+        <input id="remNum" type="text" placeholder="例如 987654">
+        <label for="remBase">除數</label>
+        <select id="remBase">
+          <option value="9">9</option>
+          <option value="11">11</option>
+        </select>
+        <button id="remBtn">計算餘數</button>
+        <div id="remOut" class="result"></div>
+      </article>
+
+      <article class="card">
+        <h3>反向求位數</h3>
+        <p>已知數字形如 <code>a57b</code>，且是 9 或 11 的倍數，求可能的 <code>a,b</code>。</p>
+        <label for="pattern">樣式（用 ? 當未知數）</label>
+        <input id="pattern" type="text" value="?57?" maxlength="8">
+        <label for="divisor">倍數條件</label>
+        <select id="divisor">
+          <option value="9">9 倍數</option>
+          <option value="11">11 倍數</option>
+        </select>
+        <button id="reverseBtn">找解</button>
+        <div id="reverseOut" class="result"></div>
+      </article>
+
+      <article class="card">
+        <h3>韓信點兵（同餘系統）</h3>
+        <p>輸入條件：<code>x ≡ a (mod m)</code>，求最小正整數解。</p>
+        <div class="row">
+          <input id="a1" type="number" value="2" placeholder="a1">
+          <input id="m1" type="number" value="3" placeholder="m1">
+        </div>
+        <div class="row">
+          <input id="a2" type="number" value="3" placeholder="a2">
+          <input id="m2" type="number" value="5" placeholder="m2">
+        </div>
+        <div class="row">
+          <input id="a3" type="number" value="2" placeholder="a3">
+          <input id="m3" type="number" value="7" placeholder="m3">
+        </div>
+        <button id="hanBtn">求解（小範圍掃描）</button>
+        <div id="hanOut" class="result"></div>
+      </article>
+
+      <article class="card">
+        <h3>質數判斷</h3>
+        <label for="primeNum">輸入正整數</label>
+        <input id="primeNum" type="number" min="1" value="97">
+        <button id="primeBtn">判斷是否為質數</button>
+        <div id="primeOut" class="result"></div>
+      </article>
+
+      <article class="card">
+        <h3>標準分解式</h3>
+        <label for="factNum">輸入正整數（大於 1）</label>
+        <input id="factNum" type="number" min="2" value="360">
+        <button id="factBtn">分解</button>
+        <div id="factOut" class="result"></div>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top:14px;">
+      <h2>常見錯誤提醒</h2>
+      <div class="note">
+        <p>1. 把「數字和是 9 倍數」誤用到 11 倍數。11 倍數要看奇位和偶位的差。</p>
+        <p>2. 忽略 11 的倍數判斷裡「差為 0」也成立。</p>
+        <p>3. 韓信點兵只找出一個值就停，沒有說出通解型態 <code>x = x0 + kL</code>（L 為模數最小公倍數）。</p>
+        <p>4. 質數判斷忘記 <code>1</code> 不是質數。</p>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:14px;">
+      <h2>課堂練習分層</h2>
+      <div class="tier"><strong>基礎：</strong>判斷 4239、572、1089 是否為 9 倍數與 11 倍數。</div>
+      <div class="tier"><strong>進階：</strong>求 <code>7?2?</code> 為 11 倍數時，所有可能的未知數。</div>
+      <div class="tier"><strong>挑戰：</strong>已知 <code>x ≡ 1 (mod 4), x ≡ 3 (mod 5), x ≡ 6 (mod 7)</code>，求最小正整數解並寫出通解。</div>
+    </section>
+
+    <section class="card" style="margin-top:14px;">
+      <h2>自動出題（9 與 11）</h2>
+      <p>可快速產生你上課常用的題型，例如「1512636 除以 9 餘多少」或「1512512?2 為 11 倍數時 ? 為多少」。</p>
+      <label for="quizType">題型</label>
+      <select id="quizType">
+        <option value="rem">整數除以 9/11 求餘數</option>
+        <option value="digit-multiple">含 ?，求成為 9/11 倍數的 ?</option>
+        <option value="digit-remainder">含 ?，求除以 9/11 指定餘數的 ?</option>
+      </select>
+      <button id="quizBtn">出一題</button>
+      <div id="quizQ" class="result">按「出一題」開始。</div>
+      <button id="quizAnsBtn">顯示答案與提示</button>
+      <div id="quizA" class="result"></div>
+    </section>
+  </main>
+
+  <script>
+    function toDigits(s) {
+      return s.split("").filter(ch => /\d/.test(ch)).map(ch => Number(ch));
+    }
+
+    function modFromString(numStr, mod) {
+      let r = 0;
+      for (const ch of numStr) {
+        if (!/\d/.test(ch)) continue;
+        r = (r * 10 + Number(ch)) % mod;
+      }
+      return r;
+    }
+
+    document.getElementById("checkBtn").addEventListener("click", () => {
+      const raw = document.getElementById("checkNum").value.trim();
+      const out = document.getElementById("checkOut");
+      if (!/^\d+$/.test(raw)) {
+        out.textContent = "請輸入非負整數。";
+        return;
+      }
+      const digits = toDigits(raw);
+      const sum = digits.reduce((a, b) => a + b, 0);
+      const odd = digits.filter((_, i) => i % 2 === 0).reduce((a, b) => a + b, 0);
+      const even = digits.filter((_, i) => i % 2 === 1).reduce((a, b) => a + b, 0);
+      const diff = odd - even;
+      const m9 = sum % 9 === 0;
+      const m11 = Math.abs(diff) % 11 === 0;
+      out.innerHTML =
+        `數字和 = ${sum}，所以 ${m9 ? '<span class="ok">是</span>' : '<span class="warn">不是</span>'} 9 的倍數。\n` +
+        `奇位和 - 偶位和 = ${odd} - ${even} = ${diff}，所以 ${m11 ? '<span class="ok">是</span>' : '<span class="warn">不是</span>'} 11 的倍數。`;
+    });
+
+    document.getElementById("remBtn").addEventListener("click", () => {
+      const raw = document.getElementById("remNum").value.trim();
+      const mod = Number(document.getElementById("remBase").value);
+      const out = document.getElementById("remOut");
+      if (!/^\d+$/.test(raw)) {
+        out.textContent = "請輸入非負整數。";
+        return;
+      }
+      const r = modFromString(raw, mod);
+      out.textContent = `${raw} 除以 ${mod} 的餘數是 ${r}。`;
+    });
+
+    document.getElementById("reverseBtn").addEventListener("click", () => {
+      const pattern = document.getElementById("pattern").value.trim();
+      const mod = Number(document.getElementById("divisor").value);
+      const out = document.getElementById("reverseOut");
+      if (!/^[\d?]+$/.test(pattern) || !pattern.includes("?")) {
+        out.textContent = "請輸入含 ? 的樣式，例如 ?57?。";
+        return;
+      }
+      const qIdx = [];
+      [...pattern].forEach((ch, i) => { if (ch === "?") qIdx.push(i); });
+      if (qIdx.length > 3) {
+        out.textContent = "未知數建議 3 位以內，方便課堂示範。";
+        return;
+      }
+
+      const results = [];
+      const chars = [...pattern];
+      function dfs(pos) {
+        if (pos === qIdx.length) {
+          if (chars[0] === "0") return;
+          const n = chars.join("");
+          if (modFromString(n, mod) === 0) results.push(n);
+          return;
+        }
+        for (let d = 0; d <= 9; d++) {
+          chars[qIdx[pos]] = String(d);
+          dfs(pos + 1);
+        }
+      }
+      dfs(0);
+
+      if (results.length === 0) {
+        out.textContent = "找不到符合條件的數字。";
+      } else {
+        const preview = results.slice(0, 20).join("、");
+        out.textContent = `共 ${results.length} 組。前 20 組：${preview}${results.length > 20 ? " ..." : ""}`;
+      }
+    });
+
+    function gcd(a, b) {
+      a = Math.abs(a); b = Math.abs(b);
+      while (b !== 0) { const t = a % b; a = b; b = t; }
+      return a;
+    }
+
+    function lcm(a, b) {
+      return Math.abs(a * b) / gcd(a, b);
+    }
+
+    document.getElementById("hanBtn").addEventListener("click", () => {
+      const a1 = Number(document.getElementById("a1").value);
+      const a2 = Number(document.getElementById("a2").value);
+      const a3 = Number(document.getElementById("a3").value);
+      const m1 = Number(document.getElementById("m1").value);
+      const m2 = Number(document.getElementById("m2").value);
+      const m3 = Number(document.getElementById("m3").value);
+      const out = document.getElementById("hanOut");
+
+      if ([m1, m2, m3].some(m => !Number.isInteger(m) || m <= 1)) {
+        out.textContent = "模數需為大於 1 的整數。";
+        return;
+      }
+
+      const L = lcm(lcm(m1, m2), m3);
+      let ans = null;
+      for (let x = 1; x <= L * 3; x++) {
+        if ((x - a1) % m1 === 0 && (x - a2) % m2 === 0 && (x - a3) % m3 === 0) {
+          ans = x;
+          break;
+        }
+      }
+
+      if (ans === null) {
+        out.textContent = "此組條件在掃描範圍內無解，請調整條件再試。";
+      } else {
+        out.textContent = `最小正整數解 x = ${ans}。通解：x = ${ans} + ${L}k（k 為整數）。`;
+      }
+    });
+
+    document.getElementById("primeBtn").addEventListener("click", () => {
+      const n = Number(document.getElementById("primeNum").value);
+      const out = document.getElementById("primeOut");
+      if (!Number.isInteger(n) || n < 1) {
+        out.textContent = "請輸入正整數。";
+        return;
+      }
+      if (n === 1) {
+        out.innerHTML = `<span class="warn">1 不是質數</span>（只有一個正因數）。`;
+        return;
+      }
+      if (n === 2) {
+        out.innerHTML = `<span class="ok">2 是質數</span>。`;
+        return;
+      }
+      if (n % 2 === 0) {
+        out.innerHTML = `<span class="warn">${n} 不是質數</span>（可被 2 整除）。`;
+        return;
+      }
+      let factor = -1;
+      for (let d = 3; d * d <= n; d += 2) {
+        if (n % d === 0) {
+          factor = d;
+          break;
+        }
+      }
+      if (factor === -1) {
+        out.innerHTML = `<span class="ok">${n} 是質數</span>。`;
+      } else {
+        out.innerHTML = `<span class="warn">${n} 不是質數</span>（可被 ${factor} 整除）。`;
+      }
+    });
+
+    document.getElementById("factBtn").addEventListener("click", () => {
+      let n = Number(document.getElementById("factNum").value);
+      const out = document.getElementById("factOut");
+      if (!Number.isInteger(n) || n <= 1) {
+        out.textContent = "請輸入大於 1 的整數。";
+        return;
+      }
+      const original = n;
+      const parts = [];
+
+      let count = 0;
+      while (n % 2 === 0) { n /= 2; count++; }
+      if (count > 0) parts.push([2, count]);
+
+      for (let p = 3; p * p <= n; p += 2) {
+        let c = 0;
+        while (n % p === 0) { n /= p; c++; }
+        if (c > 0) parts.push([p, c]);
+      }
+      if (n > 1) parts.push([n, 1]);
+
+      const text = parts.map(([p, c]) => c === 1 ? `${p}` : `${p}^${c}`).join(" × ");
+      out.textContent = `${original} = ${text}`;
+    });
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function makeRandomDigits(len) {
+      let s = String(randomInt(1, 9));
+      for (let i = 1; i < len; i++) s += String(randomInt(0, 9));
+      return s;
+    }
+
+    function findDigitSolutions(pattern, mod, targetRemainder) {
+      const chars = [...pattern];
+      const qPos = chars.indexOf("?");
+      if (qPos === -1) return [];
+      const ans = [];
+      for (let d = 0; d <= 9; d++) {
+        chars[qPos] = String(d);
+        if (chars[0] === "0") continue;
+        const n = chars.join("");
+        if (modFromString(n, mod) === targetRemainder) ans.push(d);
+      }
+      return ans;
+    }
+
+    let currentQuiz = null;
+    document.getElementById("quizBtn").addEventListener("click", () => {
+      const type = document.getElementById("quizType").value;
+      const qEl = document.getElementById("quizQ");
+      const aEl = document.getElementById("quizA");
+      aEl.textContent = "";
+
+      if (type === "rem") {
+        const n = makeRandomDigits(randomInt(6, 8));
+        const mod = Math.random() < 0.5 ? 9 : 11;
+        const r = modFromString(n, mod);
+        currentQuiz = {
+          question: `${n} 除以 ${mod} 餘多少？`,
+          answer: `答案：餘 ${r}。\n提示：可用逐位取餘，或用 ${mod === 9 ? "數字和" : "奇位和減偶位和"} 判斷。`
+        };
+      } else if (type === "digit-multiple") {
+        const base = makeRandomDigits(8);
+        const pos = randomInt(1, 6);
+        const pattern = base.slice(0, pos) + "?" + base.slice(pos + 1);
+        const mod = Math.random() < 0.5 ? 9 : 11;
+        const sols = findDigitSolutions(pattern, mod, 0);
+        currentQuiz = {
+          question: `${pattern} 為 ${mod} 倍數時，? 可以是哪些數字？`,
+          answer: sols.length
+            ? `答案：? = ${sols.join("、")}。\n提示：把 ? 當 0~9 代入，檢查對 ${mod} 的餘數是否為 0。`
+            : "答案：無解。\n提示：這種題目有時候真的沒有符合的數字。"
+        };
+      } else {
+        const base = makeRandomDigits(8);
+        const pos = randomInt(1, 6);
+        const pattern = base.slice(0, pos) + "?" + base.slice(pos + 1);
+        const mod = Math.random() < 0.5 ? 9 : 11;
+        const target = randomInt(0, mod - 1);
+        const sols = findDigitSolutions(pattern, mod, target);
+        currentQuiz = {
+          question: `${pattern} 除以 ${mod} 餘 ${target} 時，? 可以是哪些數字？`,
+          answer: sols.length
+            ? `答案：? = ${sols.join("、")}。\n提示：把 ? 逐一代入，保留符合指定餘數的值。`
+            : "答案：無解。\n提示：可先算固定部分的餘數，再觀察 ? 對整體餘數的影響。"
+        };
+      }
+
+      qEl.textContent = currentQuiz.question;
+    });
+
+    document.getElementById("quizAnsBtn").addEventListener("click", () => {
+      const aEl = document.getElementById("quizA");
+      if (!currentQuiz) {
+        aEl.textContent = "請先按「出一題」。";
+        return;
+      }
+      aEl.textContent = currentQuiz.answer;
+    });
+  </script>
+</body>
+</html>

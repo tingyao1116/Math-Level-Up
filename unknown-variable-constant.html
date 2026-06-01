@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>未知數、變數、常數分辨教學頁</title>
+  <style>
+    :root {
+      --bg-a: #eefaf2;
+      --bg-b: #f2f7ff;
+      --card: #ffffff;
+      --line: #d7e2ec;
+      --text: #12263a;
+      --sub: #46617a;
+      --brand: #0f766e;
+      --brand-deep: #115e59;
+      --ok-bg: #ecfdf3;
+      --ok-line: #9ae6b4;
+      --warn-bg: #fff8e7;
+      --warn-line: #f8d38b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background: linear-gradient(145deg, var(--bg-a), var(--bg-b));
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 14px 34px rgba(18, 38, 58, 0.08);
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 38px); }
+    .lead { margin: 0 0 18px; color: var(--sub); line-height: 1.8; }
+    .sec { margin-top: 20px; }
+    .sec h2 { margin: 0 0 10px; font-size: 24px; }
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+    .note {
+      margin-top: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--warn-line);
+      background: var(--warn-bg);
+      padding: 10px 12px;
+      line-height: 1.7;
+      color: #7d5b18;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.7;
+    }
+    th { background: #f8fbff; }
+    code {
+      background: #f1f5f9;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-family: "Consolas", "Courier New", monospace;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      border: 1px solid var(--line);
+      background: #f8fbff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 700;
+      color: #1f3e59;
+      cursor: pointer;
+    }
+    .chip.active {
+      background: #c8f2ee;
+      border-color: #76d9cf;
+      color: #0b4f49;
+    }
+    .question {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+    }
+    .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .btn {
+      border: 1px solid var(--brand);
+      background: var(--brand);
+      color: #fff;
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn.secondary {
+      background: #fff;
+      color: var(--brand-deep);
+      border-color: #86ccc6;
+    }
+    .btn:hover { filter: brightness(0.97); }
+    .result {
+      margin-top: 10px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--ok-line);
+      background: var(--ok-bg);
+      color: #125f37;
+      line-height: 1.7;
+      display: none;
+    }
+    .result.bad {
+      border-color: #f1a7a7;
+      background: #fff1f1;
+      color: #8c2a2a;
+    }
+    .levels {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .lv { border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+    .lv h3 { margin: 0 0 8px; }
+    .lv p { margin: 0; line-height: 1.8; color: var(--sub); }
+    .small { margin-top: 8px; color: var(--sub); font-size: 14px; }
+    .back {
+      display: inline-block;
+      margin-top: 18px;
+      text-decoration: none;
+      color: var(--brand-deep);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>未知數、變數、常數 分辨教學頁</h1>
+    <p class="lead">先抓住一句話：<b>未知數是「現在要解」</b>，<b>變數是「可以改變」</b>，<b>常數是「固定不變」</b>。同一個字母在不同情境，身分可能會改變。</p>
+
+    <section class="sec">
+      <h2>1. 快速對照表（上課可先投影）</h2>
+      <div class="box">
+        <table>
+          <thead>
+            <tr>
+              <th>名稱</th>
+              <th>重點判斷</th>
+              <th>教學用說法</th>
+              <th>例子</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>未知數</td>
+              <td>題目要你「解出它」</td>
+              <td>目前不知道值，要算出來</td>
+              <td><code>3x-4=8</code> 的 <code>x</code></td>
+            </tr>
+            <tr>
+              <td>變數</td>
+              <td>會隨輸入或條件改變</td>
+              <td>像滑桿，代不同數值會跟著變</td>
+              <td><code>y=2x+1</code> 的 <code>x,y</code></td>
+            </tr>
+            <tr>
+              <td>常數</td>
+              <td>固定值，不會跟題目變動</td>
+              <td>當下規則中的固定角色</td>
+              <td><code>y=2x+1</code> 的 <code>2,1</code></td>
+            </tr>
+            <tr>
+              <td>參數（延伸）</td>
+              <td>在「同一題」固定，但不同題可改</td>
+              <td>控制規則外型的旋鈕</td>
+              <td><code>y=ax+b</code> 的 <code>a,b</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note">常見混淆：在 <code>y=ax+b</code> 裡，<code>a,b</code> 對某一條直線是固定值（當下像常數）；但若換另一條直線，它們又能改變（在模型中像參數）。</div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <h2>2. 按鈕判斷練習（老師課堂互動 / 學生自測）</h2>
+      <div class="box">
+        <div class="chips" id="modeChips">
+          <button class="chip active" data-mode="basic">基礎</button>
+          <button class="chip" data-mode="advanced">進階</button>
+          <button class="chip" data-mode="challenge">挑戰</button>
+        </div>
+        <div class="question" id="questionText"></div>
+        <div class="btns">
+          <button class="btn secondary" data-answer="unknown">未知數</button>
+          <button class="btn secondary" data-answer="variable">變數</button>
+          <button class="btn secondary" data-answer="constant">常數</button>
+          <button class="btn secondary" data-answer="parameter">參數</button>
+        </div>
+        <div class="btns">
+          <button class="btn" id="nextBtn">下一題</button>
+        </div>
+        <div class="result" id="resultBox"></div>
+        <p class="small" id="scoreText">目前成績：0 / 0</p>
+      </div>
+    </section>
+
+    <section class="sec">
+      <h2>3. 教學重點：最常犯錯</h2>
+      <div class="box">
+        <p>1. 看到字母就說是未知數：錯。要看題目是否「要求解它」。</p>
+        <p>2. 把係數都當變數：錯。像 <code>2x+1</code> 的 <code>2,1</code> 是固定常數。</p>
+        <p>3. 把參數和變數混在一起：<code>y=ax+b</code> 裡，<code>x,y</code> 是變數；<code>a,b</code> 常扮演參數。</p>
+        <p>4. 忽略情境轉換：同一字母在不同題目可能換身分，必須先看題目角色。</p>
+      </div>
+    </section>
+
+    <section class="sec">
+      <h2>4. 可直接出題的分層練習</h2>
+      <div class="levels">
+        <article class="lv">
+          <h3>基礎</h3>
+          <p>1. 在 <code>x+7=12</code> 中，<code>x</code> 是什麼？<br>2. 在 <code>y=3x-2</code> 中，<code>3,-2</code> 是什麼？</p>
+        </article>
+        <article class="lv">
+          <h3>進階</h3>
+          <p>1. 在 <code>A=lw</code> 中，若 <code>l=8</code> 已固定，<code>w</code> 是什麼？<br>2. 在 <code>y=ax+1</code> 中，<code>a</code> 與 <code>x</code> 的角色差在哪裡？</p>
+        </article>
+        <article class="lv">
+          <h3>挑戰</h3>
+          <p>1. 比較 <code>x^2-1=0</code> 與 <code>y=x^2-1</code> 中 <code>x</code> 角色是否相同。<br>2. 說明為何同一字母在不同題型會變成不同身分。</p>
+        </article>
+      </div>
+    </section>
+
+    <a class="back" href="./index.html">返回教學首頁</a>
+  </main>
+
+  <script>
+    const questionSets = {
+      basic: [
+        { text: "在 3x-4=8 中，請判斷 x 的身分。", target: "unknown", note: "這題目要求你解出 x，所以 x 是未知數。" },
+        { text: "在 y=2x+1 中，請判斷 2 的身分。", target: "constant", note: "2 是固定係數，不隨 x 的代入改變。" },
+        { text: "在 y=2x+1 中，請判斷 x 的身分。", target: "variable", note: "x 可以代不同值而改變，是變數。" }
+      ],
+      advanced: [
+        { text: "在 y=ax+1 中，針對固定的一條直線，a 最適合稱為？", target: "parameter", note: "a 控制直線斜率，對同一條線固定，但可換題改變。" },
+        { text: "在 A=lw 中，若 l=8 已固定，w 的身分是？", target: "variable", note: "w 仍可改變，A 會跟著變。" },
+        { text: "在 x^2-1=0 中，x 的身分是？", target: "unknown", note: "此題核心任務是解出 x 的值。" }
+      ],
+      challenge: [
+        { text: "在 y=ax+b 的函數模型中，x 最適合稱為？", target: "variable", note: "x 是輸入，會變動，y 也跟著變。" },
+        { text: "在 y=3x-5 中，-5 最適合稱為？", target: "constant", note: "-5 是固定常數項。" },
+        { text: "在比較不同直線族 y=ax+b 時，a 與 b 最適合稱為？", target: "parameter", note: "a、b 用來描述不同直線，扮演參數。" }
+      ]
+    };
+
+    const labels = {
+      unknown: "未知數",
+      variable: "變數",
+      constant: "常數",
+      parameter: "參數"
+    };
+
+    let mode = "basic";
+    let current = null;
+    let total = 0;
+    let correct = 0;
+
+    const modeChips = document.getElementById("modeChips");
+    const questionText = document.getElementById("questionText");
+    const resultBox = document.getElementById("resultBox");
+    const scoreText = document.getElementById("scoreText");
+    const nextBtn = document.getElementById("nextBtn");
+    const answerBtns = Array.from(document.querySelectorAll("[data-answer]"));
+
+    function pickQuestion() {
+      const pool = questionSets[mode];
+      current = pool[Math.floor(Math.random() * pool.length)];
+      questionText.textContent = current.text;
+      resultBox.style.display = "none";
+      resultBox.classList.remove("bad");
+    }
+
+    function updateScore() {
+      scoreText.textContent = `目前成績：${correct} / ${total}`;
+    }
+
+    modeChips.addEventListener("click", (e) => {
+      const chip = e.target.closest(".chip");
+      if (!chip) return;
+      mode = chip.dataset.mode;
+      Array.from(modeChips.children).forEach((c) => c.classList.remove("active"));
+      chip.classList.add("active");
+      pickQuestion();
+    });
+
+    answerBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (!current) return;
+        total += 1;
+        const user = btn.dataset.answer;
+        const ok = user === current.target;
+        if (ok) correct += 1;
+        resultBox.style.display = "block";
+        resultBox.classList.toggle("bad", !ok);
+        resultBox.innerHTML = ok
+          ? `答對了。<br>${current.note}`
+          : `這題先別急，正確是「${labels[current.target]}」。<br>${current.note}`;
+        updateScore();
+      });
+    });
+
+    nextBtn.addEventListener("click", pickQuestion);
+    pickQuestion();
+    updateScore();
+  </script>
+</body>
+</html>
