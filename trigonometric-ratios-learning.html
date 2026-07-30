@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三角比完整學習頁</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --line: #dbe4ef;
+      --text: #0f172a;
+      --sub: #475569;
+      --brand: #0f766e;
+      --brand-dark: #115e59;
+      --warn: #7c2d12;
+      --ok: #14532d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top right, #e0f2fe 0%, var(--bg) 45%);
+      line-height: 1.7;
+      padding: 20px;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; }
+    .hero, .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+      margin-bottom: 14px;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(26px, 4vw, 38px); }
+    h2 { margin: 0 0 10px; font-size: 24px; }
+    h3 { margin: 6px 0; }
+    p, li { color: var(--sub); }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .mini {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fcfdff;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 13px;
+      padding: 2px 10px;
+      border: 1px solid #99f6e4;
+      background: #ccfbf1;
+      border-radius: 999px;
+      color: #0b3b37;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .flow {
+      display: grid;
+      gap: 8px;
+    }
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .bad { color: var(--warn); font-weight: 700; }
+    .good { color: var(--ok); font-weight: 700; }
+    code {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      padding: 1px 5px;
+      border-radius: 6px;
+    }
+    .btn {
+      border: 1px solid var(--brand);
+      background: var(--brand);
+      color: #fff;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn:hover { background: var(--brand-dark); }
+    .btn.secondary {
+      background: #fff;
+      color: var(--brand);
+    }
+    .tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 12px;
+    }
+    .out {
+      border: 1px dashed #94a3b8;
+      border-radius: 10px;
+      padding: 10px;
+      background: #f8fafc;
+      min-height: 60px;
+    }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    input, select {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 7px 9px;
+      font-size: 15px;
+    }
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 2px 10px;
+      font-size: 13px;
+      margin: 2px 4px 2px 0;
+    }
+    .practice-box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .quiz-toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 12px 0;
+    }
+    .quiz-level.is-active {
+      background: var(--brand-dark);
+      color: #fff;
+    }
+    .unit-toggle.is-active {
+      background: #0c4a6e;
+      border-color: #0c4a6e;
+      color: #fff;
+    }
+    .score-board {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .score-item {
+      border-radius: 10px;
+      background: #ecfeff;
+      border: 1px solid #a5f3fc;
+      color: #155e75;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .quiz-question {
+      font-size: clamp(21px, 4vw, 30px);
+      color: var(--text);
+      font-weight: 800;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+    .options { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); }
+    .option {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      border-radius: 10px;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      min-height: 46px;
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 15px;
+    }
+    .option:hover:not(:disabled) { border-color: var(--brand); background: #f0fdfa; }
+    .option:disabled { cursor: default; }
+    .option.is-correct { border-color: #22c55e; background: #dcfce7; color: #14532d; }
+    .option.is-wrong { border-color: #fb7185; background: #fff1f2; color: #9f1239; }
+    .quiz-feedback {
+      display: none;
+      border-radius: 10px;
+      margin-top: 12px;
+      padding: 10px 12px;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.correct { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
+    .quiz-feedback.wrong { background: #fff7ed; color: #9a3412; border: 1px solid #fdba74; }
+    .quiz-note { margin: 0 0 8px; font-size: 14px; }
+    .ans { font-weight: 700; color: var(--ok); }
+    .foot { text-align: center; font-size: 13px; color: #64748b; margin-top: 10px; }
+    @media (max-width: 700px) {
+      body { padding: 12px; }
+      .options { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+      .option { min-height: 42px; padding: 6px 4px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>三角比完整學習頁</h1>
+      <p>這頁把「直角三角形三角比」一路串到「廣義三角比、象限正負、角度化簡、含未知數 θ 的題型」，可直接課堂講解，也可給學生自學與無限練習。</p>
+      <div>
+        <span class="pill">先觀念再規則</span>
+        <span class="pill">同位角與夾角策略</span>
+        <span class="pill">象限判斷正負</span>
+        <span class="pill">θ 化簡練習</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>一、直角 △ 的前三個三角函數</h2>
+      <div class="grid">
+        <div class="mini">
+          <div class="tag">核心關係</div>
+          <p>在直角三角形中，對於銳角 <code>A</code>：</p>
+          <p><code>sin A = 對邊 / 斜邊</code><br><code>cos A = 鄰邊 / 斜邊</code><br><code>tan A = 對邊 / 鄰邊</code></p>
+          <p>記法口訣：<code>sin 對斜、cos 鄰斜、tan 對鄰</code>。</p>
+        </div>
+        <div class="mini">
+          <div class="tag">觀念銜接</div>
+          <p>直角三角形裡，角度決定邊長比例，不是決定單一邊長。比例固定，所以同角度的任兩個直角三角形三角比都相同。</p>
+        </div>
+        <div class="mini">
+          <div class="tag">常見錯誤</div>
+          <p class="bad">把「鄰邊」看成固定某一邊，忘了要先指定角度。</p>
+          <p class="bad">把 <code>tan A</code> 寫成 <code>鄰/對</code>，或把斜邊誤放進 tan。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>二、廣義三角比：放到直角座標平面</h2>
+      <p>把角放在原點，終邊上一點為 <code>P(x,y)</code>，令 <code>r = √(x²+y²)</code>，則：</p>
+      <p><code>sin θ = y/r</code>、<code>cos θ = x/r</code>、<code>tan θ = y/x</code>（<code>x ≠ 0</code>）。</p>
+      <div class="mini">
+        <div class="tag">象限判斷正負</div>
+        <p>I 象限：全正；II 象限：sin 正；III 象限：tan 正；IV 象限：cos 正。</p>
+        <p>也可記成：<code>sin 看 y</code>、<code>cos 看 x</code>、<code>tan 看 y/x</code>。</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>三、角度化簡流程（任意角到 0°~45°）</h2>
+      <div class="flow">
+        <div class="step"><strong>Step 1 同位角：</strong>先把任意角加減 <code>360°k</code>，化到 <code>0° ~ 360°</code>。</div>
+        <div class="step"><strong>Step 2 夾角：</strong>看終邊與 x 軸夾的銳角，化到 <code>0° ~ 90°</code>。</div>
+        <div class="step"><strong>Step 3 餘角：</strong>若夾角 > 45°，用 <code>90°-α</code> 與餘角關係化到 <code>0° ~ 45°</code>。</div>
+      </div>
+      <div class="mini" style="margin-top:10px;">
+        <div class="tag">餘角關係</div>
+        <p><code>sin(90°-α)=cos α</code>、<code>cos(90°-α)=sin α</code>、<code>tan(90°-α)=1/tan α</code></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>四、進階：直接看與 x 軸或 y 軸夾角</h2>
+      <div class="grid">
+        <div class="mini">
+          <div class="tag">看 x 軸夾角（最常用）</div>
+          <p>先定象限，再用參考角代入三角比，最後補正負號。</p>
+          <p>例如 <code>cos 210° = -cos 30° = -√3/2</code>。</p>
+        </div>
+        <div class="mini">
+          <div class="tag">看 y 軸夾角（快速判斷）</div>
+          <p>若角和 y 軸夾角為 <code>β</code>，則可用 <code>sin/cos</code> 互換觀念（因為和 x 軸互為餘角）。</p>
+          <p>例如終邊在 II 象限且與 y 軸夾角 20°，則和 x 軸夾角 70°，可快速推得 <code>sin</code> 正、<code>cos</code> 負。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>五、未知數 θ 時如何化簡</h2>
+      <div class="mini">
+        <div class="tag">策略模板</div>
+        <p>1) 把式子改寫成同一主角（例如都用 <code>sin θ, cos θ, tan θ</code>）。</p>
+        <p>2) 優先用恆等式：<code>sin²θ+cos²θ=1</code>、<code>tanθ=sinθ/cosθ</code>。</p>
+        <p>3) 若含 <code>(90°-θ)</code> 或 <code>(180°±θ)</code>，先用餘角或誘導公式降階。</p>
+        <p>4) 最後再看象限或定義域限制符號。</p>
+      </div>
+      <div class="mini" style="margin-top:10px;">
+        <div class="tag">課堂代表例</div>
+        <p>已知 <code>sin θ = 3/5</code> 且 <code>θ</code> 在第一象限，求 <code>cos θ</code>、<code>tan θ</code>。<br>解：<code>cos θ = 4/5</code>、<code>tan θ = 3/4</code>。</p>
+      </div>
+    </section>
+
+    <section class="card" id="trig-quiz">
+      <h2>六、三角比四選一測驗</h2>
+      <p>先選題型版本與角度單位，再從固定、完整的答案盤選答。作答後才會顯示理由，讓學生練習先判斷、再核對。</p>
+      <div class="quiz-toolbar" aria-label="選擇測驗程度">
+        <button class="btn secondary quiz-level is-active" type="button" data-level="basic-quarter" data-degree-label="第 1 層：基本 0°~90°" data-radian-label="第 1 層：基本 0~π/2">第 1 層：基本 0°~90°</button>
+        <button class="btn secondary quiz-level" type="button" data-level="basic-full" data-degree-label="第 2 層：基本 0°~360°" data-radian-label="第 2 層：基本 0~2π">第 2 層：基本 0°~360°</button>
+        <button class="btn secondary quiz-level" type="button" data-level="special-quarter" data-degree-label="第 3 層：延伸特殊角 0°~90°" data-radian-label="第 3 層：延伸特殊角 0~π/2">第 3 層：延伸特殊角 0°~90°</button>
+        <button class="btn secondary quiz-level" type="button" data-level="special-full" data-degree-label="第 4 層：延伸特殊角 0°~360°" data-radian-label="第 4 層：延伸特殊角 0~2π">第 4 層：延伸特殊角 0°~360°</button>
+      </div>
+      <div class="quiz-toolbar">
+        <strong>角度表示：</strong>
+        <button class="btn secondary unit-toggle is-active" type="button" data-unit="degree">角度（360° 一圈）</button>
+        <button class="btn secondary unit-toggle" type="button" data-unit="radian">弧度（2π 一圈）</button>
+        <button class="btn" type="button" id="next-question">下一題</button>
+      </div>
+      <p class="quiz-note" id="quiz-instruction">第 1 層：先熟記 0°、30°、45°、60°、90° 的 sin、cos、tan。</p>
+      <div class="score-board" aria-live="polite">
+        <span class="score-item" id="score-total">答對 0 / 0 題</span>
+        <span class="score-item" id="score-streak">連續答對 0 題</span>
+      </div>
+      <div class="practice-box">
+        <div id="quiz-question" class="quiz-question"></div>
+        <div id="quiz-options" class="options"></div>
+        <div id="quiz-feedback" class="quiz-feedback" aria-live="polite"></div>
+      </div>
+      <div class="mini" style="margin-top:12px;">
+        <div class="tag">教師提醒</div>
+        <p>答案盤會隨層級完整展開：基本值、15° 系列、22.5° 系列與 18° 倍角系列分別出現。第 2、4 層先要求學生說出參考角與象限；切換弧度後，再要求學生把角度讀成 <code>π</code> 的分數倍。</p>
+      </div>
+    </section>
+
+    <p class="foot">教學建議：先全班一起做基礎 2 題，再分組做進階 2 題，最後個人完成挑戰題並互相講解。</p>
+  </main>
+
+  <script>
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function pick(arr) {
+      return arr[randInt(0, arr.length - 1)];
+    }
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = randInt(0, i);
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    const baseValues = {
+      0: { sin: "0", cos: "1", tan: "0" },
+      15: { sin: "(√6−√2)/4", cos: "(√6+√2)/4", tan: "2−√3" },
+      18: { sin: "(√5−1)/4", cos: "√(10+2√5)/4", tan: "√(25−10√5)/5" },
+      22.5: { sin: "√(2−√2)/2", cos: "√(2+√2)/2", tan: "√2−1" },
+      30: { sin: "1/2", cos: "√3/2", tan: "√3/3" },
+      36: { sin: "√(10−2√5)/4", cos: "(√5+1)/4", tan: "√(5−2√5)" },
+      45: { sin: "√2/2", cos: "√2/2", tan: "1" },
+      54: { sin: "(√5+1)/4", cos: "√(10−2√5)/4", tan: "1/√(5−2√5)" },
+      60: { sin: "√3/2", cos: "1/2", tan: "√3" },
+      67.5: { sin: "√(2+√2)/2", cos: "√(2−√2)/2", tan: "√2+1" },
+      72: { sin: "√(10+2√5)/4", cos: "(√5−1)/4", tan: "√(5+2√5)" },
+      75: { sin: "(√6+√2)/4", cos: "(√6−√2)/4", tan: "2+√3" },
+      90: { sin: "1", cos: "0", tan: "未定義" }
+    };
+    const basicQuarterAngles = [0, 30, 45, 60, 90];
+    const specialQuarterAngles = [0, 15, 18, 22.5, 30, 36, 45, 54, 60, 67.5, 72, 75, 90];
+    const basicQuarterAnswers = ["0", "1/2", "√2/2", "√3/2", "1", "√3/3", "√3", "未定義"];
+    const basicFullAnswers = [
+      "1/2", "√2/2", "√3/2", "1", "−1/2", "−√2/2", "−√3/2", "−1",
+      "−√3/3", "√3/3", "−√3", "√3", "0", "未定義"
+    ];
+    const specialQuarterAnswers = [
+      "0", "1/2", "√2/2", "√3/2", "1", "√3/3", "√3", "未定義",
+      "(√6−√2)/4", "(√6+√2)/4", "2−√3", "2+√3",
+      "√(2−√2)/2", "√(2+√2)/2", "√2−1", "√2+1",
+      "(√5−1)/4", "(√5+1)/4", "√(10−2√5)/4", "√(10+2√5)/4",
+      "√(5−2√5)", "1/√(5−2√5)", "√(5+2√5)", "√(25−10√5)/5"
+    ];
+    const quizState = { level: "basic-quarter", unit: "degree", correct: 0, total: 0, streak: 0, current: null, answered: false };
+
+    function referenceAngle(deg) {
+      if (deg <= 90) return deg;
+      if (deg <= 180) return 180 - deg;
+      if (deg <= 270) return deg - 180;
+      return 360 - deg;
+    }
+    function quadrantOrAxis(deg) {
+      if ([0, 90, 180, 270, 360].includes(deg)) return "座標軸上";
+      if (deg < 90) return "第一象限";
+      if (deg < 180) return "第二象限";
+      if (deg < 270) return "第三象限";
+      return "第四象限";
+    }
+    function signedValue(deg, fn) {
+      const ref = referenceAngle(deg);
+      const value = baseValues[ref][fn];
+      if (value === "0" || value === "未定義") return value;
+      const negative = (fn === "sin" && deg > 180 && deg < 360)
+        || (fn === "cos" && deg > 90 && deg < 270)
+        || (fn === "tan" && ((deg > 90 && deg < 180) || (deg > 270 && deg < 360)));
+      return negative ? `−${value}` : value;
+    }
+    function makeFullAngles(firstQuadrantAngles) {
+      const result = new Set();
+      firstQuadrantAngles.forEach((angle) => {
+        [angle, 180 - angle, 180 + angle, 360 - angle].forEach((item) => result.add(item));
+      });
+      return [...result].sort((a, b) => a - b);
+    }
+    function greatestCommonDivisor(a, b) {
+      return b === 0 ? a : greatestCommonDivisor(b, a % b);
+    }
+    function radianLabel(deg) {
+      let numerator = Math.round(deg * 2);
+      let denominator = 360;
+      const divisor = greatestCommonDivisor(numerator, denominator);
+      numerator /= divisor;
+      denominator /= divisor;
+      if (numerator === 0) return "0";
+      if (denominator === 1) return numerator === 1 ? "π" : `${numerator}π`;
+      return numerator === 1 ? `π/${denominator}` : `${numerator}π/${denominator}`;
+    }
+    function answerChoices(level) {
+      if (level === "basic-quarter") return basicQuarterAnswers;
+      if (level === "basic-full") return basicFullAnswers;
+      if (level === "special-quarter") return specialQuarterAnswers;
+      const nonAxis = specialQuarterAnswers.filter((value) => value !== "0" && value !== "未定義");
+      return [...nonAxis, ...nonAxis.map((value) => `−${value}`), "0", "未定義"];
+    }
+    function specialAngleHint(reference) {
+      if ([15, 75].includes(reference)) return "15° = 45°−30°；75° = 90°−15°，可用和差角與餘角關係。";
+      if ([22.5, 67.5].includes(reference)) return "22.5° = 45°/2；67.5° = 90°−22.5°，可用半角與餘角關係。";
+      return "18°、36°、54°、72° 屬於 18° 倍角系列，和正五邊形、黃金比例有關；再搭配餘角關係可互相轉換。";
+    }
+    function levelConfig(level) {
+      const isFull = level.endsWith("full");
+      const isSpecial = level.startsWith("special");
+      const quarterAngles = isSpecial ? specialQuarterAngles : basicQuarterAngles;
+      return {
+        isFull,
+        isSpecial,
+        angles: isFull ? makeFullAngles(quarterAngles) : quarterAngles
+      };
+    }
+    function buildQuestion() {
+      const config = levelConfig(quizState.level);
+      const deg = pick(config.angles);
+      const fn = pick([90, 270].includes(deg) ? ["sin", "cos"] : ["sin", "cos", "tan"]);
+      const reference = referenceAngle(deg);
+      const displayAngle = quizState.unit === "degree" ? `${deg}°` : radianLabel(deg);
+      const baseHint = config.isSpecial
+        ? specialAngleHint(reference)
+        : "可由 30°-60°-90° 與 45°-45°-90° 直角三角形記憶。";
+      const fullHint = config.isFull
+        ? `先找參考角 ${reference}°，再判斷終邊在${quadrantOrAxis(deg)}，最後補上正負號。`
+        : "在第一象限，sin、cos、tan 都是正值。";
+      const unitHint = quizState.unit === "radian" ? ` ${radianLabel(deg)} 對應 ${deg}°。` : "";
+      return {
+        prompt: `${fn} ${displayAngle} = ?`,
+        correct: signedValue(deg, fn),
+        options: answerChoices(quizState.level),
+        explanation: `${fullHint} ${baseHint}${unitHint}`
+      };
+    }
+    function renderScore() {
+      document.getElementById("score-total").textContent = `答對 ${quizState.correct} / ${quizState.total} 題`;
+      document.getElementById("score-streak").textContent = `連續答對 ${quizState.streak} 題`;
+    }
+    function renderQuestion() {
+      const question = quizState.current;
+      document.getElementById("quiz-question").textContent = question.prompt;
+      const options = document.getElementById("quiz-options");
+      options.innerHTML = "";
+      question.options.forEach((value) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option";
+        button.dataset.value = value;
+        button.textContent = value;
+        button.addEventListener("click", () => answerQuestion(value));
+        options.appendChild(button);
+      });
+      const feedback = document.getElementById("quiz-feedback");
+      feedback.className = "quiz-feedback";
+      feedback.innerHTML = "";
+    }
+    function nextQuestion() {
+      quizState.current = buildQuestion();
+      quizState.answered = false;
+      renderQuestion();
+    }
+    function answerQuestion(value) {
+      if (quizState.answered) return;
+      quizState.answered = true;
+      quizState.total += 1;
+      const isCorrect = value === quizState.current.correct;
+      quizState.correct += isCorrect ? 1 : 0;
+      quizState.streak = isCorrect ? quizState.streak + 1 : 0;
+      document.querySelectorAll(".option").forEach((button) => {
+        button.disabled = true;
+        if (button.dataset.value === quizState.current.correct) button.classList.add("is-correct");
+        if (button.dataset.value === value && !isCorrect) button.classList.add("is-wrong");
+      });
+      const feedback = document.getElementById("quiz-feedback");
+      feedback.className = `quiz-feedback show ${isCorrect ? "correct" : "wrong"}`;
+      feedback.innerHTML = isCorrect
+        ? `<strong>答對了。</strong> ${quizState.current.explanation}`
+        : `<strong>這題答案是 ${quizState.current.correct}。</strong> ${quizState.current.explanation}`;
+      renderScore();
+    }
+    function setLevel(level) {
+      quizState.level = level;
+      document.querySelectorAll(".quiz-level").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.level === level);
+      });
+      const instructions = {
+        "basic-quarter": "第 1 層：0°、30°、45°、60°、90° 的正值與未定義情形。",
+        "basic-full": "第 2 層：基本特殊角擴充到完整一圈；先看參考角，再決定正負號。",
+        "special-quarter": "第 3 層：加入 15°、22.5°、18° 及其在第一象限的倍角、餘角。",
+        "special-full": "第 4 層：把延伸特殊角擴充到完整一圈，是四層中最完整的象限判斷練習。"
+      };
+      document.getElementById("quiz-instruction").textContent = instructions[level];
+      nextQuestion();
+    }
+    function setUnit(unit) {
+      quizState.unit = unit;
+      document.querySelectorAll(".unit-toggle").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.unit === unit);
+      });
+      document.querySelectorAll(".quiz-level").forEach((button) => {
+        button.textContent = unit === "degree" ? button.dataset.degreeLabel : button.dataset.radianLabel;
+      });
+      nextQuestion();
+    }
+
+    document.querySelectorAll(".quiz-level").forEach((button) => {
+      button.addEventListener("click", () => setLevel(button.dataset.level));
+    });
+    document.querySelectorAll(".unit-toggle").forEach((button) => {
+      button.addEventListener("click", () => setUnit(button.dataset.unit));
+    });
+    document.getElementById("next-question").addEventListener("click", nextQuestion);
+
+    renderScore();
+    nextQuestion();
+  </script>
+</body>
+</html>
