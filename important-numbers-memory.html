@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>重要數字與心算規則｜國高中數學</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --ink: #172033;
+      --sub: #526176;
+      --line: #d8e2ee;
+      --brand: #0f766e;
+      --brand-dark: #115e59;
+      --blue: #075985;
+      --blue-bg: #e0f2fe;
+      --gold: #a16207;
+      --gold-bg: #fef9c3;
+      --good: #166534;
+      --good-bg: #dcfce7;
+      --bad: #b42318;
+      --bad-bg: #fff1f2;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.7;
+      background:
+        radial-gradient(circle at 4% 2%, #ccfbf1 0, transparent 28%),
+        radial-gradient(circle at 97% 0%, #dbeafe 0, transparent 25%),
+        var(--bg);
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 22px; }
+    .back {
+      display: inline-block;
+      color: var(--brand-dark);
+      font-weight: 800;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+    .hero, .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 13px 30px rgba(15, 23, 42, .06);
+    }
+    .hero { padding: clamp(20px, 4vw, 34px); margin-bottom: 16px; }
+    h1 { margin: 0 0 8px; font-size: clamp(29px, 5vw, 44px); letter-spacing: .02em; }
+    h2 { margin: 0 0 10px; font-size: clamp(22px, 3vw, 28px); }
+    h3 { margin: 0 0 7px; font-size: 19px; }
+    p { margin: 0 0 10px; }
+    .lead { color: var(--sub); max-width: 880px; font-size: 17px; }
+    .nav, .tools, .score-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .nav { margin-top: 16px; }
+    .nav a, .button, .choice {
+      display: inline-block;
+      appearance: none;
+      border: 1px solid var(--brand);
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: var(--brand);
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .nav a:hover, .button:hover { background: var(--brand-dark); }
+    .button.secondary { background: #fff; color: var(--brand-dark); }
+    .button.secondary:hover { background: #f0fdfa; }
+    .section { margin-top: 18px; }
+    .section-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; margin: 0 2px 10px; }
+    .section-head p { color: var(--sub); margin: 0; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); }
+    .card { padding: 16px; }
+    .mini {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fcfdff;
+    }
+    .mini p { color: var(--sub); }
+    .tag {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid #99f6e4;
+      background: #ccfbf1;
+      color: #134e4a;
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+    .tag.blue { background: var(--blue-bg); border-color: #bae6fd; color: #0c4a6e; }
+    .tag.gold { background: var(--gold-bg); border-color: #fde68a; color: #854d0e; }
+    .formula {
+      padding: 10px 12px;
+      margin: 9px 0;
+      border-left: 4px solid var(--brand);
+      border-radius: 9px;
+      background: #f0fdfa;
+      font-size: 17px;
+      font-weight: 800;
+    }
+    code, .math {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 6px;
+      padding: 1px 5px;
+      color: #312e81;
+      font-family: Consolas, "Courier New", monospace;
+    }
+    .fact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+      gap: 7px;
+      margin-top: 9px;
+    }
+    .fact {
+      padding: 6px 7px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fcfdff;
+      font-weight: 800;
+      text-align: center;
+    }
+    .fact small { display: block; color: var(--sub); font-weight: 500; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: center; }
+    th { background: #f0fdfa; color: #134e4a; }
+    .note, .error-note, .teacher-note {
+      border-radius: 12px;
+      padding: 11px 12px;
+      margin-top: 10px;
+    }
+    .note { background: #fffbeb; border: 1px solid #fde68a; }
+    .error-note { background: #fff1f2; border: 1px solid #fecdd3; }
+    .teacher-note { background: #eff6ff; border: 1px solid #bfdbfe; }
+    .note strong, .error-note strong, .teacher-note strong { color: var(--ink); }
+    .pair-row { display: grid; grid-template-columns: repeat(5, minmax(42px, 1fr)); gap: 6px; margin: 8px 0; }
+    .pair {
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 5px 4px;
+      background: #f8fafc;
+      font-weight: 800;
+      letter-spacing: .05em;
+    }
+    .warmup { display: grid; gap: 14px; grid-template-columns: minmax(0, 1.6fr) minmax(250px, .9fr); }
+    .warm-question {
+      padding: 14px;
+      border: 1px dashed #67e8f9;
+      background: #ecfeff;
+      border-radius: 13px;
+      min-height: 104px;
+    }
+    .warm-question .question { margin: 3px 0 8px; font-size: clamp(22px, 4vw, 31px); font-weight: 900; }
+    .answer-line { min-height: 28px; color: var(--good); font-weight: 800; }
+    .study-list { margin: 0; padding-left: 21px; color: var(--sub); }
+    .practice-card { padding: clamp(17px, 3vw, 24px); }
+    label { display: block; margin: 9px 0 4px; font-weight: 800; }
+    select, input {
+      width: 100%; max-width: 520px;
+      border: 1px solid #94a3b8;
+      border-radius: 10px;
+      padding: 9px 10px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+    }
+    .practice-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(250px, .8fr); gap: 16px; }
+    .question-box {
+      padding: 17px;
+      border: 1px solid #99f6e4;
+      border-radius: 14px;
+      background: #f0fdfa;
+    }
+    .practice-question { font-size: clamp(25px, 5vw, 38px); font-weight: 900; line-height: 1.35; margin: 6px 0 13px; }
+    .feedback {
+      min-height: 72px;
+      margin-top: 11px;
+      padding: 10px 12px;
+      border: 1px dashed #94a3b8;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+    .feedback.good { background: var(--good-bg); border-color: #86efac; color: var(--good); }
+    .feedback.bad { background: var(--bad-bg); border-color: #fda4af; color: var(--bad); }
+    .score {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid #a5f3fc;
+      background: #ecfeff;
+      color: #155e75;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .hidden { display: none; }
+    .steps { display: grid; gap: 8px; counter-reset: plan; }
+    .step {
+      counter-increment: plan;
+      padding: 10px 10px 10px 45px;
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fcfdff;
+    }
+    .step::before {
+      content: counter(plan);
+      position: absolute; left: 11px; top: 10px;
+      display: grid; place-items: center;
+      width: 24px; height: 24px;
+      border-radius: 50%; background: var(--brand); color: #fff; font-weight: 900;
+    }
+    .footer { color: var(--sub); text-align: center; padding: 24px 0 8px; font-size: 14px; }
+    @media (max-width: 720px) {
+      .wrap { padding: 14px; }
+      .warmup, .practice-layout { grid-template-columns: 1fr; }
+      .pair-row { grid-template-columns: repeat(5, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回數學小遊戲教學首頁</a>
+
+    <section class="hero">
+      <div class="tag">國中到高中・心算與數感</div>
+      <h1>重要數字與心算規則</h1>
+      <p class="lead">不是把一長串數字硬背起來，而是把常用的「數字組合」變成看見就有反應的工具。先認得規律，再用短題反覆提取；計算題、百分率、因數判斷與估算都會更快更穩。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#warmup">一分鐘暖身</a>
+        <a href="#numbers">必背數字庫</a>
+        <a href="#rules">心算規則</a>
+        <a href="#practice">分級練習</a>
+      </nav>
+    </section>
+
+    <section id="warmup" class="section">
+      <div class="section-head">
+        <h2>一分鐘暖身：先「想答案」，再看提示</h2>
+        <p>老師可投影後停 5 秒；學生先用口算回答。</p>
+      </div>
+      <div class="card warmup">
+        <div class="warm-question">
+          <div class="tag blue" id="warmTag">暖身題</div>
+          <div class="question" id="warmQuestion">45² = ？</div>
+          <div id="warmAnswer" class="answer-line" aria-live="polite">先在心中算一次，再按「看答案」。</div>
+          <div class="tools">
+            <button class="button secondary" id="warmReveal" type="button">看答案與想法</button>
+            <button class="button" id="warmNext" type="button">換一題</button>
+          </div>
+        </div>
+        <div>
+          <h3>建議節奏</h3>
+          <ol class="study-list">
+            <li>每天 3～5 題，先不寫計算式。</li>
+            <li>答錯時回看「哪個規律沒抓到」。</li>
+            <li>隔天混入舊題；能說出理由才算記住。</li>
+          </ol>
+          <div class="teacher-note"><strong>課堂提示：</strong>先問「你看見哪個熟悉的數字？」再問答案，能避免學生只猜不說方法。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="numbers" class="section">
+      <div class="section-head">
+        <h2>必背數字庫</h2>
+        <p>先背高使用率的數字，遇到題目再由規律補齊。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="tag">指數與二進位</div>
+          <h3>2 的冪次：一路加倍到 1024</h3>
+          <p>它會反覆出現在科學記號、資訊、排列組合與估算中。</p>
+          <div class="fact-grid">
+            <div class="fact">2¹<small>2</small></div><div class="fact">2²<small>4</small></div>
+            <div class="fact">2³<small>8</small></div><div class="fact">2⁴<small>16</small></div>
+            <div class="fact">2⁵<small>32</small></div><div class="fact">2⁶<small>64</small></div>
+            <div class="fact">2⁷<small>128</small></div><div class="fact">2⁸<small>256</small></div>
+            <div class="fact">2⁹<small>512</small></div><div class="fact">2¹⁰<small>1024</small></div>
+          </div>
+          <div class="note"><strong>記憶鉤子：</strong><code>2¹⁰ = 1024 ≈ 1000</code>；考估算時很實用。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag blue">小數、分數、百分率</div>
+          <h3>小數點每往左一格，就是除以 10</h3>
+          <div class="formula">0.1 = 1/10 = 10<sup>−1</sup></div>
+          <div class="formula">1% = 0.01 = 1/100</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>分數</th><th>小數</th><th>百分率</th></tr></thead>
+              <tbody>
+                <tr><td>1/2</td><td>0.5</td><td>50%</td></tr>
+                <tr><td>1/4</td><td>0.25</td><td>25%</td></tr>
+                <tr><td>1/5</td><td>0.2</td><td>20%</td></tr>
+                <tr><td>1/8</td><td>0.125</td><td>12.5%</td></tr>
+                <tr><td>3/4</td><td>0.75</td><td>75%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="error-note"><strong>常見錯誤：</strong>把 0.1 寫成 1%，或把「乘 100%」誤當「乘 100」。百分率的符號本身就代表除以 100。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag gold">平方數</div>
+          <h3>11～32 的平方數</h3>
+          <p>先記 <code>15²=225</code>、<code>20²=400</code>、<code>25²=625</code>、<code>30²=900</code> 這些錨點，再補附近數字。</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>n</th><th>n²</th><th>n</th><th>n²</th></tr></thead>
+              <tbody>
+                <tr><td>11</td><td>121</td><td>22</td><td>484</td></tr>
+                <tr><td>12</td><td>144</td><td>23</td><td>529</td></tr>
+                <tr><td>13</td><td>169</td><td>24</td><td>576</td></tr>
+                <tr><td>14</td><td>196</td><td>25</td><td>625</td></tr>
+                <tr><td>15</td><td>225</td><td>26</td><td>676</td></tr>
+                <tr><td>16</td><td>256</td><td>27</td><td>729</td></tr>
+                <tr><td>17</td><td>289</td><td>28</td><td>784</td></tr>
+                <tr><td>18</td><td>324</td><td>29</td><td>841</td></tr>
+                <tr><td>19</td><td>361</td><td>30</td><td>900</td></tr>
+                <tr><td>20</td><td>400</td><td>31</td><td>961</td></tr>
+                <tr><td>21</td><td>441</td><td>32</td><td>1024</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="tag">因數與質數判斷</div>
+          <h3>容易被誤認為質數的合數</h3>
+          <p>看到這些數字時，先想已知因數，不必重新試除一遍。</p>
+          <div class="fact-grid">
+            <div class="fact">51<small>3 × 17</small></div><div class="fact">57<small>3 × 19</small></div>
+            <div class="fact">77<small>7 × 11</small></div><div class="fact">87<small>3 × 29</small></div>
+            <div class="fact">91<small>7 × 13</small></div><div class="fact">119<small>7 × 17</small></div>
+            <div class="fact">121<small>11 × 11</small></div><div class="fact">143<small>11 × 13</small></div>
+            <div class="fact">169<small>13 × 13</small></div><div class="fact">221<small>13 × 17</small></div>
+          </div>
+          <div class="note"><strong>檢查順序：</strong>先看 2、3、5；再試到平方根即可。例如 <code>91</code> 的平方根小於 10，只要檢查 2、3、5、7。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag blue">幾何長度感</div>
+          <h3>常見畢氏數組</h3>
+          <p>直角三角形題可先辨認比例，再依題意同倍放大。</p>
+          <div class="fact-grid">
+            <div class="fact">3–4–5<small>最常用</small></div>
+            <div class="fact">5–12–13<small>整數邊</small></div>
+            <div class="fact">8–15–17<small>整數邊</small></div>
+            <div class="fact">7–24–25<small>整數邊</small></div>
+          </div>
+          <div class="error-note"><strong>易混淆：</strong>這些是「三邊比例」，不是三個角度；例如 6–8–10 是 3–4–5 的 2 倍。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag gold">平方數的尾數</div>
+          <h3>平方的個位數只會是 0、1、4、5、6、9</h3>
+          <p>因此一個整數若個位數是 2、3、7、8，<strong>不可能</strong>是完全平方數。</p>
+          <div class="fact-grid">
+            <div class="fact">0² → 0</div><div class="fact">1² → 1</div><div class="fact">2² → 4</div>
+            <div class="fact">3² → 9</div><div class="fact">4² → 6</div><div class="fact">5² → 5</div>
+            <div class="fact">6² → 6</div><div class="fact">7² → 9</div><div class="fact">8² → 4</div><div class="fact">9² → 1</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="rules" class="section">
+      <div class="section-head">
+        <h2>心算規則：先看結構，再動筆算</h2>
+        <p>規則是捷徑，不是取代正確的算式；每次都要知道它為什麼成立。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="tag">個位數配對</div>
+          <h3>補到 5、9、10 的數字組</h3>
+          <p>這三組可用在湊整、借位與拆數。讀成「兩個數加起來是多少」，不要把它們誤當成乘法表。</p>
+          <p><strong>相差 5：</strong></p>
+          <div class="pair-row"><div class="pair">0・5</div><div class="pair">1・6</div><div class="pair">2・7</div><div class="pair">3・8</div><div class="pair">4・9</div></div>
+          <p><strong>合成 10：</strong></p>
+          <div class="pair-row"><div class="pair">1・9</div><div class="pair">2・8</div><div class="pair">3・7</div><div class="pair">4・6</div><div class="pair">5・5</div></div>
+          <p><strong>合成 9：</strong></p>
+          <div class="pair-row"><div class="pair">1・8</div><div class="pair">2・7</div><div class="pair">3・6</div><div class="pair">4・5</div><div class="pair"> </div></div>
+          <div class="note"><strong>例：</strong><code>68 − 29</code> 可先想 <code>68 − 30 + 1 = 39</code>；9 的補數、10 的補數會讓調整更快。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag blue">縮放乘法</div>
+          <h3>把 10、100、1000 拆成好記的因數</h3>
+          <div class="formula">2 × 5 = 10</div>
+          <div class="formula">4 × 25 = 100</div>
+          <div class="formula">8 × 125 = 1000</div>
+          <p><strong>例：</strong><code>48 × 25 = 12 × (4 × 25) = 1200</code>。</p>
+          <p><strong>例：</strong><code>56 × 125 = 7 × (8 × 125) = 7000</code>。</p>
+          <div class="error-note"><strong>常見錯誤：</strong>只能在某個因數真的能拆成 2、4、8 的倍數時這樣重組；<code>30 × 25</code> 不能直接把 30 變成 4。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag gold">尾數是 5 的平方</div>
+          <h3>(10n + 5)²：前面乘「下一個」，尾巴接 25</h3>
+          <div class="formula">(10n + 5)² = 100n(n + 1) + 25</div>
+          <p><strong>口訣：</strong>以 <code>45²</code> 為例，先算 <code>4 × 5 = 20</code>，再接 <code>25</code>，得 <code>2025</code>。</p>
+          <p><strong>再一題：</strong><code>85²</code> → <code>8 × 9 = 72</code> → <code>7225</code>。</p>
+          <div class="error-note"><strong>常見錯誤：</strong>規則只適用於「個位數是 5」的整數平方；<code>35²</code> 的前段是 <code>3×4</code>，不是 <code>3²</code>。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag">靠近整數百</div>
+          <h3>接近 100 時，用差補回去</h3>
+          <p>先把數字看成 <code>100 − 差</code>，比直式乘法更容易看出結果大小。</p>
+          <div class="formula">98 × 97 = (100 − 2)(100 − 3) = 10000 − 500 + 6 = 9506</div>
+          <p>也可用「交叉減」：<code>98 − 3 = 95</code>，尾兩位是 <code>2×3=06</code>，所以是 <code>9506</code>。</p>
+          <div class="error-note"><strong>易錯點：</strong>尾兩位不足兩位時一定補 0；<code>2×3=6</code> 要寫成 <code>06</code>。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag blue">平方差</div>
+          <h3>一加一減的配對：不要展開硬算</h3>
+          <div class="formula">(a − b)(a + b) = a² − b²</div>
+          <p><strong>例：</strong><code>47 × 53 = (50 − 3)(50 + 3) = 2500 − 9 = 2491</code>。</p>
+          <p>看到兩數「以同一個中間數對稱」時最適合，例如 39 和 41、98 和 102。</p>
+          <div class="note"><strong>連結：</strong>這也是國中乘法公式、高中因式分解會再遇到的結構。</div>
+        </article>
+
+        <article class="card">
+          <div class="tag gold">平方表的推進法</div>
+          <h3>下一個平方，多加「下一個奇數」</h3>
+          <div class="formula">(n + 1)² = n² + 2n + 1</div>
+          <p><strong>例：</strong>已知 <code>24² = 576</code>，則 <code>25² = 576 + 49 = 625</code>；再加 51 就是 <code>26² = 676</code>。</p>
+          <div class="note"><strong>用途：</strong>平方表忘了某一格時，不必從頭乘；從最近的已知錨點前進或後退即可。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="practice" class="section">
+      <div class="section-head">
+        <h2>分級練習：把記憶變成反應</h2>
+        <p>每題答完都會給出最短的解題想法；可挑自己需要的類型。</p>
+      </div>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="tag gold">先學借位：把減法想成加法配對</div>
+        <h3>個位不夠減時，先想「還差多少才湊回原數」</h3>
+        <p>下列組合很常用：它們能幫助你快速回答 <code>15−8</code>、<code>13−7</code> 這類題目，也是在二位數減個位數借位時最重要的基礎。</p>
+        <div class="grid">
+          <div class="mini">
+            <div class="formula">4 + 7 = 11　　3 + 8 = 11</div>
+            <p>所以遇到 <code>11−7</code> 時，直接想「7 加 4 是 11」，答案是 4。</p>
+          </div>
+          <div class="mini">
+            <div class="formula">6 + 7 = 13　　5 + 8 = 13</div>
+            <p>例如 <code>13−8=5</code>；不是硬背，而是把減法換成「8 還差多少到 13」。</p>
+          </div>
+          <div class="mini">
+            <div class="formula">7 + 8 = 15</div>
+            <p>因此 <code>15−8=7</code>，也有 <code>15−7=8</code>。一組加法事實，可以回答兩個減法題。</p>
+          </div>
+        </div>
+        <div class="teacher-note"><strong>連到二位數：</strong><code>42−7</code> 時，個位的 2 不夠減 7，就向十位借 1 個十；<code>4 十</code> 變成 <code>3 十</code>，<code>2</code> 變成 <code>12</code>。再用配對想 <code>12−7=5</code>，所以答案是 <code>35</code>。</div>
+        <div class="error-note"><strong>最常見錯誤：</strong>借走的是「1 個十」，不是只把個位數隨便加 10；因此十位也要少 1。</div>
+      </div>
+      <div class="card practice-card">
+        <div class="practice-layout">
+          <div>
+            <label for="practiceType">題型</label>
+            <select id="practiceType">
+              <option value="complement">基礎｜補到 5、9、10</option>
+              <option value="scaling">基礎｜2×5、4×25、8×125</option>
+              <option value="square5">進階｜尾數是 5 的平方</option>
+              <option value="squares">進階｜11～32 的平方數</option>
+              <option value="powers">進階｜2 的冪次</option>
+              <option value="composite">進階｜合數快速辨認</option>
+              <option value="sub2singleborrow">心算減法｜二位數 − 個位數（需借位）</option>
+              <option value="sub2easy">心算減法｜二位數 − 二位數（不借位）</option>
+              <option value="sub2borrow">心算減法｜二位數 − 二位數（含借位）</option>
+              <option value="sub3easy">挑戰｜三位數 − 三位數（不借位）</option>
+              <option value="sub3borrow">挑戰｜三位數 − 三位數（含借位）</option>
+            </select>
+            <div class="tools">
+              <button class="button" id="newQuestion" type="button">出一題</button>
+              <button class="button secondary" id="showHint" type="button">看提示</button>
+            </div>
+          </div>
+          <div>
+            <h3>三輪練習法</h3>
+            <div class="steps">
+              <div class="step"><strong>認：</strong>先說出看到的規律或錨點。</div>
+              <div class="step"><strong>答：</strong>限時 10 秒作答，不翻表。</div>
+              <div class="step"><strong>補：</strong>錯題隔天、三天後各重做一次。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-box" style="margin-top:16px;">
+          <div class="score-row" aria-live="polite">
+            <span class="score" id="scoreText">答對 0 題／共 0 題</span>
+            <span class="score" id="streakText">連對 0 題</span>
+          </div>
+          <div class="tag blue" id="practiceTag">基礎練習</div>
+          <div class="practice-question" id="practiceQuestion">按「出一題」開始。</div>
+          <label for="answerInput">你的答案</label>
+          <input id="answerInput" inputmode="numeric" autocomplete="off" placeholder="輸入數字後按檢查答案">
+          <div class="tools">
+            <button class="button" id="checkAnswer" type="button">檢查答案</button>
+            <button class="button secondary" id="revealAnswer" type="button">顯示答案</button>
+          </div>
+          <div class="feedback" id="feedback" aria-live="polite">選好題型後按「出一題」。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="tag">老師備課與學生自學</div>
+        <h2>一堂 10 分鐘的使用建議</h2>
+        <div class="grid">
+          <div>
+            <h3>課堂投影</h3>
+            <p>用「一分鐘暖身」連出 3 題，請學生先報方法；再挑一個規則，帶著例題說明為何成立，最後開二位數減法練習全班作答。</p>
+          </div>
+          <div>
+            <h3>課後自學</h3>
+            <p>每天只選一組：平方、2 的冪次或百分率。答題時先遮住表格，累積連對 5 題再換下一組。</p>
+          </div>
+          <div>
+            <h3>錯題診斷</h3>
+            <p>減法常錯就回到「補到 10」；平方常錯就從最近錨點用奇數差推進。不要只重算答案，要回到缺掉的數字關係。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">重要數字不是背得越多越好；能在題目裡辨認、說明並活用，才是真的記住。</p>
+  </main>
+
+  <script>
+    const warmups = [
+      { tag: "平方捷徑", q: "45² = ？", a: "2025。4×5=20，再接 25，所以 45²=2025。" },
+      { tag: "百分率", q: "0.125 = ？%", a: "12.5%。小數轉百分率要乘 100%，也就是小數點往右移兩格。" },
+      { tag: "因數快判", q: "91 是質數嗎？", a: "不是。91=7×13；試除到 √91 小於 10，所以檢查到 7 即可。" },
+      { tag: "2 的冪次", q: "2¹⁰ = ？", a: "1024。這是估算時很重要的錨點：2¹⁰ 約等於 10³。" },
+      { tag: "縮放乘法", q: "56×125 = ？", a: "7000。56=7×8，先算 8×125=1000，再乘 7。" },
+      { tag: "平方表", q: "27² = ？", a: "729。也可由 26²=676 再加 53，得到 729。" }
+    ];
+    let warmIndex = 0;
+    let warmShown = false;
+    const warmTag = document.getElementById("warmTag");
+    const warmQuestion = document.getElementById("warmQuestion");
+    const warmAnswer = document.getElementById("warmAnswer");
+
+    function renderWarmup() {
+      const item = warmups[warmIndex];
+      warmTag.textContent = item.tag;
+      warmQuestion.textContent = item.q;
+      warmAnswer.textContent = warmShown ? item.a : "先在心中算一次，再按「看答案」。";
+    }
+    document.getElementById("warmReveal").addEventListener("click", () => { warmShown = true; renderWarmup(); });
+    document.getElementById("warmNext").addEventListener("click", () => {
+      warmIndex = (warmIndex + 1) % warmups.length;
+      warmShown = false;
+      renderWarmup();
+    });
+
+    const practiceType = document.getElementById("practiceType");
+    const practiceTag = document.getElementById("practiceTag");
+    const practiceQuestion = document.getElementById("practiceQuestion");
+    const answerInput = document.getElementById("answerInput");
+    const feedback = document.getElementById("feedback");
+    const scoreText = document.getElementById("scoreText");
+    const streakText = document.getElementById("streakText");
+    let current = null;
+    let correct = 0;
+    let total = 0;
+    let streak = 0;
+
+    function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function digitNoBorrowPair(digits) {
+      let top = "";
+      let bottom = "";
+      for (let i = 0; i < digits; i += 1) {
+        const minTop = i === 0 ? 1 : 0;
+        const a = randomInt(minTop, 9);
+        const b = randomInt(0, a);
+        top += a;
+        bottom += b;
+      }
+      return [Number(top), Number(bottom)];
+    }
+    function makeBorrowQuestion(digits) {
+      for (let tries = 0; tries < 100; tries += 1) {
+        const min = digits === 2 ? 20 : 120;
+        const max = digits === 2 ? 99 : 999;
+        const a = randomInt(min, max);
+        const b = randomInt(min, a - 1);
+        const aText = String(a).padStart(digits, "0");
+        const bText = String(b).padStart(digits, "0");
+        if ([...aText].some((ch, index) => Number(ch) < Number(bText[index]))) return [a, b];
+      }
+      return digits === 2 ? [73, 48] : [703, 468];
+    }
+    function makeTwoDigitSingleBorrowQuestion() {
+      const tens = randomInt(2, 9);
+      const ones = randomInt(0, 8);
+      const subtrahend = randomInt(ones + 1, 9);
+      return [tens * 10 + ones, subtrahend];
+    }
+    function makeQuestion(type) {
+      const problems = {
+        complement() {
+          const targets = [5, 9, 10];
+          const target = targets[randomInt(0, targets.length - 1)];
+          const left = randomInt(1, target - 1);
+          return { tag: "基礎・補數", q: `${left} + □ = ${target}`, answer: target - left, hint: `想「${left} 還差多少才到 ${target}？」`, explain: `${target}−${left}=${target - left}。這是湊整與借位的基本反應。` };
+        },
+        scaling() {
+          const list = [
+            { q: "48 × 25 = ？", answer: 1200, hint: "把 48 拆成 12×4。", explain: "48×25=12×(4×25)=12×100=1200。" },
+            { q: "56 × 125 = ？", answer: 7000, hint: "把 56 拆成 7×8。", explain: "56×125=7×(8×125)=7×1000=7000。" },
+            { q: "34 × 5 = ？", answer: 170, hint: "2×5=10；先把 34 拆成 17×2。", explain: "34×5=17×(2×5)=17×10=170。" }
+          ];
+          return { tag: "基礎・縮放", ...list[randomInt(0, list.length - 1)] };
+        },
+        square5() {
+          const n = randomInt(1, 9);
+          const value = 10 * n + 5;
+          return { tag: "進階・尾數 5 平方", q: `${value}² = ？`, answer: value * value, hint: `先算 ${n}×${n + 1}，再接 25。`, explain: `${n}×${n + 1}=${n * (n + 1)}，所以 ${value}²=${n * (n + 1)}25=${value * value}。` };
+        },
+        squares() {
+          const n = randomInt(11, 32);
+          return { tag: "進階・平方數", q: `${n}² = ？`, answer: n * n, hint: n === 25 ? "25²=625 是重要錨點。" : `可從 ${n - 1}² 往前：下一個平方要多加 ${2 * n - 1}。`, explain: `${n}²=${n * n}。記住附近錨點後，也能利用連續平方相差奇數來推。` };
+        },
+        powers() {
+          const n = randomInt(1, 10);
+          return { tag: "進階・2 的冪次", q: `2${"⁰¹²³⁴⁵⁶⁷⁸⁹"[n] || "¹⁰"} = ？`, answer: 2 ** n, hint: "每往下一次指數，數值就加倍。", explain: `2 的 ${n} 次方是 ${2 ** n}。可從 2¹⁰=1024 往回除以 2，或從 2¹=2 往前加倍。` };
+        },
+        composite() {
+          const list = [
+            { n: 51, factor: 3, text: "51=3×17" }, { n: 57, factor: 3, text: "57=3×19" },
+            { n: 77, factor: 7, text: "77=7×11" }, { n: 87, factor: 3, text: "87=3×29" },
+            { n: 91, factor: 7, text: "91=7×13" }, { n: 119, factor: 7, text: "119=7×17" },
+            { n: 121, factor: 11, text: "121=11×11" }, { n: 143, factor: 11, text: "143=11×13" }
+          ];
+          const item = list[randomInt(0, list.length - 1)];
+          return { tag: "進階・合數", q: `${item.n} 的最小質因數是？`, answer: item.factor, hint: "先試 2、3、5；若都不行，再想熟悉的 7、11、13。", explain: `${item.text}，所以最小質因數是 ${item.factor}。` };
+        }
+      };
+      if (type === "sub2easy" || type === "sub3easy") {
+        const digits = type === "sub2easy" ? 2 : 3;
+        const [a, b] = digitNoBorrowPair(digits);
+        return { tag: digits === 2 ? "心算減法・二位不借位" : "挑戰・三位不借位", q: `${a} − ${b} = ？`, answer: a - b, hint: "每一位都夠減，可以由左到右直接減。", explain: `${a}−${b}=${a - b}。這題每一位都不需要向前一位借。` };
+      }
+      if (type === "sub2singleborrow") {
+        const [a, b] = makeTwoDigitSingleBorrowQuestion();
+        const tens = Math.floor(a / 10);
+        const ones = a % 10;
+        return {
+          tag: "心算減法・二位減個位借位",
+          q: `${a} − ${b} = ？`,
+          answer: a - b,
+          hint: `${ones} 不夠減 ${b}，向十位借 1 個十，先算 ${10 + ones}−${b}。`,
+          explain: `${a} 中的 ${tens} 十借出 1 十後剩 ${tens - 1} 十；個位 ${ones} 變成 ${10 + ones}。${10 + ones}−${b}=${10 + ones - b}，所以答案是 ${a - b}。`
+        };
+      }
+      if (type === "sub2borrow" || type === "sub3borrow") {
+        const digits = type === "sub2borrow" ? 2 : 3;
+        const [a, b] = makeBorrowQuestion(digits);
+        return { tag: digits === 2 ? "心算減法・二位借位" : "挑戰・三位借位", q: `${a} − ${b} = ？`, answer: a - b, hint: "可把減數補到整十或整百：先減整數，再加回差額。", explain: `${a}−${b}=${a - b}。也可把 ${b} 看成接近的整十或整百，使用「先多減、再補回」的想法。` };
+      }
+      return problems[type]();
+    }
+    function updateScore() {
+      scoreText.textContent = `答對 ${correct} 題／共 ${total} 題`;
+      streakText.textContent = `連對 ${streak} 題`;
+    }
+    function setFeedback(text, state) {
+      feedback.textContent = text;
+      feedback.className = `feedback${state ? ` ${state}` : ""}`;
+    }
+    function newQuestion() {
+      current = makeQuestion(practiceType.value);
+      practiceTag.textContent = current.tag;
+      practiceQuestion.textContent = current.q;
+      answerInput.value = "";
+      setFeedback("先想規律，再輸入答案。需要時可按「看提示」。");
+      answerInput.focus();
+    }
+    function revealAnswer() {
+      if (!current) return setFeedback("請先按「出一題」。", "bad");
+      setFeedback(`答案：${current.answer}。${current.explain}`, "good");
+    }
+    function checkAnswer() {
+      if (!current) return setFeedback("請先按「出一題」。", "bad");
+      const raw = answerInput.value.trim().replace(/,/g, "");
+      if (!/^-?\d+(\.\d+)?$/.test(raw)) return setFeedback("請輸入數字答案。", "bad");
+      total += 1;
+      if (Number(raw) === current.answer) {
+        correct += 1;
+        streak += 1;
+        setFeedback(`答對了！${current.explain}`, "good");
+      } else {
+        streak = 0;
+        setFeedback(`這題答案是 ${current.answer}。${current.explain}`, "bad");
+      }
+      updateScore();
+    }
+    document.getElementById("newQuestion").addEventListener("click", newQuestion);
+    document.getElementById("showHint").addEventListener("click", () => {
+      if (!current) return setFeedback("請先按「出一題」。", "bad");
+      setFeedback(`提示：${current.hint}`);
+    });
+    document.getElementById("checkAnswer").addEventListener("click", checkAnswer);
+    document.getElementById("revealAnswer").addEventListener("click", revealAnswer);
+    answerInput.addEventListener("keydown", event => { if (event.key === "Enter") checkAnswer(); });
+    practiceType.addEventListener("change", newQuestion);
+    renderWarmup();
+  </script>
+</body>
+</html>
