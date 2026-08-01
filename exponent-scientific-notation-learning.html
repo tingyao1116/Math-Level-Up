@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>指數與科學記號：國中到高中完整學習頁</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --line: #dbe4ef;
+      --text: #0f172a;
+      --sub: #475569;
+      --brand: #0f766e;
+      --brand-dark: #115e59;
+      --blue: #075985;
+      --blue-bg: #e0f2fe;
+      --purple: #6b21a8;
+      --purple-bg: #f3e8ff;
+      --warn: #9a3412;
+      --warn-bg: #fff7ed;
+      --ok: #166534;
+      --ok-bg: #dcfce7;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      color: var(--text);
+      background: radial-gradient(circle at top right, #dbeafe 0%, var(--bg) 44%);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    .hero, .card {
+      margin-bottom: 14px;
+      padding: clamp(17px, 3vw, 25px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 5vw, 42px); line-height: 1.3; }
+    h2 { margin: 0 0 10px; font-size: clamp(22px, 3vw, 28px); line-height: 1.45; }
+    h3 { margin: 0 0 7px; font-size: 18px; line-height: 1.45; }
+    h4 { margin: 0 0 6px; font-size: 16px; }
+    p { margin: 0 0 10px; color: var(--sub); }
+    li { color: var(--sub); margin-bottom: 4px; }
+    .lead { max-width: 900px; font-size: 17px; }
+    .nav, .tools, .mode-row, .pills { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .nav { margin-top: 14px; }
+    .nav a, .btn {
+      display: inline-block;
+      border: 1px solid var(--brand);
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #fff;
+      background: var(--brand);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav a:hover, .btn:hover { background: var(--brand-dark); }
+    .btn.secondary { color: var(--brand); background: #fff; }
+    .btn.secondary:hover { color: #fff; background: var(--brand); }
+    .btn.mode-active { color: #fff; background: var(--brand-dark); }
+    .pill, .tag {
+      display: inline-block;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .pill { padding: 2px 10px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; }
+    .tag { margin-bottom: 7px; padding: 2px 10px; border: 1px solid #99f6e4; background: #ccfbf1; color: #0b3b37; }
+    .tag.high { border-color: #d8b4fe; background: var(--purple-bg); color: var(--purple); }
+    .section-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .section-head h2 { margin: 0; }
+    .level-label {
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--blue);
+      background: var(--blue-bg);
+      border: 1px solid #7dd3fc;
+    }
+    .level-label.high { color: var(--purple); background: var(--purple-bg); border-color: #d8b4fe; }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .mini, .example, .warn-box, .flow-step, .practice-box, .calculator {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 14px;
+      background: #fcfdff;
+    }
+    .formula {
+      display: block;
+      margin: 8px 0;
+      padding: 10px 12px;
+      overflow-x: auto;
+      color: #172554;
+      border-left: 4px solid #38bdf8;
+      border-radius: 7px;
+      background: #eff6ff;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 16px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .math { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-weight: 800; color: #172554; }
+    .example { background: #f0fdfa; border-color: #99f6e4; }
+    .example p:last-child, .mini p:last-child, .warn-box p:last-child { margin-bottom: 0; }
+    .answer { color: var(--ok); font-weight: 800; }
+    .warn-box { margin-top: 12px; border-color: #fdba74; background: var(--warn-bg); }
+    .warn-box strong { color: var(--warn); }
+    .flow { display: grid; gap: 8px; }
+    .flow-step { display: grid; grid-template-columns: 36px 1fr; gap: 10px; align-items: start; background: #fff; }
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--brand);
+      font-weight: 900;
+    }
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .practice-intro { margin-bottom: 12px; }
+    .mode-row { margin: 12px 0; }
+    .mode-row .btn { font-size: 14px; }
+    .score { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .score span {
+      padding: 4px 10px;
+      border: 1px solid #a5f3fc;
+      border-radius: 999px;
+      color: #155e75;
+      background: #ecfeff;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .question { margin: 6px 0 14px; font-size: clamp(21px, 4vw, 31px); font-weight: 900; line-height: 1.45; }
+    .question-note { color: var(--sub); font-size: 14px; }
+    .choices { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); }
+    .choice {
+      min-height: 48px;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      color: var(--text);
+      background: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .choice:hover:not(:disabled) { border-color: var(--brand); background: #f0fdfa; }
+    .choice:disabled { cursor: default; }
+    .choice.correct { color: var(--ok); border-color: #4ade80; background: var(--ok-bg); }
+    .choice.wrong { color: #9f1239; border-color: #fb7185; background: #fff1f2; }
+    .feedback { display: none; margin-top: 12px; padding: 11px 12px; border-radius: 10px; font-weight: 700; }
+    .feedback.show { display: block; }
+    .feedback.ok { color: var(--ok); border: 1px solid #86efac; background: var(--ok-bg); }
+    .feedback.no { color: var(--warn); border: 1px solid #fdba74; background: var(--warn-bg); }
+    .calculator { background: #faf5ff; border-color: #d8b4fe; }
+    .calculator label { display: block; margin: 8px 0 4px; color: #4c1d95; font-weight: 800; }
+    .calculator input {
+      width: 100%;
+      max-width: 260px;
+      padding: 8px 10px;
+      border: 1px solid #c4b5fd;
+      border-radius: 9px;
+      color: var(--text);
+      background: #fff;
+      font: inherit;
+    }
+    .result {
+      min-height: 48px;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px dashed #a78bfa;
+      border-radius: 10px;
+      color: #4c1d95;
+      background: #fff;
+    }
+    .foot { margin: 8px 0 0; color: #64748b; text-align: center; font-size: 14px; }
+    @media (max-width: 700px) {
+      body { padding: 12px; }
+      .two-col { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .choice { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>指數與科學記號</h1>
+      <p class="lead">先把「同樣的乘法可以怎麼簡寫」看懂，再把數字的大小用 <span class="math">10 的冪</span>說清楚。國中版練基本規則與科學記號；高中版再接分數次方、指數方程式／不等式，以及用對數反推科學記號中的指數。</p>
+      <div class="pills">
+        <span class="pill">先觀念，再公式</span>
+        <span class="pill">國中基礎＋高中進階</span>
+        <span class="pill">答題後看關鍵理由</span>
+      </div>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#junior">國中版</a>
+        <a href="#senior">高中版</a>
+        <a href="#advanced">高中挑戰</a>
+        <a href="#practice">分級練習</a>
+        <a href="#log-tool">對數小工具</a>
+        <a href="./index.html">回首頁</a>
+      </nav>
+    </section>
+
+    <section class="card" id="junior">
+      <div class="section-head">
+        <h2>一、國中版：指數是乘法的簡寫</h2>
+        <span class="level-label">國中基礎</span>
+      </div>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag">先看意思</div>
+          <p><span class="math">3<sup>4</sup></span> 不是 <span class="math">3×4</span>，而是把 3 連乘四次：</p>
+          <span class="formula">3<sup>4</sup> = 3 × 3 × 3 × 3 = 81</span>
+          <p>底數是 3；指數是 4。指數回答的是「這個底數連乘幾次」。</p>
+        </article>
+        <article class="mini">
+          <div class="tag">生活直覺</div>
+          <p>若一張紙每次都對折，厚度會每次變成 2 倍。對折 5 次後，是原來的 <span class="math">2<sup>5</sup></span> 倍，而不是 <span class="math">2×5</span> 倍。</p>
+          <p>「每次乘同一個數」就是指數最常出現的情境。</p>
+        </article>
+        <article class="mini">
+          <div class="tag">先判斷括號</div>
+          <p><span class="math">(-2)<sup>4</sup> = 16</span>，因為負的 2 連乘四次。</p>
+          <p><span class="math">-2<sup>4</sup> = -(2<sup>4</sup>) = -16</span>，因為次方只算 2；負號在外面。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>二、國中版：同底數的三個基本公式</h2>
+      <p>公式不是憑空背的：先把每個次方展開，就能看出連乘的個數如何改變。以下先以底數 <span class="math">a ≠ 0</span>、整數指數為主。</p>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag">相乘：指數相加</div>
+          <span class="formula">a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup></span>
+          <p>例：<span class="math">2<sup>3</sup>×2<sup>4</sup> = 2<sup>7</sup></span>。三個 2 再接四個 2，一共有七個 2。</p>
+        </article>
+        <article class="mini">
+          <div class="tag">相除：指數相減</div>
+          <span class="formula">a<sup>m</sup> ÷ a<sup>n</sup> = a<sup>m−n</sup></span>
+          <p>例：<span class="math">5<sup>7</sup>÷5<sup>2</sup> = 5<sup>5</sup></span>。分子、分母相同的 5 可以約掉兩組。</p>
+        </article>
+        <article class="mini">
+          <div class="tag">再乘一次方：指數相乘</div>
+          <span class="formula">(a<sup>m</sup>)<sup>n</sup> = a<sup>mn</sup></span>
+          <p>例：<span class="math">(3<sup>2</sup>)<sup>4</sup> = 3<sup>8</sup></span>。每一組有兩個 3，一共四組，所以有 <span class="math">2×4</span> 個 3。</p>
+        </article>
+      </div>
+      <div class="warn-box">
+        <strong>最常錯：</strong> <span class="math">a<sup>m</sup> + a<sup>n</sup></span> 不能合併成 <span class="math">a<sup>m+n</sup></span>。例如 <span class="math">2<sup>2</sup>+2<sup>3</sup> = 4+8=12</span>，不是 <span class="math">2<sup>5</sup>=32</span>。只有「相乘／相除」才可用上面的指數規則。
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>三、國中版：科學記號讓大數、小數一眼看出大小</h2>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag">標準形式</div>
+          <p>科學記號寫成：</p>
+          <span class="formula">a × 10<sup>n</sup>，其中 1 ≤ a &lt; 10</span>
+          <p>前面的 <span class="math">a</span> 只能有一個整數位。例如 <span class="math">34.2×10<sup>5</sup></span> 還要整理成 <span class="math">3.42×10<sup>6</sup></span>。</p>
+        </article>
+        <article class="mini">
+          <div class="tag">大於 1 的數</div>
+          <p>把小數點往左移到第一個非零數字後面；移了幾位，指數就是正幾。</p>
+          <span class="formula">342 000 000 = 3.42 × 10<sup>8</sup></span>
+          <p>小數點從最後移到 3 後面，共向左移 8 位。</p>
+        </article>
+        <article class="mini">
+          <div class="tag">介於 0 與 1 的數</div>
+          <p>把小數點往右移到第一個非零數字後面；移了幾位，指數就是負幾。</p>
+          <span class="formula">0.000052 = 5.2 × 10<sup>−5</sup></span>
+          <p>小數點向右移 5 位，所以是 <span class="math">10<sup>−5</sup></span>。</p>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="example">
+          <h3>例題：把科學記號還原</h3>
+          <p><span class="math">8.15×10<sup>5</sup></span> 要把小數點向右移 5 位。</p>
+          <p class="answer">= 815 000</p>
+        </article>
+        <article class="example">
+          <h3>例題：先估大小再檢查</h3>
+          <p><span class="math">6.7×10<sup>−3</sup></span> 一定比 1 小，結果應是小數。</p>
+          <p class="answer">= 0.0067</p>
+        </article>
+      </div>
+      <div class="warn-box">
+        <strong>檢查口訣：</strong>數大於 1，科學記號的 10 次方通常是正指數；數介於 0 和 1，通常是負指數。若寫完後 <span class="math">a</span> 不是 1 到 10 之間，表示還沒有標準化。
+      </div>
+    </section>
+
+    <section class="card" id="senior">
+      <div class="section-head">
+        <h2>四、高中版：分數次方把「開根號」寫成指數</h2>
+        <span class="level-label high">高中進階</span>
+      </div>
+      <p>分母告訴我們要開幾次根號，分子告訴我們再做幾次方。先在實數範圍下討論，遇到偶次根號尤其要先看定義域。</p>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag high">核心翻譯</div>
+          <span class="formula">a<sup>m/n</sup> = (ⁿ√a)<sup>m</sup> = ⁿ√(a<sup>m</sup>)</span>
+          <p>例：<span class="math">16<sup>3/4</sup> = (⁴√16)<sup>3</sup> = 2<sup>3</sup> = 8</span>。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">負指數仍是倒數</div>
+          <span class="formula">a<sup>−m/n</sup> = 1 / a<sup>m/n</sup></span>
+          <p>例：<span class="math">81<sup>−3/4</sup> = 1/(⁴√81)<sup>3</sup> = 1/27</span>。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">定義域先行</div>
+          <p>若分母化簡後是偶數，例如 <span class="math">x<sup>1/2</sup></span>，實數範圍必須 <span class="math">x ≥ 0</span>。</p>
+          <p>若分母是奇數，例如 <span class="math">x<sup>1/3</sup></span>，負數也可以代入。</p>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="example">
+          <h3>例題：分數次方方程式</h3>
+          <p>解 <span class="math">x<sup>2/3</sup> = 4</span>。</p>
+          <p>令 <span class="math">t=∛x</span>，則 <span class="math">t<sup>2</sup>=4</span>，所以 <span class="math">t=±2</span>。</p>
+          <p class="answer">x = t<sup>3</sup> = ±8</p>
+        </article>
+        <article class="example">
+          <h3>易錯提醒：不要漏掉負解</h3>
+          <p>因為 <span class="math">(-8)<sup>2/3</sup>=(∛(-8))<sup>2</sup>=(-2)<sup>2</sup>=4</span>，所以只寫 <span class="math">x=8</span> 不完整。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>五、高中版：把複雜指數式換成一個正變數</h2>
+      <p>遇到 <span class="math">a<sup>2x</sup></span>、<span class="math">a<sup>x</sup></span> 同時出現時，不要急著取對數；先令 <span class="math">t=a<sup>x</sup></span>。因為指數函數值永遠正，所以還要保留 <span class="math">t&gt;0</span>。</p>
+      <div class="flow">
+        <div class="flow-step"><div class="step-number">1</div><div><h3>看出同一個底數</h3><p><span class="math">2<sup>2x</sup> = (2<sup>x</sup>)<sup>2</sup></span>，這使原式能變成二次式。</p></div></div>
+        <div class="flow-step"><div class="step-number">2</div><div><h3>代換並先解 t</h3><p>令 <span class="math">t=2<sup>x</sup>&gt;0</span>。例如 <span class="math">2<sup>2x</sup>−5·2<sup>x</sup>+4=0</span> 變為 <span class="math">t<sup>2</sup>−5t+4=0</span>。</p></div></div>
+        <div class="flow-step"><div class="step-number">3</div><div><h3>篩掉不合 <span class="math">t&gt;0</span> 的值，再換回 x</h3><p><span class="math">(t−1)(t−4)=0</span>，得 <span class="math">t=1,4</span>；所以 <span class="math">2<sup>x</sup>=1,4</span>，答案是 <span class="math">x=0,2</span>。</p></div></div>
+      </div>
+      <div class="warn-box">
+        <strong>最常錯：</strong>代換後得到 <span class="math">t=-2</span> 時，不能直接回推 <span class="math">a<sup>x</sup>=-2</span>；實數範圍的正底數指數函數不會等於負數。
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>六、高中版：指數不等式先判斷底數</h2>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag high">底數大於 1：方向不變</div>
+          <span class="formula">a &gt; 1：a<sup>u</sup> &gt; a<sup>v</sup> ⇔ u &gt; v</span>
+          <p>例：<span class="math">3<sup>x+1</sup> ≥ 9<sup>x−1</sup></span>，先寫成 <span class="math">3<sup>x+1</sup> ≥ 3<sup>2x−2</sup></span>，所以 <span class="math">x+1 ≥ 2x−2</span>，得 <span class="math">x≤3</span>。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">底數介於 0 與 1：方向反轉</div>
+          <span class="formula">0 &lt; a &lt; 1：a<sup>u</sup> &lt; a<sup>v</sup> ⇔ u &gt; v</span>
+          <p>例：<span class="math">(1/2)<sup>2x−1</sup> &lt; (1/2)<sup>x+2</sup></span>，指數比較時要反向：<span class="math">2x−1 &gt; x+2</span>，得 <span class="math">x&gt;3</span>。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">代換型不等式</div>
+          <p><span class="math">2<sup>2x</sup>−5·2<sup>x</sup>+4&gt;0</span>，令 <span class="math">t=2<sup>x</sup>&gt;0</span>，變成 <span class="math">(t−1)(t−4)&gt;0</span>。</p>
+          <p>解得 <span class="math">0&lt;t&lt;1</span> 或 <span class="math">t&gt;4</span>，所以 <span class="math">x&lt;0</span> 或 <span class="math">x&gt;2</span>。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card" id="log-tool">
+      <h2>七、高中版：用對數反推科學記號中的指數</h2>
+      <p>當數字不是剛好等於 <span class="math">10<sup>n</sup></span> 時，對數會補上「介於兩個整數次方之間」的那一小段。這正是用科學記號判斷數量級的關鍵。</p>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag high">從科學記號反推 x</div>
+          <p>若 <span class="math">10<sup>x</sup> = c×10<sup>n</sup></span>，且 <span class="math">1≤c&lt;10</span>，兩邊取常用對數：</p>
+          <span class="formula">x = log(c×10<sup>n</sup>) = log c + n</span>
+          <p>例：<span class="math">10<sup>x</sup>=6.02×10<sup>23</sup></span>，則 <span class="math">x=23+log 6.02≈23.7796</span>。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">從 x 寫回科學記號</div>
+          <p>若 <span class="math">x=−5.347</span>，整數部分要取下整數 <span class="math">−6</span>：</p>
+          <span class="formula">10<sup>−5.347</sup> = 10<sup>0.653</sup> × 10<sup>−6</sup> ≈ 4.50×10<sup>−6</sup></span>
+          <p>負數時不能直接把小數點「截掉」成 −5；必須用下整數，才能讓前面的係數落在 1 到 10 之間。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">一般底數的反推</div>
+          <p>若 <span class="math">a<sup>x</sup>=N</span>，且 <span class="math">a&gt;0、a≠1、N&gt;0</span>，則：</p>
+          <span class="formula">x = log<sub>a</sub>N = log N / log a</span>
+          <p>例如 <span class="math">2<sup>x</sup>=1000</span>，可以用 <span class="math">x=log 1000/log 2</span> 求近似值。</p>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <section class="calculator" aria-labelledby="to-log-title">
+          <h3 id="to-log-title">小工具 A：科學記號 → 10 的指數</h3>
+          <p>輸入 <span class="math">c×10<sup>n</sup></span>，計算 <span class="math">log<sub>10</sub>(c×10<sup>n</sup>)</span>。</p>
+          <label for="mantissa">係數 c（1 ≤ c &lt; 10）</label>
+          <input id="mantissa" type="number" value="6.02" min="1" max="9.999999" step="any">
+          <label for="scientific-exponent">整數指數 n</label>
+          <input id="scientific-exponent" type="number" value="23" step="1">
+          <div class="tools"><button class="btn" type="button" id="calculate-log">計算 x</button></div>
+          <div class="result" id="log-result" aria-live="polite">例如：6.02 × 10<sup>23</sup> 對應的 x 約為 23.7796。</div>
+        </section>
+        <section class="calculator" aria-labelledby="from-log-title">
+          <h3 id="from-log-title">小工具 B：10 的指數 → 科學記號</h3>
+          <p>輸入 <span class="math">x</span>，將 <span class="math">10<sup>x</sup></span> 寫成標準科學記號。</p>
+          <label for="log-input">x</label>
+          <input id="log-input" type="number" value="-5.347" step="any">
+          <div class="tools"><button class="btn" type="button" id="calculate-scientific">換成科學記號</button></div>
+          <div class="result" id="scientific-result" aria-live="polite">例如：10<sup>−5.347</sup> ≈ 4.50 × 10<sup>−6</sup>。</div>
+        </section>
+      </div>
+      <div class="warn-box">
+        <strong>計算機提醒：</strong>本頁的 <span class="math">log</span> 指常用對數（底數 10）。若計算機畫面顯示 <span class="math">ln</span>，那是自然對數；要算 <span class="math">10<sup>x</sup></span> 的反推時，優先使用 <span class="math">log</span>。
+      </div>
+    </section>
+
+    <section class="card" id="advanced">
+      <div class="section-head">
+        <h2>八、高中挑戰：負次方與複雜次方計算</h2>
+        <span class="level-label high">高中挑戰</span>
+      </div>
+      <p>這一版的重點不是把指數湊成很大的數，而是能在負次方、負號、括號和多個底數混在一起時，仍然穩定地看出結構。所有含負次方的底數都必須不為 0。</p>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag high">負次方不是負數</div>
+          <span class="formula">a<sup>−n</sup> = 1 / a<sup>n</sup>（a ≠ 0）</span>
+          <p><span class="math">2<sup>−3</sup> = 1/2<sup>3</sup> = 1/8</span>。負號告訴我們「取倒數」，不是讓答案自動變成負數。</p>
+          <p>例如 <span class="math">(−2)<sup>−3</sup>=−1/8</span>，答案為負是因為底數本來是負數且次方為奇數。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">由相除公式看來源</div>
+          <span class="formula">a<sup>3</sup> / a<sup>5</sup> = a<sup>3−5</sup> = a<sup>−2</sup> = 1/a<sup>2</sup></span>
+          <p>負次方其實是「分母的同底數比上分子的同底數還多」；把多出的因數留在分母，就自然得到倒數。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">括號決定負號算到哪裡</div>
+          <p><span class="math">(−2)<sup>−4</sup>=1/16</span>，底數是 −2。</p>
+          <p><span class="math">−2<sup>−4</sup>=−(2<sup>−4</sup>)=−1/16</span>，外面的負號沒有被次方算進去。</p>
+          <p>遇到負數底數，先圈出底數範圍，再開始算。</p>
+        </article>
+      </div>
+
+      <h3 style="margin-top:18px;">複雜次方計算的四步驟</h3>
+      <div class="flow">
+        <div class="flow-step"><div class="step-number">1</div><div><h3>先保留括號，辨認每個底數</h3><p><span class="math">(2<sup>−2</sup>)<sup>−3</sup></span> 的底數是整個 <span class="math">2<sup>−2</sup></span>；不能把兩個負號先消掉就停下來。</p></div></div>
+        <div class="flow-step"><div class="step-number">2</div><div><h3>把可改寫的數化成同一底數</h3><p>例如 <span class="math">4=2<sup>2</sup></span>、<span class="math">8=2<sup>3</sup></span>、<span class="math">9=3<sup>2</sup></span>、<span class="math">27=3<sup>3</sup></span>；同底數後才可加減指數。</p></div></div>
+        <div class="flow-step"><div class="step-number">3</div><div><h3>由內而外處理「次方的次方」</h3><p><span class="math">(a<sup>m</sup>)<sup>n</sup>=a<sup>mn</sup></span>，連負號也要一起乘：<span class="math">(2<sup>−2</sup>)<sup>−3</sup>=2<sup>(−2)(−3)</sup>=2<sup>6</sup></span>。</p></div></div>
+        <div class="flow-step"><div class="step-number">4</div><div><h3>最後才把負指數搬成倒數</h3><p>先合併同底數可減少分數運算；最後把 <span class="math">a<sup>−k</sup></span> 改寫為 <span class="math">1/a<sup>k</sup></span>，答案通常更清楚。</p></div></div>
+      </div>
+
+      <div class="two-col" style="margin-top:12px;">
+        <article class="example">
+          <h3>例題 A：巢狀負次方</h3>
+          <p>化簡 <span class="math">(2<sup>−2</sup>)<sup>−3</sup> × 4<sup>−1</sup></span>。</p>
+          <p><span class="math">=2<sup>6</sup>×(2<sup>2</sup>)<sup>−1</sup>=2<sup>6</sup>×2<sup>−2</sup>=2<sup>4</sup></span></p>
+          <p class="answer">= 16</p>
+        </article>
+        <article class="example">
+          <h3>例題 B：含字母的複雜化簡</h3>
+          <p>化簡 <span class="math">(a<sup>−2</sup>b<sup>3</sup>)<sup>−2</sup> ÷ (ab<sup>−1</sup>)</span>（<span class="math">a,b≠0</span>）。</p>
+          <p><span class="math">=a<sup>4</sup>b<sup>−6</sup> ÷ (ab<sup>−1</sup>)=a<sup>4−1</sup>b<sup>−6−(−1)</sup>=a<sup>3</sup>b<sup>−5</sup></span></p>
+          <p class="answer">= a<sup>3</sup> / b<sup>5</sup></p>
+        </article>
+      </div>
+      <div class="warn-box">
+        <strong>三個高頻失誤：</strong>
+        <span class="math">(a+b)<sup>−2</sup></span> 不能寫成 <span class="math">a<sup>−2</sup>+b<sup>−2</sup></span>；
+        <span class="math">(ab)<sup>−2</sup></span> 才能寫成 <span class="math">a<sup>−2</sup>b<sup>−2</sup></span>；
+        而 <span class="math">a<sup>−2</sup>+a<sup>−3</sup></span> 仍是加法，必須先通分或提出公因式，不能直接把指數相加。
+      </div>
+    </section>
+
+    <section class="card" id="practice">
+      <h2>九、分級自我檢查</h2>
+      <p class="practice-intro">先選題型，再作答。答錯時請先讀「關鍵理由」，再按下一題；進階題請特別練習「先化同底數、再合併、最後處理倒數」的順序。</p>
+      <div class="mode-row" aria-label="選擇練習題型">
+        <button class="btn secondary mode-active" type="button" data-mode="junior-rules">國中：指數規則</button>
+        <button class="btn secondary" type="button" data-mode="junior-scientific">國中：科學記號</button>
+        <button class="btn secondary" type="button" data-mode="high-fractional">高中：分數次方</button>
+        <button class="btn secondary" type="button" data-mode="high-equation">高中：指數方程式</button>
+        <button class="btn secondary" type="button" data-mode="high-inequality">高中：指數不等式</button>
+        <button class="btn secondary" type="button" data-mode="high-log">高中：對數反推</button>
+        <button class="btn secondary" type="button" data-mode="high-negative">高中挑戰：負次方與複雜計算</button>
+      </div>
+      <div class="score" aria-live="polite">
+        <span id="score-title">國中：指數規則</span>
+        <span id="score-total">答對 0 / 0 題</span>
+        <span id="score-streak">連續答對 0 題</span>
+      </div>
+      <div class="practice-box">
+        <div class="question-note" id="question-note">觀念：相乘才是指數相加；先辨認運算符號。</div>
+        <div class="question" id="practice-question"></div>
+        <div class="choices" id="practice-choices"></div>
+        <div class="feedback" id="practice-feedback" aria-live="polite"></div>
+        <div class="tools"><button class="btn" type="button" id="next-question">下一題</button></div>
+      </div>
+    </section>
+    <p class="foot">教學建議：國中先用「展開連乘」建立公式來源；高中再帶入 t=a<sup>x</sup> 的代換與底數判斷；最後用負次方挑戰題練習括號、同底數化簡與倒數，再以對數連結科學記號與數量級。</p>
+  </main>
+
+  <script>
+    const modes = {
+      "junior-rules": {
+        title: "國中：指數規則",
+        note: "觀念：相乘才是指數相加；先辨認運算符號。",
+        questions: [
+          { prompt: "2^3 × 2^4 = ?", choices: ["2^7", "2^12", "4^7", "2^1"], correct: "2^7", explanation: "同底數相乘，連乘的 2 共有 3+4=7 個，所以是 2^7。" },
+          { prompt: "5^8 ÷ 5^3 = ?", choices: ["5^5", "5^11", "1", "25^5"], correct: "5^5", explanation: "同底數相除，分子、分母約掉三個 5，指數算 8−3=5。" },
+          { prompt: "(3^2)^4 = ?", choices: ["3^8", "3^6", "12^2", "3^2"], correct: "3^8", explanation: "3^2 共有四組，每組兩個 3，因此指數是 2×4=8。" },
+          { prompt: "10^0 = ?", choices: ["1", "0", "10", "不一定"], correct: "1", explanation: "只要底數不為 0，a^0=1；因此 10^0=1。" },
+          { prompt: "2^2 + 2^3 = ?", choices: ["12", "2^5", "2^6", "4^5"], correct: "12", explanation: "加法不能把指數相加。先算 2^2=4、2^3=8，總和為 12。" }
+        ]
+      },
+      "junior-scientific": {
+        title: "國中：科學記號",
+        note: "觀念：標準科學記號的係數一定要在 1 到 10 之間。",
+        questions: [
+          { prompt: "0.00074 的標準科學記號是？", choices: ["7.4 × 10^-4", "7.4 × 10^4", "74 × 10^-5", "0.74 × 10^-3"], correct: "7.4 × 10^-4", explanation: "小數點向右移 4 位才到 7 後面，所以指數是 −4；7.4 也符合 1≤a<10。" },
+          { prompt: "3.42 × 10^6 等於？", choices: ["3 420 000", "342 000", "0.00000342", "34 200 000"], correct: "3 420 000", explanation: "10^6 表示小數點向右移 6 位：3.42 變成 3 420 000。" },
+          { prompt: "815 000 的標準科學記號是？", choices: ["8.15 × 10^5", "81.5 × 10^4", "0.815 × 10^6", "8.15 × 10^-5"], correct: "8.15 × 10^5", explanation: "小數點從 815000 的末尾移到 8 後面，共向左移 5 位，因此是 8.15×10^5。" },
+          { prompt: "下列哪一個已經是標準科學記號？", choices: ["9.6 × 10^8", "96 × 10^7", "0.96 × 10^9", "12.4 × 10^3"], correct: "9.6 × 10^8", explanation: "標準形式要求前面的係數滿足 1≤a<10，只有 9.6 符合。" },
+          { prompt: "6.7 × 10^-3 等於？", choices: ["0.0067", "0.067", "6700", "0.00067"], correct: "0.0067", explanation: "負 3 次方表示小數點向左移 3 位：6.7 → 0.0067。" }
+        ]
+      },
+      "high-fractional": {
+        title: "高中：分數次方",
+        note: "觀念：分母是根號次數，分子是次方次數；偶次根號要先看定義域。",
+        questions: [
+          { prompt: "16^(3/4) = ?", choices: ["8", "4", "64", "2"], correct: "8", explanation: "先開四次根號：4√16=2，再立三次方：2^3=8。" },
+          { prompt: "27^(2/3) = ?", choices: ["9", "6", "18", "3"], correct: "9", explanation: "先開三次根號：3√27=3，再平方：3^2=9。" },
+          { prompt: "實數範圍內，x^(2/3)=4 的解是？", choices: ["x=±8", "x=8", "x=4", "無解"], correct: "x=±8", explanation: "令 t=3√x，則 t^2=4，t=±2，所以 x=t^3=±8。" },
+          { prompt: "(1/81)^(-3/4) = ?", choices: ["27", "1/27", "9", "1/9"], correct: "27", explanation: "(1/81)^(3/4)=1/27，再遇到負指數取倒數，因此答案為 27。" },
+          { prompt: "實數範圍中，x^(1/2) 有意義的條件是？", choices: ["x≥0", "x>0", "x≤0", "所有實數"], correct: "x≥0", explanation: "x^(1/2) 就是 √x；平方根在實數範圍要求被開方數 x≥0。" }
+        ]
+      },
+      "high-equation": {
+        title: "高中：指數方程式",
+        note: "觀念：令 t=a^x，並記得 t 必須大於 0。",
+        questions: [
+          { prompt: "解 2^(2x) − 5·2^x + 4 = 0", choices: ["x=0 或 2", "x=1 或 4", "x=−1 或 2", "無解"], correct: "x=0 或 2", explanation: "令 t=2^x>0，得 t^2−5t+4=0，t=1 或 4；回代得 x=0 或 2。" },
+          { prompt: "解 3^(2x) − 10·3^x + 9 = 0", choices: ["x=0 或 2", "x=1 或 3", "x=−2 或 0", "x=0 或 3"], correct: "x=0 或 2", explanation: "令 t=3^x>0，得 (t−1)(t−9)=0；3^x=1 或 9，所以 x=0 或 2。" },
+          { prompt: "解 4^x − 5·2^x + 4 = 0", choices: ["x=0 或 2", "x=1 或 4", "x=−2 或 0", "無解"], correct: "x=0 或 2", explanation: "4^x=(2^x)^2。令 t=2^x>0，仍得 t^2−5t+4=0，因此 x=0 或 2。" },
+          { prompt: "若令 t=2^x，解題時 t 必須符合？", choices: ["t>0", "t≥0", "t≠0 但可為負", "t 是任意實數"], correct: "t>0", explanation: "2^x 對任何實數 x 都是正數，所以代換後要保留 t>0 的限制。" }
+        ]
+      },
+      "high-inequality": {
+        title: "高中：指數不等式",
+        note: "觀念：底數大於 1，指數比較方向不變；底數在 0 與 1 之間，方向反轉。",
+        questions: [
+          { prompt: "解 (1/2)^(2x−1) < (1/2)^(x+2)", choices: ["x>3", "x<3", "x≥3", "x≤3"], correct: "x>3", explanation: "底數 1/2 介於 0 和 1，指數比較要反向：2x−1>x+2，所以 x>3。" },
+          { prompt: "解 3^(x+1) ≥ 9^(x−1)", choices: ["x≤3", "x≥3", "x<3", "x>3"], correct: "x≤3", explanation: "9^(x−1)=3^(2x−2)，底數 3>1，方向不變：x+1≥2x−2，所以 x≤3。" },
+          { prompt: "解 2^(2x)−5·2^x+4>0", choices: ["x<0 或 x>2", "0<x<2", "x≤0 或 x≥2", "所有實數"], correct: "x<0 或 x>2", explanation: "令 t=2^x>0，(t−1)(t−4)>0，得 0<t<1 或 t>4，故 x<0 或 x>2。" },
+          { prompt: "若 0<a<1，a^u>a^v 時，u 與 v 的關係是？", choices: ["u<v", "u>v", "u=v", "無法比較"], correct: "u<v", explanation: "底數在 0 與 1 之間時，指數函數遞減，所以不等號方向反轉。" }
+        ]
+      },
+      "high-log": {
+        title: "高中：對數反推",
+        note: "觀念：10^x=c×10^n 時，x=n+log c；log 是常用對數。",
+        questions: [
+          { prompt: "若 log 3≈0.4771，且 10^x=3×10^8，x 約為？", choices: ["8.4771", "8.0000", "24.0000", "7.5229"], correct: "8.4771", explanation: "取 log：x=log 3+log 10^8≈0.4771+8=8.4771。" },
+          { prompt: "若 log 2≈0.3010，且 10^x=2×10^-4，x 約為？", choices: ["−3.6990", "−4.3010", "3.6990", "−8.0000"], correct: "−3.6990", explanation: "x=log 2+(−4)≈0.3010−4=−3.6990。" },
+          { prompt: "若 10^x=6.02×10^23，x 的正確表示是？", choices: ["23+log 6.02", "23×log 6.02", "log(6.02+23)", "6.02+23"], correct: "23+log 6.02", explanation: "log(c×10^n)=log c+n，因此 x=23+log 6.02。" },
+          { prompt: "若 x=−5.347，10^x 的科學記號中 10 的整數指數應是？", choices: ["−6", "−5", "5", "−5.347"], correct: "−6", explanation: "要讓係數落在 1 到 10，需取 floor(−5.347)=−6，再把 0.653 留在係數 10^0.653。" }
+        ]
+      },
+      "high-negative": {
+        title: "高中挑戰：負次方與複雜計算",
+        note: "策略：先保留括號、化成同底數，再合併指數；負指數最後改成倒數。",
+        questions: [
+          { prompt: "2^(−5) = ?", choices: ["1/32", "−1/32", "−32", "32"], correct: "1/32", explanation: "負次方表示倒數：2^(−5)=1/2^5=1/32。指數的負號不等於答案為負。" },
+          { prompt: "(−2)^(−3) = ?", choices: ["−1/8", "1/8", "−8", "8"], correct: "−1/8", explanation: "(−2)^(−3)=1/(−2)^3=1/(−8)=−1/8。括號內的負 2 是底數。" },
+          { prompt: "−2^(−2) = ?", choices: ["−1/4", "1/4", "−4", "4"], correct: "−1/4", explanation: "沒有括號時，次方只算 2：−2^(−2)=−(2^(−2))=−1/4。" },
+          { prompt: "(2^(−2))^(−3) × 4^(−1) = ?", choices: ["16", "1/16", "64", "4"], correct: "16", explanation: "(2^(−2))^(−3)=2^6，且 4^(−1)=2^(−2)，所以是 2^(6−2)=2^4=16。" },
+          { prompt: "(3^2 × 9^(−1)) ÷ 27^(−1) = ?", choices: ["27", "1/27", "9", "3"], correct: "27", explanation: "化成底數 3：3^2×3^(−2)÷3^(−3)=3^(2−2−(−3))=3^3=27。" },
+          { prompt: "(a^(−2)b^3)^(−2) ÷ (ab^(−1)) = ?（a,b≠0）", choices: ["a^3/b^5", "a^5/b^3", "b^5/a^3", "a^3b^5"], correct: "a^3/b^5", explanation: "先得 a^4b^(−6)，再除以 ab^(−1)：a^(4−1)b^(−6−(−1))=a^3b^(−5)=a^3/b^5。" },
+          { prompt: "1 ÷ 5^(−3) = ?", choices: ["125", "1/125", "−125", "−1/125"], correct: "125", explanation: "5^(−3)=1/125，所以 1÷(1/125)=125；分母的負次方常會讓結果變大。" }
+        ]
+      }
+    };
+
+    const state = { mode: "junior-rules", correct: 0, total: 0, streak: 0, current: null, answered: false };
+
+    function pick(items) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function shuffled(items) {
+      const copy = [...items];
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      }
+      return copy;
+    }
+
+    function renderScore() {
+      const mode = modes[state.mode];
+      document.getElementById("score-title").textContent = mode.title;
+      document.getElementById("score-total").textContent = `答對 ${state.correct} / ${state.total} 題`;
+      document.getElementById("score-streak").textContent = `連續答對 ${state.streak} 題`;
+    }
+
+    function nextQuestion() {
+      const mode = modes[state.mode];
+      state.current = pick(mode.questions);
+      state.answered = false;
+      document.getElementById("question-note").textContent = mode.note;
+      document.getElementById("practice-question").textContent = state.current.prompt;
+      const choices = document.getElementById("practice-choices");
+      choices.innerHTML = "";
+      shuffled(state.current.choices).forEach((choice) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "choice";
+        button.textContent = choice;
+        button.dataset.value = choice;
+        button.addEventListener("click", () => answerQuestion(choice));
+        choices.appendChild(button);
+      });
+      const feedback = document.getElementById("practice-feedback");
+      feedback.className = "feedback";
+      feedback.textContent = "";
+    }
+
+    function answerQuestion(choice) {
+      if (state.answered) return;
+      state.answered = true;
+      state.total += 1;
+      const isCorrect = choice === state.current.correct;
+      state.correct += isCorrect ? 1 : 0;
+      state.streak = isCorrect ? state.streak + 1 : 0;
+      document.querySelectorAll(".choice").forEach((button) => {
+        button.disabled = true;
+        if (button.dataset.value === state.current.correct) button.classList.add("correct");
+        if (button.dataset.value === choice && !isCorrect) button.classList.add("wrong");
+      });
+      const feedback = document.getElementById("practice-feedback");
+      feedback.className = `feedback show ${isCorrect ? "ok" : "no"}`;
+      feedback.innerHTML = isCorrect
+        ? `<strong>答對了。</strong> ${state.current.explanation}`
+        : `<strong>正確答案是「${state.current.correct}」。</strong> ${state.current.explanation}`;
+      renderScore();
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      state.correct = 0;
+      state.total = 0;
+      state.streak = 0;
+      document.querySelectorAll("[data-mode]").forEach((button) => {
+        button.classList.toggle("mode-active", button.dataset.mode === mode);
+      });
+      renderScore();
+      nextQuestion();
+    }
+
+    function formatNumber(value, digits) {
+      return Number(value.toFixed(digits)).toString();
+    }
+
+    function calculateLogExponent() {
+      const coefficient = Number(document.getElementById("mantissa").value);
+      const exponent = Number(document.getElementById("scientific-exponent").value);
+      const result = document.getElementById("log-result");
+      if (!Number.isFinite(coefficient) || coefficient < 1 || coefficient >= 10 || !Number.isInteger(exponent)) {
+        result.textContent = "請輸入 1≤c<10，且 n 為整數，才能形成標準科學記號。";
+        return;
+      }
+      const logCoefficient = Math.log10(coefficient);
+      const x = exponent + logCoefficient;
+      result.innerHTML = `${formatNumber(coefficient, 8)} × 10<sup>${exponent}</sup>：x = ${exponent} + log ${formatNumber(coefficient, 8)} ≈ <strong>${x.toFixed(4)}</strong>。`;
+    }
+
+    function calculateScientificNotation() {
+      const x = Number(document.getElementById("log-input").value);
+      const result = document.getElementById("scientific-result");
+      if (!Number.isFinite(x)) {
+        result.textContent = "請輸入一個有效的實數 x。";
+        return;
+      }
+      const exponent = Math.floor(x);
+      const coefficient = Math.pow(10, x - exponent);
+      result.innerHTML = `10<sup>${formatNumber(x, 10)}</sup> = 10<sup>${formatNumber(x - exponent, 10)}</sup> × 10<sup>${exponent}</sup> ≈ <strong>${coefficient.toFixed(4)} × 10<sup>${exponent}</sup></strong>。`;
+    }
+
+    document.querySelectorAll("[data-mode]").forEach((button) => {
+      button.addEventListener("click", () => setMode(button.dataset.mode));
+    });
+    document.getElementById("next-question").addEventListener("click", nextQuestion);
+    document.getElementById("calculate-log").addEventListener("click", calculateLogExponent);
+    document.getElementById("calculate-scientific").addEventListener("click", calculateScientificNotation);
+
+    renderScore();
+    nextQuestion();
+  </script>
+</body>
+</html>

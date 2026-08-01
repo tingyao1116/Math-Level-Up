@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>函數最大最小值｜方法總整理</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --ink: #172033;
+      --sub: #526077;
+      --line: #d7e0eb;
+      --brand: #0f766e;
+      --brand-dark: #115e59;
+      --blue: #075985;
+      --blue-bg: #e0f2fe;
+      --orange: #9a3412;
+      --orange-bg: #fff7ed;
+      --purple: #6b21a8;
+      --purple-bg: #f3e8ff;
+      --green: #166534;
+      --green-bg: #dcfce7;
+      --red: #9f1239;
+      --red-bg: #fff1f2;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 95% 0%, #d9f5f0 0, transparent 30%), var(--bg);
+      line-height: 1.75;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 42px; }
+    .hero, .section, .teacher-card, .quick-check {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .06);
+    }
+    .hero { padding: clamp(22px, 5vw, 42px); margin-bottom: 16px; overflow: hidden; position: relative; }
+    .hero::after {
+      content: "max · min";
+      position: absolute;
+      right: 22px;
+      bottom: -24px;
+      color: rgba(15, 118, 110, .08);
+      font-size: clamp(58px, 13vw, 130px);
+      font-weight: 900;
+      letter-spacing: -7px;
+      pointer-events: none;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(29px, 5vw, 45px); letter-spacing: .02em; line-height: 1.25; margin-bottom: 10px; }
+    h2 { font-size: clamp(23px, 3.2vw, 30px); line-height: 1.35; margin-bottom: 12px; }
+    h3 { font-size: 19px; line-height: 1.45; margin-bottom: 8px; }
+    p, li { color: var(--sub); }
+    .lead { max-width: 760px; font-size: 17px; margin-bottom: 16px; position: relative; z-index: 1; }
+    .chip, .method-chip, .level {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-weight: 700;
+      font-size: 13px;
+      margin: 2px 5px 2px 0;
+    }
+    .chip { color: #134e4a; background: #ccfbf1; border: 1px solid #99f6e4; }
+    .section { padding: clamp(18px, 3.5vw, 28px); margin-bottom: 16px; }
+    .section-intro { margin-bottom: 15px; }
+    .grid { display: grid; gap: 13px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .three { display: grid; gap: 13px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .mini, .example, .mistake, .rule-box, .flow-step, .check-card {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 14px;
+      background: #fff;
+    }
+    .mini p:last-child, .example p:last-child, .mistake p:last-child, .rule-box p:last-child { margin-bottom: 0; }
+    .mini { background: #fbfdff; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      background: var(--blue-bg);
+      border: 1px solid #a5dff8;
+      color: var(--blue);
+    }
+    .tag.green { background: var(--green-bg); border-color: #86efac; color: var(--green); }
+    .tag.orange { background: var(--orange-bg); border-color: #fdba74; color: var(--orange); }
+    .tag.purple { background: var(--purple-bg); border-color: #d8b4fe; color: var(--purple); }
+    .math {
+      display: inline-block;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: 1.08em;
+      color: #162033;
+      white-space: nowrap;
+    }
+    .formula {
+      padding: 10px 12px;
+      margin: 10px 0;
+      border-left: 4px solid var(--brand);
+      border-radius: 0 9px 9px 0;
+      background: #f0fdfa;
+      color: #134e4a;
+      overflow-x: auto;
+    }
+    .formula strong { color: var(--brand-dark); }
+    .notice {
+      padding: 11px 13px;
+      border-radius: 11px;
+      border: 1px solid #fdba74;
+      background: var(--orange-bg);
+      color: var(--orange);
+      margin-top: 12px;
+    }
+    .notice strong { color: #7c2d12; }
+    .good-note {
+      padding: 11px 13px;
+      border-radius: 11px;
+      border: 1px solid #86efac;
+      background: var(--green-bg);
+      color: var(--green);
+      margin-top: 12px;
+    }
+    .method-menu { display: flex; flex-wrap: wrap; gap: 7px; }
+    .method-menu a {
+      text-decoration: none;
+      color: var(--brand-dark);
+      border: 1px solid #99f6e4;
+      background: #f0fdfa;
+      border-radius: 10px;
+      font-weight: 700;
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+    .method-menu a:hover { background: #ccfbf1; }
+    .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .flow-step { position: relative; padding-left: 50px; min-height: 122px; }
+    .flow-number {
+      position: absolute;
+      left: 13px;
+      top: 15px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--brand);
+      font-weight: 800;
+    }
+    .flow-step p { font-size: 14px; margin-bottom: 0; }
+    .range-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+    .range-table th, .range-table td { border: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: top; }
+    .range-table th { background: #f1f5f9; color: #334155; }
+    .range-table td { color: var(--sub); }
+    .method { scroll-margin-top: 12px; }
+    .method + .method { border-top: 2px dashed var(--line); margin-top: 24px; padding-top: 24px; }
+    .method-head { display: flex; align-items: flex-start; gap: 11px; }
+    .method-no {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      background: var(--brand);
+      font-size: 19px;
+      font-weight: 900;
+    }
+    .method-head h2 { margin-bottom: 3px; }
+    .method-head p { margin-bottom: 0; }
+    .example { background: #f8fffe; border-color: #b9e4dc; }
+    .example h3 { color: #115e59; }
+    .steps { margin: 8px 0 0; padding-left: 23px; }
+    .steps li { margin: 5px 0; }
+    .mistake { margin-top: 12px; background: var(--red-bg); border-color: #fecdd3; }
+    .mistake h3 { color: var(--red); }
+    .mistake p { color: #9f1239; }
+    .range-arrow { color: var(--brand-dark); font-weight: 800; }
+    .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .check-card { background: #fbfdff; }
+    .check-card h3 { margin-bottom: 5px; }
+    .level { margin-bottom: 7px; color: #1e3a8a; background: #e0e7ff; border: 1px solid #c7d2fe; }
+    details {
+      margin-top: 10px;
+      border-radius: 9px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      padding: 8px 10px;
+    }
+    summary { color: #1d4ed8; cursor: pointer; font-weight: 800; }
+    details p { margin: 7px 0 0; color: #1e3a8a; }
+    .quiz-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin: 10px 0; }
+    .option {
+      min-height: 42px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      padding: 7px 8px;
+      font-weight: 700;
+      text-align: left;
+    }
+    .option:hover:not(:disabled) { background: #f0fdfa; border-color: var(--brand); }
+    .option:disabled { cursor: default; }
+    .option.correct { color: #14532d; background: var(--green-bg); border-color: #4ade80; }
+    .option.wrong { color: #9f1239; background: var(--red-bg); border-color: #fb7185; }
+    .feedback { min-height: 27px; margin: 0; font-weight: 700; }
+    .feedback.good { color: var(--green); }
+    .feedback.bad { color: var(--red); }
+    .teacher-card { padding: 20px; margin-top: 16px; background: linear-gradient(130deg, #f0fdfa, #fff); }
+    .teacher-card h2 { margin-bottom: 8px; }
+    .foot { text-align: center; color: #64748b; font-size: 13px; margin: 20px 0 0; }
+    @media (max-width: 820px) {
+      .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .three { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 580px) {
+      .wrap { padding: 12px 10px 30px; }
+      .hero, .section { border-radius: 14px; }
+      .flow, .compare, .quiz-options { grid-template-columns: 1fr; }
+      .range-table { font-size: 14px; }
+      .range-table th, .range-table td { padding: 7px; }
+      .math { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>函數的最大、最小值：方法總整理</h1>
+      <p class="lead">求最值不是看到題目就急著微分。先看<strong>定義域</strong>與式子的結構，再挑能保留「等號何時成立」的方法。這一頁把高中常見的代數、三角、指數對數與微分策略放在同一張地圖裡。</p>
+      <span class="chip">先看範圍</span>
+      <span class="chip">再選方法</span>
+      <span class="chip">最後驗等號與端點</span>
+    </section>
+
+    <section class="section">
+      <h2>先選工具：題目長相決定解法</h2>
+      <p class="section-intro">一題可能有不只一種解法；下表的目的不是背招式，而是先辨認「哪個結構最明顯」。</p>
+      <div class="flow">
+        <article class="flow-step"><span class="flow-number">1</span><h3>先畫界線</h3><p>分母不能為 0、根號內 ≥ 0、真數 &gt; 0；有給區間時端點也要保留。</p></article>
+        <article class="flow-step"><span class="flow-number">2</span><h3>平方型？</h3><p>看到二次式或可設換元，優先想<strong>配方法</strong>，但別忘了新變數的範圍。</p></article>
+        <article class="flow-step"><span class="flow-number">3</span><h3>正數和、積、比？</h3><p>有正數條件與對稱結構，試<strong>算幾不等式</strong>；有線性組合或平方和，試<strong>柯西不等式</strong>。</p></article>
+        <article class="flow-step"><span class="flow-number">4</span><h3>參數 y 的可取值？</h3><p>把 <span class="math">y = f(x)</span> 改寫成 x 的方程式，問「何時有實數解」：用<strong>判別式 Δ ≥ 0</strong>。</p></article>
+        <article class="flow-step"><span class="flow-number">5</span><h3>sin、cos 線性組合？</h3><p><span class="math">A sin θ + B cos θ</span> 可做<strong>三角疊合</strong>；若是 sin²、cos²，先設 <span class="math">t</span> 並附上 <span class="math">−1 ≤ t ≤ 1</span>。</p></article>
+        <article class="flow-step"><span class="flow-number">6</span><h3>指數、對數藏在式內？</h3><p>設 <span class="math">t = a<sup>x</sup> &gt; 0</span> 或 <span class="math">t = log<sub>a</sub>x</span>，再用配方法、不等式或範圍判斷。</p></article>
+        <article class="flow-step"><span class="flow-number">7</span><h3>光滑函數、區間已給？</h3><p>前面沒有漂亮結構，或題目問局部極值，就用<strong>微分</strong>：臨界點、不可微點、端點一起比較。</p></article>
+        <article class="flow-step"><span class="flow-number">✓</span><h3>收尾一定問</h3><p>上下界真的取到嗎？等號條件是否符合定義域？是局部極值，還是全域最大／最小值？</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="range">
+      <h2>零、所有方法的起點：先把「可取範圍」寫出來</h2>
+      <p>很多最值題失分，不是方法不會，而是把不能取的值拿去代入，或把「理想的平方最小值」誤認成一定取得到。下列範圍要成為看到就會反應的基本工具。</p>
+      <div class="grid">
+        <article class="rule-box">
+          <span class="tag">倒數與正負</span>
+          <h3>倒數和要先分正、負</h3>
+          <div class="formula"><span class="math">x &gt; 0 ⇒ x + 1/x ≥ 2</span>；等號在 <span class="math">x = 1</span>。<br><span class="math">x &lt; 0 ⇒ x + 1/x ≤ −2</span>；等號在 <span class="math">x = −1</span>。</div>
+          <p>不是所有 <span class="math">x ≠ 0</span> 都有 <span class="math">x + 1/x ≥ 2</span>。負數時方向要改。</p>
+        </article>
+        <article class="rule-box">
+          <span class="tag green">指數、對數</span>
+          <h3>換元前先附條件</h3>
+          <p><span class="math">a<sup>x</sup> &gt; 0</span>（<span class="math">a &gt; 0, a ≠ 1</span>），而且值域是正數。</p>
+          <p><span class="math">log<sub>a</sub>x</span> 的定義域為 <span class="math">x &gt; 0</span>，值域是所有實數。若是 <span class="math">log<sub>a</sub>g(x)</span>，必須先寫 <span class="math">g(x) &gt; 0</span>。</p>
+        </article>
+        <article class="rule-box">
+          <span class="tag purple">三角函數</span>
+          <h3>角度範圍會改變答案</h3>
+          <p>任意實數 θ：<span class="math">−1 ≤ sin θ ≤ 1</span>、<span class="math">−1 ≤ cos θ ≤ 1</span>。</p>
+          <p>若 <span class="math">0° ≤ θ ≤ 90°</span>，則 <span class="math">sin θ, cos θ ∈ [0,1]</span>，<span class="math">tan θ ∈ [0, +∞)</span>。</p>
+          <p>若 <span class="math">0° ≤ θ ≤ 180°</span>，則 <span class="math">sin θ ∈ [0,1]</span>；cos 的範圍仍為 <span class="math">[−1,1]</span>。</p>
+        </article>
+      </div>
+      <div class="notice"><strong>先問一句：</strong>題目的變數是任意實數？正數？還是在指定區間？同一個式子因為範圍不同，最大、最小值可能完全不同。</div>
+    </section>
+
+    <section class="section">
+      <h2>方法目錄</h2>
+      <nav class="method-menu" aria-label="最大最小值方法目錄">
+        <a href="#complete-square">1. 配方法</a>
+        <a href="#am-gm">2. 算幾不等式</a>
+        <a href="#cauchy">3. 柯西不等式</a>
+        <a href="#discriminant">4. 判別式 Δ ≥ 0</a>
+        <a href="#trig-combine">5. 三角疊合</a>
+        <a href="#trig-square">6. 三角配方＋範圍</a>
+        <a href="#exp-log">7. 指數對數換元配方</a>
+        <a href="#calculus">8. 微分求極值</a>
+      </nav>
+    </section>
+
+    <section class="section">
+      <article class="method" id="complete-square">
+        <div class="method-head">
+          <div class="method-no">1</div>
+          <div><h2>基本方法：配方法</h2><p>看到二次式 <span class="math">ax² + bx + c</span>，把它改寫成「平方項＋常數」。平方項 ≥ 0，就能讀出最值。</p></div>
+        </div>
+        <div class="three">
+          <div class="mini"><span class="tag">適用訊號</span><h3>二次式很完整</h3><p><span class="math">x²</span>、<span class="math">x</span>、常數都出現，且變數 x 的範圍沒有太多限制。</p></div>
+          <div class="mini"><span class="tag green">判讀規則</span><h3>看平方項前係數</h3><p>若 <span class="math">a &gt; 0</span>，有最小值；若 <span class="math">a &lt; 0</span>，有最大值。因為 <span class="math">(x−h)² ≥ 0</span>。</p></div>
+          <div class="mini"><span class="tag orange">必要檢查</span><h3>頂點真的可取嗎？</h3><p>若題目限制 <span class="math">x</span> 在一段區間，頂點不在區間內時，要改比較端點。</p></div>
+        </div>
+        <div class="example">
+          <h3>例題：求 <span class="math">f(x) = 2x² − 8x + 5</span> 的最小值</h3>
+          <ol class="steps">
+            <li><span class="math">f(x) = 2(x² − 4x) + 5 = 2[(x−2)² − 4] + 5</span>。</li>
+            <li><span class="math">= 2(x−2)² − 3</span>。</li>
+            <li>因 <span class="math">2(x−2)² ≥ 0</span>，所以 <span class="math">f(x) ≥ −3</span>。</li>
+          </ol>
+          <p class="good-note"><strong>答案：</strong>最小值為 <span class="math">−3</span>，在 <span class="math">x = 2</span> 時取得。</p>
+        </div>
+        <div class="mistake"><h3>常見錯誤</h3><p>把 <span class="math">2(x−2)²−3</span> 的最小值寫成 0。0 只是平方項的最小值；整個函數還有 <span class="math">−3</span>。</p></div>
+      </article>
+
+      <article class="method" id="am-gm">
+        <div class="method-head">
+          <div class="method-no">2</div>
+          <div><h2>正數的平衡：算術－幾何平均不等式</h2><p>當兩項（或多項）是<strong>非負數</strong>，而題目同時出現和、積、倒數時，算幾不等式能把「兩項要一樣大」轉成最值。</p></div>
+        </div>
+        <div class="formula"><strong>兩項公式：</strong><span class="math">a + b ≥ 2√(ab)</span>（<span class="math">a, b ≥ 0</span>）；等號成立當且僅當 <span class="math">a = b</span>。</div>
+        <div class="example">
+          <h3>例題：<span class="math">x &gt; 0</span>，求 <span class="math">x + 9/x</span> 的最小值</h3>
+          <ol class="steps">
+            <li>因為 <span class="math">x &gt; 0</span>，所以 <span class="math">x</span> 與 <span class="math">9/x</span> 都是正數，可以用算幾不等式。</li>
+            <li><span class="math">x + 9/x ≥ 2√(x·9/x) = 6</span>。</li>
+            <li>等號條件：<span class="math">x = 9/x</span>，所以 <span class="math">x = 3</span>，確實符合 <span class="math">x &gt; 0</span>。</li>
+          </ol>
+          <p class="good-note"><strong>答案：</strong>最小值為 <span class="math">6</span>，在 <span class="math">x = 3</span> 時取得。</p>
+        </div>
+        <div class="compare">
+          <div class="mini"><span class="tag green">正數版本</span><p><span class="math">x &gt; 0 ⇒ x + 1/x ≥ 2</span></p></div>
+          <div class="mini"><span class="tag orange">負數版本</span><p><span class="math">x &lt; 0</span> 時令 <span class="math">u = −x &gt; 0</span>，可得 <span class="math">x + 1/x ≤ −2</span>。</p></div>
+        </div>
+        <div class="mistake"><h3>常見錯誤</h3><p>沒有正數／非負數條件就直接套公式。遇到負數時，先分情況或改設正數，再開始不等式。</p></div>
+      </article>
+
+      <article class="method" id="cauchy">
+        <div class="method-head">
+          <div class="method-no">3</div>
+          <div><h2>平方和與線性組合：柯西不等式</h2><p>若題目有「平方和固定」卻要求線性式的最大值，或「和固定」卻要求平方和的最小值，柯西－施瓦茨不等式很自然。</p></div>
+        </div>
+        <div class="formula"><strong>常用型：</strong><span class="math">(a²+b²)(x²+y²) ≥ (ax+by)²</span>。<br><strong>等價觀點：</strong>固定 <span class="math">x²+y²</span> 時，<span class="math">ax+by</span> 的絕對值不會超過「兩個長度的乘積」。</div>
+        <div class="example">
+          <h3>例題：若 <span class="math">x² + y² = 1</span>，求 <span class="math">3x + 4y</span> 的最大值</h3>
+          <ol class="steps">
+            <li>套用柯西：<span class="math">(3²+4²)(x²+y²) ≥ (3x+4y)²</span>。</li>
+            <li><span class="math">25·1 ≥ (3x+4y)²</span>，故 <span class="math">−5 ≤ 3x+4y ≤ 5</span>。</li>
+            <li>最大值為 5。等號需兩組數成比例，取 <span class="math">(x,y) = (3/5,4/5)</span> 即可。</li>
+          </ol>
+          <p class="good-note"><strong>圖像直覺：</strong><span class="math">x²+y²=1</span> 是單位圓；直線 <span class="math">3x+4y=k</span> 往外推到剛好和圓相切時，k 就是最大值。</p>
+        </div>
+        <div class="mini"><span class="tag">另一個常用結論</span><p>由 <span class="math">(1²+1²)(x²+y²) ≥ (x+y)²</span> 得 <span class="math">x²+y² ≥ (x+y)²/2</span>。例如 <span class="math">x+y=10</span> 時，<span class="math">x²+y² ≥ 50</span>，等號在 <span class="math">x=y=5</span>。</p></div>
+      </article>
+
+      <article class="method" id="discriminant">
+        <div class="method-head">
+          <div class="method-no">4</div>
+          <div><h2>萬用反推法：利用「有解」的判別式 Δ ≥ 0</h2><p>題目問 <span class="math">y=f(x)</span> 的值域，而直接配方不順時，把 y 視為參數，改問「給定 y，是否存在實數 x？」。</p></div>
+        </div>
+        <div class="formula"><strong>核心翻譯：</strong><span class="math">y</span> 在值域中 <span class="range-arrow">⇔</span> 方程式 <span class="math">y = f(x)</span> 對 x 有實數解。<br>若整理為二次方程式 <span class="math">Ax²+Bx+C=0</span>，需 <span class="math">Δ=B²−4AC ≥ 0</span>。</div>
+        <div class="example">
+          <h3>例題：求 <span class="math">y = x/(x²+1)</span> 的值域</h3>
+          <ol class="steps">
+            <li>分母 <span class="math">x²+1 &gt; 0</span>，所有實數 x 都可用。移項：<span class="math">yx² − x + y = 0</span>。</li>
+            <li>要有實數 x，判別式必須 <span class="math">Δ = (−1)² − 4(y)(y) = 1−4y² ≥ 0</span>。</li>
+            <li>所以 <span class="math">4y² ≤ 1</span>，得到 <span class="math">−1/2 ≤ y ≤ 1/2</span>。</li>
+          </ol>
+          <p class="good-note"><strong>答案：</strong>值域為 <span class="math">[−1/2, 1/2]</span>。端點 Δ = 0，代表直線與曲線剛好相切，因此端點可以取到。</p>
+        </div>
+        <div class="mistake"><h3>常見錯誤</h3><p>當 y 的係數可能變成 0 時，原本的「二次方程式」會退化成一次式。例如本題 y = 0 時方程變成 <span class="math">−x=0</span>，仍有解；做完後要特別檢查這種退化情形。</p></div>
+      </article>
+
+      <article class="method" id="trig-combine">
+        <div class="method-head">
+          <div class="method-no">5</div>
+          <div><h2>三角疊合：把兩個波合成一個波</h2><p>只要是 <span class="math">A sin θ + B cos θ</span>，就把它寫成振幅為 <span class="math">√(A²+B²)</span> 的單一 sin 或 cos。振幅就是最大絕對值。</p></div>
+        </div>
+        <div class="formula"><span class="math">A sin θ+B cos θ = R sin(θ+φ)</span>，其中 <span class="math">R=√(A²+B²)</span>，並取 <span class="math">R cos φ=A</span>、<span class="math">R sin φ=B</span>。<br>若 θ 可取所有實數，值域就是 <span class="math">[−R,R]</span>。</div>
+        <div class="example">
+          <h3>例題：求 <span class="math">√3 sin θ + cos θ</span> 的最大、最小值</h3>
+          <ol class="steps">
+            <li>振幅 <span class="math">R=√[(√3)²+1²]=2</span>。</li>
+            <li>取 <span class="math">φ=30°</span>，則 <span class="math">2sin(θ+30°)=√3 sin θ+cos θ</span>。</li>
+            <li>因 <span class="math">−1≤sin(θ+30°)≤1</span>，所以 <span class="math">−2≤√3 sin θ+cos θ≤2</span>。</li>
+          </ol>
+          <p class="good-note"><strong>答案：</strong>最大值 2、最小值 −2。若 θ 有指定區間，要再確認 <span class="math">θ+φ</span> 是否能取到讓 sin 等於 ±1 的角。</p>
+        </div>
+        <div class="mistake"><h3>常見錯誤</h3><p>只算出 <span class="math">R=√(A²+B²)</span>，卻忘了題目可能限制 θ，例如 <span class="math">0°≤θ≤30°</span>。此時整個 <span class="math">[−R,R]</span> 未必都走得到。</p></div>
+      </article>
+
+      <article class="method" id="trig-square">
+        <div class="method-head">
+          <div class="method-no">6</div>
+          <div><h2>三角配方＋範圍：設 t 後，範圍不能丟</h2><p>遇到 <span class="math">sin²θ</span>、<span class="math">cos²θ</span> 或它們的二次式，先設 <span class="math">t=sinθ</span>（或 cosθ），但 t 並非任意實數：<span class="math">−1≤t≤1</span>。</p></div>
+        </div>
+        <div class="example">
+          <h3>例題：求 <span class="math">f(θ)=sin²θ−4sinθ+1</span> 的最大、最小值</h3>
+          <ol class="steps">
+            <li>設 <span class="math">t=sinθ</span>，所以 <span class="math">−1≤t≤1</span>。</li>
+            <li><span class="math">f=t²−4t+1=(t−2)²−3</span>。</li>
+            <li>因 <span class="math">−1≤t≤1</span>，故 <span class="math">−3≤t−2≤−1</span>，所以 <span class="math">1≤(t−2)²≤9</span>。</li>
+            <li>因此 <span class="math">−2≤f≤6</span>；在 <span class="math">t=1</span> 時最小，在 <span class="math">t=−1</span> 時最大。</li>
+          </ol>
+          <p class="good-note"><strong>答案：</strong>最小值為 −2（<span class="math">sinθ=1</span>），最大值為 6（<span class="math">sinθ=−1</span>）。</p>
+        </div>
+        <div class="mistake"><h3>最容易錯的地方</h3><p><span class="math">(t−2)²−3</span> 的頂點在 <span class="math">t=2</span>，但 <span class="math">sinθ</span> 不可能是 2。因此不能說最小值是 −3；要回到 <span class="math">t∈[−1,1]</span>。</p></div>
+      </article>
+
+      <article class="method" id="exp-log">
+        <div class="method-head">
+          <div class="method-no">7</div>
+          <div><h2>指數、對數：先換元，再配方或用不等式</h2><p>指數與對數最值的關鍵是：新變數的範圍通常不是所有實數。設完 <span class="math">t</span>，立刻把條件寫在旁邊。</p></div>
+        </div>
+        <div class="compare">
+          <div class="example">
+            <h3>指數配方</h3>
+            <p>求 <span class="math">4<sup>x</sup>−6·2<sup>x</sup>+5</span> 的最小值。</p>
+            <ol class="steps">
+              <li>設 <span class="math">t=2<sup>x</sup>&gt;0</span>，則 <span class="math">4<sup>x</sup>=t²</span>。</li>
+              <li><span class="math">t²−6t+5=(t−3)²−4≥−4</span>。</li>
+              <li><span class="math">t=3&gt;0</span> 可取，所以最小值是 −4。</li>
+            </ol>
+          </div>
+          <div class="example">
+            <h3>對數配方</h3>
+            <p>求 <span class="math">(log<sub>2</sub>x)²−4log<sub>2</sub>x+1</span> 的最小值。</p>
+            <ol class="steps">
+              <li>定義域先寫 <span class="math">x&gt;0</span>；設 <span class="math">t=log<sub>2</sub>x</span>，則 t 為任意實數。</li>
+              <li><span class="math">t²−4t+1=(t−2)²−3≥−3</span>。</li>
+              <li><span class="math">t=2</span> 對應 <span class="math">x=4</span>，所以最小值為 −3。</li>
+            </ol>
+          </div>
+        </div>
+        <div class="mistake"><h3>常見錯誤</h3><p>把 <span class="math">t=2<sup>x</sup></span> 當作可取 0 或負數，或忘記對數的真數條件。換元不是只換符號，也把原本的範圍一起搬過來。</p></div>
+      </article>
+
+      <article class="method" id="calculus">
+        <div class="method-head">
+          <div class="method-no">8</div>
+          <div><h2>萬用收網：微分求極值</h2><p>當式子沒有明顯的配方、不等式或三角結構，微分是穩定的通法。要分清楚「局部極值」與「指定區間的全域最值」。</p></div>
+        </div>
+        <div class="formula"><strong>閉區間 [a,b] 求全域最大最小值流程：</strong><br>① 找 <span class="math">f'(x)=0</span> 的臨界點；② 加入 f′ 不存在但 f 有定義的點；③ 加入端點 a、b；④ 比較所有候選點的 f 值。</div>
+        <div class="example">
+          <h3>例題：求 <span class="math">f(x)=x³−3x</span> 在 <span class="math">[−2,3]</span> 的最大、最小值</h3>
+          <ol class="steps">
+            <li><span class="math">f′(x)=3x²−3=3(x−1)(x+1)</span>，臨界點為 <span class="math">x=−1,1</span>。</li>
+            <li>候選點是 <span class="math">−2,−1,1,3</span>。</li>
+            <li>逐一代入：<span class="math">f(−2)=−2</span>，<span class="math">f(−1)=2</span>，<span class="math">f(1)=−2</span>，<span class="math">f(3)=18</span>。</li>
+          </ol>
+          <p class="good-note"><strong>答案：</strong>全域最大值為 18（<span class="math">x=3</span>）；全域最小值為 −2（<span class="math">x=−2</span> 或 1）。</p>
+        </div>
+        <div class="mistake"><h3>常見錯誤</h3><p>只解 <span class="math">f′(x)=0</span>，忘記端點。尤其在閉區間題，真正的最大值常常就在端點。另外，若定義域是全體實數，也要先確認函數是否真的有全域最大或最小值。</p></div>
+      </article>
+    </section>
+
+    <section class="quick-check section" id="practice">
+      <h2>題型辨識快測：先選方法，再看答案</h2>
+      <p>先不計算，練習看到結構就選工具。每題的「最好起手式」不一定是唯一解法。</p>
+      <div class="grid">
+        <article class="check-card" data-answer="complete">
+          <span class="level">基礎</span>
+          <h3>題 1</h3>
+          <p>求 <span class="math">3x²+12x+7</span> 的最小值。</p>
+          <div class="quiz-options">
+            <button class="option" data-choice="complete">配方法</button><button class="option" data-choice="amgm">算幾不等式</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="check-card" data-answer="amgm">
+          <span class="level">基礎</span>
+          <h3>題 2</h3>
+          <p><span class="math">x&gt;0</span>，求 <span class="math">2x+8/x</span> 的最小值。</p>
+          <div class="quiz-options">
+            <button class="option" data-choice="amgm">算幾不等式</button><button class="option" data-choice="discriminant">判別式</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="check-card" data-answer="trig">
+          <span class="level">進階</span>
+          <h3>題 3</h3>
+          <p>求 <span class="math">5sinθ−12cosθ</span> 的最大值（θ 為任意實數）。</p>
+          <div class="quiz-options">
+            <button class="option" data-choice="trig">三角疊合</button><button class="option" data-choice="square">直接配方法</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="check-card" data-answer="range">
+          <span class="level">進階</span>
+          <h3>題 4</h3>
+          <p>求 <span class="math">sin²θ−6sinθ</span> 的最小值。</p>
+          <div class="quiz-options">
+            <button class="option" data-choice="range">設 t 後配方並保留 t∈[−1,1]</button><button class="option" data-choice="square">只配方法、不管 t 範圍</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="check-card" data-answer="cauchy">
+          <span class="level">挑戰</span>
+          <h3>題 5</h3>
+          <p>若 <span class="math">x²+y²=9</span>，求 <span class="math">4x−3y</span> 的最大值。</p>
+          <div class="quiz-options">
+            <button class="option" data-choice="cauchy">柯西不等式</button><button class="option" data-choice="amgm">算幾不等式</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="check-card" data-answer="discriminant">
+          <span class="level">挑戰</span>
+          <h3>題 6</h3>
+          <p>求 <span class="math">y=(2x+1)/(x²+1)</span> 的值域。</p>
+          <div class="quiz-options">
+            <button class="option" data-choice="discriminant">令 y 固定，判別式 Δ≥0</button><button class="option" data-choice="trig">三角疊合</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+      </div>
+      <details><summary>快測答案與一行提示</summary><p>題 1 配方；題 2 將 <span class="math">2x</span> 與 <span class="math">8/x</span> 視為正數；題 3 振幅為 13；題 4 設 <span class="math">t=sinθ∈[−1,1]</span>；題 5 用 <span class="math">√(4²+(−3)²)·√9=15</span>；題 6 改寫成 <span class="math">yx²−2x+(y−1)=0</span>。</p></details>
+    </section>
+
+    <section class="teacher-card">
+      <h2>課堂使用建議：把「最值」教成選工具，而不是背八招</h2>
+      <div class="grid">
+        <div><span class="tag">第一節導入</span><p>先丟同一題 <span class="math">x+9/x</span>，分別給 <span class="math">x&gt;0</span> 與 <span class="math">x&lt;0</span>。讓學生發現條件一換，不等號方向就不同，再建立「先看範圍」的習慣。</p></div>
+        <div><span class="tag green">板書主軸</span><p>每個方法都固定寫三句：<strong>可用條件</strong>、<strong>不等式或變形</strong>、<strong>等號何時成立</strong>。學生會更容易把答案的數值與取得位置連起來。</p></div>
+        <div><span class="tag orange">收尾比較</span><p>安排「頂點在範圍外」與「三角角度受限」各一題。這兩類最能提醒學生：求到一個下界後，還要驗證它能不能真的取到。</p></div>
+      </div>
+    </section>
+    <p class="foot">最大最小值的共同語言：先找範圍，再找界；最後確認界能取到。</p>
+  </main>
+  <script>
+    const hints = {
+      complete: '對，二次式最直接用配方法，平方項最小時就是答案。',
+      amgm: '對，兩項在 x&gt;0 時都是正數，適合把它們配成算幾不等式。',
+      trig: '對，A sinθ+B cosθ 的振幅是 √(A²+B²)。',
+      range: '對，設 t=sinθ 後，t 必須留在 [−1,1]，不能當任意實數。',
+      cauchy: '對，平方和固定、要求線性組合的最大值，是柯西不等式的典型訊號。',
+      discriminant: '對，把 y 固定後變成 x 的二次方程式，再以 Δ≥0 限制 y。'
+    };
+
+    document.querySelectorAll('.check-card').forEach((card) => {
+      card.querySelectorAll('.option').forEach((button) => {
+        button.addEventListener('click', () => {
+          const isCorrect = button.dataset.choice === card.dataset.answer;
+          const feedback = card.querySelector('.feedback');
+          card.querySelectorAll('.option').forEach((item) => {
+            item.disabled = true;
+            if (item.dataset.choice === card.dataset.answer) item.classList.add('correct');
+          });
+          if (isCorrect) {
+            feedback.textContent = hints[card.dataset.answer];
+            feedback.className = 'feedback good';
+          } else {
+            button.classList.add('wrong');
+            feedback.textContent = `先看結構：${hints[card.dataset.answer]}`;
+            feedback.className = 'feedback bad';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

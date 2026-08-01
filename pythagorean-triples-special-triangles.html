@@ -1,0 +1,1053 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>畢氏數與特殊直角三角形｜記憶與練習</title>
+  <style>
+    :root {
+      --ink: #18243a;
+      --muted: #536275;
+      --paper: #f7fafc;
+      --card: #ffffff;
+      --line: #dbe4ee;
+      --blue: #1769aa;
+      --blue-pale: #eaf5ff;
+      --gold: #a55b00;
+      --gold-pale: #fff6df;
+      --red: #b23a3a;
+      --red-pale: #fff0f0;
+      --green: #13705c;
+      --green-pale: #e8f8f1;
+      --shadow: 0 14px 34px rgba(21, 49, 83, .09);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, #dff3ff 0, transparent 27rem),
+        radial-gradient(circle at 94% 12%, #fff0cf 0, transparent 23rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.7;
+    }
+
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 56px; }
+    .back { color: var(--blue); font-weight: 800; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      margin: 18px 0 30px;
+      padding: clamp(25px, 5vw, 52px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(135deg, #123c65, #1769aa 58%, #2388bf);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow, .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .03em;
+    }
+    .eyebrow { color: #d9f1ff; background: rgba(255,255,255,.14); }
+    .hero h1 { margin: 9px 0 8px; font-size: clamp(2rem, 5vw, 3.45rem); line-height: 1.2; }
+    .lead { max-width: 770px; margin: 0; color: #ecf8ff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
+    .nav a {
+      padding: 7px 13px;
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .nav a:hover { background: rgba(255,255,255,.15); }
+
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 36px; }
+    .section-head { margin-bottom: 14px; }
+    h2 { margin: 0; font-size: clamp(1.52rem, 3vw, 2.15rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.2rem; line-height: 1.45; }
+    .section-head p, .card p { margin: 5px 0 0; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .card {
+      padding: clamp(18px, 3vw, 26px);
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: var(--card);
+      box-shadow: 0 6px 20px rgba(33, 59, 89, .045);
+    }
+    .tag { color: var(--blue); background: var(--blue-pale); }
+    .tag.gold { color: var(--gold); background: var(--gold-pale); }
+    .tag.green { color: var(--green); background: var(--green-pale); }
+    .formula {
+      margin: 14px 0;
+      padding: 14px;
+      border-radius: 13px;
+      color: #102f4d;
+      background: #f2f8fc;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: clamp(1.25rem, 3vw, 1.63rem);
+      font-weight: 700;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .formula.small { font-size: 1.12rem; }
+    .equation-line { font-family: Cambria, "Times New Roman", serif; font-size: 1.12rem; }
+    .note, .error-note, .teacher-note, .success-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      background: var(--blue-pale);
+    }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .teacher-note { border-color: var(--gold); background: var(--gold-pale); }
+    .success-note { border-color: var(--green); background: var(--green-pale); }
+    .steps { display: grid; gap: 9px; margin-top: 13px; }
+    .step { padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    .step strong { color: var(--blue); }
+
+    .table-wrap { overflow-x: auto; margin-top: 14px; }
+    table { width: 100%; border-collapse: collapse; min-width: 630px; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: center; }
+    th { color: #17415e; background: #edf7fd; font-weight: 850; }
+    td:first-child, th:first-child { text-align: left; }
+    .rule-list { margin: 11px 0 0; padding-left: 1.25em; }
+    .rule-list li { margin: 5px 0; }
+    .mini-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 13px; }
+    .mini { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; text-align: center; }
+    .mini strong { display: block; color: var(--blue); font-family: Cambria, "Times New Roman", serif; font-size: 1.24rem; }
+
+    .practice-card { padding: clamp(18px, 4vw, 30px); }
+    .practice-top { display: flex; align-items: end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    label { display: block; margin-bottom: 5px; font-weight: 850; color: #31445a; }
+    select, input {
+      min-height: 42px;
+      border: 1px solid #aebdca;
+      border-radius: 10px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+    }
+    select { min-width: min(310px, 100%); padding: 7px 10px; }
+    input { width: 100%; padding: 7px 10px; }
+    input:focus, select:focus, button:focus, a:focus { outline: 3px solid #82c8ee; outline-offset: 2px; }
+    .question-box { margin-top: 16px; padding: clamp(16px, 3vw, 23px); border: 1px solid #cbe2f0; border-radius: 16px; background: linear-gradient(135deg, #f9fdff, #eef8ff); }
+    .score-row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: #315269; font-size: .95rem; font-weight: 800; }
+    .question { margin: 13px 0 10px; font-size: clamp(1.25rem, 3.2vw, 1.7rem); font-weight: 900; line-height: 1.5; }
+    .input-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; margin-top: 15px; }
+    .input-item { min-width: 0; }
+    .input-item label { font-size: .95rem; }
+    .tools { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 15px; }
+    button {
+      min-height: 40px;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--blue);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 850;
+    }
+    button:hover { background: #10598f; }
+    button.secondary { color: #17415e; background: #dceef8; }
+    button.secondary:hover { background: #c9e4f3; }
+    .feedback { min-height: 31px; margin-top: 13px; padding: 7px 10px; border-radius: 9px; color: #315269; background: #e8f2f8; font-weight: 750; }
+    .feedback.good { color: #08634e; background: var(--green-pale); }
+    .feedback.bad { color: #962f2f; background: var(--red-pale); }
+    .answer-good { border-color: #299779; background: #f1fff9; }
+    .answer-bad { border-color: #d06161; background: #fff6f6; }
+
+    .special-layout { display: grid; grid-template-columns: minmax(260px, .95fr) minmax(280px, 1.05fr); gap: 17px; align-items: center; }
+    .triangle-frame { padding: 8px; border: 1px solid #cbe2f0; border-radius: 16px; background: #fff; }
+    .triangle-frame svg { display: block; width: 100%; max-height: 290px; }
+    .triangle-name { margin: 0; color: #0f527f; font-size: 1.08rem; font-weight: 900; text-align: center; }
+    .hint { margin: 8px 0 0; color: var(--muted); font-size: .94rem; text-align: center; }
+    .footer { margin: 42px 0 0; color: var(--muted); text-align: center; }
+
+    @media (max-width: 760px) {
+      .wrap { width: min(100% - 22px, 1120px); padding-top: 15px; }
+      .grid, .special-layout { grid-template-columns: 1fr; }
+      .input-grid { grid-template-columns: 1fr; }
+      .hero { border-radius: 21px; }
+      .mini-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回數學小遊戲教學首頁</a>
+
+    <section class="hero">
+      <span class="eyebrow">國中幾何・高一三角比的共同基礎</span>
+      <h1>畢氏數與特殊直角三角形</h1>
+      <p class="lead">先用平方和的規律看懂畢氏數，再把 30°–60°–90°、45°–45°–90° 的邊長比練到「看圖就能寫」。每一題的三角形都會轉向，避免只靠固定方向背答案。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#meaning">先認識畢氏數</a>
+        <a href="#memory">兩個記憶規律</a>
+        <a href="#mn">m、n 生成表</a>
+        <a href="#triple-practice">畢氏數練習</a>
+        <a href="#special-practice">特殊三角形練習</a>
+        <a href="#factor-practice">公因數根式題</a>
+      </nav>
+    </section>
+
+    <section id="meaning" class="section">
+      <div class="section-head">
+        <h2>先說清楚：畢氏數是三個「邊長」</h2>
+        <p>若三個正整數 <span class="equation-line">a、b、c</span> 能組成直角三角形，且 <span class="equation-line">a² + b² = c²</span>，就稱 <span class="equation-line">(a, b, c)</span> 為一組畢氏數；<span class="equation-line">c</span> 一定是最長的斜邊。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">第一組錨點</span>
+          <h3>從 3² = 4 + 5 連到 3–4–5</h3>
+          <div class="formula">3² = 4 + 5</div>
+          <p>這一句是找畢氏數的<strong>記憶橋</strong>：4 和 5 是相鄰整數，而 <span class="equation-line">5² − 4² = (5−4)(5+4) = 9 = 3²</span>。</p>
+          <div class="formula small">3² + 4² = 5²</div>
+          <div class="error-note"><strong>最常犯的錯：</strong><span class="equation-line">3² = 4 + 5</span> 不是畢氏定理本身；真正的三邊關係要寫成 <span class="equation-line">3² + 4² = 5²</span>。</div>
+        </article>
+        <article class="card">
+          <span class="tag gold">檢查步驟</span>
+          <h3>先找斜邊，再平方驗算</h3>
+          <div class="steps">
+            <div class="step"><strong>1. 找最長邊：</strong>最長的那一邊才可能是 <span class="equation-line">c</span>。</div>
+            <div class="step"><strong>2. 平方相加：</strong>兩股平方和是否等於斜邊平方？</div>
+            <div class="step"><strong>3. 允許倍數：</strong><span class="equation-line">6–8–10</span> 雖然不是最簡組，仍是畢氏數，因為它是 <span class="equation-line">3–4–5</span> 的 2 倍。</div>
+          </div>
+          <div class="teacher-note"><strong>課堂提問：</strong>「8、15、17 為什麼不用三個平方都算完？」引導學生看 <span class="equation-line">17²−15²=(17−15)(17+15)=2×32=64=8²</span>。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="memory" class="section">
+      <div class="section-head">
+        <h2>兩個可心算的畢氏數規律</h2>
+        <p>這兩招都把「平方差」變成生成畢氏數的工具。先固定一條直角邊，再由規律求另一股與斜邊。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">基礎：奇數直角邊</span>
+          <h3>奇數 <span class="equation-line">a</span>：平方後取相鄰的兩半</h3>
+          <div class="formula">a² = (a²−1)/2 + (a²+1)/2</div>
+          <p>前一個數是另一股 <span class="equation-line">b</span>，後一個數是斜邊 <span class="equation-line">c</span>。因為 <span class="equation-line">c−b=1</span>，而 <span class="equation-line">b+c=a²</span>，所以 <span class="equation-line">c²−b²=a²</span>。</p>
+          <div class="formula small">5² = 12 + 13　→　5–12–13</div>
+          <div class="note"><strong>再試一組：</strong><span class="equation-line">7²=24+25</span>，所以是 <span class="equation-line">7–24–25</span>。只要固定邊是奇數，這個方法都能用。</div>
+        </article>
+        <article class="card">
+          <span class="tag gold">基礎：偶數直角邊</span>
+          <h3>偶數 <span class="equation-line">a=2k</span>：中間平方數前後各 1</h3>
+          <div class="formula">b = k²−1，c = k²+1</div>
+          <p>也可把關係記成：<span class="equation-line">a² = 2(b+c)</span>。此時 <span class="equation-line">c−b=2</span>，剛好讓 <span class="equation-line">c²−b²=(c−b)(c+b)=a²</span>。</p>
+          <div class="formula small">8² = 32×2 = (17+15)×2　→　8–15–17</div>
+          <div class="note"><strong>怎麼看：</strong><span class="equation-line">8=2×4</span>，先算 <span class="equation-line">4²=16</span>，再取 <span class="equation-line">16−1=15</span> 與 <span class="equation-line">16+1=17</span>。</div>
+        </article>
+      </div>
+      <div class="error-note"><strong>易混淆：</strong>奇數規律是把 <span class="equation-line">a²</span> 分成相鄰的兩數；偶數規律則要先把 <span class="equation-line">a</span> 除以 2，將 <span class="equation-line">k²</span> 的前後各取 1。不要把兩種「前後各 1」混在一起。</div>
+    </section>
+
+    <section id="mn" class="section">
+      <div class="section-head">
+        <h2>進階生成法：用 m、n 系統找互質畢氏數</h2>
+        <p>前面的奇、偶規律固定了一條邊；這個公式則一次產生三邊，適合整理常用的最簡畢氏數。</p>
+      </div>
+      <article class="card">
+        <div class="grid">
+          <div>
+            <span class="tag green">三邊公式</span>
+            <div class="formula">2mn，m²−n²，m²+n²</div>
+            <p>其中 <span class="equation-line">2mn</span> 與 <span class="equation-line">m²−n²</span> 是兩股；<span class="equation-line">m²+n²</span> 是斜邊。兩股的長短不固定，解題時要先比較，不要把公式位置誤當成圖上的固定位置。</p>
+            <div class="success-note"><strong>為什麼成立？</strong><br><span class="equation-line">(m²+n²)²−(m²−n²)² = (2n²)(2m²) = (2mn)²</span>，所以兩股平方和正好等於斜邊平方。</div>
+          </div>
+          <div>
+            <span class="tag gold">使用條件</span>
+            <ul class="rule-list">
+              <li><span class="equation-line">m、n</span> 是正整數，且 <span class="equation-line">m &gt; n</span>。</li>
+              <li><span class="equation-line">m、n</span> 要互質，也就是最大公因數是 1。</li>
+              <li><span class="equation-line">m、n</span> 不會同時為奇數；換句話說，兩者奇偶性不同。</li>
+            </ul>
+            <div class="teacher-note"><strong>這些條件的作用：</strong>可避免重複與公因數，產生的是最簡的一組。例如 <span class="equation-line">m=3,n=1</span> 雖然能算，但兩者都奇數，得到 <span class="equation-line">6–8–10</span>，只是 <span class="equation-line">3–4–5</span> 的倍數。</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>m、n</th><th>2mn</th><th>m²−n²</th><th>m²+n²</th><th>得到的畢氏數</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>m=2，n=1</td><td>4</td><td>3</td><td>5</td><td>3–4–5</td></tr>
+              <tr><td>m=3，n=2</td><td>12</td><td>5</td><td>13</td><td>5–12–13</td></tr>
+              <tr><td>m=4，n=1</td><td>8</td><td>15</td><td>17</td><td>8–15–17</td></tr>
+              <tr><td>m=4，n=3</td><td>24</td><td>7</td><td>25</td><td>7–24–25</td></tr>
+              <tr><td>m=5，n=2</td><td>20</td><td>21</td><td>29</td><td>20–21–29</td></tr>
+              <tr><td>m=5，n=4</td><td>40</td><td>9</td><td>41</td><td>9–40–41</td></tr>
+              <tr><td>m=6，n=1</td><td>12</td><td>35</td><td>37</td><td>12–35–37</td></tr>
+              <tr><td>m=6，n=5</td><td>60</td><td>11</td><td>61</td><td>11–60–61</td></tr>
+              <tr><td>m=7，n=2</td><td>28</td><td>45</td><td>53</td><td>28–45–53</td></tr>
+              <tr><td>m=7，n=4</td><td>56</td><td>33</td><td>65</td><td>33–56–65</td></tr>
+              <tr><td>m=7，n=6</td><td>84</td><td>13</td><td>85</td><td>13–84–85</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="triple-practice" class="section">
+      <div class="section-head">
+        <h2>畢氏數快速自測</h2>
+        <p>先說出你要用哪一個規律，再填數字。基礎題只求兩邊；進階題要依 <span class="equation-line">m、n</span> 填出三個公式值。</p>
+      </div>
+      <article class="card practice-card">
+        <div class="practice-top">
+          <div>
+            <label for="tripleMode">題型</label>
+            <select id="tripleMode">
+              <option value="mixed">混合練習</option>
+              <option value="odd">基礎：奇數直角邊</option>
+              <option value="even">基礎：偶數直角邊</option>
+              <option value="mn">進階：m、n 公式</option>
+            </select>
+          </div>
+          <div class="score-row" aria-live="polite">
+            <span id="tripleScore">答對 0 題／共 0 題</span>
+            <span id="tripleStreak">連對 0 題</span>
+          </div>
+        </div>
+        <div class="question-box">
+          <span class="tag" id="tripleTag">畢氏數練習</span>
+          <div class="question" id="tripleQuestion">按「出一題」開始。</div>
+          <div class="input-grid" id="tripleInputs"></div>
+          <div class="tools">
+            <button type="button" id="tripleCheck">檢查答案</button>
+            <button type="button" class="secondary" id="tripleHint">看提示</button>
+            <button type="button" class="secondary" id="tripleReveal">顯示答案</button>
+            <button type="button" class="secondary" id="tripleNew">出一題</button>
+          </div>
+          <div class="feedback" id="tripleFeedback" aria-live="polite">選題型後按「出一題」。</div>
+        </div>
+      </article>
+    </section>
+
+    <section id="special-practice" class="section">
+      <div class="section-head">
+        <h2>特殊直角三角形：旋轉圖形也要認得邊</h2>
+        <p>先用角度定位邊，再套比例；圖形轉向不改變「對 30° 的短股」、「對 60° 的長股」與斜邊的關係。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">30°–60°–90°</span>
+          <h3>短股：長股：斜邊 = 1：√3：2</h3>
+          <div class="formula">x，x√3，2x</div>
+          <p>先找 30°，它對面的邊一定最短，設為 <span class="equation-line">x</span>；60° 對面是 <span class="equation-line">x√3</span>；90° 對面是斜邊 <span class="equation-line">2x</span>。</p>
+          <div class="error-note"><strong>最常錯：</strong>把 <span class="equation-line">√3</span> 放在斜邊。斜邊永遠最長，因此比例中的 <span class="equation-line">2</span> 才對應斜邊。</div>
+        </article>
+        <article class="card">
+          <span class="tag gold">45°–45°–90°</span>
+          <h3>直角邊：直角邊：斜邊 = 1：1：√2</h3>
+          <div class="formula">x，x，x√2</div>
+          <p>兩個銳角相等，所以它們對面的兩直角邊一定相等；斜邊則是直角邊乘上 <span class="equation-line">√2</span>。</p>
+          <div class="error-note"><strong>最常錯：</strong>已知斜邊時要「除以 <span class="equation-line">√2</span>」，不是再乘 <span class="equation-line">√2</span>。例如斜邊 <span class="equation-line">8√2</span>，每條直角邊是 8。</div>
+        </article>
+      </div>
+
+      <article class="card practice-card" style="margin-top:16px;">
+        <div class="practice-top">
+          <div>
+            <label for="specialMode">題型</label>
+            <select id="specialMode">
+              <option value="mixed">混合：30°–60°–90° 與 45°–45°–90°</option>
+              <option value="306090">30°–60°–90°</option>
+              <option value="454590">45°–45°–90°</option>
+            </select>
+          </div>
+          <div class="score-row" aria-live="polite">
+            <span id="specialScore">答對 0 題／共 0 題</span>
+            <span id="specialStreak">連對 0 題</span>
+          </div>
+        </div>
+        <div class="question-box">
+          <span class="tag green" id="specialTag">特殊三角形練習</span>
+          <div class="special-layout">
+            <div class="triangle-frame">
+              <div id="triangleSvg"></div>
+              <p class="hint">每題隨機旋轉；已知邊給值，另兩邊用 x、y 或 a、b、m、n 表示。</p>
+            </div>
+            <div>
+              <p class="triangle-name" id="specialQuestion">按「出一題」開始。</p>
+              <div class="input-grid" id="specialInputs"></div>
+              <div class="tools">
+                <button type="button" id="specialCheck">檢查答案</button>
+                <button type="button" class="secondary" id="specialHint">看提示</button>
+                <button type="button" class="secondary" id="specialReveal">顯示答案</button>
+                <button type="button" class="secondary" id="specialNew">出一題</button>
+              </div>
+              <div class="feedback" id="specialFeedback" aria-live="polite">請選題型後按「出一題」。根式可輸入 3√2、3sqrt2 或 3*√2。</div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <div class="teacher-note"><strong>建議上課節奏：</strong>先固定圖形方向，讓學生用角度說出比例；第二輪再轉圖，要求先圈出 90° 對面的斜邊；最後才進入本練習的「已知一邊、求另外兩邊」。這樣能避免學生只背橫放的圖。</div>
+    </section>
+
+    <section id="factor-practice" class="section">
+      <div class="section-head">
+        <h2>公因數化簡：已知兩邊，求第三邊</h2>
+        <p>遇到兩條已知邊有共同因數時，先把共同因數提出來，再做平方和或平方差；根式就能立刻化成最簡形式。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag gold">兩股求斜邊</span>
+          <h3>4、8 是兩股，斜邊是多少？</h3>
+          <div class="formula small">c = √(4²+8²) = √[4²(1²+2²)] = 4√5</div>
+          <p>先看出 <span class="equation-line">4、8</span> 都有公因數 4。把 4 提出根號外，裡面只留下 <span class="equation-line">1²+2²=5</span>。</p>
+        </article>
+        <article class="card">
+          <span class="tag gold">一股與斜邊求另一股</span>
+          <h3>5、10 的角色不同，答案也不同</h3>
+          <div class="formula small">兩股 5、10 → 5√5；斜邊 10、另一股 5 → 5√3</div>
+          <div class="error-note"><strong>先確認誰是斜邊：</strong>若 5、10 都是直角邊，要用「加」；若 10 是斜邊、5 是直角邊，要用「減」。同一組數字，邊的角色不同，第三邊也不同。</div>
+        </article>
+      </div>
+      <article class="card practice-card" style="margin-top:16px;">
+        <div class="practice-top">
+          <div>
+            <label for="factorMode">題型</label>
+            <select id="factorMode">
+              <option value="mixed">混合：兩股求斜邊／一股與斜邊求另一股</option>
+              <option value="legs">兩股求斜邊</option>
+              <option value="legHyp">一股與斜邊求另一股</option>
+            </select>
+          </div>
+          <div class="score-row" aria-live="polite">
+            <span id="factorScore">答對 0 題／共 0 題</span>
+            <span id="factorStreak">連對 0 題</span>
+          </div>
+        </div>
+        <div class="question-box">
+          <span class="tag gold" id="factorTag">公因數化簡練習</span>
+          <div class="special-layout">
+            <div class="triangle-frame">
+              <div id="factorTriangleSvg"></div>
+              <p class="hint">每題都先找兩個已知邊的最大公因數，再判斷要做平方和或平方差。</p>
+            </div>
+            <div>
+              <p class="triangle-name" id="factorQuestion">按「出一題」開始。</p>
+              <div class="input-grid" id="factorInputs"></div>
+              <div class="tools">
+                <button type="button" id="factorCheck">檢查答案</button>
+                <button type="button" class="secondary" id="factorHint">看提示</button>
+                <button type="button" class="secondary" id="factorReveal">顯示答案</button>
+                <button type="button" class="secondary" id="factorNew">出一題</button>
+              </div>
+              <div class="feedback" id="factorFeedback" aria-live="polite">根式可輸入 4√5、4sqrt5 或 4*√5。</div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <div class="teacher-note"><strong>解題口令：</strong>「先找公因數，再看加或減，最後才寫根號。」這比直接計算大平方數更快，也能避免把斜邊錯當成直角邊。</div>
+    </section>
+
+    <p class="footer">真正會用畢氏定理，不是背一串 3–4–5、5–12–13，而是看得出平方差、辨得出斜邊，也能在轉過角度的圖上找對比例。</p>
+  </main>
+
+  <script>
+    const randomInt = function(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    const gcd = function(a, b) {
+      let x = Math.abs(a);
+      let y = Math.abs(b);
+      while (y) {
+        const next = x % y;
+        x = y;
+        y = next;
+      }
+      return x;
+    };
+
+    const scoreState = {
+      triple: { correct: 0, total: 0, streak: 0 },
+      special: { correct: 0, total: 0, streak: 0 },
+      factor: { correct: 0, total: 0, streak: 0 }
+    };
+    let currentTriple = null;
+    let currentSpecial = null;
+    let currentFactor = null;
+
+    const tripleMode = document.getElementById("tripleMode");
+    const tripleTag = document.getElementById("tripleTag");
+    const tripleQuestion = document.getElementById("tripleQuestion");
+    const tripleInputs = document.getElementById("tripleInputs");
+    const tripleFeedback = document.getElementById("tripleFeedback");
+    const tripleScore = document.getElementById("tripleScore");
+    const tripleStreak = document.getElementById("tripleStreak");
+
+    const specialMode = document.getElementById("specialMode");
+    const specialTag = document.getElementById("specialTag");
+    const specialQuestion = document.getElementById("specialQuestion");
+    const specialInputs = document.getElementById("specialInputs");
+    const specialFeedback = document.getElementById("specialFeedback");
+    const specialScore = document.getElementById("specialScore");
+    const specialStreak = document.getElementById("specialStreak");
+    const triangleSvg = document.getElementById("triangleSvg");
+
+    const factorMode = document.getElementById("factorMode");
+    const factorTag = document.getElementById("factorTag");
+    const factorQuestion = document.getElementById("factorQuestion");
+    const factorInputs = document.getElementById("factorInputs");
+    const factorFeedback = document.getElementById("factorFeedback");
+    const factorScore = document.getElementById("factorScore");
+    const factorStreak = document.getElementById("factorStreak");
+    const factorTriangleSvg = document.getElementById("factorTriangleSvg");
+
+    const updateScore = function(kind) {
+      const score = scoreState[kind];
+      const scoreNode = kind === "triple" ? tripleScore : (kind === "special" ? specialScore : factorScore);
+      const streakNode = kind === "triple" ? tripleStreak : (kind === "special" ? specialStreak : factorStreak);
+      scoreNode.textContent = "答對 " + score.correct + " 題／共 " + score.total + " 題";
+      streakNode.textContent = "連對 " + score.streak + " 題";
+    };
+
+    const setFeedback = function(node, text, state) {
+      node.textContent = text;
+      node.className = "feedback" + (state ? " " + state : "");
+    };
+
+    const makeTripleQuestion = function(selectedMode) {
+      let mode = selectedMode;
+      if (mode === "mixed") {
+        const modes = ["odd", "even", "mn"];
+        mode = modes[randomInt(0, modes.length - 1)];
+      }
+
+      if (mode === "odd") {
+        const a = [3, 5, 7, 9, 11, 13, 15][randomInt(0, 6)];
+        return {
+          tag: "奇數直角邊",
+          prompt: "已知一條直角邊 a = " + a + "（奇數）。請用 a² 的相鄰兩半，求另一股與斜邊。",
+          fields: [
+            { key: "other", label: "另一股 b", answer: (a * a - 1) / 2 },
+            { key: "hyp", label: "斜邊 c", answer: (a * a + 1) / 2 }
+          ],
+          hint: "先算 " + a + "² = " + (a * a) + "，再算 (" + (a * a) + "−1)÷2 與 (" + (a * a) + "+1)÷2。",
+          explanation: "a² = b+c；兩個答案是相鄰整數，較大的才是斜邊。"
+        };
+      }
+
+      if (mode === "even") {
+        const a = [4, 6, 8, 10, 12, 14][randomInt(0, 5)];
+        const k = a / 2;
+        return {
+          tag: "偶數直角邊",
+          prompt: "已知一條直角邊 a = " + a + "。令 a = 2k，請用 k² 前後各 1，求另一股與斜邊。",
+          fields: [
+            { key: "other", label: "另一股 b", answer: k * k - 1 },
+            { key: "hyp", label: "斜邊 c", answer: k * k + 1 }
+          ],
+          hint: "a÷2 = " + k + "，先算 k² = " + (k * k) + "，再取前後各 1。",
+          explanation: "b=k²−1、c=k²+1；較大的 c 是斜邊。"
+        };
+      }
+
+      const pairs = [
+        [2, 1], [3, 2], [4, 1], [4, 3], [5, 2], [5, 4], [6, 1], [7, 2], [8, 3]
+      ];
+      const pair = pairs[randomInt(0, pairs.length - 1)];
+      const m = pair[0];
+      const n = pair[1];
+      return {
+        tag: "m、n 公式",
+        prompt: "已知 m = " + m + "、n = " + n + "。請分別算出 2mn、m²−n²、m²+n²。",
+        fields: [
+          { key: "evenLeg", label: "2mn", answer: 2 * m * n },
+          { key: "otherLeg", label: "m²−n²", answer: m * m - n * n },
+          { key: "hyp", label: "m²+n²", answer: m * m + n * n }
+        ],
+        hint: "條件檢查：" + m + ">" + n + "；gcd(" + m + "," + n + ")=" + gcd(m, n) + "；兩數不是同為奇數。",
+        explanation: "兩個較前面的值是直角邊，m²+n² 一定是斜邊。"
+      };
+    };
+
+    const renderInputs = function(container, fields, className, placeholder) {
+      container.innerHTML = fields.map(function(field) {
+        return '<div class="input-item"><label for="' + className + '-' + field.key + '">' + field.label + '</label><input id="' + className + '-' + field.key + '" class="' + className + '-answer" data-key="' + field.key + '" autocomplete="off" inputmode="text" placeholder="' + placeholder + '"></div>';
+      }).join("");
+    };
+
+    const newTripleQuestion = function() {
+      currentTriple = makeTripleQuestion(tripleMode.value);
+      currentTriple.scored = false;
+      tripleTag.textContent = currentTriple.tag;
+      tripleQuestion.textContent = currentTriple.prompt;
+      renderInputs(tripleInputs, currentTriple.fields, "triple", "輸入整數");
+      setFeedback(tripleFeedback, "先說出規律，再填入答案。", "");
+      const first = tripleInputs.querySelector("input");
+      if (first) {
+        first.focus();
+      }
+    };
+
+    const getFieldsCorrect = function(container, problem, normalize) {
+      const inputs = Array.from(container.querySelectorAll("input"));
+      const values = {};
+      inputs.forEach(function(input) {
+        values[input.dataset.key] = normalize(input.value);
+      });
+      const hasBlank = problem.fields.some(function(field) {
+        return values[field.key] === "";
+      });
+      const correct = problem.fields.every(function(field) {
+        return values[field.key] === normalize(String(field.answer));
+      });
+      inputs.forEach(function(input) {
+        const field = problem.fields.find(function(item) { return item.key === input.dataset.key; });
+        input.classList.remove("answer-good", "answer-bad");
+        if (input.value.trim() !== "") {
+          input.classList.add(normalize(input.value) === normalize(String(field.answer)) ? "answer-good" : "answer-bad");
+        }
+      });
+      return { hasBlank: hasBlank, correct: correct };
+    };
+
+    const normalizeInteger = function(value) {
+      const text = String(value).trim().replace(/[,\s]/g, "");
+      if (!/^-?\d+$/.test(text)) {
+        return text === "" ? "" : "not-a-number";
+      }
+      return String(Number(text));
+    };
+
+    const checkTriple = function() {
+      if (!currentTriple) {
+        newTripleQuestion();
+        return;
+      }
+      const result = getFieldsCorrect(tripleInputs, currentTriple, normalizeInteger);
+      if (result.hasBlank) {
+        setFeedback(tripleFeedback, "還有欄位沒有填；每一格都完成後再檢查。", "bad");
+        return;
+      }
+      if (result.correct) {
+        if (!currentTriple.scored) {
+          scoreState.triple.correct += 1;
+          scoreState.triple.total += 1;
+          scoreState.triple.streak += 1;
+          currentTriple.scored = true;
+          updateScore("triple");
+        }
+        setFeedback(tripleFeedback, "答對了！" + currentTriple.explanation, "good");
+      } else {
+        if (!currentTriple.scored) {
+          scoreState.triple.total += 1;
+          scoreState.triple.streak = 0;
+          currentTriple.scored = true;
+          updateScore("triple");
+        }
+        setFeedback(tripleFeedback, "再檢查一次：先確認你選的是奇數、偶數或 m、n 的哪一個規律。", "bad");
+      }
+    };
+
+    const revealTriple = function() {
+      if (!currentTriple) {
+        newTripleQuestion();
+      }
+      currentTriple.fields.forEach(function(field) {
+        const input = tripleInputs.querySelector('[data-key="' + field.key + '"]');
+        if (input) {
+          input.value = field.answer;
+          input.classList.remove("answer-bad");
+          input.classList.add("answer-good");
+        }
+      });
+      setFeedback(tripleFeedback, "答案已填入。" + currentTriple.explanation, "good");
+    };
+
+    const canonicalForm = function(value) {
+      let text = String(value || "").trim().toLowerCase();
+      text = text.replace(/\s+/g, "");
+      text = text.replace(/\\sqrt\{?(\d+)\}?/g, "√$1");
+      text = text.replace(/sqrt\(?(\d+)\)?/g, "√$1");
+      text = text.replace(/[×*]/g, "");
+      text = text.replace(/^1√(\d+)$/, "√$1");
+      if (/^\d+$/.test(text)) {
+        return String(Number(text));
+      }
+      return text;
+    };
+
+    const formatForm = function(coefficient, root) {
+      if (!root) {
+        return String(coefficient);
+      }
+      return (coefficient === 1 ? "" : coefficient) + "√" + root;
+    };
+
+    const makeSpecialQuestion = function(selectedMode) {
+      let kind = selectedMode;
+      if (kind === "mixed") {
+        kind = Math.random() < 0.5 ? "306090" : "454590";
+      }
+      const scale = randomInt(2, 10);
+      const rotationChoices = [0, 52, 111, 180, 233, 300];
+      const rotation = rotationChoices[randomInt(0, rotationChoices.length - 1)];
+      let sides;
+      let title;
+      let hint;
+      if (kind === "306090") {
+        sides = [
+          { key: "short", label: "短股（對 30°）", value: formatForm(scale, ""), angle: "30°" },
+          { key: "long", label: "長股（對 60°）", value: formatForm(scale, "3"), angle: "60°" },
+          { key: "hyp", label: "斜邊（對 90°）", value: formatForm(2 * scale, ""), angle: "90°" }
+        ];
+        title = "30°–60°–90°：比例是 1：√3：2";
+        hint = "先找對 30° 的短股。若短股是 x，長股是 x√3，斜邊是 2x。";
+      } else {
+        sides = [
+          { key: "legA", label: "直角邊甲（對 45°）", value: formatForm(scale, ""), angle: "45°" },
+          { key: "legB", label: "直角邊乙（對 45°）", value: formatForm(scale, ""), angle: "45°" },
+          { key: "hyp", label: "斜邊（對 90°）", value: formatForm(scale, "2"), angle: "90°" }
+        ];
+        title = "45°–45°–90°：比例是 1：1：√2";
+        hint = "兩個 45° 對面的直角邊相等；斜邊 = 直角邊 × √2。";
+      }
+      const knownIndex = randomInt(0, 2);
+      const variablePairs = [["x", "y"], ["a", "b"], ["m", "n"]];
+      const variablePair = variablePairs[randomInt(0, variablePairs.length - 1)];
+      let variableIndex = 0;
+      sides.forEach(function(side, index) {
+        side.known = index === knownIndex;
+        if (!side.known) {
+          side.variable = variablePair[variableIndex];
+          variableIndex += 1;
+        }
+      });
+      return {
+        kind: kind,
+        sides: sides,
+        fields: sides.filter(function(side) { return !side.known; }).map(function(side) {
+          return { key: side.key, label: side.variable + "（" + side.label + "）", answer: side.value };
+        }),
+        title: title,
+        hint: hint + " 圖上的 " + variablePair[0] + "、" + variablePair[1] + " 只是在標示兩條未知邊。",
+        rotation: rotation,
+        scale: scale,
+        scored: false
+      };
+    };
+
+    const makeFactorQuestion = function(selectedMode) {
+      let mode = selectedMode;
+      if (mode === "mixed") {
+        mode = Math.random() < 0.5 ? "legs" : "legHyp";
+      }
+      const variable = ["x", "a", "m"][randomInt(0, 2)];
+      const rotationChoices = [0, 52, 111, 180, 233, 300];
+      const rotation = rotationChoices[randomInt(0, rotationChoices.length - 1)];
+      const commonFactors = [2, 3, 4, 5, 6, 7];
+      const g = commonFactors[randomInt(0, commonFactors.length - 1)];
+
+      if (mode === "legs") {
+        const models = [
+          { p: 1, q: 2, radicand: 5 },
+          { p: 1, q: 3, radicand: 10 },
+          { p: 2, q: 3, radicand: 13 },
+          { p: 1, q: 4, radicand: 17 },
+          { p: 2, q: 5, radicand: 29 }
+        ];
+        const model = models[randomInt(0, models.length - 1)];
+        const legA = g * model.p;
+        const legB = g * model.q;
+        const answer = formatForm(g, model.radicand);
+        return {
+          kind: "factor",
+          tag: "兩股求斜邊",
+          title: "公因數化簡：兩股求斜邊",
+          prompt: "已知兩股為 " + legA + " 與 " + legB + "，求斜邊 " + variable + "。",
+          sides: [
+            { key: "legA", label: "直角邊甲", value: String(legA), known: true },
+            { key: "legB", label: "直角邊乙", value: String(legB), known: true },
+            { key: "hyp", label: "斜邊", variable: variable, value: answer, known: false }
+          ],
+          fields: [{ key: "hyp", label: variable + "（斜邊）", answer: answer }],
+          hint: "先提出公因數 " + g + "：√(" + legA + "²+" + legB + "²) = √[" + g + "²(" + model.p + "²+" + model.q + "²)] = " + answer + "。",
+          explanation: "兩股要相加；公因數 " + g + " 從根號內提出後，答案是 " + answer + "。",
+          rotation: rotation,
+          scored: false
+        };
+      }
+
+      const models = [
+        { p: 1, q: 2, radicand: 3 },
+        { p: 2, q: 3, radicand: 5 },
+        { p: 3, q: 4, radicand: 7 },
+        { p: 1, q: 4, radicand: 15 },
+        { p: 2, q: 5, radicand: 21 }
+      ];
+      const model = models[randomInt(0, models.length - 1)];
+      const leg = g * model.p;
+      const hyp = g * model.q;
+      const answer = formatForm(g, model.radicand);
+      return {
+        kind: "factor",
+        tag: "一股與斜邊求另一股",
+        title: "公因數化簡：一股與斜邊求另一股",
+        prompt: "已知一條直角邊為 " + leg + "、斜邊為 " + hyp + "，求另一股 " + variable + "。",
+        sides: [
+          { key: "legA", label: "已知直角邊", value: String(leg), known: true },
+          { key: "legB", label: "另一條直角邊", variable: variable, value: answer, known: false },
+          { key: "hyp", label: "斜邊", value: String(hyp), known: true }
+        ],
+        fields: [{ key: "legB", label: variable + "（另一條直角邊）", answer: answer }],
+        hint: "斜邊平方減直角邊平方：√(" + hyp + "²−" + leg + "²) = √[" + g + "²(" + model.q + "²−" + model.p + "²)] = " + answer + "。",
+        explanation: "斜邊要減去已知直角邊；公因數 " + g + " 提出後，答案是 " + answer + "。",
+        rotation: rotation,
+        scored: false
+      };
+    };
+
+    const createTriangleSvg = function(problem) {
+      let base;
+      if (problem.kind === "306090") {
+        base = [{ x: 0, y: 0 }, { x: 0, y: -76 }, { x: 131.64, y: 0 }];
+      } else if (problem.kind === "454590") {
+        base = [{ x: 0, y: 0 }, { x: 0, y: -94 }, { x: 94, y: 0 }];
+      } else {
+        base = [{ x: 0, y: 0 }, { x: 0, y: -84 }, { x: 128, y: 0 }];
+      }
+      const angle = problem.rotation * Math.PI / 180;
+      const rotated = base.map(function(point) {
+        return {
+          x: point.x * Math.cos(angle) - point.y * Math.sin(angle),
+          y: point.x * Math.sin(angle) + point.y * Math.cos(angle)
+        };
+      });
+      const xs = rotated.map(function(point) { return point.x; });
+      const ys = rotated.map(function(point) { return point.y; });
+      const minX = Math.min.apply(null, xs);
+      const maxX = Math.max.apply(null, xs);
+      const minY = Math.min.apply(null, ys);
+      const maxY = Math.max.apply(null, ys);
+      const canvasWidth = 224;
+      const canvasHeight = 180;
+      const paddingX = 31;
+      const paddingY = 30;
+      const clamp = function(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      };
+      const scale = Math.min((canvasWidth - paddingX * 2) / (maxX - minX), (canvasHeight - paddingY * 2) / (maxY - minY));
+      const points = rotated.map(function(point) {
+        return {
+          x: paddingX + (point.x - minX) * scale,
+          y: paddingY + (point.y - minY) * scale
+        };
+      });
+      const centroid = {
+        x: (points[0].x + points[1].x + points[2].x) / 3,
+        y: (points[0].y + points[1].y + points[2].y) / 3
+      };
+      const edgeText = function(index, first, second) {
+        const p = points[first];
+        const q = points[second];
+        const middle = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
+        let dx = middle.x - centroid.x;
+        let dy = middle.y - centroid.y;
+        const length = Math.sqrt(dx * dx + dy * dy) || 1;
+        dx = dx / length * 16;
+        dy = dy / length * 16;
+        const side = problem.sides[index];
+        const isKnown = side.known === true;
+        const value = isKnown ? side.value : side.variable;
+        const labelX = clamp(middle.x + dx, 24, 200);
+        const labelY = clamp(middle.y + dy + 4, 27, 160);
+        return '<text x="' + labelX.toFixed(1) + '" y="' + labelY.toFixed(1) + '" text-anchor="middle" class="' + (isKnown ? "known-side" : "unknown-side") + '">' + value + '</text>';
+      };
+      const a = points[0];
+      const b = points[1];
+      const c = points[2];
+      const unit = function(from, to) {
+        const dx = to.x - from.x;
+        const dy = to.y - from.y;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        return { x: dx / length, y: dy / length };
+      };
+      const ab = unit(a, b);
+      const ac = unit(a, c);
+      const marker = "M " + (a.x + ab.x * 13).toFixed(1) + " " + (a.y + ab.y * 13).toFixed(1)
+        + " L " + (a.x + ab.x * 13 + ac.x * 13).toFixed(1) + " " + (a.y + ab.y * 13 + ac.y * 13).toFixed(1)
+        + " L " + (a.x + ac.x * 13).toFixed(1) + " " + (a.y + ac.y * 13).toFixed(1);
+      let angleLabels = "";
+      if (problem.kind === "306090") {
+        angleLabels = '<text x="' + clamp(b.x - 8, 18, 194).toFixed(1) + '" y="' + clamp(b.y - 6, 20, 162).toFixed(1) + '" class="angle-label">60°</text><text x="' + clamp(c.x + 7, 18, 194).toFixed(1) + '" y="' + clamp(c.y + 13, 20, 162).toFixed(1) + '" class="angle-label">30°</text>';
+      } else if (problem.kind === "454590") {
+        angleLabels = '<text x="' + clamp(b.x - 8, 18, 194).toFixed(1) + '" y="' + clamp(b.y - 6, 20, 162).toFixed(1) + '" class="angle-label">45°</text><text x="' + clamp(c.x + 7, 18, 194).toFixed(1) + '" y="' + clamp(c.y + 13, 20, 162).toFixed(1) + '" class="angle-label">45°</text>';
+      }
+      return '<svg viewBox="0 0 224 180" role="img" aria-label="' + problem.title + '，圖形已旋轉">'
+        + '<style>.tri{fill:#eaf7ff;stroke:#1769aa;stroke-width:3}.right{fill:none;stroke:#1769aa;stroke-width:2}.known-side{fill:#0a6853;font:800 17px system-ui,sans-serif}.unknown-side{fill:#5f7080;font:800 18px system-ui,sans-serif}.angle-label{fill:#a55b00;font:700 13px system-ui,sans-serif}</style>'
+        + '<polygon class="tri" points="' + points.map(function(point) { return point.x.toFixed(1) + "," + point.y.toFixed(1); }).join(" ") + '"></polygon>'
+        + '<path class="right" d="' + marker + '"></path>'
+        + edgeText(0, 0, 1) + edgeText(1, 0, 2) + edgeText(2, 1, 2)
+        + angleLabels + '</svg>';
+    };
+
+    const newSpecialQuestion = function() {
+      currentSpecial = makeSpecialQuestion(specialMode.value);
+      specialTag.textContent = currentSpecial.kind === "306090" ? "30°–60°–90°" : "45°–45°–90°";
+      specialQuestion.textContent = currentSpecial.title + "。圖上已知一邊，請填字母標示的另外兩邊。";
+      triangleSvg.innerHTML = createTriangleSvg(currentSpecial);
+      renderInputs(specialInputs, currentSpecial.fields, "special", "例如 3√2");
+      setFeedback(specialFeedback, "請先由角度判斷邊的角色，再套比例。", "");
+      const first = specialInputs.querySelector("input");
+      if (first) {
+        first.focus();
+      }
+    };
+
+    const checkSpecial = function() {
+      if (!currentSpecial) {
+        newSpecialQuestion();
+        return;
+      }
+      const result = getFieldsCorrect(specialInputs, currentSpecial, canonicalForm);
+      if (result.hasBlank) {
+        setFeedback(specialFeedback, "還有欄位沒有填；請完成兩個答案再檢查。", "bad");
+        return;
+      }
+      if (result.correct) {
+        if (!currentSpecial.scored) {
+          scoreState.special.correct += 1;
+          scoreState.special.total += 1;
+          scoreState.special.streak += 1;
+          currentSpecial.scored = true;
+          updateScore("special");
+        }
+        setFeedback(specialFeedback, "答對了！你有先看角度，而不是受圖形方向影響。", "good");
+      } else {
+        if (!currentSpecial.scored) {
+          scoreState.special.total += 1;
+          scoreState.special.streak = 0;
+          currentSpecial.scored = true;
+          updateScore("special");
+        }
+        setFeedback(specialFeedback, "先回到比例表：30°–60°–90° 是 1：√3：2；45°–45°–90° 是 1：1：√2。", "bad");
+      }
+    };
+
+    const revealSpecial = function() {
+      if (!currentSpecial) {
+        newSpecialQuestion();
+      }
+      currentSpecial.fields.forEach(function(field) {
+        const input = specialInputs.querySelector('[data-key="' + field.key + '"]');
+        if (input) {
+          input.value = field.answer;
+          input.classList.remove("answer-bad");
+          input.classList.add("answer-good");
+        }
+      });
+      setFeedback(specialFeedback, "答案已填入。" + currentSpecial.hint, "good");
+    };
+
+    const newFactorQuestion = function() {
+      currentFactor = makeFactorQuestion(factorMode.value);
+      factorTag.textContent = currentFactor.tag;
+      factorQuestion.textContent = currentFactor.prompt;
+      factorTriangleSvg.innerHTML = createTriangleSvg(currentFactor);
+      renderInputs(factorInputs, currentFactor.fields, "factor", "例如 4√5");
+      setFeedback(factorFeedback, "先找兩個已知邊的最大公因數，再判斷要做平方和或平方差。", "");
+      const first = factorInputs.querySelector("input");
+      if (first) {
+        first.focus();
+      }
+    };
+
+    const checkFactor = function() {
+      if (!currentFactor) {
+        newFactorQuestion();
+        return;
+      }
+      const result = getFieldsCorrect(factorInputs, currentFactor, canonicalForm);
+      if (result.hasBlank) {
+        setFeedback(factorFeedback, "還沒有填答案；先把公因數提出來，再輸入最簡根式。", "bad");
+        return;
+      }
+      if (result.correct) {
+        if (!currentFactor.scored) {
+          scoreState.factor.correct += 1;
+          scoreState.factor.total += 1;
+          scoreState.factor.streak += 1;
+          currentFactor.scored = true;
+          updateScore("factor");
+        }
+        setFeedback(factorFeedback, "答對了！" + currentFactor.explanation, "good");
+      } else {
+        if (!currentFactor.scored) {
+          scoreState.factor.total += 1;
+          scoreState.factor.streak = 0;
+          currentFactor.scored = true;
+          updateScore("factor");
+        }
+        setFeedback(factorFeedback, "先確認最長邊是不是斜邊：兩股用加，斜邊減一股用減；再把共同因數提出根號外。", "bad");
+      }
+    };
+
+    const revealFactor = function() {
+      if (!currentFactor) {
+        newFactorQuestion();
+      }
+      currentFactor.fields.forEach(function(field) {
+        const input = factorInputs.querySelector('[data-key="' + field.key + '"]');
+        if (input) {
+          input.value = field.answer;
+          input.classList.remove("answer-bad");
+          input.classList.add("answer-good");
+        }
+      });
+      setFeedback(factorFeedback, "答案已填入。" + currentFactor.hint, "good");
+    };
+
+    document.getElementById("tripleNew").addEventListener("click", newTripleQuestion);
+    document.getElementById("tripleCheck").addEventListener("click", checkTriple);
+    document.getElementById("tripleHint").addEventListener("click", function() {
+      if (!currentTriple) {
+        newTripleQuestion();
+      }
+      setFeedback(tripleFeedback, currentTriple.hint, "");
+    });
+    document.getElementById("tripleReveal").addEventListener("click", revealTriple);
+    tripleMode.addEventListener("change", newTripleQuestion);
+
+    document.getElementById("specialNew").addEventListener("click", newSpecialQuestion);
+    document.getElementById("specialCheck").addEventListener("click", checkSpecial);
+    document.getElementById("specialHint").addEventListener("click", function() {
+      if (!currentSpecial) {
+        newSpecialQuestion();
+      }
+      setFeedback(specialFeedback, currentSpecial.hint, "");
+    });
+    document.getElementById("specialReveal").addEventListener("click", revealSpecial);
+    specialMode.addEventListener("change", newSpecialQuestion);
+
+    document.getElementById("factorNew").addEventListener("click", newFactorQuestion);
+    document.getElementById("factorCheck").addEventListener("click", checkFactor);
+    document.getElementById("factorHint").addEventListener("click", function() {
+      if (!currentFactor) {
+        newFactorQuestion();
+      }
+      setFeedback(factorFeedback, currentFactor.hint, "");
+    });
+    document.getElementById("factorReveal").addEventListener("click", revealFactor);
+    factorMode.addEventListener("change", newFactorQuestion);
+
+    newTripleQuestion();
+    newSpecialQuestion();
+    newFactorQuestion();
+  </script>
+</body>
+</html>
