@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>尺規作圖基本動作｜先做草稿</title>
+  <style>
+    :root {
+      --ink: #17283c;
+      --muted: #536579;
+      --paper: #f5fafb;
+      --card: #ffffff;
+      --line: #d8e4ea;
+      --blue: #1669a8;
+      --blue-pale: #e8f4ff;
+      --teal: #087a70;
+      --teal-pale: #e6f8f4;
+      --gold: #976000;
+      --gold-pale: #fff5dc;
+      --red: #b13e46;
+      --red-pale: #fff0f1;
+      --purple: #6950a4;
+      --purple-pale: #f1edff;
+      --shadow: 0 15px 35px rgba(23, 55, 76, .09);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, #d9f2ff 0, transparent 28rem),
+        radial-gradient(circle at 94% 12%, #fff1cf 0, transparent 26rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.75;
+    }
+    .wrap { width: min(1130px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 60px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      margin: 18px 0 30px;
+      padding: clamp(28px, 5.5vw, 55px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(130deg, #173e67 0%, #1776aa 56%, #0e8377 100%);
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "⌁";
+      position: absolute;
+      right: 3%; bottom: -50px;
+      color: rgba(255,255,255,.12);
+      font-family: Georgia, serif;
+      font-size: 18rem;
+      line-height: .8;
+      transform: rotate(-18deg);
+    }
+    .hero > * { position: relative; z-index: 1; }
+    .eyebrow, .tag, .level, .count {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .eyebrow { color: #ddf7ff; background: rgba(255,255,255,.15); }
+    .hero h1 { margin: 9px 0 8px; font-size: clamp(2.05rem, 5.2vw, 3.55rem); line-height: 1.18; }
+    .hero .lead { max-width: 790px; margin: 0; color: #eaf9ff; font-size: 1.08rem; }
+    .draft-quote {
+      width: fit-content;
+      max-width: 100%;
+      margin: 21px 0 0;
+      padding: 10px 15px;
+      border: 1px solid rgba(255,255,255,.44);
+      border-radius: 13px;
+      background: rgba(2, 28, 49, .19);
+      font-size: clamp(1.05rem, 2.5vw, 1.28rem);
+      font-weight: 900;
+      letter-spacing: .03em;
+    }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .nav a { padding: 7px 13px; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; color: #fff; font-weight: 850; text-decoration: none; }
+    .nav a:hover { background: rgba(255,255,255,.15); }
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 40px; }
+    .section-head { margin-bottom: 14px; }
+    h2 { margin: 0; font-size: clamp(1.58rem, 3vw, 2.18rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.17rem; line-height: 1.48; }
+    h4 { margin: 0 0 5px; font-size: 1.02rem; }
+    p { overflow-wrap: break-word; }
+    .section-head p, .card > p { margin: 5px 0 0; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .three-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .card { padding: clamp(18px, 3vw, 26px); border: 1px solid var(--line); border-radius: 19px; background: var(--card); box-shadow: 0 6px 20px rgba(32, 62, 90, .045); }
+    .tag { color: var(--blue); background: var(--blue-pale); }
+    .tag.teal { color: var(--teal); background: var(--teal-pale); }
+    .tag.gold { color: var(--gold); background: var(--gold-pale); }
+    .tag.purple { color: var(--purple); background: var(--purple-pale); }
+    .formula { margin: 14px 0; padding: 13px 15px; border-radius: 13px; color: #143c59; background: #f0f8fc; font-family: Cambria, "Times New Roman", serif; font-size: clamp(1.1rem, 2.7vw, 1.45rem); font-weight: 700; line-height: 1.65; text-align: center; }
+    .math { font-family: Cambria, "Times New Roman", serif; font-size: 1.07em; }
+    .note, .teacher-note, .error-note, .success-note { margin-top: 14px; padding: 12px 14px; border-left: 4px solid var(--blue); border-radius: 0 12px 12px 0; background: var(--blue-pale); }
+    .teacher-note { border-color: var(--gold); background: var(--gold-pale); }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .success-note { border-color: var(--teal); background: var(--teal-pale); }
+    .draft-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 15px; }
+    .flow-piece { position: relative; min-height: 112px; padding: 14px 11px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .flow-piece:not(:last-child)::after { content: "→"; position: absolute; right: -17px; top: 38px; z-index: 2; color: var(--blue); font-size: 1.45rem; font-weight: 900; }
+    .flow-piece strong { display: block; color: var(--blue); font-size: 1.04rem; }
+    .flow-piece p { margin: 4px 0 0; color: var(--muted); font-size: .92rem; line-height: 1.6; }
+    .rule-list { display: grid; gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+    .rule-list li { padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    .rule-list strong { color: var(--teal); }
+    .tool-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    .tool { padding: 15px; border-radius: 15px; }
+    .tool.straightedge { color: #21455d; background: #eaf5fb; }
+    .tool.compass { color: #0b665f; background: #e7f8f3; }
+    .tool .tool-icon { display: block; margin-bottom: 3px; font-family: Georgia, serif; font-size: 2rem; font-weight: 700; line-height: 1; }
+    .tool p { margin: 5px 0 0; font-size: .94rem; line-height: 1.6; }
+    .construction-shell { overflow: hidden; padding: 0; }
+    .selector-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 20px 23px 0; }
+    .count { flex: 0 0 auto; color: var(--teal); background: var(--teal-pale); }
+    .construction-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 16px 23px; border-bottom: 1px solid var(--line); background: #fbfdff; }
+    button { min-height: 42px; padding: 8px 14px; border: 1px solid transparent; border-radius: 10px; color: #fff; background: var(--blue); cursor: pointer; font: inherit; font-weight: 850; }
+    button:hover { background: #10598f; }
+    button:focus, a:focus, summary:focus { outline: 3px solid #80c9e7; outline-offset: 2px; }
+    .construction-tab { min-height: 47px; padding: 6px 8px; color: #36546b; background: #edf4f8; border-color: #cedfe9; font-size: .89rem; line-height: 1.35; }
+    .construction-tab:hover { background: #dcecf5; }
+    .construction-tab[aria-selected="true"] { color: #fff; background: var(--blue); border-color: var(--blue); }
+    .construction-stage { display: grid; grid-template-columns: minmax(300px, 1.1fr) minmax(300px, .9fr); gap: 0; }
+    .diagram-area { min-height: 444px; padding: 22px; border-right: 1px solid var(--line); background: linear-gradient(135deg, #f8fcff, #eef9f8); }
+    .diagram-frame { height: 100%; padding: 10px; border: 1px solid #c7dfeb; border-radius: 17px; background: #fff; }
+    #constructionDiagram { height: 100%; }
+    .lesson-copy { padding: clamp(21px, 3vw, 30px); }
+    .lesson-copy .goal { margin: 8px 0 0; color: var(--muted); }
+    .lesson-copy .why { margin: 13px 0; padding: 11px 13px; border-radius: 11px; color: #1a526e; background: #eef8fd; font-weight: 800; }
+    .step-list { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; counter-reset: construct; }
+    .step-list li { position: relative; padding: 10px 11px 10px 43px; border: 1px solid var(--line); border-radius: 11px; color: #476074; background: #fbfdff; counter-increment: construct; transition: .18s ease; }
+    .step-list li::before { content: counter(construct); position: absolute; left: 11px; top: 10px; display: grid; width: 23px; height: 23px; place-items: center; border-radius: 50%; color: #446177; background: #e8f1f6; font-size: .83rem; font-weight: 900; }
+    .step-list li.revealed { color: #173d59; border-color: #b8d7e8; background: #f1f9fd; }
+    .step-list li.current { border-color: #5fa9d5; box-shadow: 0 0 0 2px #dff2fc; }
+    .step-list li.revealed::before { color: #fff; background: var(--blue); }
+    .stage-controls { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+    .stage-status { color: var(--muted); font-size: .93rem; font-weight: 750; }
+    .verify { margin-top: 14px; padding: 11px 13px; border-radius: 11px; color: #0b665e; background: var(--teal-pale); }
+    .verify strong { color: #076056; }
+    .mistake { margin-top: 10px; padding: 10px 12px; border-radius: 11px; color: #8b343b; background: var(--red-pale); font-size: .94rem; }
+    .map-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .map-item { padding: 13px 14px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+    .map-item strong { color: var(--blue); }
+    .map-item p { margin: 3px 0 0; color: var(--muted); font-size: .93rem; line-height: 1.6; }
+    .comparison { width: 100%; border-collapse: collapse; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; }
+    .comparison th, .comparison td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .comparison tr:last-child td { border-bottom: 0; }
+    .comparison th { color: #17415e; background: #edf7fd; font-weight: 850; }
+    .comparison td:first-child { width: 21%; color: #21445e; font-weight: 850; }
+    .level { margin-bottom: 8px; }
+    .level.basic { color: #0d665f; background: var(--teal-pale); }
+    .level.advance { color: #8a5200; background: var(--gold-pale); }
+    .level.challenge { color: #68449d; background: var(--purple-pale); }
+    details { margin-top: 11px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    summary { padding: 9px 11px; cursor: pointer; color: var(--blue); font-weight: 850; }
+    details p { margin: 0; padding: 0 12px 12px; color: #3c5168; }
+    .teacher-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 16px; }
+    .time-line { display: grid; gap: 10px; margin-top: 13px; }
+    .time-piece { display: grid; grid-template-columns: 76px 1fr; gap: 10px; align-items: start; }
+    .time { padding: 3px 7px; border-radius: 999px; color: var(--blue); background: var(--blue-pale); text-align: center; font-size: .86rem; font-weight: 900; }
+    .time-piece p { margin: 0; color: var(--muted); }
+    .footer { margin: 44px 0 0; color: var(--muted); text-align: center; }
+    .construction-diagram { display: block; width: 100%; height: 100%; min-height: 350px; overflow: visible; }
+    .construction-diagram .paper { fill: url(#grid); }
+    .construction-diagram .given { fill: none; stroke: #263f54; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+    .construction-diagram .guide { fill: none; stroke: #9cb1bf; stroke-width: 2; stroke-dasharray: 7 7; }
+    .construction-diagram .arc { fill: none; stroke: #e59618; stroke-width: 2.7; stroke-dasharray: 7 5; }
+    .construction-diagram .made { fill: none; stroke: var(--blue); stroke-width: 3.6; stroke-linecap: round; stroke-linejoin: round; }
+    .construction-diagram .answer { fill: none; stroke: var(--teal); stroke-width: 4.4; stroke-linecap: round; stroke-linejoin: round; }
+    .construction-diagram .mirror { fill: none; stroke: var(--purple); stroke-width: 3.2; stroke-dasharray: 8 6; }
+    .construction-diagram .point { fill: #fff; stroke: #213e55; stroke-width: 2.6; }
+    .construction-diagram .point-answer { fill: #e8fff9; stroke: var(--teal); stroke-width: 3; }
+    .construction-diagram text { fill: #1d364c; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 16px; font-weight: 850; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+    .construction-diagram text.small { font-size: 13px; }
+    .construction-diagram .stage { opacity: 0; transition: opacity .22s ease; }
+    .construction-diagram.show-1 .s1, .construction-diagram.show-2 .s1, .construction-diagram.show-3 .s1, .construction-diagram.show-4 .s1,
+    .construction-diagram.show-2 .s2, .construction-diagram.show-3 .s2, .construction-diagram.show-4 .s2,
+    .construction-diagram.show-3 .s3, .construction-diagram.show-4 .s3,
+    .construction-diagram.show-4 .s4 { opacity: 1; }
+    @media (max-width: 900px) {
+      .construction-stage { grid-template-columns: 1fr; }
+      .diagram-area { min-height: 380px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .draft-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .flow-piece:nth-child(2)::after { display: none; }
+      .construction-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .teacher-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .grid, .three-grid { grid-template-columns: 1fr; }
+      .wrap { width: min(100% - 22px, 1130px); padding-top: 15px; }
+      .hero { border-radius: 21px; }
+      .map-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .tool-pair, .draft-flow { grid-template-columns: 1fr; }
+      .flow-piece::after { display: none; }
+      .construction-tabs { grid-template-columns: 1fr 1fr; padding: 13px; }
+      .selector-head { padding: 17px 17px 0; }
+      .diagram-area { min-height: 315px; padding: 13px; }
+      .construction-diagram { min-height: 290px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回到數學小遊戲首頁</a>
+
+    <header class="hero">
+      <span class="eyebrow">國中幾何・尺規作圖基本動作</span>
+      <h1>尺規作圖：先做草稿，再把圖做出來</h1>
+      <p class="lead">尺規作圖不是憑感覺把線畫漂亮，而是把「想要的條件」拆成幾個可保證正確的基本動作。每一筆都要知道：它留下了哪一個等長、等角或垂直的證據。</p>
+      <p class="draft-quote">最重要的一句話：<strong>先做草稿。</strong></p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#draft">先做草稿</a>
+        <a href="#moves">10 個基本動作</a>
+        <a href="#choose">看條件選動作</a>
+        <a href="#practice">分層練習</a>
+      </nav>
+    </header>
+
+    <section id="draft" class="section">
+      <div class="section-head">
+        <span class="tag gold">第 0 步：先規劃，不急著畫</span>
+        <h2>把題目翻成一張「作圖草稿」</h2>
+        <p>先用鉛筆或腦中的小圖判斷：哪些點已知、哪一條線是最後答案、最後那條線要靠什麼性質成立。想清楚後，正式尺規圖就不會畫到一半卡住。</p>
+      </div>
+      <div class="card">
+        <div class="draft-flow" aria-label="尺規作圖草稿流程">
+          <div class="flow-piece"><strong>① 標已知</strong><p>點、線、圓、長度、角度，先標出來。</p></div>
+          <div class="flow-piece"><strong>② 畫目標</strong><p>用虛線先想像最後要得到的點或線。</p></div>
+          <div class="flow-piece"><strong>③ 找性質</strong><p>等距？等角？垂直？最短路徑？</p></div>
+          <div class="flow-piece"><strong>④ 選基本動作</strong><p>把目標拆成下方 10 個可做的動作。</p></div>
+        </div>
+        <div class="note"><strong>例：</strong>「在線 <span class="math">l</span> 上找 <span class="math">P</span>，使 <span class="math">PA+PB</span> 最小」時，草稿先畫出 A、B 在同側與鏡線 <span class="math">l</span>；接著想到「反射後兩段可以接成一直線」，所以要用<strong>對稱點</strong>，而不是直接亂試 P 的位置。</div>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <h3>尺與圓規各自做什麼？</h3>
+          <div class="tool-pair">
+            <div class="tool straightedge"><span class="tool-icon">━</span><strong>無刻度直尺</strong><p>只用來連兩個已知點、延長已知直線；不拿來量數字。</p></div>
+            <div class="tool compass"><span class="tool-icon">⌒</span><strong>圓規</strong><p>保留同一個半徑，做出「到圓心等距」的點或圓弧。</p></div>
+          </div>
+        </article>
+        <article class="card">
+          <h3>每一筆都要能說出理由</h3>
+          <ul class="rule-list">
+            <li><strong>圓上的點：</strong>到圓心距離相等。</li>
+            <li><strong>兩圓交點：</strong>同時滿足兩個等距條件。</li>
+            <li><strong>兩點連線：</strong>把已找到的兩個條件連成一條可用的線。</li>
+          </ul>
+          <div class="error-note"><strong>常見錯誤：</strong>把「看起來像直角、看起來像一半」當成證明。尺規作圖要能用圓弧留下等距證據。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="moves" class="section">
+      <div class="section-head">
+        <span class="tag teal">核心工具箱：點選一項，逐步看圖</span>
+        <h2>10 個最常用的尺規作圖基本動作</h2>
+        <p>先選一個動作，再按「下一步」。橘色虛線是圓規留下的作圖痕跡；藍、綠色線是由這些痕跡連出的關鍵線。</p>
+      </div>
+      <div class="card construction-shell">
+        <div class="selector-head">
+          <h3 id="moveHeading">1. 複製長度</h3>
+          <span class="count" id="moveCount">基本動作 1 / 10</span>
+        </div>
+        <div class="construction-tabs" role="tablist" aria-label="尺規作圖基本動作">
+          <button class="construction-tab" role="tab" aria-selected="true" aria-controls="constructionPanel" data-mode="0" type="button">1. 複製長度</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="1" type="button">2. 複製角度</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="2" type="button">3. 中垂線</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="3" type="button">4. 角平分線</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="4" type="button">5. 線上點垂線</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="5" type="button">6. 線外點垂線</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="6" type="button">7. 對稱點</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="7" type="button">8. 圓上點切線</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="8" type="button">9. 圓外點切線</button>
+          <button class="construction-tab" role="tab" aria-selected="false" aria-controls="constructionPanel" data-mode="9" type="button">10. PA + PB 最小</button>
+        </div>
+        <div class="construction-stage" id="constructionPanel" role="tabpanel">
+          <div class="diagram-area">
+            <div class="diagram-frame"><div id="constructionDiagram"></div></div>
+          </div>
+          <div class="lesson-copy">
+            <span class="tag" id="moveTag">等長</span>
+            <h3 id="moveTitle">在射線上做出和 AB 一樣長的 CD</h3>
+            <p class="goal" id="moveGoal"></p>
+            <p class="why" id="moveWhy"></p>
+            <ol class="step-list" id="constructionSteps"></ol>
+            <div class="stage-controls">
+              <button id="nextStep" type="button">開始看作圖</button>
+              <span class="stage-status" id="stageStatus">準備好後，逐筆揭示。</span>
+            </div>
+            <div class="verify" id="moveVerify"></div>
+            <div class="mistake" id="moveMistake"></div>
+          </div>
+        </div>
+      </div>
+      <div class="teacher-note"><strong>教學提醒：</strong>第 8、9 項常被口語稱作「過圓上／圓外點作垂線」。這裡明確把答案說成<strong>圓的切線</strong>：圓上點的切線垂直半徑；圓外點的切線在切點處垂直半徑。</div>
+    </section>
+
+    <section id="choose" class="section">
+      <div class="section-head">
+        <span class="tag purple">看到條件，就知道往哪裡想</span>
+        <h2>作圖選擇地圖</h2>
+        <p>這不是背題型，而是把題目的關鍵字翻成「要製造哪種關係」。</p>
+      </div>
+      <div class="map-grid">
+        <article class="map-item"><strong>「一樣長」或「把一段搬到另一處」</strong><p>先想複製長度；圓規的半徑就是被保存的長度。</p></article>
+        <article class="map-item"><strong>「一樣大」的角</strong><p>先取同半徑圓弧，再複製圓弧兩交點間的弦長；這是複製角度。</p></article>
+        <article class="map-item"><strong>「到 A、B 等距」</strong><p>想中垂線；兩圓交點都到 A、B 等距，連線就是中垂線。</p></article>
+        <article class="map-item"><strong>「和兩邊等角」</strong><p>想角平分線；角內兩個等距痕跡會把角分成兩半。</p></article>
+        <article class="map-item"><strong>「通過某點而且垂直」</strong><p>先判斷點在線上或線外，再選第 5 或第 6 項；兩題的起手式不同。</p></article>
+        <article class="map-item"><strong>「鏡射、最短折線路徑」</strong><p>想對稱點。折線改成反射後的一條直線，才容易使用三角不等式。</p></article>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>最容易混淆的三組</h3>
+        <table class="comparison">
+          <thead><tr><th>容易混淆</th><th>先問自己</th><th>關鍵做法</th></tr></thead>
+          <tbody>
+            <tr><td>中垂線 vs. 線上點垂線</td><td>題目有沒有指定「必須通過哪一個點」？</td><td>中垂線必過線段中點；線上點垂線必過題目給的那一點。</td></tr>
+            <tr><td>線外點垂線 vs. 圓外點切線</td><td>對象是「一條直線」還是「一個圓」？</td><td>對直線是作垂足；對圓是先找切點，答案可能有兩條切線。</td></tr>
+            <tr><td>對稱點 vs. <span class="math">PA+PB</span> 最小</td><td>是要找一個點，還是要找鏡線上的最佳路徑點？</td><td>最小問題把其中一個端點先反射，再連成直線找交點。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="practice" class="section">
+      <div class="section-head">
+        <span class="tag gold">先判斷，再下圓規</span>
+        <h2>分層練習：你會選正確的基本動作嗎？</h2>
+        <p>先用一句話說出「我要做出什麼關係」，再決定第一筆要畫哪一個圓或圓弧。</p>
+      </div>
+      <div class="three-grid">
+        <article class="card">
+          <span class="level basic">基礎</span>
+          <h3>把長度搬過去</h3>
+          <p>已知線段 AB 與射線 CX，在射線上作點 D，使 <span class="math">CD=AB</span>。</p>
+          <details><summary>查看提示</summary><p>第一件事不是畫 CD，而是先用圓規量出 AB 的開口。</p></details>
+          <details><summary>查看答案</summary><p>以 C 為圓心、AB 為半徑畫弧，和射線 CX 交於 D。因 D 在此圓上，所以 CD = AB。</p></details>
+        </article>
+        <article class="card">
+          <span class="level advance">進階</span>
+          <h3>哪一個垂線？</h3>
+          <p>點 P 在直線 l 外。請作通過 P 且垂直 l 的直線，並標出垂足 H。</p>
+          <details><summary>查看提示</summary><p>先讓「以 P 為圓心」的圓弧切到 l 的兩點 A、B；此時 P 到 A、B 等距。</p></details>
+          <details><summary>查看答案</summary><p>用第 6 項。再以 A、B 為圓心畫等半徑圓弧得到第二交點 Q，連 PQ；PQ 與 l 的交點就是 H。</p></details>
+        </article>
+        <article class="card">
+          <span class="level challenge">挑戰</span>
+          <h3>鏡面上的最短路徑</h3>
+          <p>A、B 在直線 l 同側，P 限制在 l 上。找 P 使 <span class="math">PA+PB</span> 最小。</p>
+          <details><summary>查看提示</summary><p>先把 B 對 l 作對稱點 B′，注意 PB = PB′。</p></details>
+          <details><summary>查看答案</summary><p>連結 A、B′，其與 l 的交點 P 即為所求。因 PA + PB = PA + PB′ ≥ AB′；P 在 AB′ 上時等號成立。</p></details>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <span class="tag teal">老師可直接拿來上課</span>
+        <h2>一節課的示範節奏</h2>
+      </div>
+      <div class="teacher-grid">
+        <article class="card">
+          <h3>40 分鐘流程</h3>
+          <div class="time-line">
+            <div class="time-piece"><span class="time">0–5 分</span><p>用「不能量長度，怎麼複製 AB？」開場，讓學生先猜圓規真正保留的是什麼。</p></div>
+            <div class="time-piece"><span class="time">5–15 分</span><p>示範複製長度、複製角度；每一筆都請學生回答「哪兩段相等？」</p></div>
+            <div class="time-piece"><span class="time">15–28 分</span><p>把中垂線、角平分線、兩種垂線串成「等距點軌跡」的觀點。</p></div>
+            <div class="time-piece"><span class="time">28–35 分</span><p>用對稱點做 PA+PB 最小，讓學生親眼看見折線如何變直線。</p></div>
+            <div class="time-piece"><span class="time">35–40 分</span><p>給三題只問「選哪一招、第一筆畫什麼」，檢查是否真的會規劃草稿。</p></div>
+          </div>
+        </article>
+        <article class="card">
+          <h3>學生最常卡住的地方</h3>
+          <ul class="rule-list">
+            <li><strong>圓規半徑偷偷變了：</strong>每次「同半徑」都要提醒學生先固定開口。</li>
+            <li><strong>只畫一個圓弧交點：</strong>很多直線要靠兩個點決定，第二個交點不能省略。</li>
+            <li><strong>把輔助線擦太早：</strong>尺規作圖的圓弧本身就是理由；先保留到檢查完成。</li>
+            <li><strong>最短路徑直接連 A、B：</strong>要先確認 P 是否受到「必須在 l 上」的限制。</li>
+          </ul>
+          <div class="success-note"><strong>下課前一句話：</strong>「作圖不是照圖描線；是先把條件翻成等距、等角或垂直，再用圓弧把條件做出來。」</div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">尺規作圖基本動作｜先做草稿，讓每一筆都有理由。</p>
+  </main>
+
+  <script>
+    const paper = '<defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#e6eff3" stroke-width="1"/></pattern></defs><rect class="paper" x="0" y="0" width="560" height="360" rx="12"/>';
+    const svg = content => `<svg class="construction-diagram show-0" viewBox="0 0 560 360" role="img" aria-label="尺規作圖步驟示意圖">${paper}${content}</svg>`;
+    const dot = (x, y, label, answer = false, dx = 8, dy = -8) => `<circle class="${answer ? 'point-answer' : 'point'}" cx="${x}" cy="${y}" r="5"/><text x="${x + dx}" y="${y + dy}">${label}</text>`;
+    const moves = [
+      {
+        tag: '等長',
+        title: '在射線上做出和 AB 一樣長的 CD',
+        goal: '已知線段 AB 與射線 CX，在射線上找到 D，使 CD = AB。',
+        why: '圓規一旦固定成 AB 的開口，畫出的圓上每一點到圓心 C 的距離都等於 AB。',
+        steps: ['先用圓規量出線段 AB 的長度，開口不要改變。', '以射線端點 C 為圓心，用同一個開口畫圓弧。', '圓弧和射線的交點記為 D；CD 就複製了 AB。'],
+        verify: '檢查理由：D 在「圓心為 C、半徑為 AB」的圓上，所以 CD = AB。',
+        mistake: '易錯：用直尺量數字後再標長度；尺規作圖只保留「圓規開口」，不是讀刻度。',
+        diagram: svg(`
+          <line class="given" x1="86" y1="104" x2="220" y2="104"/>${dot(86,104,'A')}${dot(220,104,'B',false,7,-8)}
+          <line class="given" x1="72" y1="260" x2="485" y2="260"/><path class="given" d="M485 260l-16-9m16 9l-16 9"/>${dot(92,260,'C',false,7,-8)}
+          <g class="stage s1"><path class="arc" d="M86 104h134"/><text class="small" x="129" y="87">圓規開口 = AB</text></g>
+          <g class="stage s2"><circle class="arc" cx="92" cy="260" r="134"/></g>
+          <g class="stage s3">${dot(226,260,'D',true,7,-8)}<line class="answer" x1="92" y1="260" x2="226" y2="260"/><text class="small" x="134" y="289">CD = AB</text></g>`)
+      },
+      {
+        tag: '等角',
+        title: '把 ∠ABC 複製到點 P',
+        goal: '已知 ∠ABC 與射線 PX，在 P 作一個和 ∠ABC 一樣大的角。',
+        why: '先複製同半徑的圓弧，再複製圓弧上兩交點之間的弦長 EF；角的張開程度就被保留下來。',
+        steps: ['以 B 為圓心畫弧，交兩邊於 E、F。', '用相同半徑以 P 為圓心畫弧，交射線 PX 於 R。', '以 R 為圓心、EF 為半徑畫弧，和 P 的圓弧交於 S。', '連結 PS，得到 ∠SPX = ∠ABC。'],
+        verify: '檢查理由：兩個圓弧半徑相同，且弦 EF = RS，因此所對的圓心角相等。',
+        mistake: '易錯：只把弧搬過去，卻忘了複製 EF 這段弦；那樣角度大小還沒有被鎖定。',
+        diagram: svg(`
+          <line class="given" x1="118" y1="268" x2="295" y2="268"/><line class="given" x1="118" y1="268" x2="202" y2="104"/>${dot(118,268,'B')}
+          <line class="given" x1="345" y1="268" x2="518" y2="268"/>${dot(345,268,'P')}
+          <g class="stage s1"><path class="arc" d="M171 190 A95 95 0 0 1 210 268"/>${dot(171,190,'E',false,-16,-7)}${dot(210,268,'F',false,7,-8)}</g>
+          <g class="stage s2"><path class="arc" d="M345 173 A95 95 0 0 1 440 268"/>${dot(440,268,'R',false,7,-8)}</g>
+          <g class="stage s3"><circle class="arc" cx="440" cy="268" r="86"/><circle class="point-answer" cx="394" cy="185" r="5"/><text x="402" y="177">S</text></g>
+          <g class="stage s4"><line class="answer" x1="345" y1="268" x2="394" y2="185"/><text class="small" x="416" y="228">複製後的角</text></g>`)
+      },
+      {
+        tag: '等距點軌跡',
+        title: '作線段 AB 的中垂線',
+        goal: '找出所有到 A、B 距離相等的點；答案是一條垂直 AB 且通過中點的直線。',
+        why: '兩個等半徑圓的交點 U、V 都同時滿足 UA = UB、VA = VB；所以連線 UV 是 AB 的中垂線。',
+        steps: ['圓規開口取大於 AB 一半，以 A 為圓心畫上下圓弧。', '開口不變，以 B 為圓心畫圓弧，交前一組圓弧於 U、V。', '連結 U、V，這條直線就是 AB 的中垂線。'],
+        verify: '檢查理由：U、V 都到 A、B 等距；到兩點等距的點都落在這條中垂線上。',
+        mistake: '易錯：圓規開口太小，兩圓沒有交點；開口必須大於線段的一半。',
+        diagram: svg(`
+          <line class="given" x1="145" y1="190" x2="415" y2="190"/>${dot(145,190,'A')}${dot(415,190,'B')}
+          <g class="stage s1"><circle class="arc" cx="145" cy="190" r="174"/></g>
+          <g class="stage s2"><circle class="arc" cx="415" cy="190" r="174"/>${dot(280,80,'U',false,8,-8)}${dot(280,300,'V',false,8,-8)}</g>
+          <g class="stage s3"><line class="answer" x1="280" y1="34" x2="280" y2="337"/><path class="answer" d="M280 190h18v18"/><text class="small" x="288" y="226">中垂線</text></g>`)
+      },
+      {
+        tag: '等角',
+        title: '作 ∠AOB 的角平分線',
+        goal: '在角內作一條射線，把 ∠AOB 分成兩個相等的角。',
+        why: '圓弧先在兩邊取到 E、F；再讓 G 到 E、F 等距。O 與 G 都在 EF 的中垂線上，因此 OG 平分這個角。',
+        steps: ['以頂點 O 為圓心畫弧，交兩邊於 E、F。', '以 E、F 為圓心，用相同半徑畫弧，交於 G。', '連結 O、G；OG 就是角平分線。'],
+        verify: '檢查理由：OE = OF、GE = GF，O、G 都到 E、F 等距，所以 OG 是 EF 的中垂線，也平分原角。',
+        mistake: '易錯：第二次畫弧的兩個半徑不相等；這會使 G 不再保證在中垂線上。',
+        diagram: svg(`
+          <line class="given" x1="278" y1="282" x2="94" y2="82"/><line class="given" x1="278" y1="282" x2="484" y2="118"/>${dot(278,282,'O',false,8,-8)}
+          <g class="stage s1"><path class="arc" d="M199 196 A116 116 0 0 1 369 210"/>${dot(199,196,'E',false,-18,-8)}${dot(369,210,'F',false,8,-8)}</g>
+          <g class="stage s2"><circle class="arc" cx="199" cy="196" r="118"/><circle class="arc" cx="369" cy="210" r="118"/></g>
+          <g class="stage s3">${dot(278,127,'G',true,8,-8)}<line class="answer" x1="278" y1="282" x2="278" y2="127"/><text class="small" x="287" y="165">角平分線</text></g>`)
+      },
+      {
+        tag: '垂直',
+        title: '過線上點 P 作垂線',
+        goal: 'P 已經在直線 l 上；作一條通過 P 且垂直 l 的直線。',
+        why: '先在 l 上取 P 兩側的 A、B，使 PA = PB；再找 A、B 的等距點 U。P、U 連線就是 AB 的中垂線。',
+        steps: ['以 P 為圓心畫弧，和直線 l 交於 A、B。', '以 A、B 為圓心，用相同半徑在同側畫弧，交於 U。', '連結 P、U，得到通過 P 的垂線。'],
+        verify: '檢查理由：P 與 U 都到 A、B 等距，所以 PU 是 AB 的中垂線；而 AB 就在 l 上。',
+        mistake: '易錯：只取直線一側的點；一定要先取得 P 兩側的 A、B，才會有對稱的等距條件。',
+        diagram: svg(`
+          <line class="given" x1="68" y1="222" x2="494" y2="222"/><text class="small" x="478" y="212">l</text>${dot(280,222,'P',false,8,-8)}
+          <g class="stage s1"><circle class="arc" cx="280" cy="222" r="108"/>${dot(172,222,'A',false,7,-8)}${dot(388,222,'B',false,7,-8)}</g>
+          <g class="stage s2"><circle class="arc" cx="172" cy="222" r="136"/><circle class="arc" cx="388" cy="222" r="136"/>${dot(280,140,'U',false,8,-8)}</g>
+          <g class="stage s3"><line class="answer" x1="280" y1="54" x2="280" y2="325"/><path class="answer" d="M280 222h17v17"/><text class="small" x="290" y="278">所求垂線</text></g>`)
+      },
+      {
+        tag: '垂直',
+        title: '過線外點 P 作垂線',
+        goal: 'P 在直線 l 外；作通過 P 且垂直 l 的直線，並找到垂足 H。',
+        why: '先讓以 P 為圓心的圓交 l 於 A、B，於是 PA = PB；P 本來就在 AB 的中垂線上，再找另一個等距點 Q 即可。',
+        steps: ['以 P 為圓心畫弧，交直線 l 於 A、B。', '以 A、B 為圓心，用相同半徑畫弧，取得另一交點 Q。', '連結 P、Q；PQ 和 l 的交點 H 就是垂足。'],
+        verify: '檢查理由：P、Q 都到 A、B 等距，所以 PQ 是 AB 的中垂線，必垂直 l。',
+        mistake: '易錯：把第 5 項直接搬來用。線外點沒有現成的左右兩點，必須先用以 P 為圓心的弧找出 A、B。',
+        diagram: svg(`
+          <line class="given" x1="67" y1="198" x2="495" y2="198"/><text class="small" x="480" y="188">l</text>${dot(280,83,'P',false,8,-8)}
+          <g class="stage s1"><circle class="arc" cx="280" cy="83" r="188"/>${dot(133,198,'A',false,7,-8)}${dot(427,198,'B',false,7,-8)}</g>
+          <g class="stage s2"><circle class="arc" cx="133" cy="198" r="187"/><circle class="arc" cx="427" cy="198" r="187"/>${dot(280,313,'Q',false,8,-8)}</g>
+          <g class="stage s3"><line class="answer" x1="280" y1="57" x2="280" y2="335"/>${dot(280,198,'H',true,8,-8)}<path class="answer" d="M280 198h17v17"/></g>`)
+      },
+      {
+        tag: '對稱',
+        title: '作直線 l 外點 P 的對稱點 P′',
+        goal: '已知鏡線 l 與線外點 P，作 P 對 l 的對稱點 P′。',
+        why: '在 l 上任取兩點 A、B，以 A、B 為圓心作出到 P 等距的另一交點 P′。四邊形 P-A-P′-B 的兩對鄰邊相等，是箏形；l 就是 PP′ 的中垂線。',
+        steps: ['在鏡線 l 上任取兩點 A、B，位置越分開越好。', '以 A 為圓心、AP 為半徑；以 B 為圓心、BP 為半徑畫弧。', '兩弧除 P 外的另一交點記為 P′，就是對稱點。'],
+        verify: '檢查理由：AP = AP′、BP = BP′，所以 A、B 都在 PP′ 的中垂線上；鏡線 l 正是 PP′ 的中垂線。',
+        mistake: '易錯：只用鏡線上一個點畫弧；一個等距條件不能唯一決定 P′，要用兩個點做出兩個圓。',
+        diagram: svg(`
+          <line class="mirror" x1="65" y1="216" x2="495" y2="216"/><text class="small" x="478" y="205">l</text>${dot(280,86,'P',false,8,-8)}${dot(140,216,'A',false,7,-8)}${dot(424,216,'B',false,7,-8)}
+          <g class="stage s1"><line class="guide" x1="140" y1="216" x2="424" y2="216"/><text class="small" x="254" y="240">鏡線上取 A、B</text></g>
+          <g class="stage s2"><circle class="arc" cx="140" cy="216" r="191"/><circle class="arc" cx="424" cy="216" r="194"/></g>
+          <g class="stage s3">${dot(280,346,'P′',true,8,-8)}<line class="answer" x1="280" y1="86" x2="280" y2="346"/><path class="answer" d="M280 216h17v17"/><text class="small" x="291" y="286">PP′ ⟂ l</text></g>`)
+      },
+      {
+        tag: '圓的切線',
+        title: '過圓上點 T 作切線',
+        goal: '圓心 O 已知，T 在圓上。作通過 T 的切線。',
+        why: '切線在切點 T 處垂直半徑 OT。因此只要先畫 OT，再用「過線上點作垂線」即可。',
+        steps: ['連結圓心 O 與圓上點 T，得到半徑 OT。', '把 T 視為在直線 OT 上的點，使用第 5 項作 OT 的垂線。', '通過 T 的垂線就是圓在 T 點的切線。'],
+        verify: '檢查理由：半徑 OT 垂直切線，且切線只在 T 點和圓接觸。',
+        mistake: '易錯：把「過圓上點作垂線」誤畫成任意穿過圓的弦；答案必須垂直半徑，才是切線。',
+        diagram: svg(`
+          <circle class="given" cx="270" cy="190" r="118"/>${dot(270,190,'O',false,8,-8)}${dot(388,190,'T',false,8,-8)}
+          <g class="stage s1"><line class="made" x1="270" y1="190" x2="388" y2="190"/><text class="small" x="306" y="178">半徑 OT</text></g>
+          <g class="stage s2"><circle class="arc" cx="388" cy="190" r="72"/></g>
+          <g class="stage s3"><line class="answer" x1="388" y1="57" x2="388" y2="324"/><path class="answer" d="M388 190h17v17"/><text class="small" x="399" y="278">切線</text></g>`)
+      },
+      {
+        tag: '圓的切線',
+        title: '過圓外點 P 作圓的切線',
+        goal: '圓心 O 已知，P 在圓外。作經過 P 的切線（通常有兩條）。',
+        why: '若 T 是切點，∠OTP 是直角。以 OP 為直徑的圓上所有點都看 OP 成直角；它和原圓的交點就是切點。',
+        steps: ['連結圓心 O 與圓外點 P，作出 OP 的中點 M。', '以 M 為圓心、MO 為半徑畫圓，也就是以 OP 為直徑的圓。', '此圓和原圓交於 T₁、T₂。', '連結 P T₁、P T₂，得到兩條切線。'],
+        verify: '檢查理由：T 在以 OP 為直徑的圓上，所以 ∠OTP = 90°；OT 垂直 PT，PT 就是切線。',
+        mistake: '易錯：只找到一個交點就停下來。一般外點有兩條切線，兩個切點都要保留。',
+        diagram: svg(`
+          <circle class="given" cx="210" cy="210" r="88"/>${dot(210,210,'O',false,8,-8)}${dot(460,94,'P',false,8,-8)}
+          <g class="stage s1"><line class="made" x1="210" y1="210" x2="460" y2="94"/>${dot(335,152,'M',false,8,-8)}</g>
+          <g class="stage s2"><circle class="arc" cx="335" cy="152" r="138"/></g>
+          <g class="stage s3">${dot(275,270,'T₁',true,8,17)}${dot(200,122,'T₂',true,-24,-8)}<line class="made" x1="210" y1="210" x2="275" y2="270"/><line class="made" x1="210" y1="210" x2="200" y2="122"/></g>
+          <g class="stage s4"><line class="answer" x1="460" y1="94" x2="275" y2="270"/><line class="answer" x1="460" y1="94" x2="200" y2="122"/><text class="small" x="360" y="202">兩條切線</text></g>`)
+      },
+      {
+        tag: '最短路徑',
+        title: '在鏡線 l 上找 P，使 PA + PB 最小',
+        goal: 'A、B 在直線 l 的同側，P 限制在 l 上。找出使 PA + PB 最小的 P。',
+        why: '把 B 對 l 反射到 B′，則 PB = PB′。問題變成 PA + PB′ 的最小值；兩點間直線最短，所以 P 要落在 AB′ 上。',
+        steps: ['先用第 7 項作出 B 對鏡線 l 的對稱點 B′。', '連結 A、B′，延長此直線。', 'AB′ 和 l 的交點 P，就是使 PA + PB 最小的點。'],
+        verify: '檢查理由：PA + PB = PA + PB′ ≥ AB′；當 A、P、B′ 三點共線時取等號。',
+        mistake: '易錯：忘記「A、B 在 l 同側」這個典型條件。若 A、B 分居 l 兩側，線段 AB 和 l 的交點才是直接最短。',
+        diagram: svg(`
+          <line class="mirror" x1="60" y1="220" x2="500" y2="220"/><text class="small" x="485" y="209">l</text>${dot(126,92,'A',false,8,-8)}${dot(410,80,'B',false,8,-8)}
+          <g class="stage s1"><line class="guide" x1="410" y1="80" x2="410" y2="356"/>${dot(410,356,'B′',true,8,-8)}<path class="guide" d="M410 220h16v16"/></g>
+          <g class="stage s2"><line class="made" x1="126" y1="92" x2="410" y2="356"/></g>
+          <g class="stage s3">${dot(264,220,'P',true,8,-8)}<line class="answer" x1="126" y1="92" x2="410" y2="356"/><path class="answer" d="M126 92L264 220L410 80"/><text class="small" x="163" y="184">PA + PB = PA + PB′</text></g>`)
+      }
+    ];
+
+    const tabs = [...document.querySelectorAll('.construction-tab')];
+    const heading = document.getElementById('moveHeading');
+    const count = document.getElementById('moveCount');
+    const tag = document.getElementById('moveTag');
+    const title = document.getElementById('moveTitle');
+    const goal = document.getElementById('moveGoal');
+    const why = document.getElementById('moveWhy');
+    const diagram = document.getElementById('constructionDiagram');
+    const steps = document.getElementById('constructionSteps');
+    const next = document.getElementById('nextStep');
+    const status = document.getElementById('stageStatus');
+    const verify = document.getElementById('moveVerify');
+    const mistake = document.getElementById('moveMistake');
+    const menuTitles = [
+      '複製長度', '複製角度', '中垂線', '角平分線', '過線上點的垂線',
+      '過線外點的垂線', '作線外點的對稱點', '過圓上點作垂線（切線）',
+      '過圓外點作垂線（切線）', '作 PA + PB 最小'
+    ];
+    let mode = 0;
+    let stage = 0;
+
+    function paintStage() {
+      const item = moves[mode];
+      const picture = diagram.querySelector('svg');
+      picture.className.baseVal = `construction-diagram show-${stage}`;
+      [...steps.children].forEach((li, index) => {
+        li.classList.toggle('revealed', index < stage);
+        li.classList.toggle('current', index === stage - 1);
+      });
+      if (stage === 0) {
+        next.textContent = '開始看作圖';
+        status.textContent = '準備好後，逐筆揭示。';
+      } else if (stage < item.steps.length) {
+        next.textContent = '下一步';
+        status.textContent = `已顯示第 ${stage} 筆，共 ${item.steps.length} 筆。`;
+      } else {
+        next.textContent = '重新播放';
+        status.textContent = '完成。回頭檢查每一筆留下的等距或垂直理由。';
+      }
+    }
+
+    function renderMode(nextMode) {
+      mode = nextMode;
+      stage = 0;
+      const item = moves[mode];
+      heading.textContent = `${mode + 1}. ${menuTitles[mode]}`;
+      count.textContent = `基本動作 ${mode + 1} / ${moves.length}`;
+      tag.textContent = item.tag;
+      title.textContent = item.title;
+      goal.textContent = item.goal;
+      why.innerHTML = `<strong>先想：</strong>${item.why}`;
+      diagram.innerHTML = item.diagram;
+      steps.innerHTML = item.steps.map(text => `<li>${text}</li>`).join('');
+      verify.innerHTML = `<strong>完成後怎麼檢查？</strong>${item.verify}`;
+      mistake.innerHTML = `<strong>常見錯誤：</strong>${item.mistake.replace(/^易錯：/, '')}`;
+      tabs.forEach((tab, index) => tab.setAttribute('aria-selected', String(index === mode)));
+      paintStage();
+    }
+
+    tabs.forEach(tab => tab.addEventListener('click', () => renderMode(Number(tab.dataset.mode))));
+    next.addEventListener('click', () => {
+      stage = stage >= moves[mode].steps.length ? 0 : stage + 1;
+      paintStage();
+    });
+    renderMode(0);
+  </script>
+</body>
+</html>

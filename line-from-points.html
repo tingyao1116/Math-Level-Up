@@ -1,23 +1,33 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>兩點求直線與方程式畫線</title>
+  <title>直線方程式：國中求法到高中解析幾何</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
-      --bg-a: #f0fdf4;
-      --bg-b: #eff6ff;
+      --bg-a: #eff6ff;
+      --bg-b: #f0fdf4;
       --panel: #ffffff;
       --line: #cbd5e1;
       --text: #0f172a;
       --sub: #475569;
-      --ok: #166534;
       --main: #0369a1;
       --main-strong: #075985;
+      --ok: #166534;
+      --warn: #9a3412;
       --accent: #b91c1c;
+      --purple: #7e22ce;
+      --teal: #0f766e;
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
@@ -27,13 +37,13 @@
       padding: 18px;
     }
     .wrap {
-      max-width: 1180px;
+      max-width: 1240px;
       margin: 0 auto;
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 18px;
       background: var(--panel);
       box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
-      padding: 16px;
+      padding: clamp(16px, 3vw, 28px);
     }
     .topbar {
       display: flex;
@@ -41,9 +51,8 @@
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 8px;
     }
-    .back {
+    .back, .jump {
       text-decoration: none;
       background: var(--main);
       color: #fff;
@@ -52,41 +61,92 @@
       padding: 8px 12px;
       font-weight: 700;
     }
-    .back:hover { background: var(--main-strong); }
-    h1 { margin: 0; font-size: clamp(24px, 4vw, 34px); }
-    .lead { margin: 6px 0 12px; color: var(--sub); line-height: 1.75; }
+    .back:hover, .jump:hover { background: var(--main-strong); }
+    h1 { margin: 0; font-size: clamp(25px, 4vw, 36px); }
+    h2 { margin: 0 0 10px; font-size: clamp(22px, 3vw, 28px); }
+    h3 { margin: 0 0 8px; font-size: 18px; }
+    h4 { margin: 0 0 6px; font-size: 16px; }
+    p, li { line-height: 1.8; }
+    .lead { margin: 8px 0 14px; color: var(--sub); line-height: 1.85; font-size: 17px; }
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 22px;
+      padding: 10px;
+      border: 1px solid #bae6fd;
+      background: #f0f9ff;
+      border-radius: 12px;
+    }
+    .toc a {
+      color: #075985;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: #fff;
+      border: 1px solid #bae6fd;
+    }
+    .toc a:hover { background: #e0f2fe; }
+    .hero-note {
+      border-left: 5px solid #0ea5e9;
+      background: #f0f9ff;
+      padding: 10px 14px;
+      border-radius: 0 10px 10px 0;
+      margin: 0 0 20px;
+      line-height: 1.8;
+    }
     .layout {
       display: grid;
-      gap: 14px;
-      grid-template-columns: 340px 1fr;
+      gap: 16px;
+      grid-template-columns: minmax(340px, 400px) minmax(0, 1fr);
+      align-items: start;
     }
-    .panel {
+    .panel, .canvas-wrap, .lesson, .advanced-tool {
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 14px;
       background: #fff;
     }
-    h2 { margin: 0 0 8px; font-size: 21px; }
+    .panel { padding: 14px; position: sticky; top: 12px; }
+    .canvas-wrap { padding: 12px; }
+    .canvas-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+    .canvas-toolbar button {
+      border: 1px solid #94a3b8;
+      background: #f8fafc;
+      color: #0f172a;
+      padding: 6px 9px;
+      font-size: 14px;
+    }
+    .canvas-toolbar button:hover { background: #e0f2fe; border-color: #38bdf8; }
+    .section { margin-top: 28px; scroll-margin-top: 12px; }
+    .section-intro { color: var(--sub); margin: -3px 0 12px; }
     .mode {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       margin-bottom: 10px;
       flex-wrap: wrap;
+    }
+    button {
+      font: inherit;
+      cursor: pointer;
+      border-radius: 9px;
+      padding: 7px 10px;
+      font-weight: 700;
     }
     .mode button {
       border: 1px solid #94a3b8;
       background: #f8fafc;
       color: #0f172a;
-      border-radius: 10px;
-      padding: 7px 10px;
-      font-weight: 700;
-      cursor: pointer;
+      font-size: 14px;
     }
-    .mode button.active {
-      background: #e0f2fe;
-      border-color: #38bdf8;
-      color: #0c4a6e;
-    }
+    .mode button.active { background: #e0f2fe; border-color: #38bdf8; color: #0c4a6e; }
     .group {
       border: 1px solid #e2e8f0;
       border-radius: 10px;
@@ -94,22 +154,14 @@
       margin-bottom: 10px;
       background: #fcfdff;
     }
-    .group h3 {
-      margin: 0 0 8px;
-      font-size: 16px;
-      color: #0f172a;
-    }
-    .grid2 {
+    .group h3 { font-size: 16px; }
+    .grid2, .grid3 {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-    label {
-      display: block;
-      font-size: 13px;
-      color: #334155;
-      margin-bottom: 2px;
-    }
+    .grid2 { grid-template-columns: 1fr 1fr; }
+    .grid3 { grid-template-columns: repeat(3, 1fr); }
+    label { display: block; font-size: 13px; color: #334155; margin-bottom: 2px; }
     input {
       width: 100%;
       border: 1px solid #cbd5e1;
@@ -118,26 +170,20 @@
       font-size: 16px;
       font-family: inherit;
     }
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-    .actions button {
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 9px; }
+    .actions button, .tool-button {
       border: 1px solid var(--main);
       background: var(--main);
       color: #fff;
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-weight: 700;
-      cursor: pointer;
     }
-    .actions button.secondary {
+    .actions button:hover, .tool-button:hover { background: var(--main-strong); }
+    .actions button.secondary, .tool-button.secondary {
       border-color: #94a3b8;
       background: #f8fafc;
       color: #0f172a;
     }
+    .actions button.secondary:hover, .tool-button.secondary:hover { background: #e2e8f0; }
+    .micro { font-size: 13px; color: var(--sub); line-height: 1.65; margin: 6px 0 0; }
     .status {
       margin-top: 8px;
       border-radius: 8px;
@@ -146,16 +192,41 @@
       border: 1px solid #e2e8f0;
       color: #1e293b;
       line-height: 1.65;
-      min-height: 52px;
+      min-height: 50px;
     }
     .ok { color: var(--ok); font-weight: 700; }
     .bad { color: var(--accent); font-weight: 700; }
-    .canvas-wrap {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
-      background: #ffffff;
+    .warn { color: var(--warn); font-weight: 700; }
+    .result-box, .points-list {
+      margin-top: 9px;
+      border: 1px solid #dbe4ef;
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: #f8fafc;
+      font-size: 14px;
+      line-height: 1.75;
     }
+    .result-box { max-height: 350px; overflow: auto; }
+    .points-list { max-height: 160px; overflow: auto; }
+    .points-list table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
+    .points-list th, .points-list td { border-bottom: 1px solid #dbe4ef; text-align: center; padding: 4px 6px; }
+    .points-list th { position: sticky; top: 0; background: #eaf4ff; }
+    .system-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; }
+    .system-table th, .system-table td { border: 1px solid #cbd5e1; padding: 8px 9px; vertical-align: top; line-height: 1.65; }
+    .system-table th { background: #eaf4ff; text-align: left; }
+    .formula {
+      display: inline-block;
+      font-family: Cambria, "Times New Roman", serif;
+      color: #0f172a;
+      background: #fff;
+      border: 1px solid #dbe4ef;
+      border-radius: 6px;
+      padding: 1px 5px;
+      white-space: nowrap;
+    }
+    .formula mjx-container { margin: 0 !important; }
+    .formula-line { font-family: Cambria, "Times New Roman", serif; font-size: 16px; color: #0f172a; overflow-x: auto; }
+    .formula-line mjx-container[display="true"] { margin: .35em 0 !important; }
     canvas {
       display: block;
       width: 100%;
@@ -166,52 +237,104 @@
       border-radius: 10px;
       background: #ffffff;
       cursor: crosshair;
+      touch-action: none;
     }
-    .hint {
-      margin-top: 8px;
-      color: var(--sub);
-      font-size: 14px;
-      line-height: 1.7;
+    .hint { margin: 9px 0 0; color: var(--sub); font-size: 14px; line-height: 1.7; }
+    .lesson { padding: clamp(14px, 2vw, 20px); }
+    .lesson + .lesson { margin-top: 14px; }
+    .eyebrow {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      color: #075985;
+      background: #e0f2fe;
+      margin-bottom: 7px;
     }
-    .points-list {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #0f172a;
-      line-height: 1.7;
-      max-height: 120px;
-      overflow: auto;
-      border: 1px dashed #cbd5e1;
-      border-radius: 8px;
-      padding: 8px;
-      background: #f8fafc;
+    .flow, .cards, .formula-grid, .practice-grid {
+      display: grid;
+      gap: 12px;
     }
-    .points-list table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      table-layout: fixed;
-    }
-    .points-list th, .points-list td {
-      border-bottom: 1px solid #dbe4ef;
-      text-align: center;
-      padding: 4px 6px;
-    }
-    .points-list th {
-      position: sticky;
-      top: 0;
-      background: #eaf4ff;
-    }
-    .result-box {
-      margin-top: 8px;
+    .flow { grid-template-columns: repeat(3, 1fr); }
+    .cards { grid-template-columns: repeat(3, 1fr); }
+    .formula-grid { grid-template-columns: repeat(2, 1fr); }
+    .practice-grid { grid-template-columns: repeat(3, 1fr); }
+    .step, .card, .formula-card, .practice-card {
       border: 1px solid #dbe4ef;
-      border-radius: 8px;
-      padding: 8px 10px;
-      background: #f8fafc;
-      font-size: 14px;
-      line-height: 1.7;
+      border-radius: 10px;
+      padding: 12px;
+      background: #fcfdff;
     }
-    @media (max-width: 920px) {
-      .layout { grid-template-columns: 1fr; }
+    .step-number {
+      width: 27px; height: 27px; display: grid; place-items: center;
+      background: #0284c7; color: #fff; border-radius: 50%; font-weight: 800; margin-bottom: 6px;
+    }
+    .formula-card h3 { color: #075985; }
+    .formula-card p, .card p, .practice-card p { margin: 5px 0; }
+    .worked {
+      margin-top: 14px;
+      border: 1px solid #bbf7d0;
+      border-radius: 11px;
+      background: #f0fdf4;
+      padding: 13px;
+    }
+    .mistake {
+      margin-top: 14px;
+      border-left: 5px solid #f97316;
+      background: #fff7ed;
+      padding: 10px 13px;
+      border-radius: 0 10px 10px 0;
+    }
+    .mistake ul, .worked ol { margin: 6px 0 0; padding-left: 22px; }
+    .advanced-tool { padding: 16px; }
+    .advanced-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 14px; }
+    .tool-block { border: 1px solid #dbe4ef; border-radius: 10px; padding: 11px; background: #fcfdff; }
+    .tool-block + .tool-block { margin-top: 11px; }
+    .tool-block .actions button { font-size: 14px; }
+    .example-load { margin-top: 6px; font-size: 13px; }
+    details {
+      margin-top: 9px;
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 8px;
+    }
+    summary { cursor: pointer; color: #075985; font-weight: 700; }
+    .compact-list { margin: 5px 0; padding-left: 20px; }
+    .compact-list li { line-height: 1.65; }
+    .tag {
+      display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe;
+    }
+    @media (max-width: 1100px) {
+      .layout, .advanced-grid { grid-template-columns: 1fr; }
+      .panel { position: static; }
+    }
+    @media (min-width: 1101px) {
+      body.graph-pinned .wrap {
+        max-width: 1780px;
+        padding-right: min(44vw, 570px);
+      }
+      body.graph-pinned .layout { grid-template-columns: 1fr; }
+      body.graph-pinned .canvas-wrap {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 20;
+        width: min(42vw, 540px);
+        max-height: calc(100vh - 24px);
+        overflow: auto;
+        box-shadow: 0 16px 38px rgba(15, 23, 42, 0.18);
+      }
+      body.graph-pinned .canvas-wrap canvas {
+        width: min(100%, calc(100vh - 118px));
+        max-width: 100%;
+        margin: 0 auto;
+      }
+    }
+    @media (max-width: 700px) {
+      body { padding: 10px; }
+      .flow, .cards, .formula-grid, .practice-grid { grid-template-columns: 1fr; }
+      .grid3 { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -219,504 +342,924 @@
   <main class="wrap">
     <div class="topbar">
       <a class="back" href="./index.html">回首頁</a>
-      <h1>兩點求直線 + 方程式畫線</h1>
+      <h1>直線方程式：國中求法到高中解析幾何</h1>
     </div>
-    <p class="lead">教學版功能：輸入兩點可自動求直線方程式，並標出範圍內在線上的整點；也可直接輸入 <strong>ax + by + c = 0</strong> 畫出直線。</p>
+    <p class="lead">先用座標格看見「兩點決定一直線」，再把同一條線換成不同方程式。本頁可直接作圖、拖曳兩點、查看轉換結果，也能處理高一常見的平行、垂直、投影、角平分線與直線系。</p>
 
-    <section class="layout">
-      <aside class="panel">
-        <h2>操作區</h2>
-        <div class="mode">
-          <button id="modePoints" class="active" type="button">模式A：給兩點</button>
-          <button id="modeEq" type="button">模式B：給方程式</button>
+    <nav class="toc" aria-label="頁內導覽">
+      <a href="#graph">互動作圖器</a>
+      <a href="#junior">國中版：兩點求法</a>
+      <a href="#senior">高中版：七個表示法</a>
+      <a href="#advanced">高中進階工具</a>
+      <a href="#practice">分層練習</a>
+    </nav>
+
+    <p class="hero-note"><strong>先抓住一件事：</strong>方程式的寫法可以不同，但只要描述的是同一批座標點，圖形就是同一條直線。遇到鉛直線 <span class="formula">\(x=\text{常數}\)</span> 時，斜率不存在；此時不要硬套斜截式或點斜式。</p>
+
+    <section id="graph" class="section" aria-labelledby="graph-heading">
+      <h2 id="graph-heading">互動作圖器：輸入一種表示法，查看所有可轉換形式</h2>
+      <p class="section-intro">國中建議先用「兩點」與「斜截式」；高中再切換其他按鈕。藍線上的紅點可拖曳，方便課堂即時比較斜率與截距。</p>
+      <div class="layout">
+        <aside class="panel">
+          <h3>選擇已知條件</h3>
+          <div class="mode" id="formTabs">
+            <button class="active" data-form="two" type="button">兩點</button>
+            <button data-form="slope" type="button">斜截式</button>
+            <button data-form="general" type="button">一般式</button>
+            <button data-form="pointSlope" type="button">點斜式</button>
+            <button data-form="param" type="button">參數式</button>
+            <button data-form="intercept" type="button">截距式</button>
+          </div>
+
+          <div id="form-two" class="form-panel group">
+            <h3>兩點 P、Q</h3>
+            <div class="grid2">
+              <div><label for="x1">P 的 x₁</label><input id="x1" type="number" step="any" value="-2" /></div>
+              <div><label for="y1">P 的 y₁</label><input id="y1" type="number" step="any" value="1" /></div>
+              <div><label for="x2">Q 的 x₂</label><input id="x2" type="number" step="any" value="4" /></div>
+              <div><label for="y2">Q 的 y₂</label><input id="y2" type="number" step="any" value="4" /></div>
+            </div>
+            <div class="actions"><button id="drawByPoints" type="button">兩點求直線並畫線</button></div>
+            <p class="micro">若 x₁ = x₂，答案是鉛直線 x = x₁，不可除以 x₂ − x₁。</p>
+          </div>
+
+          <div id="form-slope" class="form-panel group" hidden>
+            <h3>斜截式 \(y=mx+k\)</h3>
+            <div class="grid2">
+              <div><label for="slopeM">斜率 m</label><input id="slopeM" type="number" step="any" value="0.5" /></div>
+              <div><label for="slopeK">y 截距 k</label><input id="slopeK" type="number" step="any" value="2" /></div>
+            </div>
+            <div class="actions"><button id="drawBySlope" type="button">畫出 y = mx + k</button></div>
+            <p class="micro">只能畫非鉛直線。m 表示 x 每增加 1，y 改變多少。</p>
+          </div>
+
+          <div id="form-general" class="form-panel group" hidden>
+            <h3>一般式 \(Ax+By+C=0\)</h3>
+            <div class="grid3">
+              <div><label for="a">A</label><input id="a" type="number" step="any" value="1" /></div>
+              <div><label for="b">B</label><input id="b" type="number" step="any" value="-2" /></div>
+              <div><label for="c">C</label><input id="c" type="number" step="any" value="4" /></div>
+            </div>
+            <div class="actions"><button id="drawByGeneral" type="button">用一般式畫線</button></div>
+            <p class="micro">A、B 不可同時為 0；法向量可直接讀成 <span class="formula">\(\vec n=(A,B)\)</span>。</p>
+          </div>
+
+          <div id="form-pointSlope" class="form-panel group" hidden>
+            <h3>點斜式 \(y-y_0=m(x-x_0)\)</h3>
+            <div class="grid2">
+              <div><label for="psX">點的 x₀</label><input id="psX" type="number" step="any" value="-2" /></div>
+              <div><label for="psY">點的 y₀</label><input id="psY" type="number" step="any" value="1" /></div>
+              <div><label for="psM">斜率 m</label><input id="psM" type="number" step="any" value="0.5" /></div>
+            </div>
+            <div class="actions"><button id="drawByPointSlope" type="button">用點斜式畫線</button></div>
+            <p class="micro">有一點與非鉛直方向時最省事；鉛直線請改用一般式或參數式。</p>
+          </div>
+
+          <div id="form-param" class="form-panel group" hidden>
+            <h3>參數式 \((x,y)=(x_0,y_0)+t(u,v)\)</h3>
+            <div class="grid2">
+              <div><label for="paX">點的 x₀</label><input id="paX" type="number" step="any" value="-2" /></div>
+              <div><label for="paY">點的 y₀</label><input id="paY" type="number" step="any" value="1" /></div>
+              <div><label for="paU">方向量 u</label><input id="paU" type="number" step="any" value="2" /></div>
+              <div><label for="paV">方向量 v</label><input id="paV" type="number" step="any" value="1" /></div>
+            </div>
+            <div class="actions"><button id="drawByParam" type="button">用參數式畫線</button></div>
+            <p class="micro">(u, v) 是方向量，不可同時為 0；它可自然處理鉛直線，例如 (0, 1)。</p>
+          </div>
+
+          <div id="form-intercept" class="form-panel group" hidden>
+            <h3>截距式 \(\dfrac{x}{p}+\dfrac{y}{q}=1\)</h3>
+            <div class="grid2">
+              <div><label for="inP">x 截距 p</label><input id="inP" type="number" step="any" value="4" /></div>
+              <div><label for="inQ">y 截距 q</label><input id="inQ" type="number" step="any" value="2" /></div>
+            </div>
+            <div class="actions"><button id="drawByIntercept" type="button">用截距式畫線</button></div>
+            <p class="micro"><strong>必要條件：</strong>p、q 都不為 0；它們分別是與 x 軸、y 軸的截距，不是一般式的 A、B。</p>
+          </div>
+
+          <div class="group">
+            <h3>圖形範圍</h3>
+            <div class="grid2">
+              <div><label for="minX">最小 x</label><input id="minX" type="number" step="1" value="-10" /></div>
+              <div><label for="maxX">最大 x</label><input id="maxX" type="number" step="1" value="10" /></div>
+              <div><label for="minY">最小 y</label><input id="minY" type="number" step="1" value="-10" /></div>
+              <div><label for="maxY">最大 y</label><input id="maxY" type="number" step="1" value="10" /></div>
+            </div>
+            <div class="actions"><button id="refresh" class="secondary" type="button">重畫座標格</button></div>
+          </div>
+
+          <div id="status" class="status" aria-live="polite">已畫出預設兩點所決定的直線。</div>
+          <div id="resultBox" class="result-box">轉換結果會顯示在這裡。</div>
+          <div id="pointsList" class="points-list">線上整點表格會顯示在這裡。</div>
+        </aside>
+
+        <section class="canvas-wrap" aria-label="固定函數圖區">
+          <div class="canvas-toolbar">
+            <strong>函數圖</strong>
+            <button id="toggleGraphPin" type="button" aria-pressed="true">取消固定圖形</button>
+          </div>
+          <canvas id="plane" width="780" height="780" aria-label="直線方程式座標平面"></canvas>
+          <p id="canvasLegend" class="hint">寬螢幕預設固定在右側；藍色是目前直線，紅點是已知點，綠點是範圍內在線上的整點。可拖曳紅點，觀察方程式如何改變。</p>
+        </section>
+      </div>
+    </section>
+
+    <section id="junior" class="section" aria-labelledby="junior-heading">
+      <div class="lesson">
+        <div class="eyebrow">國中版：先看圖，再寫式</div>
+        <h2 id="junior-heading">兩點求直線方程式</h2>
+        <p>在座標平面上，兩個不同的點只會決定一條直線。國中最重要的任務是把「圖上的走法」變成 <span class="formula">\(y=mx+k\)</span>：先讀斜率 \(m\)，再找 \(y\) 截距 \(k\)。</p>
+        <div class="flow">
+          <article class="step">
+            <div class="step-number">1</div>
+            <h3>先確認兩點不同</h3>
+            <p>把 P(x₁, y₁)、Q(x₂, y₂) 標在座標格。若兩點重合，無法決定唯一一條直線。</p>
+          </article>
+          <article class="step">
+            <div class="step-number">2</div>
+            <h3>算「上升 ÷ 水平」</h3>
+            <p>非鉛直線的斜率是 <span class="formula">\(m=\dfrac{y_2-y_1}{x_2-x_1}\)</span>。\(x\) 向右走多少，\(y\) 就改變多少。</p>
+          </article>
+          <article class="step">
+            <div class="step-number">3</div>
+            <h3>代一點求截距</h3>
+            <p>先寫 <span class="formula">\(y=mx+k\)</span>，再把其中一個點代入求 \(k\)；最後用另一點驗算。</p>
+          </article>
         </div>
 
-        <div id="pointsBox" class="group">
-          <h3>兩點座標</h3>
-          <div class="grid2">
-            <div><label for="x1">x1</label><input id="x1" type="number" step="any" value="-4" /></div>
-            <div><label for="y1">y1</label><input id="y1" type="number" step="any" value="-1" /></div>
-            <div><label for="x2">x2</label><input id="x2" type="number" step="any" value="6" /></div>
-            <div><label for="y2">y2</label><input id="y2" type="number" step="any" value="4" /></div>
+        <div class="worked">
+          <h3>例題：通過 P(−2, 1)、Q(4, 4) 的直線</h3>
+          <ol>
+            <li>斜率：<span class="formula">\(m=\dfrac{4-1}{4-(-2)}=\dfrac36=\dfrac12\)</span>。</li>
+            <li>代入 \(P(-2,1)\)：<span class="formula">\(1=\dfrac12(-2)+k\)</span>，所以 <span class="formula">\(k=2\)</span>。</li>
+            <li>方程式：<span class="formula">\(y=\dfrac12x+2\)</span>。為了去分母，也可寫成 <span class="formula">\(x-2y+4=0\)</span>。</li>
+            <li>驗算 \(Q\)：<span class="formula">\(4=\dfrac12\times4+2\)</span>，成立。</li>
+          </ol>
+        </div>
+
+        <div class="cards" style="margin-top:14px;">
+          <article class="card">
+            <h3>水平線</h3>
+            <p>兩點 y 座標相同，斜率 m = 0。</p>
+            <p><span class="formula">\(y=c\)</span>，例如通過 \((-3,2)\)、\((5,2)\) 是 <span class="formula">\(y=2\)</span>。</p>
+          </article>
+          <article class="card">
+            <h3>鉛直線</h3>
+            <p>兩點 x 座標相同，x 的改變量是 0，斜率<strong>不存在</strong>。</p>
+            <p><span class="formula">\(x=c\)</span>，例如通過 \((3,-1)\)、\((3,4)\) 是 <span class="formula">\(x=3\)</span>。</p>
+          </article>
+          <article class="card">
+            <h3>怎麼由方程式畫線？</h3>
+            <p>可令 x = 0 找 y 截距，再令 y = 0 找 x 截距；或直接代兩個好算的 x 值，得到兩點後連線。</p>
+          </article>
+        </div>
+
+        <div class="worked">
+          <h3>補充：斜角與斜率的圖像直覺</h3>
+          <p>取直線向右前進的方向，和 \(x\) 軸正向的夾角稱為斜角 \(\alpha\)，通常取 <span class="formula">\(-\dfrac\pi2&lt;\alpha\le\dfrac\pi2\)</span>。非鉛直線有 <span class="formula">\(m=\tan\alpha\)</span>：</p>
+          <ul class="compact-list">
+            <li>m &gt; 0：向右上升；m = 0：水平線；m &lt; 0：向右下降。</li>
+            <li>鉛直線的斜角可看成 α = π/2，但 tan α 不存在，所以<strong>斜率不存在</strong>。</li>
+            <li>不要只看線「很陡」。斜率比較的是 <strong>單位水平改變量</strong>；可在上方拖曳兩點，觀察「右 2、上 1」與「右 6、上 3」斜率其實相同。</li>
+          </ul>
+        </div>
+
+        <div class="mistake">
+          <h3>國中最常犯的錯</h3>
+          <ul>
+            <li><strong>分子、分母的相減順序不同：</strong>要嘛都用「第 2 點減第 1 點」，要嘛都反過來；不能 y₂−y₁ 搭配 x₁−x₂。</li>
+            <li><strong>把鉛直線寫成 y = mx + k：</strong>它沒有有限斜率，答案應是 x = 常數。</li>
+            <li><strong>只代一點、不驗算：</strong>代回另一點能立刻抓出截距正負號算錯。</li>
+            <li><strong>把斜率看成 y/x：</strong>斜率是兩點之間的「改變量比」，不是任意一點的 y ÷ x。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="senior" class="section" aria-labelledby="senior-heading">
+      <div class="lesson">
+        <div class="eyebrow">高中版：依已知條件選最快寫法</div>
+        <h2 id="senior-heading">同一條直線的七個表示法</h2>
+        <p>不要背成一串孤立公式。先問「題目給我什麼？」：給兩點就用二點式；給一點與斜率就用點斜式；給方向量就用參數式；給法向量就用一般式。最後需要時再化成題目指定的形式。</p>
+        <div class="formula-grid">
+          <article class="formula-card">
+            <span class="tag">給兩點</span>
+            <h3>二點式</h3>
+            <p class="formula-line">\[\frac{y-y_1}{x-x_1}=\frac{y_2-y_1}{x_2-x_1}\]</p>
+            <p>條件是 \(x_1\ne x_2\)。更穩健的交叉相乘寫法為 <span class="formula">\((x_2-x_1)(y-y_1)=(y_2-y_1)(x-x_1)\)</span>，可避免太早除法；若 \(x_1=x_2\)，直接寫 <span class="formula">\(x=x_1\)</span>。非鉛直線另有 <span class="formula">\(m=\tan\alpha\)</span>。</p>
+          </article>
+          <article class="formula-card">
+            <span class="tag">給一點、斜率</span>
+            <h3>點斜式</h3>
+            <p class="formula-line">\[y-y_0=m(x-x_0)\]</p>
+            <p>最適合「通過 \(P(x_0,y_0)\)，斜率為 \(m\)」。它是從斜率定義直接來的；鉛直線沒有 \(m\)，改寫 <span class="formula">\(x=x_0\)</span>。</p>
+          </article>
+          <article class="formula-card">
+            <span class="tag">給斜率、y 截距</span>
+            <h3>斜截式</h3>
+            <p class="formula-line">\[y=mx+k\]</p>
+            <p>\(m\) 是斜率，\(k\) 是 \(y\) 截距（與 \(y\) 軸交於 \((0,k)\)）。看圖最快，但仍不能表示鉛直線。</p>
+          </article>
+          <article class="formula-card">
+            <span class="tag">給法向量</span>
+            <h3>一般式</h3>
+            <p class="formula-line">\[Ax+By+C=0\]</p>
+            <p>\(A\)、\(B\) 不可同時為 \(0\)，法向量是 <span class="formula">\(\vec n=(A,B)\)</span>；一個方向量可取 <span class="formula">\(\vec d=(B,-A)\)</span>。它能自然表示所有直線，包括 <span class="formula">\(x=c\)</span>。</p>
+          </article>
+          <article class="formula-card">
+            <span class="tag">給一點、方向量</span>
+            <h3>參數式</h3>
+            <p class="formula-line">\[(x,y)=(x_0,y_0)+t(u,v),\quad t\in\mathbb R\]</p>
+            <p>\((u,v)\) 是非零方向量。展開成 <span class="formula">\(x=x_0+tu,\quad y=y_0+tv\)</span>；若 \((u,v)=(0,1)\)，就是鉛直線。</p>
+          </article>
+          <article class="formula-card">
+            <span class="tag">判斷共線</span>
+            <h3>三點共線（不必求方程式）</h3>
+            <p class="formula-line">\[\frac{y_2-y_1}{x_2-x_1}=\frac{y_3-y_1}{x_3-x_1}\]</p>
+            <p>在分母不為 \(0\) 時比較斜率即可。含鉛直情形，改用更通用的面積／叉積判斷：<span class="formula">\((x_2-x_1)(y_3-y_1)-(y_2-y_1)(x_3-x_1)=0\)</span>。</p>
+          </article>
+          <article class="formula-card">
+            <span class="tag">給兩軸截距</span>
+            <h3>截距式</h3>
+            <p class="formula-line">\[\frac{x}{p}+\frac{y}{q}=1\]</p>
+            <p>\(p\) 是 \(x\) 截距、\(q\) 是 \(y\) 截距，交點為 \((p,0)\)、\((0,q)\)。<strong>必要條件 \(p\)、\(q\) 都不為 \(0\)</strong>；直線過原點或平行任一座標軸時不可使用。</p>
+          </article>
+        </div>
+
+        <div class="worked">
+          <h3>例題：通過 P(1, −2)，方向量為 (3, 2)</h3>
+          <ol>
+            <li>先寫參數式：<span class="formula">\((x,y)=(1,-2)+t(3,2)\)</span>。</li>
+            <li>方向量 \((3,2)\) 對應斜率 <span class="formula">\(m=\dfrac23\)</span>，所以點斜式為 <span class="formula">\(y+2=\dfrac23(x-1)\)</span>。</li>
+            <li>方向量 \((3,2)\) 的一個法向量是 \((2,-3)\)，故一般式為 <span class="formula">\(2(x-1)-3(y+2)=0\)</span>，即 <span class="formula">\(2x-3y-8=0\)</span>。</li>
+            <li>由一般式化成斜截式：<span class="formula">\(y=\dfrac23x-\dfrac83\)</span>。</li>
+          </ol>
+        </div>
+
+        <div class="mistake">
+          <h3>高中常見混淆</h3>
+          <ul>
+            <li><strong>一般式的 B 與截距式的 q 不同：</strong>為避免字母撞名，本頁以 p、q 表示兩軸截距。</li>
+            <li><strong>方向量與法向量搞反：</strong>方向量沿著線走；法向量垂直於線。對一般式 Ax+By+C=0，(A,B) 是法向量，不是方向量。</li>
+            <li><strong>把斜率乘積 −1 當萬用垂直判斷：</strong>鉛直線沒有斜率。用向量內積或一般式的 <span class="formula">\(A_1A_2+B_1B_2=0\)</span> 更安全。</li>
+            <li><strong>截距式分母可為 0：</strong>p=0 或 q=0 時式子本身沒有意義，應改用其他形式。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="advanced" class="section" aria-labelledby="advanced-heading">
+      <div class="advanced-tool">
+        <div class="eyebrow">高中進階：把目前直線當作 L</div>
+        <h2 id="advanced-heading">平行、垂直、投影與直線系互動工具</h2>
+        <p class="section-intro">先在上方作圖器畫出目前直線 L，再在這裡輸入點或兩條線。進階結果會直接疊在同一張座標平面；按上方任一「畫線」按鈕即可回到單一直線模式。</p>
+        <div class="advanced-grid">
+          <div>
+            <div class="tool-block">
+              <h3>給點 P，處理目前直線 L</h3>
+              <div class="grid2">
+                <div><label for="toolX">P 的 x₀</label><input id="toolX" type="number" step="any" value="1" /></div>
+                <div><label for="toolY">P 的 y₀</label><input id="toolY" type="number" step="any" value="4" /></div>
+              </div>
+              <div class="actions">
+                <button id="parallelBtn" type="button">過 P 作平行線</button>
+                <button id="perpendicularBtn" type="button">過 P 作垂線</button>
+                <button id="projectionBtn" type="button">求投影點 H</button>
+                <button id="reflectionBtn" type="button">求對稱點 P′</button>
+                <button id="distanceBtn" class="secondary" type="button">算點到線距離</button>
+              </div>
+              <p class="micro">若 L: Ax+By+C=0，過 P 的平行線保留同一法向量 (A,B)；垂線可取法向量 (B, −A)。</p>
+            </div>
+
+            <div class="tool-block">
+              <h3>兩點 P、Q 的中垂線</h3>
+              <div class="grid2">
+                <div><label for="mbX1">P 的 x₁</label><input id="mbX1" type="number" step="any" value="-4" /></div>
+                <div><label for="mbY1">P 的 y₁</label><input id="mbY1" type="number" step="any" value="-1" /></div>
+                <div><label for="mbX2">Q 的 x₂</label><input id="mbX2" type="number" step="any" value="4" /></div>
+                <div><label for="mbY2">Q 的 y₂</label><input id="mbY2" type="number" step="any" value="3" /></div>
+              </div>
+              <div class="actions"><button id="bisectorBtn" type="button">畫出 PQ 的中垂線</button></div>
+              <p class="micro">中垂線通過 PQ 的中點，且垂直於 PQ；在線上的點到 P、Q 等距。</p>
+            </div>
           </div>
-          <div class="actions">
-            <button id="drawByPoints" type="button">求方程式並畫線</button>
+
+          <div>
+            <div class="tool-block">
+              <h3>兩條直線 L₁、L₂</h3>
+              <div class="grid3">
+                <div><label for="l1a">L₁ 的 A₁</label><input id="l1a" type="number" step="any" value="1" /></div>
+                <div><label for="l1b">B₁</label><input id="l1b" type="number" step="any" value="1" /></div>
+                <div><label for="l1c">C₁</label><input id="l1c" type="number" step="any" value="-2" /></div>
+                <div><label for="l2a">L₂ 的 A₂</label><input id="l2a" type="number" step="any" value="1" /></div>
+                <div><label for="l2b">B₂</label><input id="l2b" type="number" step="any" value="-1" /></div>
+                <div><label for="l2c">C₂</label><input id="l2c" type="number" step="any" value="0" /></div>
+              </div>
+              <div class="actions">
+                <button id="angleBtn" type="button">畫兩條角平分線</button>
+                <button id="familyBtn" type="button">畫 L₁ + λL₂</button>
+                <button id="systemBtn" class="secondary" type="button">判斷聯立解況</button>
+              </div>
+              <div class="grid2" style="margin-top:8px;">
+                <div><label for="lambda">λ（直線系參數）</label><input id="lambda" type="number" step="any" value="1" /></div>
+                <div class="actions" style="align-items:end;"><button id="loadLineExample" class="secondary example-load" type="button">載入範例：x+y−2、x−y</button></div>
+              </div>
+              <p class="micro">角平分線與本工具的直線系先處理相交兩直線。L₁、L₂ 平行時沒有共同交點，不能解讀成「過共同點的一束線」。</p>
+            </div>
           </div>
         </div>
 
-        <div id="eqBox" class="group" style="display:none;">
-          <h3>直線方程式（ax + by + c = 0）</h3>
-          <div class="grid2">
-            <div><label for="a">a</label><input id="a" type="number" step="any" value="1" /></div>
-            <div><label for="b">b</label><input id="b" type="number" step="any" value="-2" /></div>
-            <div><label for="c">c</label><input id="c" type="number" step="any" value="3" /></div>
-          </div>
-          <div class="actions">
-            <button id="drawByEq" type="button">用方程式畫線</button>
-          </div>
+        <div class="formula-grid" style="margin-top:14px;">
+          <article class="formula-card">
+            <h3>平行與垂直</h3>
+            <p>對 Lᵢ: Aᵢx+Bᵢy+Cᵢ=0：</p>
+            <p><span class="formula">\(A_1B_2-A_2B_1=0\)</span> 判斷平行；<span class="formula">\(A_1A_2+B_1B_2=0\)</span> 判斷垂直。</p>
+            <p>這兩個判斷含鉛直線，不必冒險使用斜率。</p>
+          </article>
+          <article class="formula-card">
+            <h3>投影點、對稱點、距離</h3>
+            <p>令 <span class="formula">\(s=\dfrac{Ax_0+By_0+C}{A^2+B^2}\)</span>。</p>
+            <p>投影 \(H=\)<span class="formula">\((x_0-As,y_0-Bs)\)</span>；對稱點 \(P'=\)<span class="formula">\((x_0-2As,y_0-2Bs)\)</span>；距離 <span class="formula">\(d=\dfrac{\lvert Ax_0+By_0+C\rvert}{\sqrt{A^2+B^2}}\)</span>。</p>
+          </article>
+          <article class="formula-card">
+            <h3>角平分線</h3>
+            <p>兩相交線 L₁=0、L₂=0 的角平分線為：</p>
+            <p class="formula-line">\[\frac{L_1}{\sqrt{A_1^2+B_1^2}}=\pm\frac{L_2}{\sqrt{A_2^2+B_2^2}}\]</p>
+            <p>一定要先除以法向量長度；直接寫 L₁=±L₂ 只在兩式法向量長度恰好相同時才對。</p>
+          </article>
+          <article class="formula-card">
+            <h3>直線系</h3>
+            <p>若 \(L_1\)、\(L_2\) 相交，完整寫法是 <span class="formula">\(\lambda L_1+\mu L_2=0\)</span>，其中 \((\lambda,\mu)\) 不可同時為 \(0\)；它表示所有通過共同交點的直線。</p>
+            <p>常見單參數寫法 <span class="formula">\(L_1+tL_2=0\)</span> 少了 \(L_2\) 本身，需另外補上 \(L_2\)。</p>
+          </article>
         </div>
 
-        <div class="group">
-          <h3>圖形範圍</h3>
-          <div class="grid2">
-            <div><label for="minX">最小 x</label><input id="minX" type="number" step="1" value="-10" /></div>
-            <div><label for="maxX">最大 x</label><input id="maxX" type="number" step="1" value="10" /></div>
-            <div><label for="minY">最小 y</label><input id="minY" type="number" step="1" value="-10" /></div>
-            <div><label for="maxY">最大 y</label><input id="maxY" type="number" step="1" value="10" /></div>
-          </div>
-          <div class="actions">
-            <button id="refresh" class="secondary" type="button">重畫座標格</button>
-          </div>
+        <div class="worked">
+          <h3>二元一次聯立：把「解況」看成兩條直線的位置關係</h3>
+          <p>若以本頁的一般式寫成 <span class="formula">\(L_1:A_1x+B_1y+C_1=0\)</span>、<span class="formula">\(L_2:A_2x+B_2y+C_2=0\)</span>，係數比例可直接告訴我們解的數量。可按上方「判斷聯立解況」把結果畫出來。</p>
+          <table class="system-table">
+            <thead><tr><th>聯立解況</th><th>圖形</th><th>係數判斷（分母存在時的比例寫法）</th></tr></thead>
+            <tbody>
+              <tr><td>唯一解</td><td>兩線相交於一點</td><td><span class="formula">\(\dfrac{A_1}{A_2}\ne\dfrac{B_1}{B_2}\)</span>；更通用地說，<span class="formula">\(A_1B_2-A_2B_1\ne0\)</span>。</td></tr>
+              <tr><td>無限多解</td><td>兩線重合</td><td><span class="formula">\(\dfrac{A_1}{A_2}=\dfrac{B_1}{B_2}=\dfrac{C_1}{C_2}\)</span>。</td></tr>
+              <tr><td>無解</td><td>兩線平行且不同</td><td><span class="formula">\(\dfrac{A_1}{A_2}=\dfrac{B_1}{B_2}\ne\dfrac{C_1}{C_2}\)</span>。</td></tr>
+            </tbody>
+          </table>
+          <p class="micro">若教材把式子寫成 \(ax+by=c\)，常數項只要整體移到左邊即可；比例結論不變。用行列式 <span class="formula">\(A_1B_2-A_2B_1\)</span> 判斷是否相交，能避開「某係數為 \(0\) 時不能相除」的問題。</p>
         </div>
 
-        <div id="status" class="status">請先選模式，然後按下按鈕。</div>
-        <div id="resultBox" class="result-box">目前兩點與方程式會顯示在這裡。</div>
-        <div id="pointsList" class="points-list">線上整點表格會顯示在這裡。</div>
-      </aside>
+        <div class="worked">
+          <h3>進階例題：L: 2x − y − 3 = 0，P(1, 4)</h3>
+          <ol>
+            <li>過 \(P\) 的平行線：保留法向量 \((2,-1)\)，得 <span class="formula">\(2x-y+2=0\)</span>。</li>
+            <li>過 \(P\) 的垂線：可取法向量 \((-1,-2)\)，得 <span class="formula">\(x+2y-9=0\)</span>。</li>
+            <li><span class="formula">\(s=\dfrac{2\times1-4-3}{2^2+(-1)^2}=-1\)</span>，所以投影點 \(H=(3,3)\)，對稱點 \(P'=(5,2)\)，距離為 <span class="formula">\(\sqrt5\)</span>。</li>
+          </ol>
+        </div>
+      </div>
+    </section>
 
-      <section class="canvas-wrap">
-        <canvas id="plane" width="780" height="780"></canvas>
-        <p class="hint">顏色說明：藍色是直線、紅點是輸入的兩點、綠點是範圍內在線上的整點。</p>
-      </section>
+    <section id="practice" class="section" aria-labelledby="practice-heading">
+      <div class="lesson">
+        <div class="eyebrow">可直接課堂使用</div>
+        <h2 id="practice-heading">分層練習與自我檢查</h2>
+        <div class="practice-grid">
+          <article class="practice-card">
+            <h3>基礎：兩點與斜截式</h3>
+            <p>求通過 (−1, 3)、(3, 5) 的直線。</p>
+            <details><summary>核對</summary><p><span class="formula">\(m=\dfrac{5-3}{3-(-1)}=\dfrac12\)</span>；代入得 <span class="formula">\(y=\dfrac12x+\dfrac72\)</span>，一般式為 <span class="formula">\(x-2y+7=0\)</span>。</p></details>
+          </article>
+          <article class="practice-card">
+            <h3>進階：三點是否共線？</h3>
+            <p>A(−2, 1)、B(1, 3)、C(4, 5) 是否共線？請不要先求方程式。</p>
+            <details><summary>核對</summary><p>AB 斜率=(3−1)/(1−(−2))=2/3；AC 斜率=(5−1)/(4−(−2))=2/3，因此三點共線。</p></details>
+          </article>
+          <article class="practice-card">
+            <h3>挑戰：角平分線與直線系</h3>
+            <p>L₁:x+y−2=0、L₂:x−y=0。求兩角平分線，並寫通過共同點的直線系。</p>
+            <details><summary>核對</summary><p>兩法向量長度皆為 <span class="formula">\(\sqrt2\)</span>，因此 \(L_1=\pm L_2\)，得 <span class="formula">\(x=1\)</span>、<span class="formula">\(y=1\)</span>。直線系為 <span class="formula">\(\lambda(x+y-2)+\mu(x-y)=0\)</span>，\((\lambda,\mu)\ne(0,0)\)。</p></details>
+          </article>
+        </div>
+        <p class="hero-note" style="margin-top:14px;"><strong>老師上課建議：</strong>先讓學生用上方兩點模式拖曳紅點，口頭描述「往右 2、往上 1」；再切到點斜式、一般式與參數式，問學生：哪個量是方向？哪個量垂直於線？最後才用進階工具把向量觀點連到投影與距離。</p>
+      </div>
     </section>
   </main>
 
   <script>
     const canvas = document.getElementById('plane');
     const ctx = canvas.getContext('2d');
-
+    const EPS = 1e-10;
     const el = {
-      modePoints: document.getElementById('modePoints'),
-      modeEq: document.getElementById('modeEq'),
-      pointsBox: document.getElementById('pointsBox'),
-      eqBox: document.getElementById('eqBox'),
-      x1: document.getElementById('x1'),
-      y1: document.getElementById('y1'),
-      x2: document.getElementById('x2'),
-      y2: document.getElementById('y2'),
-      a: document.getElementById('a'),
-      b: document.getElementById('b'),
-      c: document.getElementById('c'),
-      minX: document.getElementById('minX'),
-      maxX: document.getElementById('maxX'),
-      minY: document.getElementById('minY'),
-      maxY: document.getElementById('maxY'),
-      status: document.getElementById('status'),
-      pointsList: document.getElementById('pointsList'),
-      resultBox: document.getElementById('resultBox')
+      x1: document.getElementById('x1'), y1: document.getElementById('y1'),
+      x2: document.getElementById('x2'), y2: document.getElementById('y2'),
+      slopeM: document.getElementById('slopeM'), slopeK: document.getElementById('slopeK'),
+      a: document.getElementById('a'), b: document.getElementById('b'), c: document.getElementById('c'),
+      psX: document.getElementById('psX'), psY: document.getElementById('psY'), psM: document.getElementById('psM'),
+      paX: document.getElementById('paX'), paY: document.getElementById('paY'), paU: document.getElementById('paU'), paV: document.getElementById('paV'),
+      inP: document.getElementById('inP'), inQ: document.getElementById('inQ'),
+      minX: document.getElementById('minX'), maxX: document.getElementById('maxX'), minY: document.getElementById('minY'), maxY: document.getElementById('maxY'),
+      status: document.getElementById('status'), resultBox: document.getElementById('resultBox'), pointsList: document.getElementById('pointsList'),
+      legend: document.getElementById('canvasLegend'), graphPin: document.getElementById('toggleGraphPin'), toolX: document.getElementById('toolX'), toolY: document.getElementById('toolY'),
+      mbX1: document.getElementById('mbX1'), mbY1: document.getElementById('mbY1'), mbX2: document.getElementById('mbX2'), mbY2: document.getElementById('mbY2'),
+      l1a: document.getElementById('l1a'), l1b: document.getElementById('l1b'), l1c: document.getElementById('l1c'),
+      l2a: document.getElementById('l2a'), l2b: document.getElementById('l2b'), l2c: document.getElementById('l2c'), lambda: document.getElementById('lambda')
     };
 
-    let mode = 'points';
     let currentLine = null;
     let highlightPoints = [];
+    let overlayLines = [];
+    let specialPoints = [];
+    let guideSegments = [];
+    let drawPrimary = true;
     let draggingIndex = -1;
+    let explanationHtml = '';
+    let graphPinPreference = true;
 
-    function n(v) { return Number(v); }
-
+    function n(value) {
+      return value === '' || String(value).trim() === '' ? NaN : Number(value);
+    }
+    function nearZero(value) { return Math.abs(value) < EPS; }
+    function fmt(value, digits = 6) {
+      if (nearZero(value)) return '0';
+      const rounded = Math.round(value * 10 ** digits) / 10 ** digits;
+      return String(Object.is(rounded, -0) ? 0 : rounded);
+    }
+    function texNumber(value) {
+      if (nearZero(value)) return '0';
+      const sign = value < 0 ? '-' : '';
+      const absolute = Math.abs(value);
+      for (let denominator = 1; denominator <= 120; denominator++) {
+        const numerator = Math.round(absolute * denominator);
+        if (Math.abs(absolute - numerator / denominator) < 1e-10) {
+          const divisor = gcd(numerator, denominator);
+          const top = numerator / divisor, bottom = denominator / divisor;
+          return bottom === 1 ? `${sign}${top}` : `${sign}\\frac{${top}}{${bottom}}`;
+        }
+      }
+      return fmt(value);
+    }
+    function texPoint(point) { return `\\left(${texNumber(point.x)}, ${texNumber(point.y)}\\right)`; }
+    function texDifference(variable, value) {
+      if (nearZero(value)) return variable;
+      return value > 0 ? `${variable}-${texNumber(value)}` : `${variable}+${texNumber(Math.abs(value))}`;
+    }
+    function texSubtraction(left, right) {
+      return `${texNumber(left)}-${right < 0 ? `\\left(${texNumber(right)}\\right)` : texNumber(right)}`;
+    }
+    function mathInline(tex) { return `<span class="formula">\\(${tex}\\)</span>`; }
+    let mathTypesetFrame = 0;
+    function typesetMath(nodes) {
+      const targets = nodes.filter(Boolean);
+      if (!targets.length || !window.MathJax?.typesetPromise) return;
+      cancelAnimationFrame(mathTypesetFrame);
+      mathTypesetFrame = requestAnimationFrame(() => {
+        if (window.MathJax.typesetClear) window.MathJax.typesetClear(targets);
+        window.MathJax.typesetPromise(targets).catch(() => {});
+      });
+    }
+    function pointText(p) { return `(${fmt(p.x)}, ${fmt(p.y)})`; }
+    function differenceText(variable, value) {
+      if (nearZero(value)) return variable;
+      return value > 0 ? `${variable} − ${fmt(value)}` : `${variable} + ${fmt(Math.abs(value))}`;
+    }
+    function validNumbers(values, message) {
+      if (!values.every(Number.isFinite)) throw new Error(message);
+    }
     function getRange() {
       const minX = Math.floor(n(el.minX.value));
       const maxX = Math.ceil(n(el.maxX.value));
       const minY = Math.floor(n(el.minY.value));
       const maxY = Math.ceil(n(el.maxY.value));
-      if (!(minX < maxX && minY < maxY)) {
-        throw new Error('座標範圍需滿足：最小值 < 最大值');
-      }
+      validNumbers([minX, maxX, minY, maxY], '座標範圍需為有效數字');
+      if (!(minX < maxX && minY < maxY)) throw new Error('座標範圍需滿足：最小值 < 最大值');
       return { minX, maxX, minY, maxY };
     }
-
     function worldToCanvas(x, y, r) {
-      const pad = 36;
+      const pad = 42;
       const w = canvas.width - pad * 2;
       const h = canvas.height - pad * 2;
-      const px = pad + ((x - r.minX) / (r.maxX - r.minX)) * w;
-      const py = pad + ((r.maxY - y) / (r.maxY - r.minY)) * h;
-      return { px, py };
+      return { px: pad + ((x - r.minX) / (r.maxX - r.minX)) * w, py: pad + ((r.maxY - y) / (r.maxY - r.minY)) * h };
     }
-
     function canvasToWorld(px, py, r) {
-      const pad = 36;
+      const pad = 42;
       const w = canvas.width - pad * 2;
       const h = canvas.height - pad * 2;
-      const x = r.minX + ((px - pad) / w) * (r.maxX - r.minX);
-      const y = r.maxY - ((py - pad) / h) * (r.maxY - r.minY);
-      return { x, y };
+      return { x: r.minX + ((px - pad) / w) * (r.maxX - r.minX), y: r.maxY - ((py - pad) / h) * (r.maxY - r.minY) };
     }
-
     function drawAxes(r) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.save();
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 1;
-      for (let x = r.minX; x <= r.maxX; x += 1) {
-        const p1 = worldToCanvas(x, r.minY, r);
-        const p2 = worldToCanvas(x, r.maxY, r);
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+      for (let x = r.minX; x <= r.maxX; x++) {
+        const p1 = worldToCanvas(x, r.minY, r), p2 = worldToCanvas(x, r.maxY, r);
         ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke();
       }
-      for (let y = r.minY; y <= r.maxY; y += 1) {
-        const p1 = worldToCanvas(r.minX, y, r);
-        const p2 = worldToCanvas(r.maxX, y, r);
+      for (let y = r.minY; y <= r.maxY; y++) {
+        const p1 = worldToCanvas(r.minX, y, r), p2 = worldToCanvas(r.maxX, y, r);
         ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke();
       }
-
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#334155'; ctx.lineWidth = 2;
       if (r.minY <= 0 && r.maxY >= 0) {
-        const p1 = worldToCanvas(r.minX, 0, r);
-        const p2 = worldToCanvas(r.maxX, 0, r);
+        const p1 = worldToCanvas(r.minX, 0, r), p2 = worldToCanvas(r.maxX, 0, r);
         ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke();
       }
       if (r.minX <= 0 && r.maxX >= 0) {
-        const p1 = worldToCanvas(0, r.minY, r);
-        const p2 = worldToCanvas(0, r.maxY, r);
+        const p1 = worldToCanvas(0, r.minY, r), p2 = worldToCanvas(0, r.maxY, r);
         ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke();
       }
+      ctx.fillStyle = '#334155'; ctx.font = '14px sans-serif';
+      if (r.minY <= 0 && r.maxY >= 0) {
+        for (let x = r.minX; x <= r.maxX; x += 2) {
+          if (x === 0) continue;
+          const p = worldToCanvas(x, 0, r); ctx.fillText(String(x), p.px - 4, p.py + 17);
+        }
+      }
+      if (r.minX <= 0 && r.maxX >= 0) {
+        for (let y = r.minY; y <= r.maxY; y += 2) {
+          if (y === 0) continue;
+          const p = worldToCanvas(0, y, r); ctx.fillText(String(y), p.px + 7, p.py + 4);
+        }
+      }
+      const xLabel = worldToCanvas(r.maxX, 0, r), yLabel = worldToCanvas(0, r.maxY, r);
+      if (r.minY <= 0 && r.maxY >= 0) ctx.fillText('x', xLabel.px - 15, xLabel.py - 9);
+      if (r.minX <= 0 && r.maxX >= 0) ctx.fillText('y', yLabel.px + 9, yLabel.py + 15);
       ctx.restore();
     }
-
-    function drawLineABC(a, b, c, r) {
-      const pts = [];
-      const eps = 1e-10;
-
-      if (Math.abs(b) > eps) {
-        const yAtMinX = (-a * r.minX - c) / b;
-        const yAtMaxX = (-a * r.maxX - c) / b;
-        if (yAtMinX >= r.minY - 1e-9 && yAtMinX <= r.maxY + 1e-9) pts.push({ x: r.minX, y: yAtMinX });
-        if (yAtMaxX >= r.minY - 1e-9 && yAtMaxX <= r.maxY + 1e-9) pts.push({ x: r.maxX, y: yAtMaxX });
+    function getTwoPointsFromLineInRange(a, b, c, r) {
+      const points = [];
+      if (!nearZero(b)) {
+        points.push({ x: r.minX, y: (-a * r.minX - c) / b });
+        points.push({ x: r.maxX, y: (-a * r.maxX - c) / b });
       }
-      if (Math.abs(a) > eps) {
-        const xAtMinY = (-b * r.minY - c) / a;
-        const xAtMaxY = (-b * r.maxY - c) / a;
-        if (xAtMinY >= r.minX - 1e-9 && xAtMinY <= r.maxX + 1e-9) pts.push({ x: xAtMinY, y: r.minY });
-        if (xAtMaxY >= r.minX - 1e-9 && xAtMaxY <= r.maxX + 1e-9) pts.push({ x: xAtMaxY, y: r.maxY });
+      if (!nearZero(a)) {
+        points.push({ x: (-b * r.minY - c) / a, y: r.minY });
+        points.push({ x: (-b * r.maxY - c) / a, y: r.maxY });
       }
-
-      const unique = [];
-      for (const p of pts) {
-        if (!unique.some(q => Math.abs(q.x - p.x) < 1e-8 && Math.abs(q.y - p.y) < 1e-8)) unique.push(p);
-      }
-      if (unique.length < 2) return false;
-
-      const p1 = worldToCanvas(unique[0].x, unique[0].y, r);
-      const p2 = worldToCanvas(unique[1].x, unique[1].y, r);
-      ctx.save();
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(p1.px, p1.py);
-      ctx.lineTo(p2.px, p2.py);
-      ctx.stroke();
-      ctx.restore();
+      const valid = points.filter(p => p.x >= r.minX - EPS && p.x <= r.maxX + EPS && p.y >= r.minY - EPS && p.y <= r.maxY + EPS);
+      return valid.filter((p, i) => !valid.slice(0, i).some(q => Math.abs(p.x - q.x) < 1e-8 && Math.abs(p.y - q.y) < 1e-8)).slice(0, 2);
+    }
+    function drawLineABC(a, b, c, r, color = '#0284c7', width = 3, dash = []) {
+      const points = getTwoPointsFromLineInRange(a, b, c, r);
+      if (points.length < 2) return false;
+      const p1 = worldToCanvas(points[0].x, points[0].y, r), p2 = worldToCanvas(points[1].x, points[1].y, r);
+      ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash);
+      ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py); ctx.stroke(); ctx.restore();
       return true;
     }
-
-    function drawPoint(x, y, r, color, radius = 5) {
-      const p = worldToCanvas(x, y, r);
-      ctx.save();
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(p.px, p.py, radius, 0, Math.PI * 2);
-      ctx.fill();
+    function drawPoint(point, r, color, radius = 5, label = '') {
+      const p = worldToCanvas(point.x, point.y, r);
+      ctx.save(); ctx.fillStyle = color; ctx.beginPath(); ctx.arc(p.px, p.py, radius, 0, Math.PI * 2); ctx.fill();
+      if (label) { ctx.fillStyle = '#0f172a'; ctx.font = 'bold 14px sans-serif'; ctx.fillText(label, p.px + 8, p.py - 8); }
       ctx.restore();
     }
-
+    function drawSegment(segment, r) {
+      const p = worldToCanvas(segment.p1.x, segment.p1.y, r), q = worldToCanvas(segment.p2.x, segment.p2.y, r);
+      ctx.save(); ctx.strokeStyle = segment.color || '#94a3b8'; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+      ctx.beginPath(); ctx.moveTo(p.px, p.py); ctx.lineTo(q.px, q.py); ctx.stroke(); ctx.restore();
+    }
     function gcd(a, b) {
-      a = Math.abs(Math.round(a));
-      b = Math.abs(Math.round(b));
-      while (b) {
-        const t = a % b;
-        a = b;
-        b = t;
-      }
+      a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b));
+      while (b) { const t = a % b; a = b; b = t; }
       return a || 1;
     }
-
-    function formatLine(a, b, c) {
-      function term(coef, varName, first) {
-        if (coef === 0) return '';
-        const sign = coef > 0 ? (first ? '' : ' + ') : (first ? '-' : ' - ');
-        const absV = Math.abs(coef);
-        const coefText = absV === 1 ? '' : String(absV);
-        return sign + coefText + varName;
-      }
-      let s = '';
-      s += term(a, 'x', true);
-      s += term(b, 'y', s === '');
-      if (c !== 0) {
-        const sign = c > 0 ? (s === '' ? '' : ' + ') : (s === '' ? '-' : ' - ');
-        s += sign + Math.abs(c);
-      }
-      if (s === '') s = '0';
-      return s + ' = 0';
-    }
-
     function simplifyABC(a, b, c) {
-      const allInt = Number.isInteger(a) && Number.isInteger(b) && Number.isInteger(c);
-      if (!allInt) return { a, b, c };
-      const g = gcd(gcd(a, b), c);
-      a /= g; b /= g; c /= g;
-      if (a < 0 || (a === 0 && b < 0)) {
-        a = -a; b = -b; c = -c;
+      if ([a, b, c].every(Number.isInteger)) {
+        const d = gcd(gcd(a, b), c); a /= d; b /= d; c /= d;
+        if (a < 0 || (nearZero(a) && b < 0)) { a = -a; b = -b; c = -c; }
       }
-      return { a, b, c };
+      return { a: nearZero(a) ? 0 : a, b: nearZero(b) ? 0 : b, c: nearZero(c) ? 0 : c };
     }
-
-    function setPointInputsFromHighlights() {
-      if (highlightPoints.length < 2) return;
-      el.x1.value = Number(highlightPoints[0].x.toFixed(3));
-      el.y1.value = Number(highlightPoints[0].y.toFixed(3));
-      el.x2.value = Number(highlightPoints[1].x.toFixed(3));
-      el.y2.value = Number(highlightPoints[1].y.toFixed(3));
+    function formatLine(a, b, c) {
+      const term = (coefficient, letter, first) => {
+        if (nearZero(coefficient)) return '';
+        const sign = coefficient > 0 ? (first ? '' : '+') : '-';
+        const magnitude = Math.abs(coefficient);
+        return sign + (nearZero(magnitude - 1) ? '' : texNumber(magnitude)) + letter;
+      };
+      let text = term(a, 'x', true);
+      text += term(b, 'y', text === '');
+      if (!nearZero(c)) text += (c > 0 ? (text ? '+' : '') : '-') + texNumber(Math.abs(c));
+      return (text || '0') + '=0';
     }
-
-    function setEqInputsFromLine(line) {
-      el.a.value = Number(line.a.toFixed(6));
-      el.b.value = Number(line.b.toFixed(6));
-      el.c.value = Number(line.c.toFixed(6));
+    function formatReadableLine(line) {
+      if ([line.a, line.b, line.c].every(Number.isInteger)) return formatLine(line.a, line.b, line.c);
+      const scale = Math.max(Math.abs(line.a), Math.abs(line.b), Math.abs(line.c));
+      return formatLine(line.a / scale, line.b / scale, line.c / scale);
     }
-
-    function getTwoPointsFromLineInRange(a, b, c, r) {
-      const pts = [];
-      const eps = 1e-10;
-      if (Math.abs(b) > eps) {
-        pts.push({ x: r.minX, y: (-a * r.minX - c) / b });
-        pts.push({ x: r.maxX, y: (-a * r.maxX - c) / b });
-      }
-      if (Math.abs(a) > eps) {
-        pts.push({ x: (-b * r.minY - c) / a, y: r.minY });
-        pts.push({ x: (-b * r.maxY - c) / a, y: r.maxY });
-      }
-      const valid = pts.filter(p => p.x >= r.minX - 1e-8 && p.x <= r.maxX + 1e-8 && p.y >= r.minY - 1e-8 && p.y <= r.maxY + 1e-8);
-      const unique = [];
-      for (const p of valid) {
-        if (!unique.some(q => Math.abs(q.x - p.x) < 1e-8 && Math.abs(q.y - p.y) < 1e-8)) unique.push(p);
-      }
-      return unique.slice(0, 2);
-    }
-
     function latticePointsOnLine(a, b, c, r) {
-      const pts = [];
-      const eps = 1e-8;
+      const points = [];
       for (let x = Math.ceil(r.minX); x <= Math.floor(r.maxX); x++) {
-        if (Math.abs(b) < eps) {
-          if (Math.abs(a) < eps) break;
+        if (nearZero(b)) {
           const x0 = -c / a;
-          if (Math.abs(x - x0) < eps) {
-            for (let y = Math.ceil(r.minY); y <= Math.floor(r.maxY); y++) {
-              pts.push({ x, y });
-            }
+          if (Math.abs(x - x0) < 1e-8) {
+            for (let y = Math.ceil(r.minY); y <= Math.floor(r.maxY); y++) points.push({ x, y });
             break;
           }
         } else {
-          const y = (-a * x - c) / b;
-          const yRound = Math.round(y);
-          if (Math.abs(y - yRound) < eps && yRound >= r.minY && yRound <= r.maxY) {
-            pts.push({ x, y: yRound });
-          }
+          const y = (-a * x - c) / b, rounded = Math.round(y);
+          if (Math.abs(y - rounded) < 1e-8 && rounded >= r.minY && rounded <= r.maxY) points.push({ x, y: rounded });
         }
       }
-      return pts;
+      return points;
     }
-
+    function formatSlopeIntercept(line) {
+      if (nearZero(line.b)) return `x=${texNumber(-line.c / line.a)}`;
+      const m = -line.a / line.b, k = -line.c / line.b;
+      if (nearZero(m)) return `y=${texNumber(k)}`;
+      const mText = nearZero(m) ? '0' : (nearZero(m - 1) ? '' : nearZero(m + 1) ? '-' : (m < 0 ? `-${texNumber(Math.abs(m))}` : texNumber(m)));
+      let result = `y=${mText}x`;
+      if (!nearZero(k)) result += k > 0 ? `+${texNumber(k)}` : `-${texNumber(Math.abs(k))}`;
+      return result;
+    }
+    function lineConversionHtml(line) {
+      const p = highlightPoints[0] || (nearZero(line.b) ? { x: -line.c / line.a, y: 0 } : { x: 0, y: -line.c / line.b });
+      const d = { x: line.b, y: -line.a };
+      let interceptHtml = '此線不適用截距式：它平行某座標軸，或通過原點而使 \(p\)、\(q\) 至少一個為 \(0\)。';
+      if (!nearZero(line.a) && !nearZero(line.b)) {
+        const px = -line.c / line.a, qy = -line.c / line.b;
+        if (!nearZero(px) && !nearZero(qy)) interceptHtml = mathInline(`\\frac{x}{${texNumber(px)}}+\\frac{y}{${texNumber(qy)}}=1`);
+      }
+      let twoPointHtml = '目前以一點與方向量表示；可在「兩點」模式輸入兩個已知點。';
+      if (highlightPoints.length >= 2 && (Math.abs(highlightPoints[0].x - highlightPoints[1].x) > EPS || Math.abs(highlightPoints[0].y - highlightPoints[1].y) > EPS)) {
+        const p1 = highlightPoints[0], p2 = highlightPoints[1];
+        twoPointHtml = nearZero(p2.x - p1.x)
+          ? mathInline(`x=${texNumber(p1.x)}\\quad\\text{（鉛直線）}`)
+          : mathInline(`\\frac{${texDifference('y', p1.y)}}{${texDifference('x', p1.x)}}=\\frac{${texSubtraction(p2.y, p1.y)}}{${texSubtraction(p2.x, p1.x)}}`);
+      }
+      const slopeText = nearZero(line.b) ? `x=${texNumber(-line.c / line.a)}\\quad\\text{（鉛直線，斜率不存在）}` : formatSlopeIntercept(line);
+      const pointSlopeText = nearZero(line.b) ? `x=${texNumber(p.x)}\\quad\\text{（鉛直線）}` : `${texDifference('y', p.y)}=${texNumber(-line.a / line.b)}\\left(${texDifference('x', p.x)}\\right)`;
+      return `
+        <strong>目前直線：</strong>${mathInline(formatLine(line.a, line.b, line.c))}<br>
+        <strong>一般式／法向量：</strong>${mathInline(`\\vec n=\\left(${texNumber(line.a)},${texNumber(line.b)}\\right)`)}<br>
+        <strong>斜截式：</strong>${mathInline(slopeText)}<br>
+        <strong>點斜式：</strong>${mathInline(pointSlopeText)}<br>
+        <strong>二點式：</strong>${twoPointHtml}<br>
+        <strong>參數式／方向量：</strong>${mathInline(`(x,y)=${texPoint(p)}+t\\left(${texNumber(d.x)},${texNumber(d.y)}\\right)`)}<br>
+        <strong>截距式：</strong>${interceptHtml}`;
+    }
+    function renderPointsTable(points) {
+      const chosen = points.slice().sort((p, q) => Math.abs(p.x) + Math.abs(p.y) - Math.abs(q.x) - Math.abs(q.y)).slice(0, 6);
+      el.pointsList.innerHTML = `<div>目前直線的整數解：共 <strong>${points.length}</strong> 組（列出絕對值較小的 ${chosen.length} 組）</div><table><tbody><tr><th>x</th>${chosen.map(p => `<td>${p.x}</td>`).join('')}</tr><tr><th>y</th>${chosen.map(p => `<td>${p.y}</td>`).join('')}</tr></tbody></table>`;
+    }
     function render() {
       try {
-        const r = getRange();
-        drawAxes(r);
-        if (!currentLine) {
-          el.pointsList.textContent = '線上整點表格會顯示在這裡。';
-          return;
-        }
-
-        const { a, b, c } = currentLine;
-        renderResultBox(a, b, c);
-        const ok = drawLineABC(a, b, c, r);
-        if (!ok) {
-          el.status.innerHTML = '<span class="bad">直線沒有經過目前顯示範圍。</span> 可調整座標範圍再試。';
-          return;
-        }
-
-        for (const p of highlightPoints) drawPoint(p.x, p.y, r, '#b91c1c', 6);
-
-        const lattice = latticePointsOnLine(a, b, c, r);
-        for (const p of lattice) drawPoint(p.x, p.y, r, '#166534', 3.8);
-
-        if (lattice.length === 0) {
-          el.pointsList.innerHTML = '此範圍內沒有在線上的整點。';
-        } else {
+        const r = getRange(); drawAxes(r);
+        if (drawPrimary && currentLine) drawLineABC(currentLine.a, currentLine.b, currentLine.c, r, '#0284c7', 3.5);
+        for (const item of overlayLines) drawLineABC(item.line.a, item.line.b, item.line.c, r, item.color, item.width || 2.6, item.dash || []);
+        for (const segment of guideSegments) drawSegment(segment, r);
+        if (drawPrimary) for (const point of highlightPoints) drawPoint(point, r, '#dc2626', 6);
+        for (const point of specialPoints) drawPoint(point, r, point.color || '#16a34a', point.radius || 5, point.label || '');
+        if (drawPrimary && currentLine) {
+          const lattice = latticePointsOnLine(currentLine.a, currentLine.b, currentLine.c, r);
+          for (const point of lattice) drawPoint(point, r, '#16a34a', 3.5);
           renderPointsTable(lattice);
+          el.resultBox.innerHTML = (explanationHtml ? `${explanationHtml}<hr style="border:0;border-top:1px solid #dbe4ef; margin:8px 0;">` : '') + lineConversionHtml(currentLine);
+          el.legend.textContent = '藍色是目前直線；紅點是已知點；綠點是範圍內在線上的整點。可拖曳紅點，觀察方程式如何改變。';
+        } else {
+          el.resultBox.innerHTML = explanationHtml || '請先畫出直線。';
+          el.pointsList.innerHTML = '進階圖形已疊加在座標平面。請看右側結果與顏色標示。';
+          const legend = overlayLines.map(item => `${item.label || '輔助線'}（${item.color}）`).join('、');
+          el.legend.textContent = `目前顯示：${legend}。`;
         }
-      } catch (err) {
-        el.status.innerHTML = `<span class="bad">${err.message}</span>`;
-      }
+        typesetMath([el.status, el.resultBox, el.pointsList]);
+      } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; }
     }
-
-    function renderResultBox(a, b, c) {
-      let pText = '目前無兩點資料';
-      if (highlightPoints.length >= 2) {
-        const p1 = highlightPoints[0];
-        const p2 = highlightPoints[1];
-        pText = `P1=(${Number(p1.x.toFixed(3))}, ${Number(p1.y.toFixed(3))})，P2=(${Number(p2.x.toFixed(3))}, ${Number(p2.y.toFixed(3))})`;
-      }
-      el.resultBox.innerHTML = `<strong>目前兩點：</strong>${pText}<br><strong>目前方程式：</strong>${formatLine(a, b, c)}`;
+    function clearAdvancedScene() { overlayLines = []; specialPoints = []; guideSegments = []; drawPrimary = true; explanationHtml = ''; }
+    function setLine(line, points, statusText) {
+      currentLine = simplifyABC(line.a, line.b, line.c);
+      highlightPoints = points || [];
+      clearAdvancedScene();
+      el.status.innerHTML = `<span class="ok">${statusText}</span> ${mathInline(formatLine(currentLine.a, currentLine.b, currentLine.c))}`;
+      render();
     }
-
-    function renderPointsTable(points) {
-      const selected = points
-        .slice()
-        .sort((p, q) => {
-          const sp = Math.abs(p.x) + Math.abs(p.y);
-          const sq = Math.abs(q.x) + Math.abs(q.y);
-          if (sp !== sq) return sp - sq;
-          if (Math.abs(p.x) !== Math.abs(q.x)) return Math.abs(p.x) - Math.abs(q.x);
-          return Math.abs(p.y) - Math.abs(q.y);
-        })
-        .slice(0, 5);
-      const xRow = selected.map(p => `<td>${p.x}</td>`).join('');
-      const yRow = selected.map(p => `<td>${p.y}</td>`).join('');
-      el.pointsList.innerHTML = `
-        <div>整數解總筆數：<strong>${points.length}</strong>（下表顯示絕對值較小的前 ${selected.length} 組）</div>
-        <table>
-          <tbody>
-            <tr><th>x</th>${xRow}</tr>
-            <tr><th>y</th>${yRow}</tr>
-          </tbody>
-        </table>
-      `;
+    function setPointInputs(points) {
+      if (points.length < 2) return;
+      el.x1.value = fmt(points[0].x); el.y1.value = fmt(points[0].y); el.x2.value = fmt(points[1].x); el.y2.value = fmt(points[1].y);
     }
-
-    function setMode(next) {
-      mode = next;
-      const isPoints = mode === 'points';
-      el.modePoints.classList.toggle('active', isPoints);
-      el.modeEq.classList.toggle('active', !isPoints);
-      el.pointsBox.style.display = isPoints ? '' : 'none';
-      el.eqBox.style.display = isPoints ? 'none' : '';
-      el.status.textContent = isPoints ? '模式A：輸入或拖曳兩點，會即時更新直線。' : '模式B：輸入 a, b, c，會即時更新直線與兩點。';
-    }
-
     function computeFromPoints() {
-      const x1 = n(el.x1.value), y1 = n(el.y1.value);
-      const x2 = n(el.x2.value), y2 = n(el.y2.value);
-      if (![x1, y1, x2, y2].every(Number.isFinite)) throw new Error('兩點座標需為有效數字');
-      if (Math.abs(x1 - x2) < 1e-12 && Math.abs(y1 - y2) < 1e-12) throw new Error('兩點不可重合');
-
-      const a0 = y1 - y2;
-      const b0 = x2 - x1;
-      const c0 = x1 * y2 - x2 * y1;
-      const line = simplifyABC(a0, b0, c0);
-      currentLine = line;
-      highlightPoints = [{ x: x1, y: y1 }, { x: x2, y: y2 }];
-      setEqInputsFromLine(line);
-      el.status.innerHTML = `<span class="ok">方程式：</span> ${formatLine(line.a, line.b, line.c)}`;
-      render();
+      const p1 = { x: n(el.x1.value), y: n(el.y1.value) }, p2 = { x: n(el.x2.value), y: n(el.y2.value) };
+      validNumbers([p1.x, p1.y, p2.x, p2.y], '兩點座標需為有效數字');
+      if (nearZero(p1.x - p2.x) && nearZero(p1.y - p2.y)) throw new Error('兩點不可重合，否則無法決定唯一的直線');
+      setLine({ a: p1.y - p2.y, b: p2.x - p1.x, c: p1.x * p2.y - p2.x * p1.y }, [p1, p2], '由兩點得到：');
     }
-
-    function computeFromEq() {
-      const a = n(el.a.value), b = n(el.b.value), c = n(el.c.value);
-      if (![a, b, c].every(Number.isFinite)) throw new Error('a, b, c 需為有效數字');
-      if (Math.abs(a) < 1e-12 && Math.abs(b) < 1e-12) throw new Error('a 與 b 不可同時為 0');
-      const line = simplifyABC(a, b, c);
-      currentLine = line;
-      const r = getRange();
-      const pts = getTwoPointsFromLineInRange(line.a, line.b, line.c, r);
-      highlightPoints = pts.length >= 2 ? pts : [];
-      setPointInputsFromHighlights();
-      el.status.innerHTML = `<span class="ok">方程式：</span> ${formatLine(line.a, line.b, line.c)}`;
-      render();
+    function computeFromSlope() {
+      const m = n(el.slopeM.value), k = n(el.slopeK.value); validNumbers([m, k], 'm、k 需為有效數字');
+      setLine({ a: m, b: -1, c: k }, [{ x: 0, y: k }, { x: 1, y: m + k }], '由斜截式得到：');
     }
-
-    document.getElementById('drawByPoints').addEventListener('click', () => {
-      try { computeFromPoints(); } catch (err) { el.status.innerHTML = `<span class="bad">${err.message}</span>`; }
-    });
-    document.getElementById('drawByEq').addEventListener('click', () => {
-      try { computeFromEq(); } catch (err) { el.status.innerHTML = `<span class="bad">${err.message}</span>`; }
-    });
-    document.getElementById('refresh').addEventListener('click', render);
-    el.modePoints.addEventListener('click', () => setMode('points'));
-    el.modeEq.addEventListener('click', () => setMode('eq'));
-
-    ['x1', 'y1', 'x2', 'y2'].forEach(id => {
-      el[id].addEventListener('input', () => {
-        try { computeFromPoints(); } catch (_) {}
-      });
-    });
-    ['a', 'b', 'c'].forEach(id => {
-      el[id].addEventListener('input', () => {
-        try { computeFromEq(); } catch (_) {}
-      });
-    });
-    ['minX', 'maxX', 'minY', 'maxY'].forEach(id => {
-      el[id].addEventListener('input', () => {
-        try {
-          if (currentLine) {
-            const r = getRange();
-            const pts = getTwoPointsFromLineInRange(currentLine.a, currentLine.b, currentLine.c, r);
-            if (pts.length >= 2) {
-              highlightPoints = pts;
-              setPointInputsFromHighlights();
-            }
-          }
-          render();
-        } catch (_) {}
-      });
-    });
-
+    function computeFromGeneral() {
+      const a = n(el.a.value), b = n(el.b.value), c = n(el.c.value); validNumbers([a, b, c], 'A、B、C 需為有效數字');
+      if (nearZero(a) && nearZero(b)) throw new Error('A 與 B 不可同時為 0，否則不是直線');
+      setLine({ a, b, c }, [], '由一般式得到：');
+    }
+    function computeFromPointSlope() {
+      const x = n(el.psX.value), y = n(el.psY.value), m = n(el.psM.value); validNumbers([x, y, m], 'x₀、y₀、m 需為有效數字');
+      setLine({ a: m, b: -1, c: y - m * x }, [{ x, y }, { x: x + 1, y: y + m }], '由點斜式得到：');
+    }
+    function computeFromParam() {
+      const x = n(el.paX.value), y = n(el.paY.value), u = n(el.paU.value), v = n(el.paV.value); validNumbers([x, y, u, v], 'x₀、y₀、u、v 需為有效數字');
+      if (nearZero(u) && nearZero(v)) throw new Error('方向量 (u, v) 不可同時為 0');
+      setLine({ a: v, b: -u, c: u * y - v * x }, [{ x, y }, { x: x + u, y: y + v }], '由參數式得到：');
+    }
+    function computeFromIntercept() {
+      const p = n(el.inP.value), q = n(el.inQ.value); validNumbers([p, q], 'p、q 需為有效數字');
+      if (nearZero(p) || nearZero(q)) throw new Error('截距式要求 p、q 都不為 0；請改用一般式或其他表示法');
+      setLine({ a: q, b: p, c: -p * q }, [{ x: p, y: 0 }, { x: 0, y: q }], '由截距式得到：');
+    }
+    function switchForm(name) {
+      document.querySelectorAll('#formTabs button').forEach(button => button.classList.toggle('active', button.dataset.form === name));
+      document.querySelectorAll('.form-panel').forEach(panel => { panel.hidden = panel.id !== `form-${name}`; });
+    }
+    function updateGraphFromActiveForm() {
+      const form = document.querySelector('#formTabs button.active')?.dataset.form;
+      try {
+        if (form === 'two') computeFromPoints();
+        if (form === 'slope') computeFromSlope();
+        if (form === 'general') computeFromGeneral();
+        if (form === 'pointSlope') computeFromPointSlope();
+        if (form === 'param') computeFromParam();
+        if (form === 'intercept') computeFromIntercept();
+      } catch (_) {
+        // 輸入尚未完成時保留上一個正確圖形，避免每個鍵入動作都顯示錯誤。
+      }
+    }
+    function updateRangeFromInput() {
+      try {
+        getRange();
+        render();
+      } catch (_) {
+        // 範圍正在編輯時先保留目前座標格。
+      }
+    }
+    function applyGraphPin() {
+      const canPin = window.matchMedia('(min-width: 1101px)').matches;
+      const pinned = canPin && graphPinPreference;
+      document.body.classList.toggle('graph-pinned', pinned);
+      el.graphPin.textContent = pinned ? '取消固定圖形' : (canPin ? '固定圖形' : '小螢幕自動單欄');
+      el.graphPin.setAttribute('aria-pressed', String(pinned));
+      requestAnimationFrame(render);
+    }
+    function requireCurrentLine() {
+      if (!currentLine) throw new Error('請先在上方畫出目前直線 L');
+      return currentLine;
+    }
+    function readToolPoint() {
+      const point = { x: n(el.toolX.value), y: n(el.toolY.value) }; validNumbers([point.x, point.y], 'P 的座標需為有效數字'); return point;
+    }
+    function showAdvanced(lines, points, details, status, segments = []) {
+      drawPrimary = false; overlayLines = lines; specialPoints = points; guideSegments = segments; explanationHtml = details;
+      el.status.innerHTML = `<span class="ok">${status}</span>`; render();
+    }
+    function parallelLine() {
+      const line = requireCurrentLine(), p = readToolPoint();
+      const result = simplifyABC(line.a, line.b, -(line.a * p.x + line.b * p.y));
+      showAdvanced([{ line, color: '#0284c7', label: '原直線 L' }, { line: result, color: '#ea580c', label: '過 P 的平行線' }], [{ ...p, color: '#dc2626', label: 'P' }], `<strong>平行線：</strong>原線 \(L\) 為 ${mathInline(formatLine(line.a, line.b, line.c))}，法向量是 ${mathInline(`\\left(${texNumber(line.a)},${texNumber(line.b)}\\right)`)}。過 \(P${texPoint(p)}\) 保留同一法向量，故<br>${mathInline(formatLine(result.a, result.b, result.c))}。`, '已畫出過 P 的平行線');
+    }
+    function perpendicularLine() {
+      const line = requireCurrentLine(), p = readToolPoint();
+      const result = simplifyABC(line.b, -line.a, -(line.b * p.x - line.a * p.y));
+      showAdvanced([{ line, color: '#0284c7', label: '原直線 L' }, { line: result, color: '#7e22ce', label: '過 P 的垂線' }], [{ ...p, color: '#dc2626', label: 'P' }], `<strong>垂線：</strong>\(L\) 的法向量為 ${mathInline(`\\left(${texNumber(line.a)},${texNumber(line.b)}\\right)`)}，可取垂線的法向量為 ${mathInline(`\\left(${texNumber(line.b)},${texNumber(-line.a)}\\right)`)}。過 \(P${texPoint(p)}\) 得<br>${mathInline(formatLine(result.a, result.b, result.c))}。`, '已畫出過 P 的垂線');
+    }
+    function projectionData() {
+      const line = requireCurrentLine(), p = readToolPoint();
+      const s = (line.a * p.x + line.b * p.y + line.c) / (line.a ** 2 + line.b ** 2);
+      const h = { x: p.x - line.a * s, y: p.y - line.b * s };
+      const reflected = { x: p.x - 2 * line.a * s, y: p.y - 2 * line.b * s };
+      return { line, p, s, h, reflected, distance: Math.abs(line.a * p.x + line.b * p.y + line.c) / Math.hypot(line.a, line.b) };
+    }
+    function projectionPoint() {
+      const data = projectionData();
+      showAdvanced([{ line: data.line, color: '#0284c7', label: '原直線 L' }], [{ ...data.p, color: '#dc2626', label: 'P' }, { ...data.h, color: '#16a34a', label: 'H' }], `<strong>投影點 \(H\)：</strong>令 ${mathInline(`s=${texNumber(data.s)}`)}，則 ${mathInline(`H=P-s(A,B)`)}。<br>${mathInline(`H=${texPoint(data.h)}`)}。綠點 \(H\) 是 \(P\) 到 \(L\) 的垂足。`, '已畫出投影點 H', [{ p1: data.p, p2: data.h, color: '#16a34a' }]);
+    }
+    function reflectionPoint() {
+      const data = projectionData();
+      showAdvanced([{ line: data.line, color: '#0284c7', label: '對稱軸 L' }], [{ ...data.p, color: '#dc2626', label: 'P' }, { ...data.h, color: '#16a34a', label: 'H' }, { ...data.reflected, color: '#7e22ce', label: 'P′' }], `<strong>對稱點 \(P'\)：</strong>先求中點（投影點）${mathInline(`H=${texPoint(data.h)}`)}，再以 \(H\) 為 \(PP'\) 的中點。<br>${mathInline(`P'=${texPoint(data.reflected)}`)}。`, '已畫出對稱點 P′', [{ p1: data.p, p2: data.reflected, color: '#7e22ce' }]);
+    }
+    function pointDistance() {
+      const data = projectionData();
+      drawPrimary = true; overlayLines = []; specialPoints = [{ ...data.p, color: '#dc2626', label: 'P' }, { ...data.h, color: '#16a34a', label: 'H' }]; guideSegments = [{ p1: data.p, p2: data.h, color: '#16a34a' }];
+      explanationHtml = `<strong>點到直線距離：</strong>${mathInline(`d=\\frac{\\lvert Ax_0+By_0+C\\rvert}{\\sqrt{A^2+B^2}}=${texNumber(data.distance)}`)}。垂足 ${mathInline(`H=${texPoint(data.h)}`)}，所以 \(PH\) 的長度就是這個距離。`;
+      el.status.innerHTML = '<span class="ok">已算出 P 到目前直線的最短距離</span>'; render();
+    }
+    function perpendicularBisector() {
+      const p = { x: n(el.mbX1.value), y: n(el.mbY1.value) }, q = { x: n(el.mbX2.value), y: n(el.mbY2.value) };
+      validNumbers([p.x, p.y, q.x, q.y], 'P、Q 座標需為有效數字');
+      const dx = q.x - p.x, dy = q.y - p.y;
+      if (nearZero(dx) && nearZero(dy)) throw new Error('P、Q 不可重合，否則中垂線無法唯一決定');
+      const mid = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
+      const line = simplifyABC(dx, dy, -(dx * mid.x + dy * mid.y));
+      showAdvanced([{ line, color: '#7e22ce', label: 'PQ 的中垂線' }], [{ ...p, color: '#dc2626', label: 'P' }, { ...q, color: '#dc2626', label: 'Q' }, { ...mid, color: '#16a34a', label: 'M' }], `<strong>\(PQ\) 的中垂線：</strong>${mathInline(`M=${texPoint(mid)}`)}，\(PQ\) 的方向量是 ${mathInline(`\\left(${texNumber(dx)},${texNumber(dy)}\\right)`)}，它正好可作為中垂線的法向量。<br>${mathInline(formatLine(line.a, line.b, line.c))}。`, '已畫出 PQ 的中垂線', [{ p1: p, p2: q, color: '#94a3b8' }]);
+    }
+    function readPairLines() {
+      const l1 = { a: n(el.l1a.value), b: n(el.l1b.value), c: n(el.l1c.value) }, l2 = { a: n(el.l2a.value), b: n(el.l2b.value), c: n(el.l2c.value) };
+      validNumbers([l1.a, l1.b, l1.c, l2.a, l2.b, l2.c], '兩條直線的係數需為有效數字');
+      if ((nearZero(l1.a) && nearZero(l1.b)) || (nearZero(l2.a) && nearZero(l2.b))) throw new Error('每一條直線的 A、B 不可同時為 0');
+      return { l1: simplifyABC(l1.a, l1.b, l1.c), l2: simplifyABC(l2.a, l2.b, l2.c) };
+    }
+    function lineIntersection(l1, l2) {
+      const det = l1.a * l2.b - l2.a * l1.b;
+      if (nearZero(det)) return null;
+      return { x: (l1.b * l2.c - l2.b * l1.c) / det, y: (l1.c * l2.a - l2.c * l1.a) / det };
+    }
+    function angleBisectors() {
+      const { l1, l2 } = readPairLines(), intersection = lineIntersection(l1, l2);
+      if (!intersection) throw new Error('兩線平行或重合；請輸入兩條相交直線後再求角平分線');
+      const n1 = Math.hypot(l1.a, l1.b), n2 = Math.hypot(l2.a, l2.b);
+      const plus = simplifyABC(l1.a / n1 - l2.a / n2, l1.b / n1 - l2.b / n2, l1.c / n1 - l2.c / n2);
+      const minus = simplifyABC(l1.a / n1 + l2.a / n2, l1.b / n1 + l2.b / n2, l1.c / n1 + l2.c / n2);
+      showAdvanced([{ line: l1, color: '#ea580c', label: 'L₁' }, { line: l2, color: '#7e22ce', label: 'L₂' }, { line: plus, color: '#16a34a', label: '角平分線（+）' }, { line: minus, color: '#0f766e', label: '角平分線（−）' }], [{ ...intersection, color: '#0f172a', label: '交點' }], `<strong>兩條角平分線：</strong>\(L_1\)、\(L_2\) 的交點為 ${mathInline(texPoint(intersection))}。使用規則 ${mathInline(`\\frac{L_1}{\\sqrt{A_1^2+B_1^2}}=\\pm\\frac{L_2}{\\sqrt{A_2^2+B_2^2}}`)}，得到<br>${mathInline(formatReadableLine(plus))} 與 ${mathInline(formatReadableLine(minus))}。`, '已畫出兩條角平分線');
+    }
+    function lineFamily() {
+      const { l1, l2 } = readPairLines(), intersection = lineIntersection(l1, l2), lambda = n(el.lambda.value);
+      if (!intersection) throw new Error('兩線平行或重合；這裡的直線系需由兩條相交直線建立');
+      if (!Number.isFinite(lambda)) throw new Error('λ 需為有效數字');
+      const result = simplifyABC(l1.a + lambda * l2.a, l1.b + lambda * l2.b, l1.c + lambda * l2.c);
+      showAdvanced([{ line: l1, color: '#ea580c', label: 'L₁' }, { line: l2, color: '#7e22ce', label: 'L₂' }, { line: result, color: '#0284c7', label: `L₁ + ${fmt(lambda)}L₂` }], [{ ...intersection, color: '#0f172a', label: '共同點' }], `<strong>單參數直線：</strong>${mathInline(`L_1+(${texNumber(lambda)})L_2=0`)}，即 ${mathInline(formatLine(result.a, result.b, result.c))}。它通過共同點 ${mathInline(texPoint(intersection))}。<br>完整直線系請寫 ${mathInline(`\\mu L_1+\\nu L_2=0,\\quad(\\mu,\\nu)\\ne(0,0)`)}；這樣才包含 \(L_1\)、\(L_2\) 本身。`, '已畫出直線系中的一條直線');
+    }
+    function systemRelation() {
+      const { l1, l2 } = readPairLines();
+      const intersection = lineIntersection(l1, l2);
+      const lines = [{ line: l1, color: '#ea580c', label: 'L₁' }, { line: l2, color: '#7e22ce', label: 'L₂' }];
+      if (intersection) {
+        showAdvanced(lines, [{ ...intersection, color: '#0f172a', label: '唯一解' }], `<strong>聯立方程式有唯一解：</strong>${mathInline(`A_1B_2-A_2B_1=${texNumber(l1.a * l2.b - l2.a * l1.b)}\\ne0`)}，兩條線相交。<br>交點（也就是聯立解）為 ${mathInline(texPoint(intersection))}。`, '聯立方程式有唯一解：兩線相交於一點');
+        return;
+      }
+      const same = nearZero(l1.a * l2.c - l2.a * l1.c) && nearZero(l1.b * l2.c - l2.b * l1.c);
+      if (same) {
+        showAdvanced([{ line: l1, color: '#0284c7', label: 'L₁ 與 L₂ 重合' }], [], `<strong>聯立方程式有無限多解：</strong>\(L_1\)、\(L_2\) 的 \(A\)、\(B\)、\(C\) 三組係數成同一比例，因此兩式描述完全相同的直線。<br>${mathInline(formatLine(l1.a, l1.b, l1.c))} 與 ${mathInline(formatLine(l2.a, l2.b, l2.c))} 重合。`, '聯立方程式有無限多解：兩線重合');
+      } else {
+        showAdvanced(lines, [], `<strong>聯立方程式無解：</strong>${mathInline(`A_1B_2-A_2B_1=0`)}，表示兩線的法向量平行；但常數項比例不同，所以它們是兩條不同的平行線，沒有交點。`, '聯立方程式無解：兩線平行且不同');
+      }
+    }
     function findPointHit(mx, my, r) {
+      if (!drawPrimary) return -1;
       for (let i = 0; i < highlightPoints.length; i++) {
         const p = worldToCanvas(highlightPoints[i].x, highlightPoints[i].y, r);
-        const d2 = (p.px - mx) * (p.px - mx) + (p.py - my) * (p.py - my);
-        if (d2 <= 10 * 10) return i;
+        if ((p.px - mx) ** 2 + (p.py - my) ** 2 <= 11 ** 2) return i;
       }
       return -1;
     }
-
-    function onPointerDown(e) {
-      if (highlightPoints.length < 2) return;
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-      const mx = (e.clientX - rect.left) * scaleX;
-      const my = (e.clientY - rect.top) * scaleY;
-      const r = getRange();
-      const idx = findPointHit(mx, my, r);
-      if (idx >= 0) {
-        draggingIndex = idx;
-        canvas.setPointerCapture(e.pointerId);
-      }
+    function onPointerDown(event) {
+      const rect = canvas.getBoundingClientRect(), r = getRange();
+      const mx = (event.clientX - rect.left) * canvas.width / rect.width, my = (event.clientY - rect.top) * canvas.height / rect.height;
+      const index = findPointHit(mx, my, r);
+      if (index >= 0) { draggingIndex = index; canvas.setPointerCapture(event.pointerId); }
     }
-
-    function onPointerMove(e) {
+    function onPointerMove(event) {
       if (draggingIndex < 0) return;
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-      const mx = (e.clientX - rect.left) * scaleX;
-      const my = (e.clientY - rect.top) * scaleY;
-      const r = getRange();
-      const w = canvasToWorld(mx, my, r);
-      const x = Math.max(r.minX, Math.min(r.maxX, w.x));
-      const y = Math.max(r.minY, Math.min(r.maxY, w.y));
-      highlightPoints[draggingIndex] = { x, y };
-      setPointInputsFromHighlights();
-      try { computeFromPoints(); } catch (_) {}
+      const rect = canvas.getBoundingClientRect(), r = getRange();
+      const mx = (event.clientX - rect.left) * canvas.width / rect.width, my = (event.clientY - rect.top) * canvas.height / rect.height;
+      const raw = canvasToWorld(mx, my, r);
+      highlightPoints[draggingIndex] = { x: Math.max(r.minX, Math.min(r.maxX, raw.x)), y: Math.max(r.minY, Math.min(r.maxY, raw.y)) };
+      setPointInputs(highlightPoints);
+      try { computeFromPoints(); } catch (_) { /* dragging never intentionally stops the graph */ }
+    }
+    function onPointerUp(event) {
+      if (draggingIndex >= 0) { draggingIndex = -1; canvas.releasePointerCapture(event.pointerId); }
     }
 
-    function onPointerUp(e) {
-      if (draggingIndex >= 0) {
-        draggingIndex = -1;
-        canvas.releasePointerCapture(e.pointerId);
+    document.querySelectorAll('#formTabs button').forEach(button => button.addEventListener('click', () => switchForm(button.dataset.form)));
+    document.getElementById('drawByPoints').addEventListener('click', () => { try { computeFromPoints(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('drawBySlope').addEventListener('click', () => { try { computeFromSlope(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('drawByGeneral').addEventListener('click', () => { try { computeFromGeneral(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('drawByPointSlope').addEventListener('click', () => { try { computeFromPointSlope(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('drawByParam').addEventListener('click', () => { try { computeFromParam(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('drawByIntercept').addEventListener('click', () => { try { computeFromIntercept(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('refresh').addEventListener('click', render);
+    el.graphPin.addEventListener('click', () => {
+      if (!window.matchMedia('(min-width: 1101px)').matches) {
+        el.status.innerHTML = '<span class="warn">小螢幕已自動採用單欄顯示，不需要固定圖形。</span>';
+        return;
       }
-    }
-
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointercancel', onPointerUp);
-
-    setMode('points');
-    drawAxes(getRange());
+      graphPinPreference = !graphPinPreference;
+      applyGraphPin();
+      el.status.innerHTML = graphPinPreference ? '<span class="ok">函數圖已固定在右側，捲動時仍可操作。</span>' : '函數圖已回到文章中的原本位置。';
+    });
+    document.getElementById('parallelBtn').addEventListener('click', () => { try { parallelLine(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('perpendicularBtn').addEventListener('click', () => { try { perpendicularLine(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('projectionBtn').addEventListener('click', () => { try { projectionPoint(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('reflectionBtn').addEventListener('click', () => { try { reflectionPoint(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('distanceBtn').addEventListener('click', () => { try { pointDistance(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('bisectorBtn').addEventListener('click', () => { try { perpendicularBisector(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('angleBtn').addEventListener('click', () => { try { angleBisectors(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('familyBtn').addEventListener('click', () => { try { lineFamily(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('systemBtn').addEventListener('click', () => { try { systemRelation(); } catch (error) { el.status.innerHTML = `<span class="bad">${error.message}</span>`; } });
+    document.getElementById('loadLineExample').addEventListener('click', () => {
+      [el.l1a.value, el.l1b.value, el.l1c.value, el.l2a.value, el.l2b.value, el.l2c.value] = [1, 1, -2, 1, -1, 0]; el.lambda.value = 1;
+      el.status.innerHTML = '<span class="ok">已載入範例：L₁:x+y−2=0，L₂:x−y=0</span>';
+    });
+    [
+      el.x1, el.y1, el.x2, el.y2,
+      el.slopeM, el.slopeK,
+      el.a, el.b, el.c,
+      el.psX, el.psY, el.psM,
+      el.paX, el.paY, el.paU, el.paV,
+      el.inP, el.inQ
+    ].forEach(input => input.addEventListener('input', updateGraphFromActiveForm));
+    [el.minX, el.maxX, el.minY, el.maxY].forEach(input => input.addEventListener('input', updateRangeFromInput));
+    window.addEventListener('resize', applyGraphPin);
+    canvas.addEventListener('pointerdown', onPointerDown); canvas.addEventListener('pointermove', onPointerMove); canvas.addEventListener('pointerup', onPointerUp); canvas.addEventListener('pointercancel', onPointerUp);
+    applyGraphPin();
     computeFromPoints();
   </script>
 </body>

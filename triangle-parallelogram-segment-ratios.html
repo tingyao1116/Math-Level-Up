@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>三角形與平行四邊形分段比｜孟氏、帥式與二截線</title>
+  <style>
+    :root {
+      --ink: #18243a;
+      --muted: #526176;
+      --paper: #f6fafc;
+      --card: #fff;
+      --line: #d9e5ec;
+      --blue: #1769aa;
+      --blue-pale: #eaf5ff;
+      --teal: #08766d;
+      --teal-pale: #e7f8f4;
+      --gold: #9a5a00;
+      --gold-pale: #fff5dd;
+      --red: #b13c3c;
+      --red-pale: #fff0f0;
+      --purple: #6d4aa5;
+      --purple-pale: #f3edff;
+      --shadow: 0 15px 36px rgba(25, 53, 84, .09);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, #dff3ff 0, transparent 27rem),
+        radial-gradient(circle at 96% 12%, #fff1cb 0, transparent 25rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.75;
+    }
+    .wrap { width: min(1130px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 58px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      margin: 18px 0 30px;
+      padding: clamp(26px, 5vw, 52px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(130deg, #143f68 0%, #186aa5 58%, #157e88 100%);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow, .tag, .level {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .eyebrow { color: #dcf6ff; background: rgba(255, 255, 255, .15); }
+    .hero h1 { margin: 9px 0 8px; font-size: clamp(2rem, 5.1vw, 3.45rem); line-height: 1.2; }
+    .lead { max-width: 790px; margin: 0; color: #e9f9ff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .nav a {
+      padding: 7px 13px;
+      border: 1px solid rgba(255, 255, 255, .47);
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 850;
+      text-decoration: none;
+    }
+    .nav a:hover { background: rgba(255, 255, 255, .14); }
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 38px; }
+    .section-head { margin-bottom: 14px; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.15rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.18rem; line-height: 1.48; }
+    h4 { margin: 0 0 6px; font-size: 1.03rem; }
+    .section-head p, .card > p { margin: 5px 0 0; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .three-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .card {
+      padding: clamp(18px, 3vw, 26px);
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: var(--card);
+      box-shadow: 0 6px 20px rgba(32, 62, 90, .045);
+    }
+    .tag { color: var(--blue); background: var(--blue-pale); }
+    .tag.teal { color: var(--teal); background: var(--teal-pale); }
+    .tag.gold { color: var(--gold); background: var(--gold-pale); }
+    .tag.purple { color: var(--purple); background: var(--purple-pale); }
+    .formula {
+      margin: 14px 0;
+      padding: 14px;
+      border-radius: 13px;
+      color: #12334d;
+      background: #f1f8fc;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: clamp(1.18rem, 2.8vw, 1.58rem);
+      font-weight: 700;
+      line-height: 1.62;
+      text-align: center;
+    }
+    .formula.small { font-size: 1.08rem; }
+    .math { font-family: Cambria, "Times New Roman", serif; font-size: 1.07em; }
+    .note, .teacher-note, .error-note, .success-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      background: var(--blue-pale);
+    }
+    .teacher-note { border-color: var(--gold); background: var(--gold-pale); }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .success-note { border-color: var(--teal); background: var(--teal-pale); }
+    .steps { display: grid; gap: 9px; margin-top: 13px; }
+    .step { padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    .step strong { color: var(--blue); }
+    .two-col { display: grid; grid-template-columns: minmax(270px, .96fr) minmax(280px, 1.04fr); gap: 18px; align-items: center; }
+    .diagram-frame { padding: 11px; border: 1px solid #c9e1ee; border-radius: 17px; background: linear-gradient(135deg, #fff, #f1faff); }
+    svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .diagram-frame svg { min-height: 290px; }
+    .diagram .edge { fill: none; stroke: #244762; stroke-width: 3; stroke-linejoin: round; }
+    .diagram .cevian { fill: none; stroke: var(--teal); stroke-width: 3.5; stroke-linecap: round; }
+    .diagram .secant-one { fill: none; stroke: var(--blue); stroke-width: 4; stroke-linecap: round; }
+    .diagram .secant-two { fill: none; stroke: var(--purple); stroke-width: 4; stroke-linecap: round; }
+    .diagram .point { fill: #fff; stroke: #244762; stroke-width: 2.5; }
+    .diagram .special-point { fill: #fff8df; stroke: #b36900; stroke-width: 3; }
+    .diagram .intersection { fill: #e9fff8; stroke: #08766d; stroke-width: 3; }
+    .diagram text { fill: #172d44; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 17px; font-weight: 850; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+    .diagram text.small { font-size: 14px; }
+    .area-wheel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 14px; }
+    .area-piece { padding: 12px 9px; border-radius: 13px; text-align: center; font-weight: 850; }
+    .area-piece:nth-child(1) { color: #0f587f; background: #e6f5ff; }
+    .area-piece:nth-child(2) { color: #075e58; background: #e5f8f3; }
+    .area-piece:nth-child(3) { color: #6a459b; background: #f1eafe; }
+    .area-piece .math { display: block; margin-top: 2px; font-size: 1.15rem; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 9px; margin: 0 0 15px; }
+    button {
+      min-height: 42px;
+      padding: 8px 14px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--blue);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 850;
+    }
+    button:hover { background: #10598f; }
+    button.tab { color: #35536b; background: #e7f1f7; border-color: #cedfe9; }
+    button.tab:hover { background: #d8eaf4; }
+    button.tab[aria-selected="true"] { color: #fff; background: var(--blue); border-color: var(--blue); }
+    button.tab.teal-tab[aria-selected="true"] { background: var(--teal); border-color: var(--teal); }
+    button:focus, input:focus, a:focus, summary:focus { outline: 3px solid #80c9e7; outline-offset: 2px; }
+    .mode-note { margin: 0; padding: 10px 12px; border-radius: 11px; color: #32546b; background: #eef7fb; font-weight: 750; }
+    .calculator { margin-top: 17px; }
+    .input-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; }
+    label { display: block; color: #31465d; font-size: .95rem; font-weight: 850; }
+    input[type="number"] {
+      width: 100%; min-height: 42px; margin-top: 5px; padding: 7px 10px;
+      border: 1px solid #aebfcd; border-radius: 10px; color: var(--ink); background: #fff; font: inherit;
+    }
+    .result { min-height: 72px; margin-top: 14px; padding: 12px 14px; border-radius: 12px; color: #124d47; background: var(--teal-pale); font-weight: 800; }
+    .result .answer { display: block; margin-top: 3px; color: #075f58; font-family: Cambria, "Times New Roman", serif; font-size: 1.35rem; }
+    .range-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px 16px; margin-top: 13px; }
+    .range-item { padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    .range-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    output { color: var(--blue); font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; font-weight: 850; }
+    input[type="range"] { width: 100%; margin: 7px 0 1px; accent-color: var(--blue); }
+    .ratio-line { margin: 3px 0 0; color: var(--muted); font-size: .89rem; }
+    .para-result { min-height: 105px; margin-top: 14px; padding: 13px 14px; border-radius: 12px; color: #17415e; background: #edf7fd; }
+    .para-result strong { color: var(--teal); font-family: Cambria, "Times New Roman", serif; font-size: 1.23rem; }
+    .hidden { display: none !important; }
+    .comparison { width: 100%; border-collapse: collapse; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; }
+    .comparison th, .comparison td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .comparison tr:last-child td { border-bottom: 0; }
+    .comparison th { color: #17415e; background: #edf7fd; font-weight: 850; }
+    .comparison td:first-child { width: 23%; color: #21445e; font-weight: 850; }
+    .level { margin-bottom: 8px; }
+    .level.basic { color: #0d665f; background: var(--teal-pale); }
+    .level.advance { color: #8a5200; background: var(--gold-pale); }
+    .level.challenge { color: #68449d; background: var(--purple-pale); }
+    .practice .formula { margin: 10px 0; font-size: 1.12rem; }
+    details { margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfdff; }
+    summary { padding: 9px 11px; cursor: pointer; color: var(--blue); font-weight: 850; }
+    details p { margin: 0; padding: 0 12px 12px; color: #3c5168; }
+    .footer { margin: 43px 0 0; color: var(--muted); text-align: center; }
+    @media (max-width: 800px) {
+      .wrap { width: min(100% - 22px, 1130px); padding-top: 15px; }
+      .grid, .three-grid, .two-col { grid-template-columns: 1fr; }
+      .input-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero { border-radius: 21px; }
+    }
+    @media (max-width: 480px) {
+      .input-row, .range-grid { grid-template-columns: 1fr; }
+      .area-wheel { grid-template-columns: 1fr; }
+      .diagram-frame svg { min-height: 245px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回到數學小遊戲首頁</a>
+
+    <header class="hero">
+      <span class="eyebrow">幾何分段比・面積比工具</span>
+      <h1>一張圖看懂分段比</h1>
+      <p class="lead">先用面積比把「邊上的分點」讀成比例，再用孟氏定理、帥式（西瓦）定理處理三角形；最後把同一套看法延伸到平行四邊形的二截線。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#foundation">先備：面積比</a>
+        <a href="#triangle">三角形三截線</a>
+        <a href="#parallelogram">平行四邊形二截線</a>
+        <a href="#practice">分層練習</a>
+      </nav>
+    </header>
+
+    <section id="foundation" class="section">
+      <div class="section-head">
+        <span class="tag gold">第 0 步：所有分段比的起點</span>
+        <h2>同高三角形：底邊比 = 面積比</h2>
+        <p>遇到邊上的分點，先找出兩個「共用同一個頂點、底邊落在同一直線上」的三角形。它們的高相同，因此面積比直接等於底邊比。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <h3>最基本的讀法</h3>
+          <div class="formula">D 在 BC 上<br><span class="math">BD : DC = [△ABD] : [△ACD]</span></div>
+          <p>△ABD 與 △ACD 從 A 向 BC 的高相同；所以不用量長度，只要會分面積，就能把 <span class="math">BD : DC</span> 讀出來。</p>
+          <div class="note"><strong>口訣：</strong>同高看底；同底看高。題目給面積時，先把它翻成線段比。</div>
+        </article>
+        <article class="card">
+          <h3>先固定「比的順序」</h3>
+          <div class="steps">
+            <div class="step"><strong>①</strong> 寫 <span class="math">BD : DC</span> 時，對應面積也要寫 <span class="math">[△PBD] : [△PCD]</span>。</div>
+            <div class="step"><strong>②</strong> 看到 <span class="math">CE : EA</span>，就不要不小心寫成 <span class="math">EA : CE</span>。</div>
+            <div class="step"><strong>③</strong> 比例可以約分，但前後順序不能偷偷對調。</div>
+          </div>
+          <div class="error-note"><strong>常見錯誤：</strong>只記「面積比等於邊長比」，卻沒有確認兩三角形是否真的同高或同底。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="triangle" class="section">
+      <div class="section-head">
+        <span class="tag">三角形：三條線的分段比</span>
+        <h2>帥式（西瓦）看「共點」，孟氏看「共線」</h2>
+        <p>兩個定理的公式很像，但圖形條件剛好相反：三條線<strong>交於一點</strong>用帥式；三個分點<strong>落在同一直線</strong>用孟氏。</p>
+      </div>
+
+      <article class="card">
+        <div class="tabs" role="tablist" aria-label="三角形定理切換">
+          <button class="tab" id="ceva-tab" role="tab" aria-selected="true" aria-controls="triangle-panel" type="button">帥式定理：三線共點</button>
+          <button class="tab" id="menelaus-tab" role="tab" aria-selected="false" aria-controls="triangle-panel" type="button">孟氏定理：三點共線</button>
+        </div>
+        <div id="triangle-panel" class="two-col">
+          <div class="diagram-frame">
+            <svg id="triangle-svg" class="diagram" viewBox="0 0 540 330" role="img" aria-label="三角形分段比示意圖"></svg>
+          </div>
+          <div>
+            <p id="triangle-mode-note" class="mode-note"></p>
+            <div id="triangle-formula" class="formula"></div>
+            <div id="triangle-explanation"></div>
+            <div class="teacher-note"><strong>判斷順序：</strong>先看線的關係，再寫公式；不要一看到三角形就直接套乘積等於 1。</div>
+          </div>
+        </div>
+      </article>
+
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <span class="tag teal">用面積把帥式看得更自然</span>
+          <h3>共點 P 周圍的三塊面積會自己「連鎖」</h3>
+          <p>令三條線 <span class="math">AD、BE、CF</span> 交於 P，並令 <span class="math">D∈BC、E∈CA、F∈AB</span>。把三塊靠近頂點的面積記下來：</p>
+          <div class="area-wheel">
+            <div class="area-piece">靠 A 的面積<span class="math">[△PAB]=α</span></div>
+            <div class="area-piece">靠 B 的面積<span class="math">[△PBC]=β</span></div>
+            <div class="area-piece">靠 C 的面積<span class="math">[△PCA]=γ</span></div>
+          </div>
+          <div class="formula small"><span class="math">BD/DC = α/γ，CE/EA = β/α，AF/FB = γ/β</span><br>三式相乘後全部消掉，得到 1。</div>
+          <p>這就是帥式定理背後的面積想法：不是死背，而是比例剛好首尾相接。</p>
+        </article>
+        <article class="card">
+          <span class="tag gold">孟氏的延長線提醒</span>
+          <h3>要分清楚「有向線段」與「實際長度」</h3>
+          <p>孟氏的直線通常會碰到三角形的一邊與另外邊的延長線。若使用<strong>有向線段</strong>，乘積為 <span class="math">−1</span>；若題目只問正的長度比，則取絕對值後乘積為 <span class="math">1</span>。</p>
+          <div class="formula small">有向線段：<span class="math">(BD/DC)(CE/EA)(AF/FB)=−1</span><br>正長度比：<span class="math">|BD/DC|·|CE/EA|·|AF/FB|=1</span></div>
+          <div class="error-note"><strong>最容易錯：</strong>把延長線上的分點當作普通內分點，卻又在公式裡保留負號，會造成多算或少算一次負號。</div>
+        </article>
+      </div>
+
+      <article class="card calculator" aria-labelledby="ratio-calculator-title">
+        <span class="tag purple">可直接投影使用</span>
+        <h3 id="ratio-calculator-title">三角形分段比計算器</h3>
+        <p>輸入兩組已知分段長度，工具會求出使乘積成立的 <span class="math">AF : FB</span>。在孟氏模式中，這裡顯示的是<strong>正的長度比</strong>。</p>
+        <div class="input-row">
+          <label>BD<input id="bd" type="number" inputmode="numeric" min="1" max="999" value="3"></label>
+          <label>DC<input id="dc" type="number" inputmode="numeric" min="1" max="999" value="2"></label>
+          <label>CE<input id="ce" type="number" inputmode="numeric" min="1" max="999" value="4"></label>
+          <label>EA<input id="ea" type="number" inputmode="numeric" min="1" max="999" value="3"></label>
+        </div>
+        <div id="triangle-result" class="result" aria-live="polite"></div>
+      </article>
+    </section>
+
+    <section id="parallelogram" class="section">
+      <div class="section-head">
+        <span class="tag teal">平行四邊形：二截線</span>
+        <h2>先辨認截哪一對平行邊，再決定能不能直接比</h2>
+        <p>本頁所說的「方向」不是斜線看起來往左上或右上，而是它<strong>截到哪一組對邊</strong>：截左右邊，或截上下邊。</p>
+      </div>
+
+      <article class="card">
+        <div class="tabs" role="tablist" aria-label="平行四邊形二截線類型切換">
+          <button class="tab teal-tab" id="same-tab" role="tab" aria-selected="true" aria-controls="para-panel" type="button">同方向：兩線都截左右邊</button>
+          <button class="tab teal-tab" id="different-tab" role="tab" aria-selected="false" aria-controls="para-panel" type="button">不同方向：一線截左右、一線截上下</button>
+        </div>
+        <div id="para-panel" class="two-col">
+          <div class="diagram-frame">
+            <svg id="para-svg" class="diagram" viewBox="0 0 620 365" role="img" aria-label="平行四邊形二截線示意圖"></svg>
+          </div>
+          <div>
+            <p id="para-mode-note" class="mode-note"></p>
+
+            <div id="same-controls">
+              <h3>同方向：兩條截線都由 AD 截到 BC</h3>
+              <p>設 <span class="math">E,G∈AD；F,H∈BC；EF 與 GH 交於 P</span>。因為 <span class="math">AD∥BC</span>，由相似三角形可立刻得到兩條截線被 P 分出的比相等。</p>
+              <div class="formula small"><span class="math">EP : PF = GP : PH</span></div>
+              <div class="range-grid">
+                <div class="range-item"><div class="range-top"><label for="same-e">E 在 AD 的位置</label><output id="same-e-out"></output></div><input id="same-e" type="range" min="10" max="90" step="10" value="20"><p class="ratio-line" id="same-e-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><label for="same-f">F 在 BC 的位置</label><output id="same-f-out"></output></div><input id="same-f" type="range" min="10" max="90" step="10" value="70"><p class="ratio-line" id="same-f-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><label for="same-g">G 在 AD 的位置</label><output id="same-g-out"></output></div><input id="same-g" type="range" min="10" max="90" step="10" value="80"><p class="ratio-line" id="same-g-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><label for="same-h">H 在 BC 的位置</label><output id="same-h-out"></output></div><input id="same-h" type="range" min="10" max="90" step="10" value="40"><p class="ratio-line" id="same-h-ratio"></p></div>
+              </div>
+              <div id="same-result" class="para-result" aria-live="polite"></div>
+            </div>
+
+            <div id="different-controls" class="hidden">
+              <h3>不同方向：一條截左右邊，一條截上下邊</h3>
+              <p>設 <span class="math">E∈AD、F∈BC；G∈AB、H∈DC</span>。這次 P 在兩條線上的位置通常<strong>不相同</strong>；先各自求出 <span class="math">EP:PF</span> 與 <span class="math">GP:PH</span>，不能套用同方向的等比結論。</p>
+              <div class="range-grid">
+                <div class="range-item"><div class="range-top"><label for="diff-e">E 在 AD 的位置</label><output id="diff-e-out"></output></div><input id="diff-e" type="range" min="10" max="90" step="10" value="20"><p class="ratio-line" id="diff-e-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><label for="diff-f">F 在 BC 的位置</label><output id="diff-f-out"></output></div><input id="diff-f" type="range" min="10" max="90" step="10" value="70"><p class="ratio-line" id="diff-f-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><label for="diff-g">G 在 AB 的位置</label><output id="diff-g-out"></output></div><input id="diff-g" type="range" min="10" max="90" step="10" value="30"><p class="ratio-line" id="diff-g-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><label for="diff-h">H 在 DC 的位置</label><output id="diff-h-out"></output></div><input id="diff-h" type="range" min="10" max="90" step="10" value="80"><p class="ratio-line" id="diff-h-ratio"></p></div>
+              </div>
+              <div id="different-result" class="para-result" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <span class="tag gold">為什麼可以畫成歪的？</span>
+          <h3>平行四邊形可「剪切」成矩形來讀比</h3>
+          <p>把平行四邊形沿著平行方向推成矩形，不會破壞平行、共線，也不會改變同一直線上的分段比。因此可以把底、側都想成 10 等分的格線，再把位置轉回原圖。</p>
+          <div class="note"><strong>面積連結：</strong>同一組平行線夾出的帶狀區域，高固定時，面積跟底邊（或寬度）成正比；這正是用「位置百分比」讀分段比的理由。</div>
+        </article>
+        <article class="card">
+          <span class="tag purple">兩類二截線的比較</span>
+          <table class="comparison">
+            <thead><tr><th>判斷項目</th><th>同方向</th><th>不同方向</th></tr></thead>
+            <tbody>
+              <tr><td>兩條線截到的邊</td><td>都截同一組對邊，例如 AD 與 BC。</td><td>一條截 AD、BC；另一條截 AB、DC。</td></tr>
+              <tr><td>最先可用的關係</td><td><span class="math">EP:PF=GP:PH</span></td><td>沒有這個直接相等的結論。</td></tr>
+              <tr><td>解題策略</td><td>由兩組平行邊形成的相似三角形，直接對應。</td><td>分別用兩條截線的位置／面積帶狀比例求 P。</td></tr>
+            </tbody>
+          </table>
+          <div class="error-note"><strong>常見錯誤：</strong>只看兩條截線的斜率像不像，就把不同方向當同方向。正確判準永遠是「它們各自碰到哪一組平行邊」。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="practice" class="section">
+      <div class="section-head">
+        <span class="tag purple">課堂收束與自我檢查</span>
+        <h2>從基本讀比，到判斷截線類型</h2>
+        <p>先遮住答案做；若卡住，先回頭確認圖形條件，而不是先翻公式。</p>
+      </div>
+      <div class="three-grid">
+        <article class="card practice">
+          <span class="level basic">基礎</span>
+          <h3>帥式定理</h3>
+          <p>在 △ABC 中，三線共點。已知 <span class="math">BD:DC=3:5</span>、<span class="math">CE:EA=2:3</span>，求 <span class="math">AF:FB</span>。</p>
+          <div class="formula"><span class="math">(3/5)(2/3)(AF/FB)=1</span></div>
+          <details><summary>查看答案與步驟</summary><p><span class="math">AF/FB=5/2</span>，所以 <strong>AF:FB=5:2</strong>。注意第三個比要寫 AF 在前、FB 在後。</p></details>
+        </article>
+        <article class="card practice">
+          <span class="level advance">進階</span>
+          <h3>孟氏定理</h3>
+          <p>一條直線截 △ABC 的三邊（含延長線）。已知正長度比 <span class="math">BD:DC=4:3</span>、<span class="math">CE:EA=5:2</span>，求 <span class="math">AF:FB</span>。</p>
+          <div class="formula"><span class="math">(4/3)(5/2)(AF/FB)=1</span></div>
+          <details><summary>查看答案與步驟</summary><p><span class="math">AF/FB=3/10</span>，所以 <strong>AF:FB=3:10</strong>。若題目指定使用有向線段，乘積應寫成 −1。</p></details>
+        </article>
+        <article class="card practice">
+          <span class="level challenge">挑戰</span>
+          <h3>平行四邊形二截線</h3>
+          <p>兩條線都截 AD 與 BC，且交於 P。若 <span class="math">EP:PF=7:4</span>，求 <span class="math">GP:PH</span>。</p>
+          <div class="formula"><span class="math">AD∥BC</span>，同方向二截線</div>
+          <details><summary>查看答案與步驟</summary><p>由相似三角形，<strong>GP:PH=7:4</strong>。這題的關鍵不是算，而是先辨識兩條線都截同一組平行邊。</p></details>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">教學提醒：先讓學生用顏色圈出「共點／共線／平行邊」，再開放公式；公式才會成為整理，而不是猜題工具。</p>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      const ns = 'http://www.w3.org/2000/svg';
+      let triangleMode = 'ceva';
+      let paraMode = 'same';
+
+      const gcd = (a, b) => {
+        a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b));
+        while (b) [a, b] = [b, a % b];
+        return a || 1;
+      };
+      const simpleRatio = (a, b) => {
+        const divisor = gcd(a, b);
+        return `${Math.round(a / divisor)} : ${Math.round(b / divisor)}`;
+      };
+      const point = (x, y) => ({ x, y });
+      const interpolate = (a, b, t) => point(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
+      const pText = (p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+      const dot = (p, className = 'point') => `<circle class="${className}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5.8"></circle>`;
+      const label = (text, p, dx = 8, dy = -8, small = false) => `<text class="${small ? 'small' : ''}" x="${(p.x + dx).toFixed(1)}" y="${(p.y + dy).toFixed(1)}">${text}</text>`;
+      const line = (a, b, className) => `<line class="${className}" x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}"></line>`;
+
+      function renderTriangle() {
+        const svg = $('triangle-svg');
+        const A = point(270, 42), B = point(73, 274), C = point(470, 274);
+        let content = `<path class="edge" d="M ${pText(A)} L ${pText(B)} L ${pText(C)} Z"></path>`;
+        if (triangleMode === 'ceva') {
+          const D = interpolate(B, C, 3 / 5);
+          const E = interpolate(C, A, 4 / 7);
+          const F = interpolate(A, B, 1 / 3);
+          const P = lineIntersection(A, D, B, E);
+          content += line(A, D, 'cevian') + line(B, E, 'cevian') + line(C, F, 'cevian');
+          content += dot(D, 'special-point') + dot(E, 'special-point') + dot(F, 'special-point') + dot(P, 'intersection');
+          content += label('A', A, -6, -13) + label('B', B, -19, 18) + label('C', C, 9, 18);
+          content += label('D', D, 7, 18) + label('E', E, 8, -8) + label('F', F, -18, 18) + label('P', P, 9, -10);
+        } else {
+          const D = interpolate(B, C, 3 / 5);
+          const E = point(186, 4);
+          const F = lineIntersection(E, D, A, B);
+          content += line(E, D, 'cevian') + dot(D, 'special-point') + dot(E, 'special-point') + dot(F, 'special-point');
+          content += label('A', A, -6, -13) + label('B', B, -19, 18) + label('C', C, 9, 18);
+          content += label('D', D, 8, 18) + label('E（延長線）', E, -25, -3, true) + label('F', F, 0, 20);
+        }
+        svg.innerHTML = content;
+
+        if (triangleMode === 'ceva') {
+          $('triangle-mode-note').innerHTML = '<strong>圖形條件：</strong>AD、BE、CF 三條線交於同一點 P。三個分點都在三角形的邊上。';
+          $('triangle-formula').innerHTML = '<span class="math">(BD/DC) × (CE/EA) × (AF/FB) = 1</span>';
+          $('triangle-explanation').innerHTML = '<div class="steps"><div class="step"><strong>適用時機：</strong>題目出現「交於 P」或三條頂點連線共點。</div><div class="step"><strong>反向用途：</strong>三組比的乘積為 1，也能反推三條線會共點。</div></div>';
+        } else {
+          $('triangle-mode-note').innerHTML = '<strong>圖形條件：</strong>D、E、F 三個分點落在同一直線上；其中 E 在 CA 的延長線上。';
+          $('triangle-formula').innerHTML = '<span class="math">有向： (BD/DC) × (CE/EA) × (AF/FB) = −1</span>';
+          $('triangle-explanation').innerHTML = '<div class="steps"><div class="step"><strong>適用時機：</strong>題目出現「D、E、F 共線」或一條截線穿過三角形的邊與延長線。</div><div class="step"><strong>本頁計算器：</strong>使用正長度比時，乘積的絕對值為 1。</div></div>';
+        }
+        updateTriangleCalculator();
+      }
+
+      function lineIntersection(a, b, c, d) {
+        const den = (a.x - b.x) * (c.y - d.y) - (a.y - b.y) * (c.x - d.x);
+        if (Math.abs(den) < 0.0001) return point(0, 0);
+        const det1 = a.x * b.y - a.y * b.x;
+        const det2 = c.x * d.y - c.y * d.x;
+        return point((det1 * (c.x - d.x) - (a.x - b.x) * det2) / den, (det1 * (c.y - d.y) - (a.y - b.y) * det2) / den);
+      }
+
+      function updateTriangleCalculator() {
+        const values = ['bd', 'dc', 'ce', 'ea'].map((id) => Number($(id).value));
+        if (values.some((value) => !Number.isFinite(value) || value <= 0)) {
+          $('triangle-result').textContent = '請輸入四個正數，才能計算分段比。';
+          return;
+        }
+        const [bd, dc, ce, ea] = values;
+        const left = dc * ea;
+        const right = bd * ce;
+        const answer = simpleRatio(left, right);
+        const theorem = triangleMode === 'ceva' ? '帥式定理' : '孟氏定理（正長度比）';
+        $('triangle-result').innerHTML = `<span>${theorem}：<span class="math">AF/FB = (DC×EA)/(BD×CE)</span></span><span class="answer">AF : FB = (${dc}×${ea}) : (${bd}×${ce}) = ${answer}</span>`;
+      }
+
+      function positionRatio(n, first, second) {
+        return `${first}:${second} = ${simpleRatio(n, 100 - n)}`;
+      }
+
+      function unitToPara(x, y) {
+        const A = point(92, 311), B = point(490, 311), D = point(173, 67);
+        return point(A.x + (B.x - A.x) * x + (D.x - A.x) * y, A.y + (B.y - A.y) * x + (D.y - A.y) * y);
+      }
+
+      function paraBase() {
+        const A = unitToPara(0, 0), B = unitToPara(1, 0), C = unitToPara(1, 1), D = unitToPara(0, 1);
+        return { A, B, C, D, edge: `<path class="edge" d="M ${pText(A)} L ${pText(B)} L ${pText(C)} L ${pText(D)} Z"></path>` };
+      }
+
+      function syncRange(id, ratioText) {
+        const value = Number($(id).value);
+        $(`${id}-out`).textContent = `${value}%`;
+        $(`${id}-ratio`).textContent = ratioText(value);
+        return value;
+      }
+
+      function updateSame() {
+        const e = syncRange('same-e', (n) => `AE : ED = ${simpleRatio(n, 100 - n)}`);
+        const f = syncRange('same-f', (n) => `BF : FC = ${simpleRatio(n, 100 - n)}`);
+        const g = syncRange('same-g', (n) => `AG : GD = ${simpleRatio(n, 100 - n)}`);
+        const h = syncRange('same-h', (n) => `BH : HC = ${simpleRatio(n, 100 - n)}`);
+        const denominator = f - e - h + g;
+        const lambda = denominator ? (g - e) / denominator : NaN;
+        if (!(lambda > 0 && lambda < 1)) {
+          $('same-result').innerHTML = '<strong>目前兩條線沒有在平行四邊形內相交。</strong><br>把 E、F 放得較低，G、H 放得較高（或反過來），使兩條截線的上下順序交換。';
+          renderSameDiagram(e, f, g, h, null);
+          return;
+        }
+        const answer = simpleRatio(g - e, f - h);
+        $('same-result').innerHTML = `<strong>EP : PF = GP : PH = ${answer}</strong><br>從 AD 往 BC 走，P 位在兩條截線的 ${(lambda * 100).toFixed(1)}% 處。因為 P 兩側形成的三角形有一組對邊平行，所以兩條截線的分段比相同。`;
+        renderSameDiagram(e, f, g, h, lambda);
+      }
+
+      function renderSameDiagram(e, f, g, h, lambda) {
+        const svg = $('para-svg');
+        const base = paraBase();
+        const E = unitToPara(0, e / 100), F = unitToPara(1, f / 100), G = unitToPara(0, g / 100), H = unitToPara(1, h / 100);
+        let content = base.edge + line(E, F, 'secant-one') + line(G, H, 'secant-two');
+        [base.A, base.B, base.C, base.D].forEach((p) => { content += dot(p); });
+        [E, F, G, H].forEach((p) => { content += dot(p, 'special-point'); });
+        content += label('A', base.A, -19, 19) + label('B', base.B, 8, 19) + label('C', base.C, 9, -7) + label('D', base.D, -20, -8);
+        content += label('E', E, -22, 6) + label('F', F, 9, 6) + label('G', G, -22, 6) + label('H', H, 9, 6);
+        if (lambda !== null) {
+          const P = unitToPara(lambda, (e + (f - e) * lambda) / 100);
+          content += dot(P, 'intersection') + label('P', P, 9, -10);
+        }
+        svg.innerHTML = content;
+      }
+
+      function updateDifferent() {
+        const e = syncRange('diff-e', (n) => `AE : ED = ${simpleRatio(n, 100 - n)}`);
+        const f = syncRange('diff-f', (n) => `BF : FC = ${simpleRatio(n, 100 - n)}`);
+        const g = syncRange('diff-g', (n) => `AG : GB = ${simpleRatio(n, 100 - n)}`);
+        const h = syncRange('diff-h', (n) => `DH : HC = ${simpleRatio(n, 100 - n)}`);
+        // e、f、g、h 是百分比整數；先保留分母 100 的精確整數運算，避免小數誤差。
+        const xNum = 100 * g + e * (h - g);
+        const xDen = 10000 - (h - g) * (f - e);
+        const yNum = e * xDen + (f - e) * xNum;
+        const yDen = 100 * xDen;
+        const x = xNum / xDen;
+        const y = yNum / yDen;
+        const ratioOne = simpleRatio(xNum, xDen - xNum);
+        const ratioTwo = simpleRatio(yNum, yDen - yNum);
+        $('different-result').innerHTML = `<strong>EP : PF = ${ratioOne}</strong>；<strong>GP : PH = ${ratioTwo}</strong><br>P 在 EF 上距 E ${(x * 100).toFixed(1)}% 處，在 GH 上距 G ${(y * 100).toFixed(1)}% 處。兩個百分比不同，正好說明此類不能直接套同方向結論。`;
+        renderDifferentDiagram(e, f, g, h, x, y);
+      }
+
+      function renderDifferentDiagram(e, f, g, h, x, y) {
+        const svg = $('para-svg');
+        const base = paraBase();
+        const E = unitToPara(0, e / 100), F = unitToPara(1, f / 100), G = unitToPara(g / 100, 0), H = unitToPara(h / 100, 1), P = unitToPara(x, y);
+        let content = base.edge + line(E, F, 'secant-one') + line(G, H, 'secant-two');
+        [base.A, base.B, base.C, base.D].forEach((p) => { content += dot(p); });
+        [E, F, G, H].forEach((p) => { content += dot(p, 'special-point'); });
+        content += dot(P, 'intersection');
+        content += label('A', base.A, -19, 19) + label('B', base.B, 8, 19) + label('C', base.C, 9, -7) + label('D', base.D, -20, -8);
+        content += label('E', E, -22, 6) + label('F', F, 9, 6) + label('G', G, 0, 21) + label('H', H, 0, -11) + label('P', P, 9, -10);
+        svg.innerHTML = content;
+      }
+
+      function setTriangleMode(mode) {
+        triangleMode = mode;
+        $('ceva-tab').setAttribute('aria-selected', String(mode === 'ceva'));
+        $('menelaus-tab').setAttribute('aria-selected', String(mode === 'menelaus'));
+        renderTriangle();
+      }
+
+      function setParaMode(mode) {
+        paraMode = mode;
+        $('same-tab').setAttribute('aria-selected', String(mode === 'same'));
+        $('different-tab').setAttribute('aria-selected', String(mode === 'different'));
+        $('same-controls').classList.toggle('hidden', mode !== 'same');
+        $('different-controls').classList.toggle('hidden', mode !== 'different');
+        $('para-mode-note').innerHTML = mode === 'same'
+          ? '<strong>同方向的意思：</strong>兩條截線都從左邊 AD 走到右邊 BC；它們各自截的是同一組平行邊。'
+          : '<strong>不同方向的意思：</strong>EF 截 AD、BC；GH 截 AB、DC。它們截到的是不同組的平行邊。';
+        if (mode === 'same') updateSame(); else updateDifferent();
+      }
+
+      $('ceva-tab').addEventListener('click', () => setTriangleMode('ceva'));
+      $('menelaus-tab').addEventListener('click', () => setTriangleMode('menelaus'));
+      $('same-tab').addEventListener('click', () => setParaMode('same'));
+      $('different-tab').addEventListener('click', () => setParaMode('different'));
+      ['bd', 'dc', 'ce', 'ea'].forEach((id) => $(id).addEventListener('input', updateTriangleCalculator));
+      ['same-e', 'same-f', 'same-g', 'same-h'].forEach((id) => $(id).addEventListener('input', updateSame));
+      ['diff-e', 'diff-f', 'diff-g', 'diff-h'].forEach((id) => $(id).addEventListener('input', updateDifferent));
+
+      renderTriangle();
+      setParaMode('same');
+    })();
+  </script>
+</body>
+</html>
