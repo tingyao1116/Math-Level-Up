@@ -66,6 +66,79 @@
     table { width: 100%; border-collapse: collapse; }
     th, td { border: 1px solid #dbe8f6; padding: 8px; text-align: left; }
     th { background: #eef6ff; }
+    .formula-box {
+      display: grid;
+      gap: 6px;
+      background: #f8fbff;
+      border: 1px solid #dbeafd;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-top: 8px;
+    }
+    .paramWrap { display: grid; gap: 10px; margin-top: 8px; }
+    .paramRow { display: grid; gap: 8px; grid-template-columns: 1fr 1.6fr 72px; align-items: center; }
+    .paramRow label { font-weight: 700; color: #1d3657; }
+    .paramRow input[type=range] { width: 100%; }
+    .paramValue { text-align: right; color: #1f4f6f; font-weight: 700; }
+    .graphWrap { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; margin-top: 8px; }
+    canvas {
+      width: 100%;
+      height: 320px;
+      border: 1px solid #d5e5f6;
+      border-radius: 10px;
+      background: #fff;
+      display: block;
+    }
+    .canvasCard { display: flex; flex-direction: column; gap: 8px; }
+    .symmetry-lab {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid #cfe7e3;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f4fcfb, #f8fbff);
+    }
+    .symmetry-lab h3 { margin: 0 0 8px; font-size: 1.06rem; }
+    .symmetry-lab .graphWrap { grid-template-columns: 1fr; }
+    .symmetry-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+    .symmetry-controls label { color: #1d3657; font-weight: 700; }
+    .symmetry-controls select {
+      border: 1px solid #b6cfec;
+      border-radius: 8px;
+      padding: 7px 9px;
+      color: #22436f;
+      background: #fff;
+      font: inherit;
+    }
+    .transform-lab {
+      border-color: #b9ded9;
+      background: linear-gradient(145deg, #fbfffe, #f5faff);
+    }
+    .control-block {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid #d9e8f1;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.82);
+    }
+    .control-block h3, .subheading {
+      margin: 0 0 8px;
+      color: #1d4f67;
+      font-size: 1.04rem;
+    }
+    .subheading { margin-top: 16px; }
+    .operation-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 8px;
+      align-items: start;
+      margin-top: 10px;
+    }
+    .operation-row > strong { padding-top: 8px; color: #1d3657; }
+    .family-note {
+      margin-top: 6px;
+      color: #365f7a;
+      font-size: 0.96rem;
+    }
     .tip {
       background: var(--accent);
       border: 1px solid #f2dba1;
@@ -76,7 +149,9 @@
     ul { margin: 8px 0 0; padding-left: 18px; color: var(--sub); }
     .quiz p { margin: 6px 0; }
     @media (max-width: 900px) {
-      .row { grid-template-columns: 1fr; }
+      .row, .graphWrap { grid-template-columns: 1fr; }
+      .operation-row { grid-template-columns: 1fr; }
+      .operation-row > strong { padding-top: 0; }
     }
   </style>
 </head>
@@ -97,20 +172,64 @@
         </div>
       </article>
 
-      <article class="panel">
-        <h2>二、選函數族群</h2>
-        <div class="buttons" id="familyButtons"></div>
-        <p class="formula" id="baseEq"></p>
+      <article class="panel transform-lab">
+        <h2>二、完整變換實驗室：每一種圖形都能平移、縮放、對稱</h2>
+        <p>固定順序是「基準圖形 → 絕對值效果（可選）→ 對稱／旋轉 → x、y 縮放 → 平移」。先追蹤一個重點座標，再讀變換後的圖形與方程式。</p>
+
+        <div class="control-block">
+          <h3>1. 選基準圖形</h3>
+          <div class="buttons" id="familyButtons"></div>
+          <p class="formula" id="coreBaseEq"></p>
+          <p class="family-note" id="familyNote"></p>
+        </div>
+
+        <div class="control-block">
+          <h3>2. 選圖形操作</h3>
+          <div class="operation-row">
+            <strong>絕對值效果：</strong>
+            <div class="buttons" id="absoluteButtons"></div>
+          </div>
+          <div class="operation-row">
+            <strong>對稱／旋轉：</strong>
+            <div class="buttons" id="symmetryButtons"></div>
+          </div>
+          <div class="formula-box">
+            <div id="coreMap"></div>
+            <div id="coreAfter"></div>
+          </div>
+        </div>
+
+        <div class="control-block">
+          <h3>3. 拖曳縮放與平移</h3>
+          <div id="coreParams" class="paramWrap"></div>
+        </div>
+
+        <div class="graphWrap">
+          <div class="panel canvasCard">
+            <h3>基準圖形</h3>
+            <canvas id="beforeCanvas" aria-label="變換前的基準圖形"></canvas>
+          </div>
+          <div class="panel canvasCard">
+            <h3>完成變換後</h3>
+            <canvas id="afterCanvas" aria-label="完成所有操作後的圖形"></canvas>
+          </div>
+        </div>
+        <div class="tip" id="labTip"></div>
       </article>
 
       <section class="row">
         <article class="panel">
-          <h2>三、平移與縮放（重點）</h2>
+          <h2>三、座標規則快查</h2>
           <table>
             <thead>
               <tr><th>操作</th><th>\(x,y \to x',y'\)</th><th>新方程式（由 \(y=f(x)\) 出發）</th></tr>
             </thead>
-            <tbody id="coreTable"></tbody>
+            <tbody>
+              <tr><td>x 平移 h</td><td>\((x',y')=(x+h,y)\)</td><td>\(y=f(x-h)\)</td></tr>
+              <tr><td>y 平移 k</td><td>\((x',y')=(x,y+k)\)</td><td>\(y=f(x)+k\)</td></tr>
+              <tr><td>x 縮放 \(s_x\) 倍</td><td>\((x',y')=(s_xx,y),\,s_x>0\)</td><td>\(y=f\!\left(\frac{x}{s_x}\right)\)</td></tr>
+              <tr><td>y 縮放 \(s_y\) 倍</td><td>\((x',y')=(x,s_yy),\,s_y>0\)</td><td>\(y=s_yf(x)\)</td></tr>
+            </tbody>
           </table>
         </article>
         <article class="panel">
@@ -123,10 +242,25 @@
               <tr><td>關於 \(x\) 軸鏡射</td><td>\((x',y')=(x,-y)\)</td><td>\(y=-f(x)\)</td></tr>
               <tr><td>關於 \(y\) 軸鏡射</td><td>\((x',y')=(-x,y)\)</td><td>\(y=f(-x)\)</td></tr>
               <tr><td>關於原點鏡射</td><td>\((x',y')=(-x,-y)\)</td><td>\(y=-f(-x)\)</td></tr>
+              <tr><td>關於 \(y=x\) 鏡射</td><td>\((x',y')=(y,x)\)</td><td>互換 \(x,y\)：\(x=f(y)\)（可能不再是函數）</td></tr>
+              <tr><td>關於 \(y=-x\) 鏡射</td><td>\((x',y')=(-y,-x)\)</td><td>\(x=-f(-y)\)（可能不再是函數）</td></tr>
               <tr><td>逆時針 \(90^\circ\) 旋轉</td><td>\((x',y')=(-y,x)\)</td><td>先用 \(x=y',\,y=-x'\) 代回原式</td></tr>
             </tbody>
           </table>
-          <div class="tip">圓 \(x^2+y^2=r^2\) 對旋轉不變；拋物線、指數、對數旋轉後常不再是函數圖形（可能變成側開曲線）。</div>
+          <div class="tip">圓 \(x^2+y^2=r^2\) 對旋轉不變；拋物線、指數、對數旋轉後常不再是函數圖形（可能變成側開曲線）。對 \(y=x\)、\(y=-x\) 對稱時，定義域與值域會互換；原圖不是一對一函數時，結果通常不是 \(y=\cdots\) 的函數。</div>
+          <h3 class="subheading">絕對值效果快記</h3>
+          <table>
+            <thead>
+              <tr><th>寫法</th><th>圖形效果</th><th>最容易混淆處</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>\(y=f(|x|)\)</td><td>右半部複製到左半部</td><td>是「式子裡的 x」取絕對值，不是每個點的 x 座標直接取絕對值。</td></tr>
+              <tr><td>\(y=f(-|x|)\)</td><td>左半部複製到右半部</td><td>先看 \(-|x|\le 0\)，因此只保留原圖左半部。</td></tr>
+              <tr><td>\(y=|f(x)|\)</td><td>下方圖形往上翻</td><td>上半部不動；是「函數值 y」取絕對值。</td></tr>
+              <tr><td>\(y=-|f(x)|\)</td><td>上方圖形往下翻</td><td>下半部不動；最後整張圖都不會高於 x 軸。</td></tr>
+            </tbody>
+          </table>
+
         </article>
       </section>
 
@@ -152,55 +286,268 @@
 
   <script>
     const families = {
-      quadratic: { label: "二次函數", eq: "\\(y=x^2\\)" },
-      circle: { label: "圓方程式", eq: "\\(x^2+y^2=r^2\\)" },
-      trig: { label: "三角函數", eq: "\\(y=\\sin x\\) 或 \\(y=\\cos x\\)" },
-      exponential: { label: "指數函數", eq: "\\(y=a^x\\, (a>0,a\\neq1)\\)" },
-      logarithm: { label: "對數函數", eq: "\\(y=\\log_a x\\, (a>0,a\\neq1)\\)" }
+      quadratic: { label: "二次函數", base: "\\(y=(x-1)^2-2\\)", sample: () => sampleFn(-1.6, 3.6, (x) => (x - 1) ** 2 - 2), keys: [{ x: 1, y: -2, label: "頂點" }], guide: ["v", 1, "對稱軸 x=1"], note: "頂點是 (1, -2)。縮放與平移後，先追蹤頂點的位置；關於 x 軸鏡射時開口會上下翻轉。" },
+      cubic: { label: "三次函數", base: "\\(y=0.35(x-1)^3-1\\)", sample: () => sampleFn(-1.5, 3.5, (x) => 0.35 * (x - 1) ** 3 - 1), keys: [{ x: 1, y: -1, label: "反曲點" }], note: "反曲點是 (1, -1)。平移、縮放、對稱後，S 形方向與反曲點是最可靠的辨認重點。" },
+      sine: { label: "正弦函數", base: "\\(y=\\sin x\\)", sample: () => sampleFn(-2 * Math.PI, 2 * Math.PI, (x) => Math.sin(x)), keys: [{ x: Math.PI / 2, y: 1, label: "最高點" }], guide: ["h", 0, "中線 y=0"], note: "不做絕對值或對稱時，變換後是 y=sy sin((x-h)/sx)+k；振幅為 sy，週期為 2πsx，中線為 y=k。" },
+      exponential: { label: "指數函數", base: "\\(y=2^x\\)", sample: () => sampleFn(-3.2, 2.7, (x) => 2 ** x), keys: [{ x: 0, y: 1, label: "關鍵點" }], guide: ["h", 0, "漸近線 y=0"], note: "基準圖通過 (0, 1)，且以 y=0 為水平漸近線。先看漸近線與關鍵點，再讀平移。" },
+      logarithm: { label: "對數函數", base: "\\(y=\\ln x\\)", sample: () => sampleFn(0.08, 7, (x) => Math.log(x)), keys: [{ x: 1, y: 0, label: "關鍵點" }], guide: ["v", 0, "漸近線 x=0"], note: "基準圖通過 (1, 0)，且 x=0 是垂直漸近線。變換後務必再檢查定義域。" },
+      absolute: { label: "絕對值函數", base: "\\(y=|x-1|-2\\)", sample: () => sampleFn(-3.5, 5, (x) => Math.abs(x - 1) - 2), keys: [{ x: 1, y: -2, label: "頂點" }], note: "頂點是 (1, -2)。最適合比較 f(|x|)、f(-|x|)、|f(x)|、-|f(x)| 的複製與翻折效果。" },
+      circle: { label: "圓方程式", base: "\\((x-2)^2+(y-1)^2=2.25\\)", sample: () => sampleEllipse(2, 1, 1.5, 1.5), keys: [{ x: 2, y: 1, label: "圓心" }], conic: true, note: "圓心是 (2, 1)，半徑是 1.5。sx=sy 時，平移、鏡射、旋轉後仍是圓；sx≠sy 時會變成橢圓。" },
+      ellipse: { label: "橢圓方程式", base: "\\(\\frac{(x+1)^2}{6.25}+\\frac{(y-1)^2}{2.25}=1\\)", sample: () => sampleEllipse(-1, 1, 2.5, 1.5), keys: [{ x: -1, y: 1, label: "中心" }], conic: true, note: "中心是 (-1, 1)，水平半軸 2.5、垂直半軸 1.5。關於 y=x、y=-x 對稱或旋轉時，長短軸方向可能互換。" }
     };
 
-    const coreRows = [
-      ["x 平移 h", "\\((x',y')=(x+h,y)\\)", "\\(y=f(x-h)\\)"],
-      ["y 平移 k", "\\((x',y')=(x,y+k)\\)", "\\(y=f(x)+k\\)"],
-      ["x 縮放 a 倍", "\\((x',y')=(ax,y),\\,a>0\\)", "\\(y=f\\!\\left(\\frac{x}{a}\\right)\\)"],
-      ["y 縮放 b 倍", "\\((x',y')=(x,by),\\,b>0\\)", "\\(y=b\\,f(x)\\)"]
+    const pointOperations = {
+      identity: { label: "不對稱", tex: "\\((u,v)=(x,y)\\)", note: "只觀察縮放與平移。", guide: null, fn: (x, y) => [x, y] },
+      xAxis: { label: "關於 x 軸", tex: "\\((u,v)=(x,-y)\\)", note: "x 不變、y 變號；對函數為 y=-f(x)。", guide: "xAxis", fn: (x, y) => [x, -y] },
+      yAxis: { label: "關於 y 軸", tex: "\\((u,v)=(-x,y)\\)", note: "y 不變、x 變號；對函數為 y=f(-x)。", guide: "yAxis", fn: (x, y) => [-x, y] },
+      origin: { label: "關於原點", tex: "\\((u,v)=(-x,-y)\\)", note: "x、y 都變號，也等同以原點旋轉 180°。", guide: "origin", fn: (x, y) => [-x, -y] },
+      lineYeqX: { label: "關於 y=x", tex: "\\((u,v)=(y,x)\\)", note: "交換 x、y；定義域與值域互換，結果可能不再是 y=... 的函數。", guide: "diag1", fn: (x, y) => [y, x] },
+      lineYeqNegX: { label: "關於 y=-x", tex: "\\((u,v)=(-y,-x)\\)", note: "交換後兩座標都變號，結果可能不再是 y=... 的函數。", guide: "diag2", fn: (x, y) => [-y, -x] },
+      rotate90: { label: "逆時針 90°", tex: "\\((u,v)=(-y,x)\\)", note: "到原點距離不變；拋物線、指數、對數旋轉後常不再是函數圖形。", guide: "origin", fn: (x, y) => [-y, x] }
+    };
+
+    const absoluteOperations = {
+      none: { label: "不使用絕對值", tex: "\\(g(x)=f(x)\\)", note: "直接從基準圖形開始。", apply: (pts) => pts.slice() },
+      xAbs: { label: "f(|x|)：右複製左", tex: "\\(g(x)=f(|x|)\\)：右半部複製到左半部。", note: "先保留右半部，再關於 y 軸複製。", apply: (pts) => copyHalf(pts, (x) => x >= -1e-9, (x, y) => [-x, y]) },
+      xNegAbs: { label: "f(-|x|)：左複製右", tex: "\\(g(x)=f(-|x|)\\)：左半部複製到右半部。", note: "先保留左半部，再關於 y 軸複製。", apply: (pts) => copyHalf(pts, (x) => x <= 1e-9, (x, y) => [-x, y]) },
+      yAbs: { label: "|f(x)|：下翻上", tex: "\\(g(x)=|f(x)|\\)：下方圖形翻到上方。", note: "y<0 的點改成 -y；上半部不動。", apply: (pts) => pts.map(([x, y]) => [x, Math.abs(y)]) },
+      yNegAbs: { label: "-|f(x)|：上翻下", tex: "\\(g(x)=-|f(x)|\\)：上方圖形翻到下方。", note: "y>0 的點改成 -y；最後整張圖不會高於 x 軸。", apply: (pts) => pts.map(([x, y]) => [x, -Math.abs(y)]) }
+    };
+
+    const controls = [
+      { key: "sx", label: "x 方向縮放 sx", min: 0.4, max: 3, step: 0.1, value: 1 },
+      { key: "sy", label: "y 方向縮放 sy", min: 0.4, max: 3, step: 0.1, value: 1 },
+      { key: "h", label: "x 平移 h", min: -4, max: 4, step: 0.2, value: 0 },
+      { key: "k", label: "y 平移 k", min: -4, max: 4, step: 0.2, value: 0 }
     ];
+    const state = Object.fromEntries(controls.map((item) => [item.key, item.value]));
+    const elements = {
+      families: document.getElementById("familyButtons"),
+      absolute: document.getElementById("absoluteButtons"),
+      operations: document.getElementById("symmetryButtons"),
+      base: document.getElementById("coreBaseEq"),
+      note: document.getElementById("familyNote"),
+      map: document.getElementById("coreMap"),
+      after: document.getElementById("coreAfter"),
+      params: document.getElementById("coreParams"),
+      tip: document.getElementById("labTip"),
+      before: document.getElementById("beforeCanvas"),
+      afterCanvas: document.getElementById("afterCanvas")
+    };
+    let familyKey = "quadratic";
+    let operationKey = "identity";
+    let absoluteKey = "none";
+    const baseColor = "#0f766e";
+    const resultColor = "#0b3d91";
 
-    const familyButtons = document.getElementById("familyButtons");
-    const baseEq = document.getElementById("baseEq");
-    const coreTable = document.getElementById("coreTable");
-    let current = "quadratic";
-
-    function renderButtons() {
-      familyButtons.innerHTML = "";
-      Object.entries(families).forEach(([key, item]) => {
-        const btn = document.createElement("button");
-        btn.textContent = item.label;
-        btn.className = key === current ? "active" : "";
-        btn.onclick = () => {
-          current = key;
-          render();
-        };
-        familyButtons.appendChild(btn);
+    function round(value) { return Number.isInteger(value) ? String(value) : Number(value).toFixed(2).replace(/\.?0+$/, ""); }
+    function plus(value) { return Math.abs(value) < 1e-9 ? "" : value > 0 ? "+" + round(value) : round(value); }
+    function xMinus(value) { return Math.abs(value) < 1e-9 ? "x" : value > 0 ? "x-" + round(value) : "x+" + round(-value); }
+    function fnTerm(coef, symbol, arg) {
+      const call = symbol + "\\!\\left(" + arg + "\\right)";
+      if (Math.abs(coef - 1) < 1e-9) return call;
+      if (Math.abs(coef + 1) < 1e-9) return "-" + call;
+      return round(coef) + "\\," + call;
+    }
+    function fraction(numerator, denominator) {
+      return Math.abs(denominator - 1) < 1e-9
+        ? numerator
+        : "\\frac{" + numerator + "}{" + round(denominator) + "}";
+    }
+    function sampleFn(a, b, fn) {
+      const out = [];
+      for (let i = 0; i <= 520; i += 1) {
+        const x = a + ((b - a) * i) / 520;
+        const y = fn(x);
+        out.push(Number.isFinite(y) ? [x, y] : [NaN, NaN]);
+      }
+      return out;
+    }
+    function sampleEllipse(cx, cy, rx, ry) {
+      const out = [];
+      for (let i = 0; i <= 360; i += 1) {
+        const t = (i / 360) * Math.PI * 2;
+        out.push([cx + rx * Math.cos(t), cy + ry * Math.sin(t)]);
+      }
+      return out;
+    }
+    function copyHalf(points, keep, mirror) {
+      const half = points.filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y) && keep(x));
+      return half.concat([[NaN, NaN]], half.map(([x, y]) => mirror(x, y)));
+    }
+    function ctxFor(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.max(320, Math.floor(rect.width * ratio));
+      canvas.height = Math.max(220, Math.floor(rect.height * ratio));
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      return ctx;
+    }
+    function canvasSize(ctx) { return [ctx.canvas.width / (window.devicePixelRatio || 1), ctx.canvas.height / (window.devicePixelRatio || 1)]; }
+    function px(x, range, width) { return ((x - range.xMin) / (range.xMax - range.xMin)) * width; }
+    function py(y, range, height) { return height - ((y - range.yMin) / (range.yMax - range.yMin)) * height; }
+    function fit(range, width, height) {
+      const xSpan = range.xMax - range.xMin;
+      const ySpan = range.yMax - range.yMin;
+      const xMid = (range.xMin + range.xMax) / 2;
+      const yMid = (range.yMin + range.yMax) / 2;
+      if (xSpan / ySpan < width / height) {
+        const next = ySpan * width / height;
+        return { ...range, xMin: xMid - next / 2, xMax: xMid + next / 2 };
+      }
+      const next = xSpan * height / width;
+      return { ...range, yMin: yMid - next / 2, yMax: yMid + next / 2 };
+    }
+    function graphRange(first, second, width, height) {
+      const all = first.concat(second).filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
+      let xMin = Math.min(0, ...all.map(([x]) => x)) - 0.8;
+      let xMax = Math.max(0, ...all.map(([x]) => x)) + 0.8;
+      let yMin = Math.min(0, ...all.map(([, y]) => y)) - 0.8;
+      let yMax = Math.max(0, ...all.map(([, y]) => y)) + 0.8;
+      if (xMax - xMin < 6) { const c = (xMin + xMax) / 2; xMin = c - 3; xMax = c + 3; }
+      if (yMax - yMin < 6) { const c = (yMin + yMax) / 2; yMin = c - 3; yMax = c + 3; }
+      return fit({ xMin, xMax, yMin, yMax }, width, height);
+    }
+    function step(raw) {
+      const p = 10 ** Math.floor(Math.log10(raw));
+      const n = raw / p;
+      return n <= 1.2 ? p * 0.2 : n <= 3 ? p * 0.5 : n <= 7 ? p : p * 2;
+    }
+    function grid(ctx, width, height, range) {
+      const sx = step((range.xMax - range.xMin) / 10);
+      const sy = step((range.yMax - range.yMin) / 8);
+      ctx.save(); ctx.strokeStyle = "#e9eff5"; ctx.lineWidth = 1;
+      for (let x = Math.floor(range.xMin / sx) * sx; x <= range.xMax + 1e-9; x += sx) { const p = px(x, range, width); ctx.beginPath(); ctx.moveTo(p, 0); ctx.lineTo(p, height); ctx.stroke(); }
+      for (let y = Math.floor(range.yMin / sy) * sy; y <= range.yMax + 1e-9; y += sy) { const p = py(y, range, height); ctx.beginPath(); ctx.moveTo(0, p); ctx.lineTo(width, p); ctx.stroke(); }
+      ctx.strokeStyle = "#90a4b8"; ctx.lineWidth = 1.35;
+      if (range.xMin <= 0 && range.xMax >= 0) { const p = px(0, range, width); ctx.beginPath(); ctx.moveTo(p, 0); ctx.lineTo(p, height); ctx.stroke(); }
+      if (range.yMin <= 0 && range.yMax >= 0) { const p = py(0, range, height); ctx.beginPath(); ctx.moveTo(0, p); ctx.lineTo(width, p); ctx.stroke(); }
+      ctx.restore();
+    }
+    function curve(ctx, points, range, color) {
+      const [width, height] = canvasSize(ctx);
+      ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.35; ctx.beginPath(); let open = false;
+      points.forEach(([x, y]) => {
+        if (!Number.isFinite(x) || !Number.isFinite(y)) { open = false; return; }
+        const a = px(x, range, width); const b = py(y, range, height);
+        if (open) ctx.lineTo(a, b); else { ctx.moveTo(a, b); open = true; }
+      });
+      ctx.stroke(); ctx.restore();
+    }
+    function dashed(ctx, range, type, value, label, color = "#7c5cbb") {
+      const [width, height] = canvasSize(ctx);
+      if ((type === "h" && (value < range.yMin || value > range.yMax)) || (type === "v" && (value < range.xMin || value > range.xMax))) return;
+      ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 1.25; ctx.setLineDash([5, 4]); ctx.beginPath();
+      if (type === "h") { const p = py(value, range, height); ctx.moveTo(0, p); ctx.lineTo(width, p); ctx.stroke(); ctx.fillText(label, 8, Math.max(15, p - 6)); }
+      else { const p = px(value, range, width); ctx.moveTo(p, 0); ctx.lineTo(p, height); ctx.stroke(); ctx.fillText(label, Math.min(width - 90, p + 6), 15); }
+      ctx.restore();
+    }
+    function operationGuide(ctx, range, type) {
+      const [width, height] = canvasSize(ctx);
+      if (type === "xAxis") return dashed(ctx, range, "h", 0, "對稱軸：x 軸", "#d97706");
+      if (type === "yAxis") return dashed(ctx, range, "v", 0, "對稱軸：y 軸", "#d97706");
+      if (type === "origin") {
+        const x = px(0, range, width); const y = py(0, range, height);
+        ctx.save(); ctx.fillStyle = "#d97706"; ctx.beginPath(); ctx.arc(x, y, 4, 0, 2 * Math.PI); ctx.fill(); ctx.fillText("中心 (0, 0)", Math.min(width - 85, x + 7), Math.max(15, y - 7)); ctx.restore(); return;
+      }
+      if (type === "diag1" || type === "diag2") {
+        const low = type === "diag1" ? Math.max(range.xMin, range.yMin) : Math.max(range.xMin, -range.yMax);
+        const high = type === "diag1" ? Math.min(range.xMax, range.yMax) : Math.min(range.xMax, -range.yMin);
+        ctx.save(); ctx.strokeStyle = "#d97706"; ctx.fillStyle = "#a25d07"; ctx.lineWidth = 1.5; ctx.setLineDash([7, 5]); ctx.beginPath();
+        ctx.moveTo(px(low, range, width), py(type === "diag1" ? low : -low, range, height));
+        ctx.lineTo(px(high, range, width), py(type === "diag1" ? high : -high, range, height)); ctx.stroke();
+        ctx.setLineDash([]); ctx.fillText(type === "diag1" ? "對稱軸：y=x" : "對稱軸：y=-x", 8, 17); ctx.restore();
+      }
+    }
+    function dot(ctx, point, range, color, label) {
+      const [width, height] = canvasSize(ctx);
+      if (point.x < range.xMin || point.x > range.xMax || point.y < range.yMin || point.y > range.yMax) return;
+      const x = px(point.x, range, width); const y = py(point.y, range, height);
+      ctx.save(); ctx.fillStyle = "#fff"; ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 4.5, 0, 2 * Math.PI); ctx.fill(); ctx.stroke(); ctx.fillStyle = color; ctx.fillText(label, Math.min(width - 130, x + 7), Math.max(15, y - 8)); ctx.restore();
+    }
+    function keyCopies(point) {
+      if (absoluteKey === "xAbs") return point.x >= 0 ? [point, { x: -point.x, y: point.y, label: point.label }] : [];
+      if (absoluteKey === "xNegAbs") return point.x <= 0 ? [point, { x: -point.x, y: point.y, label: point.label }] : [];
+      if (absoluteKey === "yAbs") return [{ x: point.x, y: Math.abs(point.y), label: point.label }];
+      if (absoluteKey === "yNegAbs") return [{ x: point.x, y: -Math.abs(point.y), label: point.label }];
+      return [point];
+    }
+    function movePoint(point) {
+      const [u, v] = pointOperations[operationKey].fn(point.x, point.y);
+      return { x: state.sx * u + state.h, y: state.sy * v + state.k, label: point.label };
+    }
+    function relation() {
+      const symbol = absoluteKey === "none" ? "f" : "g";
+      const xArg = fraction(xMinus(state.h), state.sx);
+      const yArg = fraction(xMinus(state.k).replace("x", "y"), state.sy);
+      const reverseY = fraction(Math.abs(state.k) < 1e-9 ? "-y" : round(state.k) + "-y", state.sy);
+      let body = "";
+      if (operationKey === "identity") body = "y=" + fnTerm(state.sy, symbol, xArg) + plus(state.k);
+      if (operationKey === "xAxis") body = "y=" + fnTerm(-state.sy, symbol, xArg) + plus(state.k);
+      if (operationKey === "yAxis") body = "y=" + fnTerm(state.sy, symbol, "-" + xArg) + plus(state.k);
+      if (operationKey === "origin") body = "y=" + fnTerm(-state.sy, symbol, "-" + xArg) + plus(state.k);
+      if (operationKey === "lineYeqX") body = "x=" + fnTerm(state.sx, symbol, yArg) + plus(state.h);
+      if (operationKey === "lineYeqNegX") body = "x=" + round(state.h) + "-" + fnTerm(state.sx, symbol, reverseY);
+      if (operationKey === "rotate90") body = "x=" + round(state.h) + "-" + fnTerm(state.sx, symbol, yArg);
+      return "\\(" + body.replace("x=0+", "x=").replace("x=0-", "x=-") + "\\)";
+    }
+    function buttons(container, items, active, choose) {
+      container.innerHTML = "";
+      Object.entries(items).forEach(([key, item]) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = item.label; b.className = key === active ? "active" : "";
+        b.addEventListener("click", () => choose(key)); container.appendChild(b);
       });
     }
-
-    function renderCoreTable() {
-      coreTable.innerHTML = coreRows.map((r) => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("");
+    function params() {
+      elements.params.innerHTML = "";
+      controls.forEach((item) => {
+        const row = document.createElement("div"); row.className = "paramRow";
+        const label = document.createElement("label"); label.textContent = item.label + "：";
+        const input = document.createElement("input"); input.type = "range"; input.min = item.min; input.max = item.max; input.step = item.step; input.value = state[item.key];
+        const value = document.createElement("span"); value.className = "paramValue"; value.textContent = round(state[item.key]);
+        input.addEventListener("input", () => { state[item.key] = Number(input.value); render(); }); row.append(label, input, value); elements.params.appendChild(row);
+      });
     }
-
+    function text() {
+      const family = families[familyKey]; const operation = pointOperations[operationKey]; const absolute = absoluteOperations[absoluteKey];
+      elements.base.innerHTML = "目前基準圖形：<strong>" + family.label + "</strong>，基準式：" + family.base;
+      elements.note.textContent = family.note;
+      const finalMap = "\\((x',y')=(" + round(state.sx) + "u" + plus(state.h) + "," + round(state.sy) + "v" + plus(state.k) + ")\\)";
+      elements.map.innerHTML = "<div class=\"formula\"><strong>絕對值：</strong>" + absolute.tex + "</div><div class=\"formula\"><strong>對稱／旋轉：</strong>" + operation.tex + "</div><div class=\"formula\"><strong>縮放、平移：</strong>" + finalMap + "</div>";
+      elements.after.innerHTML = family.conic
+        ? "<div class=\"formula\"><strong>變換後方程式：</strong>把上面的座標映射反解後代回基準方程式。圖上已用等比例座標呈現；特別注意 sx≠sy 時圓會變成橢圓。</div>"
+        : "<div class=\"formula\"><strong>變換後關係：</strong>" + (absoluteKey === "none" ? "" : "先由絕對值效果得到 g，接著 ") + relation() + "</div>";
+      elements.tip.textContent = "綠色是基準圖形，藍色是完成所有操作後的圖形，空心點是關鍵點。 " + absolute.note + " " + operation.note;
+    }
+    function graphs() {
+      const family = families[familyKey]; const operation = pointOperations[operationKey]; const absolute = absoluteOperations[absoluteKey];
+      const firstCtx = ctxFor(elements.before); const secondCtx = ctxFor(elements.afterCanvas);
+      const [w1, h1] = canvasSize(firstCtx); const [w2, h2] = canvasSize(secondCtx);
+      const original = family.sample(); const abs = absolute.apply(original);
+      const final = abs.map(([x, y]) => { if (!Number.isFinite(x) || !Number.isFinite(y)) return [NaN, NaN]; const [u, v] = operation.fn(x, y); return [state.sx * u + state.h, state.sy * v + state.k]; });
+      const range = graphRange(original, final, w1, h1);
+      firstCtx.clearRect(0, 0, w1, h1); secondCtx.clearRect(0, 0, w2, h2);
+      grid(firstCtx, w1, h1, range); grid(secondCtx, w2, h2, range);
+      operationGuide(firstCtx, range, operation.guide);
+      if (family.guide) dashed(firstCtx, range, family.guide[0], family.guide[1], family.guide[2]);
+      curve(firstCtx, original, range, baseColor); curve(secondCtx, final, range, resultColor);
+      family.keys.forEach((key) => {
+        dot(firstCtx, key, range, baseColor, key.label + " (" + round(key.x) + ", " + round(key.y) + ")");
+        keyCopies(key).map(movePoint).forEach((result) => dot(secondCtx, result, range, resultColor, result.label + " (" + round(result.x) + ", " + round(result.y) + ")"));
+      });
+    }
     function typeset(nodes) {
-      if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise(nodes);
+      requestAnimationFrame(() => { if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise(nodes).catch((error) => console.warn("MathJax typeset failed", error)); });
     }
-
     function render() {
-      renderButtons();
-      renderCoreTable();
-      baseEq.innerHTML = `目前示範族群：<strong>${families[current].label}</strong>，基準式：${families[current].eq}`;
-      typeset([baseEq, coreTable, familyButtons, document.body]);
+      buttons(elements.families, families, familyKey, (key) => { familyKey = key; render(); });
+      buttons(elements.absolute, absoluteOperations, absoluteKey, (key) => { absoluteKey = key; render(); });
+      buttons(elements.operations, pointOperations, operationKey, (key) => { operationKey = key; render(); });
+      params(); text(); graphs(); typeset([elements.base, elements.map, elements.after]);
     }
-
     render();
+    window.addEventListener("resize", render);
   </script>
 </body>
 </html>

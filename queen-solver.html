@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queen 遊戲截圖解題器</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #556276;
+      --brand: #6655c8;
+      --brand-dark: #46389c;
+      --paper: #ffffff;
+      --line: #dbe2ee;
+      --good: #087c58;
+      --warn: #a85a00;
+      --bad: #ae2d3a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(135deg, #f2f0ff 0%, #f6f9ff 52%, #effaf7 100%);
+      min-height: 100vh;
+      line-height: 1.65;
+    }
+    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0 54px; }
+    .back { color: var(--brand-dark); font-weight: 700; text-decoration: none; }
+    h1 { margin: 16px 0 8px; font-size: clamp(30px, 5vw, 46px); letter-spacing: .02em; }
+    h2 { margin: 0; font-size: 22px; }
+    .lead { margin: 0; max-width: 820px; color: var(--muted); font-size: 17px; }
+    .rule-strip, .notice, .panel {
+      background: rgba(255,255,255,.94); border: 1px solid var(--line); border-radius: 18px;
+      box-shadow: 0 12px 32px rgba(43, 49, 85, .07);
+    }
+    .rule-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; margin: 22px 0; }
+    .rule { padding: 8px 10px; border-left: 4px solid #9b8df0; }
+    .rule strong { display: block; font-size: 18px; }
+    .rule span { color: var(--muted); font-size: 14px; }
+    .work { display: grid; grid-template-columns: minmax(0, 1.06fr) minmax(360px, .94fr); gap: 20px; align-items: start; }
+    .panel { padding: 20px; }
+    .panel > p { color: var(--muted); margin: 7px 0 16px; }
+    .drop-zone {
+      display: grid; place-items: center; min-height: 168px; border: 2px dashed #a9b6cc; border-radius: 14px;
+      background: #fafcff; cursor: pointer; text-align: center; padding: 20px; transition: .2s;
+    }
+    .drop-zone:hover, .drop-zone.drag { border-color: var(--brand); background: #f5f2ff; transform: translateY(-1px); }
+    .drop-zone strong { display: block; font-size: 18px; }
+    .drop-zone span { color: var(--muted); font-size: 14px; }
+    #fileInput { display: none; }
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; align-items: end; margin-top: 14px; }
+    label.field { display: grid; gap: 3px; color: var(--muted); font-size: 13px; font-weight: 700; }
+    input[type="number"], input[type="text"] { border: 1px solid #bec9da; border-radius: 9px; color: var(--ink); font: inherit; padding: 7px 9px; width: 92px; }
+    input[type="text"] { text-transform: uppercase; width: 82px; }
+    button {
+      appearance: none; border: 0; border-radius: 9px; background: var(--brand); color: #fff; font: inherit; font-weight: 800;
+      padding: 9px 12px; cursor: pointer; transition: .16s;
+    }
+    button:hover { background: var(--brand-dark); }
+    button.secondary { background: #e8edf8; color: #33415b; }
+    button.secondary:hover { background: #d8e1f2; }
+    button:disabled { cursor: not-allowed; opacity: .56; }
+    .preview-wrap { position: relative; display: flex; justify-content: center; align-items: center; margin-top: 17px; border-radius: 14px; overflow: hidden; background: #edf1f7; min-height: 90px; }
+    #preview { display: block; width: auto; max-width: 100%; max-height: 570px; object-fit: contain; }
+    #overlay { position: absolute; pointer-events: none; }
+    .empty-preview { display: grid; place-items: center; height: 160px; color: var(--muted); font-size: 14px; }
+    .status { margin-top: 13px; padding: 11px 12px; border-radius: 10px; background: #edf2fb; color: #33415b; font-size: 14px; }
+    .status.good { background: #e5f7ef; color: #075c40; }
+    .status.warn { background: #fff3df; color: #89500a; }
+    .status.error { background: #ffeaed; color: #8e2633; }
+    .legend { display: flex; flex-wrap: wrap; gap: 7px; min-height: 27px; margin: 11px 0 3px; }
+    .chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-size: 12px; font-weight: 800; }
+    .dot { width: 13px; height: 13px; border: 1px solid rgba(0,0,0,.14); border-radius: 50%; }
+    .editor-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin: 13px 0 12px; }
+    .editor-note { margin: 0; font-size: 13px; color: var(--muted); }
+    .board-shell { overflow: auto; padding: 3px; }
+    .board { display: grid; grid-template-columns: repeat(var(--size), minmax(31px, 1fr)); gap: 4px; min-width: 330px; }
+    .cell {
+      position: relative; min-height: 34px; border: 2px solid transparent; border-radius: 7px; padding: 0; color: #172033;
+      text-shadow: 0 1px 0 rgba(255,255,255,.7); font-size: 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+    }
+    .cell:hover { outline: 2px solid rgba(70,56,156,.45); }
+    .cell.selected { border-color: #151a2a; outline: 2px solid #fff; z-index: 1; }
+    .cell.unknown { background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,.45), rgba(255,255,255,.45) 5px, rgba(30,40,60,.1) 5px, rgba(30,40,60,.1) 10px) !important; }
+    .cell.queen::after { content: "♛"; display: grid; place-items: center; position: absolute; inset: 0; font-size: clamp(22px, 4vw, 33px); color: #141125; text-shadow: 0 1px 0 #fff, 0 0 4px #fff; }
+    .coordinates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 13px; }
+    .answer-list { margin: 14px 0 0; padding-left: 22px; }
+    .answer-list li { margin: 3px 0; }
+    .check-list { margin: 12px 0 0; padding-left: 22px; color: var(--muted); font-size: 14px; }
+    .teaching { margin-top: 21px; padding: 20px; }
+    .teaching-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .teaching h3 { margin: 0 0 5px; font-size: 17px; }
+    .teaching p, .teaching li { color: var(--muted); font-size: 14px; }
+    .teaching ul { padding-left: 20px; margin: 5px 0; }
+    code { color: #512f98; font-weight: 700; }
+    @media (max-width: 860px) { .work { grid-template-columns: 1fr; } }
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 20px, 1180px); padding-top: 19px; }
+      .panel, .teaching { padding: 15px; }
+      .rule-strip, .teaching-grid { grid-template-columns: 1fr; }
+      .rule-strip { gap: 2px; }
+      .cell { min-height: 31px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回到數學小遊戲首頁</a>
+    <h1>Queen 遊戲截圖解題器</h1>
+    <p class="lead">上傳關卡截圖後，工具會找出棋盤、依色塊建立區域，並用「每列、每行、每個區域各放指定數量，棋子不可相碰」的條件找出解答。一般關卡設為 1；Double 關卡設為 2。辨識不確定時，可以直接在下方棋盤校正區域。</p>
+
+    <section class="rule-strip" aria-label="遊戲規則">
+      <div class="rule"><strong>每一橫列放指定數量</strong><span>一般題是 1；Double 題則是 2。</span></div>
+      <div class="rule"><strong>每一直行放指定數量</strong><span>同一欄也要達到同樣數量，不能多也不能少。</span></div>
+      <div class="rule"><strong>每區同數量且不相碰</strong><span>相鄰的斜格也算碰到；隔開一格以上才安全。</span></div>
+    </section>
+
+    <div class="work">
+      <section class="panel" aria-labelledby="uploadTitle">
+        <h2 id="uploadTitle">1. 讀取截圖</h2>
+        <p>建議在遊戲的提示視窗消失後再截圖，並把整個棋盤完整拍入；不要裁到只剩局部色塊。</p>
+        <label class="drop-zone" id="dropZone" for="fileInput">
+          <span><strong>點這裡選擇截圖，或把圖片拖進來</strong><span>支援 JPG、PNG、WebP；圖片只在這個瀏覽器頁面中分析。</span></span>
+        </label>
+        <input id="fileInput" type="file" accept="image/*">
+        <div class="controls">
+          <label class="field">棋盤大小（留空＝自動）
+            <input id="boardSize" type="number" min="4" max="15" placeholder="自動" inputmode="numeric">
+          </label>
+          <button id="detectBtn" type="button" disabled>重新辨識棋盤</button>
+          <button id="clearBtn" class="secondary" type="button">清除</button>
+        </div>
+        <div class="preview-wrap" id="previewWrap">
+          <div class="empty-preview" id="emptyPreview">尚未讀取截圖</div>
+          <img id="preview" alt="上傳的 Queen 遊戲截圖" hidden>
+          <canvas id="overlay" hidden></canvas>
+        </div>
+        <div class="status" id="imageStatus" role="status">等待圖片。偵測完成後會畫出棋盤外框。</div>
+      </section>
+
+      <section class="panel" aria-labelledby="solveTitle">
+        <h2 id="solveTitle">2. 校正區域並求解</h2>
+        <p>每格中央的英文字是「區域代號」，不是答案。點選格子後可替它指定區域；所有格子都應有代號，且 <strong>n×n 棋盤要剛好有 n 個區域</strong>。</p>
+        <div id="legend" class="legend" aria-label="區域圖例"></div>
+        <div class="editor-tools">
+          <label class="field">每行／列／區域的皇后數
+            <input id="queenCount" type="number" min="1" max="4" value="1" inputmode="numeric">
+          </label>
+          <label class="field">選取格子的區域代號
+            <input id="regionInput" type="text" maxlength="3" placeholder="A" value="A" aria-label="區域代號">
+          </label>
+          <button id="applyRegionBtn" class="secondary" type="button" disabled>套用到選取格</button>
+          <button id="solveBtn" type="button" disabled>找出答案</button>
+        </div>
+          <p class="editor-note" id="editorNote">先上傳截圖。一般關卡填 1；畫面顯示 Double 或 0/20 的關卡，請改填 2。若截圖有通知、手指或動畫遮住色塊，請把看不清的格子設成正確的區域代號後再求解。</p>
+        <div class="board-shell"><div class="board" id="board" style="--size: 10" aria-label="Queen 區域棋盤"></div></div>
+        <div class="status" id="solveStatus" role="status">尚未建立題目。</div>
+        <div id="answer" hidden>
+          <div class="coordinates" id="coordinates"></div>
+          <ol class="answer-list" id="answerList"></ol>
+          <ul class="check-list">
+            <li>照「第 r 橫列、第 c 直行」依序放入，再看每一列、每一行、每一個代號是否都剛好符合設定數量。</li>
+            <li>最後檢查同一橫列與相鄰橫列：任兩隻皇后都不能落在相鄰直行。</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel teaching">
+      <div class="teaching-grid">
+        <div>
+          <h3>課堂帶法</h3>
+          <p>先讓學生只填「每列一隻」，再逐列刪掉已使用的直行與區域。這是在練習用條件縮小可能性，而不是盲目試放。</p>
+        </div>
+        <div>
+          <h3>常見錯誤</h3>
+          <ul>
+            <li>只檢查同一行、同一列，漏掉相鄰斜格。</li>
+            <li>把「顏色一樣」誤當成可放很多隻。</li>
+            <li>截圖有彈窗遮住色塊，仍直接相信自動辨識。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>自我檢查</h3>
+          <p>答案送出前，先數一數是否正好有 <code>n × 每處皇后數</code> 隻；再分別掃描每一橫列、一直行與一個區域，三種數量都必須相同。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const fileInput = $('fileInput');
+      const dropZone = $('dropZone');
+      const preview = $('preview');
+      const previewWrap = $('previewWrap');
+      const overlay = $('overlay');
+      const emptyPreview = $('emptyPreview');
+      const boardSizeInput = $('boardSize');
+      const queenCountInput = $('queenCount');
+      const board = $('board');
+      const legend = $('legend');
+      const regionInput = $('regionInput');
+      const imageStatus = $('imageStatus');
+      const solveStatus = $('solveStatus');
+      const editorNote = $('editorNote');
+      const answer = $('answer');
+      const answerList = $('answerList');
+      const coordinates = $('coordinates');
+      const detectBtn = $('detectBtn');
+      const applyRegionBtn = $('applyRegionBtn');
+      const solveBtn = $('solveBtn');
+
+      const state = {
+        image: null,
+        imageUrl: null,
+        size: 10,
+        geometry: null,
+        cells: [],
+        selected: null,
+        solution: []
+      };
+
+      function setStatus(node, text, type = '') {
+        node.textContent = text;
+        node.className = `status ${type}`.trim();
+      }
+
+      function median(values) {
+        const sorted = [...values].sort((a, b) => a - b);
+        return sorted[Math.floor(sorted.length / 2)];
+      }
+
+      function rgbToCss(rgb) { return `rgb(${rgb.map(Math.round).join(', ')})`; }
+      function colorDistance(a, b) {
+        return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+      }
+      function contrastColor(rgb) {
+        const luminance = (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]) / 255;
+        return luminance < .47 ? '#fff' : '#1d2736';
+      }
+      function labelFor(index) {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        return index < alphabet.length ? alphabet[index] : `R${index + 1}`;
+      }
+
+      function imageDataFor(img) {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0);
+        return { data: ctx.getImageData(0, 0, canvas.width, canvas.height).data, width: canvas.width, height: canvas.height };
+      }
+
+      function getPixel(source, x, y) {
+        const px = Math.max(0, Math.min(source.width - 1, Math.round(x)));
+        const py = Math.max(0, Math.min(source.height - 1, Math.round(y)));
+        const i = (py * source.width + px) * 4;
+        return [source.data[i], source.data[i + 1], source.data[i + 2]];
+      }
+
+      function isColorful(rgb) {
+        const hi = Math.max(...rgb);
+        const lo = Math.min(...rgb);
+        return hi > 65 && hi - lo > 43;
+      }
+
+      function consecutiveRuns(values, minLength = 1) {
+        const runs = [];
+        let start = null;
+        for (let i = 0; i <= values.length; i += 1) {
+          if (i < values.length && values[i]) {
+            if (start === null) start = i;
+          } else if (start !== null) {
+            if (i - start >= minLength) runs.push({ start, end: i - 1, length: i - start });
+            start = null;
+          }
+        }
+        return runs;
+      }
+
+      function runStartsByProfile(profile, required, minLength) {
+        return consecutiveRuns(profile.map(value => value >= required), minLength).map(run => run.start);
+      }
+
+      function medianPositiveDifferences(starts) {
+        const diffs = [];
+        for (let i = 1; i < starts.length; i += 1) {
+          const diff = starts[i] - starts[i - 1];
+          if (diff > 3) diffs.push(diff);
+        }
+        if (!diffs.length) return null;
+        const ordered = [...diffs].sort((a, b) => a - b);
+        const lower = ordered.filter(value => value <= ordered[Math.floor(ordered.length / 2)] * 1.35);
+        return median(lower.length ? lower : ordered);
+      }
+
+      function evaluateGridSize(source, bounds, size) {
+        const pitchX = (bounds.x1 - bounds.x0 + 1) / size;
+        const pitchY = (bounds.y1 - bounds.y0 + 1) / size;
+        const spreads = [];
+        const points = [[.2,.2], [.5,.2], [.8,.2], [.2,.5], [.5,.5], [.8,.5], [.2,.8], [.5,.8], [.8,.8]];
+        for (let row = 0; row < size; row += 1) {
+          for (let col = 0; col < size; col += 1) {
+            const samples = points.map(([dx, dy]) => getPixel(source, bounds.x0 + pitchX * col + pitchX * .92 * dx, bounds.y0 + pitchY * row + pitchY * .92 * dy));
+            const color = [0, 1, 2].map(channel => median(samples.map(rgb => rgb[channel])));
+            spreads.push(samples.reduce((sum, rgb) => sum + colorDistance(rgb, color), 0) / samples.length);
+          }
+        }
+        return { size, pitchX, pitchY, score: spreads.reduce((sum, value) => sum + value, 0) / spreads.length };
+      }
+
+      function detectGrid(source, requestedSize = null) {
+        // Some versions leave white gaps between tiles; others draw thick dark borders
+        // around connected regions. In both cases the board is the largest wide band of
+        // colourful pixels. Its full span is more stable than trying to split every tile.
+        const stride = source.width > 1500 ? 2 : 1;
+        const yProfile = Array(source.height).fill(0);
+        const rowBounds = Array.from({ length: source.height }, () => ({ first: source.width, last: -1 }));
+        for (let y = 0; y < source.height; y += stride) {
+          let count = 0;
+          for (let x = 0; x < source.width; x += stride) {
+            if (isColorful(getPixel(source, x, y))) {
+              count += stride;
+              rowBounds[y].first = Math.min(rowBounds[y].first, x);
+              rowBounds[y].last = x;
+            }
+          }
+          yProfile[y] = count;
+          if (stride === 2 && y + 1 < source.height) {
+            yProfile[y + 1] = count;
+            rowBounds[y + 1] = { ...rowBounds[y] };
+          }
+        }
+        // A progress bar can be colourful too, but it is much narrower than the board.
+        const boardYs = yProfile.map((count, y) => {
+          const bounds = rowBounds[y];
+          return count >= source.width * .55 && bounds.first <= source.width * .07 && bounds.last >= source.width * .93 ? y : -1;
+        }).filter(y => y >= 0);
+        if (boardYs.length < 20) return null;
+        const y0 = Math.min(...boardYs);
+        const y1 = Math.max(...boardYs);
+
+        const xProfile = Array(source.width).fill(0);
+        for (const y of boardYs) {
+          for (let x = 0; x < source.width; x += stride) {
+            if (isColorful(getPixel(source, x, y))) xProfile[x] += stride;
+          }
+        }
+        const required = Math.max(10, boardYs.length * .07);
+        const boardXs = xProfile.map((count, x) => count >= required ? x : -1).filter(x => x >= 0);
+        if (boardXs.length < 20) return null;
+        const x0 = Math.min(...boardXs);
+        const x1 = Math.max(...boardXs);
+        const bounds = { x0, x1, y0, y1 };
+        const candidates = requestedSize ? [requestedSize] : Array.from({ length: 12 }, (_, index) => index + 4);
+        const scored = candidates.map(size => evaluateGridSize(source, bounds, size)).filter(candidate => candidate.pitchX >= 16 && candidate.pitchY >= 16);
+        if (!scored.length) return null;
+        const best = scored.reduce((winner, candidate) => candidate.score < winner.score ? candidate : winner);
+        return { x0, y0, pitchX: best.pitchX, pitchY: best.pitchY, tileWidth: best.pitchX * .92, tileHeight: best.pitchY * .92, size: best.size, score: best.score };
+      }
+
+      function sampleCellColor(source, geometry, row, col) {
+        const x = geometry.x0 + geometry.pitchX * col;
+        const y = geometry.y0 + geometry.pitchY * row;
+        const points = [[.29,.29], [.71,.29], [.29,.71], [.71,.71], [.50,.50]];
+        const samples = points.map(([dx, dy]) => getPixel(source, x + geometry.tileWidth * dx, y + geometry.tileHeight * dy));
+        const color = [0, 1, 2].map(channel => median(samples.map(rgb => rgb[channel])));
+        const spread = median(samples.map(rgb => colorDistance(rgb, color)));
+        return { color, spread };
+      }
+
+      function createCellsFromImage(requestedSize = null) {
+        const source = imageDataFor(state.image);
+        state.geometry = detectGrid(source, requestedSize);
+        if (!state.geometry) {
+          state.cells = [];
+          renderBoard();
+          drawOverlay();
+          setStatus(imageStatus, '找不到規律的色塊棋盤。請先讓棋盤完整入鏡；仍失敗時，可手動輸入棋盤大小後重新辨識。', 'error');
+          setStatus(solveStatus, '尚未建立可求解的棋盤。', 'error');
+          return;
+        }
+        state.size = state.geometry.size;
+        if (!requestedSize) boardSizeInput.placeholder = `${state.size}（已自動辨識）`;
+        const sampledCells = [];
+        for (let row = 0; row < state.size; row += 1) {
+          for (let col = 0; col < state.size; col += 1) {
+            const sampled = sampleCellColor(source, state.geometry, row, col);
+            sampledCells.push({ row, col, color: sampled.color, spread: sampled.spread, hidden: false, region: '?' });
+          }
+        }
+        // App notifications darken a row unevenly. Ignore minor JPEG / anti-aliasing noise;
+        // flag a row only when several cells are clearly affected by the overlay.
+        const hiddenRows = new Set();
+        for (let row = 0; row < state.size; row += 1) {
+          const rowCells = sampledCells.filter(cell => cell.row === row);
+          const affected = rowCells.filter(cell => cell.spread > 3).length;
+          if (affected >= Math.ceil(state.size * .4)) hiddenRows.add(row);
+        }
+        const rawCells = sampledCells.map(cell => ({ ...cell, hidden: hiddenRows.has(cell.row) }));
+        const groups = [];
+        rawCells.filter(cell => !cell.hidden).forEach(cell => {
+          let group = groups.find(candidate => colorDistance(candidate.color, cell.color) < 30);
+          if (!group) {
+            group = { color: [...cell.color], members: [] };
+            groups.push(group);
+          }
+          group.members.push(cell);
+          group.color = [0, 1, 2].map(i => Math.round(group.members.reduce((sum, member) => sum + member.color[i], 0) / group.members.length));
+          cell.region = labelFor(groups.indexOf(group));
+        });
+        state.cells = rawCells;
+        state.solution = [];
+        state.selected = null;
+        drawOverlay();
+        renderBoard();
+        const hiddenRowNumbers = [...hiddenRows].map(row => row + 1);
+        const suffix = hiddenRowNumbers.length ? `第 ${hiddenRowNumbers.join('、')} 橫列疑似被浮動視窗遮住，已標成「?」。` : '所有色塊都可讀取。';
+        const tone = hiddenRowNumbers.length ? 'warn' : 'good';
+        setStatus(imageStatus, `已找到 ${state.size}×${state.size} 棋盤，暫分成 ${groups.length} 個可見色區。${suffix}`, tone);
+        setStatus(solveStatus, hiddenRowNumbers.length ? '先替「?」格補上正確區域代號，再按「找出答案」。' : '可以求解；仍請先確認每個區域代號是否正確。', hiddenRowNumbers.length ? 'warn' : 'good');
+        editorNote.textContent = hiddenRowNumbers.length
+          ? '注意：浮動提示會改變色塊顏色。這張截圖的第 ' + hiddenRowNumbers.join('、') + ' 橫列看不清，請在遊戲提示消失後重截，或手動指定每格的正確區域代號。'
+          : '自動色彩分組已完成。若兩個不同區域剛好同色，請點選格子並給它不同代號。';
+      }
+
+      function regions() {
+        const map = new Map();
+        state.cells.forEach(cell => {
+          if (!map.has(cell.region)) map.set(cell.region, []);
+          map.get(cell.region).push(cell);
+        });
+        return map;
+      }
+
+      function renderLegend() {
+        legend.innerHTML = '';
+        const map = regions();
+        [...map.entries()].sort(([a], [b]) => a.localeCompare(b, 'en')).forEach(([region, cells]) => {
+          const rgb = cells.find(cell => cell.region === region)?.color || [220, 225, 235];
+          const chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.innerHTML = `<i class="dot" style="background:${rgbToCss(rgb)}"></i>${region === '?' ? '待校正 ?' : `區域 ${region}（${cells.length} 格）`}`;
+          legend.append(chip);
+        });
+      }
+
+      function renderBoard() {
+        board.innerHTML = '';
+        board.style.setProperty('--size', state.size);
+        renderLegend();
+        const solutionSet = new Set(state.solution.map(({ row, col }) => `${row},${col}`));
+        state.cells.forEach(cell => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `cell${cell.region === '?' ? ' unknown' : ''}${state.selected === cell ? ' selected' : ''}${solutionSet.has(`${cell.row},${cell.col}`) ? ' queen' : ''}`;
+          button.style.backgroundColor = rgbToCss(cell.color);
+          button.style.color = contrastColor(cell.color);
+          button.textContent = cell.region;
+          button.title = `第 ${cell.row + 1} 橫列、第 ${cell.col + 1} 直行，區域 ${cell.region}`;
+          button.addEventListener('click', () => {
+            state.selected = cell;
+            regionInput.value = cell.region === '?' ? '' : cell.region;
+            state.solution = [];
+            answer.hidden = true;
+            renderBoard();
+            updateEditorControls();
+          });
+          board.append(button);
+        });
+        updateEditorControls();
+      }
+
+      function updateEditorControls() {
+        const ready = state.cells.length > 0;
+        applyRegionBtn.disabled = !ready || !state.selected;
+        solveBtn.disabled = !ready;
+      }
+
+      function drawOverlay() {
+        if (!state.image || !state.geometry) { overlay.hidden = true; return; }
+        const rect = preview.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        overlay.width = Math.round(rect.width * devicePixelRatio);
+        overlay.height = Math.round(rect.height * devicePixelRatio);
+        overlay.style.width = `${rect.width}px`;
+        overlay.style.height = `${rect.height}px`;
+        const wrapRect = previewWrap.getBoundingClientRect();
+        overlay.style.left = `${rect.left - wrapRect.left}px`;
+        overlay.style.top = `${rect.top - wrapRect.top}px`;
+        const ctx = overlay.getContext('2d');
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+        const sx = rect.width / state.image.naturalWidth;
+        const sy = rect.height / state.image.naturalHeight;
+        const g = state.geometry;
+        ctx.strokeStyle = '#101827';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([7, 4]);
+        ctx.strokeRect(g.x0 * sx, g.y0 * sy, (g.tileWidth + g.pitchX * (state.size - 1)) * sx, (g.tileHeight + g.pitchY * (state.size - 1)) * sy);
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'rgba(16,24,39,.86)';
+        ctx.font = 'bold 13px "Microsoft JhengHei", sans-serif';
+        ctx.fillText(`${state.size} × ${state.size}`, g.x0 * sx + 6, Math.max(16, g.y0 * sy - 6));
+        overlay.hidden = false;
+      }
+
+      function chooseRowOptions(cells, count) {
+        const options = [];
+        function choose(start, picked) {
+          if (picked.length === count) { options.push([...picked]); return; }
+          for (let i = start; i < cells.length; i += 1) {
+            const cell = cells[i];
+            if (picked.some(queen => Math.abs(queen.col - cell.col) <= 1)) continue;
+            picked.push(cell);
+            choose(i + 1, picked);
+            picked.pop();
+          }
+        }
+        choose(0, []);
+        return options;
+      }
+
+      function solveBoard() {
+        const queensPerUnit = Number(queenCountInput.value);
+        if (!Number.isInteger(queensPerUnit) || queensPerUnit < 1 || queensPerUnit > 4) {
+          setStatus(solveStatus, '每行／列／區域的皇后數請輸入 1 到 4 的整數。', 'error');
+          return;
+        }
+        const regionMap = regions();
+        const unknown = state.cells.filter(cell => !cell.region || cell.region === '?');
+        if (unknown.length) {
+          setStatus(solveStatus, `還有 ${unknown.length} 格是「?」。這張截圖的提示視窗遮住了色塊；請補上區域代號或重截圖。`, 'warn');
+          return;
+        }
+        if (regionMap.size !== state.size) {
+          setStatus(solveStatus, `目前有 ${regionMap.size} 個區域，但 ${state.size}×${state.size} 題目必須有 ${state.size} 個區域。請檢查截圖是否有遮罩，或手動校正代號。`, 'error');
+          return;
+        }
+        const byRow = Array.from({ length: state.size }, (_, row) => state.cells.filter(cell => cell.row === row));
+        const optionsByRow = byRow.map(cells => chooseRowOptions(cells, queensPerUnit));
+        if (optionsByRow.some(options => !options.length)) {
+          setStatus(solveStatus, '這個棋盤大小無法在同一橫列放入指定數量、且彼此不相鄰的皇后。', 'error');
+          return;
+        }
+        const answers = [];
+        function search(row, columnCounts, regionCounts, previousRow, placements) {
+          if (answers.length >= 40) return;
+          if (row === state.size) { answers.push([...placements]); return; }
+          for (const option of optionsByRow[row]) {
+            if (option.some(cell => previousRow.some(queen => Math.abs(queen.col - cell.col) <= 1))) continue;
+            const optionRegions = new Map();
+            option.forEach(cell => optionRegions.set(cell.region, (optionRegions.get(cell.region) || 0) + 1));
+            if (option.some(cell => (columnCounts[cell.col] || 0) >= queensPerUnit)) continue;
+            if ([...optionRegions.entries()].some(([region, count]) => (regionCounts.get(region) || 0) + count > queensPerUnit)) continue;
+
+            option.forEach(cell => { columnCounts[cell.col] = (columnCounts[cell.col] || 0) + 1; });
+            optionRegions.forEach((count, region) => regionCounts.set(region, (regionCounts.get(region) || 0) + count));
+            placements.push(...option);
+            search(row + 1, columnCounts, regionCounts, option, placements);
+            placements.splice(placements.length - option.length, option.length);
+            option.forEach(cell => { columnCounts[cell.col] -= 1; });
+            optionRegions.forEach((count, region) => {
+              const next = regionCounts.get(region) - count;
+              if (next) regionCounts.set(region, next); else regionCounts.delete(region);
+            });
+          }
+        }
+        search(0, Array(state.size).fill(0), new Map(), [], []);
+        if (!answers.length) {
+          state.solution = [];
+          renderBoard();
+          answer.hidden = true;
+          setStatus(solveStatus, '找不到符合全部規則的解答。最常見原因是：遮罩造成區域辨識錯誤、兩個區域被併成同代號、皇后數設定錯誤，或格子被指定到錯誤區域。', 'error');
+          return;
+        }
+        state.solution = answers[0];
+        renderBoard();
+        answer.hidden = false;
+        answerList.innerHTML = '';
+        coordinates.innerHTML = '';
+        state.solution.forEach((cell, index) => {
+          const li = document.createElement('li');
+          li.textContent = `第 ${cell.row + 1} 橫列、第 ${cell.col + 1} 直行（區域 ${cell.region}）`;
+          answerList.append(li);
+          const badge = document.createElement('span');
+          badge.className = 'chip';
+          badge.innerHTML = `<i class="dot" style="background:${rgbToCss(cell.color)}"></i>Q${index + 1}：(${cell.row + 1}, ${cell.col + 1})`;
+          coordinates.append(badge);
+        });
+        const more = answers.length >= 40 ? '（至少找到 40 組；顯示第一組。）' : answers.length > 1 ? `（共找到 ${answers.length} 組；顯示第一組。）` : '（此題唯一解。）';
+        setStatus(solveStatus, `已找到可放置的 ${state.size * queensPerUnit} 隻皇后（每行／列／區域各 ${queensPerUnit} 隻）。${more}`, 'good');
+      }
+
+      function applyRegion() {
+        const label = regionInput.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 3);
+        if (!state.selected || !label) {
+          setStatus(solveStatus, '先點選一格，再輸入區域代號（例如 A、B、C）。', 'warn');
+          return;
+        }
+        state.selected.region = label;
+        state.solution = [];
+        answer.hidden = true;
+        renderBoard();
+        setStatus(solveStatus, `已把第 ${state.selected.row + 1} 橫列、第 ${state.selected.col + 1} 直行設為區域 ${label}。`, 'good');
+      }
+
+      function readFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+          setStatus(imageStatus, '請選擇圖片檔（JPG、PNG 或 WebP）。', 'error');
+          return;
+        }
+        if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
+        state.imageUrl = URL.createObjectURL(file);
+        preview.onload = () => {
+          state.image = preview;
+          preview.hidden = false;
+          emptyPreview.hidden = true;
+          detectBtn.disabled = false;
+          createCellsFromImage();
+        };
+        preview.src = state.imageUrl;
+        setStatus(imageStatus, `正在讀取：${file.name}`, '');
+      }
+
+      fileInput.addEventListener('change', event => readFile(event.target.files[0]));
+      ['dragenter', 'dragover'].forEach(type => dropZone.addEventListener(type, event => { event.preventDefault(); dropZone.classList.add('drag'); }));
+      ['dragleave', 'drop'].forEach(type => dropZone.addEventListener(type, event => { event.preventDefault(); dropZone.classList.remove('drag'); }));
+      dropZone.addEventListener('drop', event => readFile(event.dataTransfer.files[0]));
+      detectBtn.addEventListener('click', () => {
+        const rawSize = boardSizeInput.value.trim();
+        const size = rawSize ? Number(rawSize) : null;
+        if (rawSize && (!Number.isInteger(size) || size < 4 || size > 15)) {
+          setStatus(imageStatus, '棋盤大小請留空自動辨識，或輸入 4 到 15 的整數。', 'error');
+          return;
+        }
+        createCellsFromImage(size);
+      });
+      applyRegionBtn.addEventListener('click', applyRegion);
+      solveBtn.addEventListener('click', solveBoard);
+      $('clearBtn').addEventListener('click', () => {
+        if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
+        state.imageUrl = null;
+        state.image = null;
+        state.geometry = null;
+        state.cells = [];
+        state.selected = null;
+        state.solution = [];
+        preview.removeAttribute('src');
+        preview.hidden = true;
+        emptyPreview.hidden = false;
+        overlay.hidden = true;
+        fileInput.value = '';
+        boardSizeInput.value = '';
+        boardSizeInput.placeholder = '自動';
+        detectBtn.disabled = true;
+        answer.hidden = true;
+        editorNote.textContent = '先上傳截圖。一般關卡填 1；畫面顯示 Double 或 0/20 的關卡，請改填 2。若截圖有通知、手指或動畫遮住色塊，請把看不清的格子設成正確的區域代號後再求解。';
+        setStatus(imageStatus, '等待圖片。偵測完成後會畫出棋盤外框。');
+        setStatus(solveStatus, '尚未建立題目。');
+        renderBoard();
+      });
+      window.addEventListener('resize', drawOverlay);
+      renderBoard();
+    })();
+  </script>
+</body>
+</html>

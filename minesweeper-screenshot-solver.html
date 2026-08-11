@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>踩地雷截圖推理器｜必為地雷與必安全標示</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #526176;
+      --brand: #176a8f;
+      --brand-dark: #0b4f70;
+      --paper: #fff;
+      --line: #d7e2ea;
+      --safe: #087e5b;
+      --mine: #c5374c;
+      --warm: #9b5b08;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.65;
+      background: linear-gradient(135deg, #effaff 0%, #f6f9ff 48%, #eefbf5 100%);
+    }
+    .wrap { width: min(1240px, calc(100% - 30px)); margin: 0 auto; padding: 32px 0 56px; }
+    .back { color: var(--brand-dark); font-weight: 800; text-decoration: none; }
+    h1 { margin: 13px 0 6px; font-size: clamp(30px, 5vw, 45px); letter-spacing: .02em; }
+    h2 { margin: 0; font-size: 22px; }
+    h3 { margin: 0 0 6px; font-size: 18px; }
+    .lead { max-width: 900px; margin: 0; color: var(--muted); font-size: 17px; }
+    .rule-strip, .panel, .teaching {
+      background: rgba(255, 255, 255, .95);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 14px 35px rgba(35, 80, 104, .08);
+    }
+    .rule-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; margin: 21px 0; }
+    .rule { padding: 7px 10px; border-left: 4px solid #55aac5; }
+    .rule strong { display: block; font-size: 18px; }
+    .rule span { color: var(--muted); font-size: 14px; }
+    .work { display: grid; grid-template-columns: minmax(0, 1.17fr) minmax(355px, .83fr); gap: 20px; align-items: start; }
+    .panel { padding: 20px; }
+    .panel > p { margin: 7px 0 14px; color: var(--muted); }
+    .drop-zone {
+      display: grid; place-items: center; min-height: 128px; padding: 18px; border: 2px dashed #98b9ca; border-radius: 14px;
+      background: #fafdff; cursor: pointer; text-align: center; transition: .17s;
+    }
+    .drop-zone:hover, .drop-zone.drag { border-color: var(--brand); background: #effaff; transform: translateY(-1px); }
+    .drop-zone strong { display: block; font-size: 17px; }
+    .drop-zone span { color: var(--muted); font-size: 14px; }
+    #fileInput { display: none; }
+    .controls, .tool-row, .mode-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+    .controls { margin-top: 13px; }
+    .field { display: grid; gap: 3px; color: var(--muted); font-size: 13px; font-weight: 800; }
+    input[type="number"] { width: 80px; padding: 7px 8px; border: 1px solid #b9cad6; border-radius: 8px; color: var(--ink); font: inherit; }
+    button {
+      appearance: none; border: 0; border-radius: 9px; padding: 9px 12px; background: var(--brand); color: #fff;
+      font: inherit; font-weight: 800; cursor: pointer; transition: .16s;
+    }
+    button:hover { background: var(--brand-dark); }
+    button.secondary { background: #e6f0f5; color: #24455a; }
+    button.secondary:hover { background: #d3e3ec; }
+    button.mine-btn { background: #f9e2e6; color: #96293e; }
+    button.safe-btn { background: #dff4ea; color: #07684a; }
+    button.active { outline: 3px solid #1d2939; outline-offset: 1px; }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    .preview-shell { max-height: 680px; margin-top: 16px; overflow: auto; border: 1px solid #ccdce6; border-radius: 13px; background: #edf4f7; }
+    canvas { display: block; max-width: none; cursor: crosshair; touch-action: none; }
+    .empty-preview { display: grid; min-height: 185px; place-items: center; color: var(--muted); padding: 20px; text-align: center; }
+    .status { margin-top: 13px; padding: 10px 12px; border-radius: 10px; background: #eaf2f8; color: #294c62; font-size: 14px; }
+    .status.good { background: #e0f5eb; color: #076345; }
+    .status.warn { background: #fff2dc; color: #855009; }
+    .status.error { background: #fde8ec; color: #93283d; }
+    .hint { margin: 9px 0 0; color: var(--muted); font-size: 13px; }
+    .divider { height: 1px; margin: 17px 0; background: var(--line); }
+    .step { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 6px; border-radius: 50%; background: #d9eef7; color: #125676; font-size: 14px; }
+    .button-grid { display: grid; grid-template-columns: repeat(5, minmax(37px, 1fr)); gap: 7px; margin-top: 9px; }
+    .button-grid button { padding: 7px 5px; }
+    .keyboard { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+    .counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 14px 0; }
+    .count { padding: 10px; border: 1px solid var(--line); border-radius: 10px; text-align: center; background: #fbfdff; }
+    .count b { display: block; font-size: 23px; line-height: 1.15; }
+    .count.mine b { color: var(--mine); }
+    .count.safe b { color: var(--safe); }
+    .count.uncertain b { color: var(--warm); }
+    .answer-box { padding: 13px; border-radius: 12px; background: #f6fafc; }
+    .answer-box h3 { font-size: 17px; }
+    .answer-list { max-height: 230px; margin: 8px 0 0; padding-left: 21px; overflow: auto; font-size: 14px; }
+    .answer-list li { margin: 3px 0; }
+    .answer-list .mine { color: var(--mine); font-weight: 800; }
+    .answer-list .safe { color: var(--safe); font-weight: 800; }
+    .small { color: var(--muted); font-size: 13px; }
+    .teaching { margin-top: 21px; padding: 20px; }
+    .teaching-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 19px; }
+    .teaching p, .teaching li { color: var(--muted); font-size: 14px; }
+    .teaching ul { margin: 5px 0; padding-left: 21px; }
+    .example { margin-top: 10px; padding: 10px 11px; border-radius: 10px; background: #eef7fb; color: #24455a; font-size: 14px; }
+    code { color: #075d7f; font-weight: 800; }
+    @media (max-width: 910px) { .work { grid-template-columns: 1fr; } }
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 18px, 1240px); padding-top: 18px; }
+      .panel, .teaching { padding: 15px; }
+      .rule-strip, .teaching-grid { grid-template-columns: 1fr; }
+      .rule-strip { gap: 2px; }
+      .preview-shell { max-height: 570px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回數學小遊戲首頁</a>
+    <h1>踩地雷截圖推理器</h1>
+    <p class="lead">把局部棋盤截圖讀成「數字、已插旗、未翻格」，工具便會檢查所有符合數字的配置；只有在每一種可能中都相同的格子，才標成<span style="color:#c5374c;font-weight:800">必為地雷</span>或<span style="color:#087e5b;font-weight:800">必安全</span>。這不是猜下一步。</p>
+
+    <section class="rule-strip" aria-label="踩地雷推理規則">
+      <div class="rule"><strong>數字就是「相鄰地雷數」</strong><span>每一個數字只管它周圍最多 8 格；先數已插旗，再數還沒翻開的格子。</span></div>
+      <div class="rule"><strong>旗數已等於數字</strong><span>其餘相鄰未翻格全部必安全，適合用綠色標示。</span></div>
+      <div class="rule"><strong>旗數＋未翻格數等於數字</strong><span>其餘相鄰未翻格全部必為地雷，適合用紅色標示。</span></div>
+    </section>
+
+    <div class="work">
+      <section class="panel" aria-labelledby="imageTitle">
+        <h2 id="imageTitle"><span class="step">1</span>讀取並校正局部截圖</h2>
+        <p>建議先截取一個推理區塊，並保留每個數字周圍完整的 8 格。圖片只會留在目前瀏覽器內分析。</p>
+        <label class="drop-zone" id="dropZone" for="fileInput">
+          <span><strong>點選上傳踩地雷截圖，或把圖片拖進來</strong><span>支援 JPG、PNG、WebP。上傳後，依序點同一格、右邊第 8 格、下方第 8 格來校正格線。</span></span>
+        </label>
+        <input id="fileInput" type="file" accept="image/*">
+        <div class="controls">
+          <button id="calibrateBtn" type="button" disabled>開始八格三點校正</button>
+          <button id="rangeBtn" class="secondary" type="button" disabled>框選分析範圍</button>
+          <button id="autoReadBtn" class="secondary" type="button" disabled>半自動讀格</button>
+          <button id="clearBtn" class="secondary" type="button">清除全部</button>
+        </div>
+        <p class="hint" id="canvasHint">先上傳圖片。校正時請點「某格中心 → 右邊第 8 格中心 → 下方第 8 格中心」。</p>
+        <div class="preview-shell" id="previewShell">
+          <div class="empty-preview" id="emptyPreview">上傳後，這裡會顯示截圖與推理標示。<br>若原圖很長，可在此框內捲動，不需要縮小到看不清格子。</div>
+          <canvas id="canvas" hidden aria-label="踩地雷截圖編輯區"></canvas>
+        </div>
+        <div class="status" id="imageStatus" role="status">等待圖片。</div>
+      </section>
+
+      <section class="panel" aria-labelledby="solveTitle">
+        <h2 id="solveTitle"><span class="step">2</span>讀入格子後找「必然」</h2>
+        <p>校正後先框住要分析的矩形區域；再用下方按鈕點擊格子。<strong>半自動讀格會直接辨識藍色已翻開格的 0～8</strong>；只有低信心的數字才會留下橘色「？」讓你修正。</p>
+
+        <div class="tool-row" aria-label="格子編輯工具">
+          <button class="secondary tool active" data-tool="unknown" type="button">未翻格？</button>
+          <button class="mine-btn tool" data-tool="flag" type="button">已插旗⚑</button>
+          <button class="secondary tool" data-tool="ignored" type="button">略過格／遮住</button>
+          <button class="secondary tool" data-tool="erase" type="button">清除格子</button>
+        </div>
+        <div class="button-grid" id="clueButtons" aria-label="選擇數字格">
+          <button class="secondary clue-tool" data-clue="0" type="button">數字 0</button>
+          <button class="secondary clue-tool" data-clue="1" type="button">數字 1</button>
+          <button class="secondary clue-tool" data-clue="2" type="button">數字 2</button>
+          <button class="secondary clue-tool" data-clue="3" type="button">數字 3</button>
+          <button class="secondary clue-tool" data-clue="4" type="button">數字 4</button>
+          <button class="secondary clue-tool" data-clue="5" type="button">數字 5</button>
+          <button class="secondary clue-tool" data-clue="6" type="button">數字 6</button>
+          <button class="secondary clue-tool" data-clue="7" type="button">數字 7</button>
+          <button class="secondary clue-tool" data-clue="8" type="button">數字 8</button>
+        </div>
+        <p class="keyboard">快速輸入：選取畫布後，可直接按 <code>0–8</code>、<code>F</code>（旗）、<code>U</code>（未翻）、<code>I</code>（略過）或 <code>Backspace</code>（清除）。<br>半自動讀格會讀出粉紅旗與藍色格的 0～8；無法判讀或不屬於棋盤的部分會標成灰色「略」，直接略過，不必手動輸入。</p>
+
+        <div class="divider"></div>
+        <div class="tool-row">
+          <button id="solveBtn" type="button" disabled>檢查必然地雷／安全格</button>
+          <button id="exportBtn" class="secondary" type="button" disabled>下載標示後截圖</button>
+          <button id="clearResultsBtn" class="secondary" type="button" disabled>只清除解答標示</button>
+        </div>
+        <div class="status" id="solveStatus" role="status">請先上傳圖片、校正格線並框選分析範圍。</div>
+        <div class="counts" aria-label="推理解答統計">
+          <div class="count mine"><b id="mineCount">0</b>必為地雷</div>
+          <div class="count safe"><b id="safeCount">0</b>必安全</div>
+          <div class="count uncertain"><b id="uncertainCount">0</b>尚無法確定</div>
+        </div>
+        <div class="answer-box">
+          <h3>標示清單</h3>
+          <p class="small" id="rangeText">尚未設定分析範圍。</p>
+          <ol class="answer-list" id="answerList"><li class="small">完成推理後，這裡會列出紅色與綠色標示的位置。</li></ol>
+        </div>
+      </section>
+    </div>
+
+    <section class="teaching">
+      <div class="teaching-grid">
+        <div>
+          <h3>上課可先問的問題</h3>
+          <p>「這個 2 的周圍，已經有幾個旗？還有幾個未翻格？」讓學生先把數字翻譯成一條等式，而不是看到數字就憑直覺點格子。</p>
+          <div class="example">例：某個 <strong>2</strong> 旁已有 1 面旗，只剩 1 個未翻格，則這一格必為地雷。</div>
+        </div>
+        <div>
+          <h3>本頁怎麼判定「必然」</h3>
+          <p>工具會把所有數字的鄰格條件一起檢查。即使單看一個數字無法決定，只要把相鄰數字聯立後，某格在每個可行配置都同為地雷或同為安全，它才會被標示。</p>
+          <div class="example">這正是「交集資訊」：不是多猜一步，而是把兩個以上的條件合起來。</div>
+        </div>
+        <div>
+          <h3>最常見的錯誤</h3>
+          <ul>
+            <li>截圖裁到數字邊緣，少掉一個鄰格，推理便不完整。</li>
+            <li>把尚未證實的旗當成確定地雷；本頁的旗只能填已確定或遊戲已插旗的格。</li>
+            <li>把「有一種配置可放地雷」誤當成「必為地雷」。紅、綠標示都必須在所有配置中成立。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const fileInput = $('fileInput');
+      const dropZone = $('dropZone');
+      const canvas = $('canvas');
+      const ctx = canvas.getContext('2d');
+      const emptyPreview = $('emptyPreview');
+      const calibrateBtn = $('calibrateBtn');
+      const rangeBtn = $('rangeBtn');
+      const autoReadBtn = $('autoReadBtn');
+      const clearBtn = $('clearBtn');
+      const solveBtn = $('solveBtn');
+      const exportBtn = $('exportBtn');
+      const clearResultsBtn = $('clearResultsBtn');
+      const imageStatus = $('imageStatus');
+      const solveStatus = $('solveStatus');
+      const canvasHint = $('canvasHint');
+      const answerList = $('answerList');
+      const rangeText = $('rangeText');
+      const mineCount = $('mineCount');
+      const safeCount = $('safeCount');
+      const uncertainCount = $('uncertainCount');
+
+      const state = {
+        image: null,
+        imageUrl: null,
+        grid: null,
+        range: null,
+        cells: new Map(),
+        results: new Map(),
+        tool: 'unknown',
+        clue: 1,
+        action: null,
+        actionPoints: [],
+        selected: null,
+        autoRead: false
+      };
+
+      const key = (row, col) => `${row},${col}`;
+      const parseKey = (value) => value.split(',').map(Number);
+      const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
+      const CALIBRATION_STEPS = 8;
+      const segmentBounds = {
+        a: [.20, .80, .00, .19], b: [.72, 1, .14, .44], c: [.72, 1, .56, .86],
+        d: [.20, .80, .81, 1], e: [0, .28, .56, .86], f: [0, .28, .14, .44], g: [.20, .80, .42, .59]
+      };
+      const digitSegments = {
+        0: new Set(['a', 'b', 'c', 'd', 'e', 'f']),
+        2: new Set(['a', 'b', 'd', 'e', 'g']),
+        3: new Set(['a', 'b', 'c', 'd', 'g']),
+        4: new Set(['b', 'c', 'f', 'g']),
+        5: new Set(['a', 'c', 'd', 'f', 'g']),
+        6: new Set(['a', 'c', 'd', 'e', 'f', 'g']),
+        7: new Set(['a', 'b', 'c']),
+        8: new Set(['a', 'b', 'c', 'd', 'e', 'f', 'g'])
+      };
+
+      function setStatus(node, message, kind = '') {
+        node.textContent = message;
+        node.className = `status ${kind}`.trim();
+      }
+
+      function setTool(tool, clue = null) {
+        state.tool = tool;
+        if (clue !== null) state.clue = Number(clue);
+        document.querySelectorAll('.tool, .clue-tool').forEach(button => button.classList.remove('active'));
+        const target = tool === 'clue'
+          ? document.querySelector(`.clue-tool[data-clue="${state.clue}"]`)
+          : document.querySelector(`.tool[data-tool="${tool}"]`);
+        if (target) target.classList.add('active');
+        if (tool === 'clue') canvasHint.textContent = `目前工具：填入數字 ${state.clue}。點擊已翻開的數字格。`;
+        else if (tool === 'flag') canvasHint.textContent = '目前工具：已插旗。只填入遊戲中已有旗，或已經確認是地雷的格子。';
+        else if (tool === 'ignored') canvasHint.textContent = '目前工具：略過格。把通知視窗、廣告或看不清的格子標成「略」；相鄰數字便不會參與推理。';
+        else if (tool === 'erase') canvasHint.textContent = '目前工具：清除格子資料；點一下即可重新讀取。';
+        else canvasHint.textContent = '目前工具：未翻格。點擊尚未翻開、可能有地雷的格子。';
+      }
+
+      function pointFromEvent(event) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+          x: (event.clientX - rect.left) * canvas.width / rect.width,
+          y: (event.clientY - rect.top) * canvas.height / rect.height
+        };
+      }
+
+      function cellAt(point) {
+        if (!state.grid) return null;
+        const { x, y, pitchX, pitchY } = state.grid;
+        const col = Math.round((point.x - x) / pitchX);
+        const row = Math.round((point.y - y) / pitchY);
+        return { row, col };
+      }
+
+      function centerOf(row, col) {
+        const { x, y, pitchX, pitchY } = state.grid;
+        return { x: x + col * pitchX, y: y + row * pitchY };
+      }
+
+      function inImage(row, col) {
+        if (!state.grid || !state.image) return false;
+        const point = centerOf(row, col);
+        const padding = Math.min(state.grid.pitchX, state.grid.pitchY) * .45;
+        return point.x >= padding && point.x <= canvas.width - padding && point.y >= padding && point.y <= canvas.height - padding;
+      }
+
+      function inRange(row, col) {
+        if (!state.range) return false;
+        return row >= state.range.top && row <= state.range.bottom && col >= state.range.left && col <= state.range.right;
+      }
+
+      function record(row, col, type, value = null) {
+        if (!inImage(row, col)) return;
+        state.cells.set(key(row, col), { type, value });
+      }
+
+      function getRecord(row, col) {
+        return state.cells.get(key(row, col)) || null;
+      }
+
+      function colorFor(type) {
+        return type === 'clue' ? '#0b6f95' : type === 'flag' ? '#a1213a' : type === 'needs-clue' ? '#94610c' : '#31576c';
+      }
+
+      function drawTag(row, col, text, fill, stroke = 'rgba(255,255,255,.9)') {
+        const point = centerOf(row, col);
+        const size = Math.max(9, Math.min(state.grid.pitchX, state.grid.pitchY) * .72);
+        ctx.save();
+        ctx.fillStyle = fill;
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = Math.max(1.2, size * .07);
+        ctx.beginPath();
+        ctx.roundRect(point.x - size / 2, point.y - size / 2, size, size, Math.max(3, size * .14));
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.font = `800 ${Math.max(9, size * .54)}px "Microsoft JhengHei", sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, point.x, point.y + .5);
+        ctx.restore();
+      }
+
+      function drawGrid() {
+        if (!state.grid) return;
+        const { x, y, pitchX, pitchY } = state.grid;
+        const startCol = Math.ceil((0 - x) / pitchX - .5);
+        const endCol = Math.floor((canvas.width - x) / pitchX + .5);
+        const startRow = Math.ceil((0 - y) / pitchY - .5);
+        const endRow = Math.floor((canvas.height - y) / pitchY + .5);
+        ctx.save();
+        ctx.strokeStyle = 'rgba(7, 70, 96, .4)';
+        ctx.lineWidth = 1;
+        for (let col = startCol; col <= endCol; col += 1) {
+          const lineX = x + (col - .5) * pitchX;
+          ctx.beginPath(); ctx.moveTo(lineX, 0); ctx.lineTo(lineX, canvas.height); ctx.stroke();
+        }
+        for (let row = startRow; row <= endRow; row += 1) {
+          const lineY = y + (row - .5) * pitchY;
+          ctx.beginPath(); ctx.moveTo(0, lineY); ctx.lineTo(canvas.width, lineY); ctx.stroke();
+        }
+        if (state.range) {
+          const topLeft = centerOf(state.range.top, state.range.left);
+          const width = (state.range.right - state.range.left + 1) * pitchX;
+          const height = (state.range.bottom - state.range.top + 1) * pitchY;
+          ctx.fillStyle = 'rgba(28, 137, 182, .08)';
+          ctx.strokeStyle = 'rgba(4, 89, 124, .95)';
+          ctx.lineWidth = 3;
+          ctx.fillRect(topLeft.x - pitchX / 2, topLeft.y - pitchY / 2, width, height);
+          ctx.strokeRect(topLeft.x - pitchX / 2, topLeft.y - pitchY / 2, width, height);
+        }
+        ctx.restore();
+      }
+
+      function redraw() {
+        if (!state.image) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(state.image, 0, 0);
+        drawGrid();
+        if (!state.grid) return;
+
+        state.cells.forEach((cell, id) => {
+          const [row, col] = parseKey(id);
+          if (cell.type === 'clue') drawTag(row, col, String(cell.value), 'rgba(11, 111, 149, .86)');
+          if (cell.type === 'flag') drawTag(row, col, '⚑', 'rgba(161, 33, 58, .88)');
+          if (cell.type === 'needs-clue') drawTag(row, col, '?', 'rgba(148, 97, 12, .88)');
+          if (cell.type === 'ignored') drawTag(row, col, '略', 'rgba(90, 101, 113, .82)');
+        });
+        state.results.forEach((type, id) => {
+          const [row, col] = parseKey(id);
+          drawTag(row, col, type === 'mine' ? '雷' : '安', type === 'mine' ? 'rgba(197, 55, 76, .91)' : 'rgba(8, 126, 91, .91)', '#fff');
+        });
+        if (state.selected && inImage(state.selected.row, state.selected.col)) {
+          const point = centerOf(state.selected.row, state.selected.col);
+          const size = Math.min(state.grid.pitchX, state.grid.pitchY) * .92;
+          ctx.save();
+          ctx.strokeStyle = '#172033'; ctx.lineWidth = 3;
+          ctx.strokeRect(point.x - size / 2, point.y - size / 2, size, size);
+          ctx.restore();
+        }
+      }
+
+      function updateControls() {
+        const hasImage = Boolean(state.image);
+        const hasGrid = Boolean(state.grid);
+        calibrateBtn.disabled = !hasImage;
+        rangeBtn.disabled = !hasGrid;
+        autoReadBtn.disabled = !state.range;
+        solveBtn.disabled = !state.range;
+        exportBtn.disabled = state.results.size === 0;
+        clearResultsBtn.disabled = state.results.size === 0;
+      }
+
+      function resetResultDisplay() {
+        state.results.clear();
+        mineCount.textContent = '0';
+        safeCount.textContent = '0';
+        uncertainCount.textContent = '0';
+        answerList.innerHTML = '<li class="small">完成推理後，這裡會列出紅色與綠色標示的位置。</li>';
+        updateControls();
+      }
+
+      function loadFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+          setStatus(imageStatus, '請選擇 JPG、PNG 或 WebP 圖片。', 'error');
+          return;
+        }
+        if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
+        state.imageUrl = URL.createObjectURL(file);
+        const image = new Image();
+        image.onload = () => {
+          state.image = image;
+          state.grid = null;
+          state.range = null;
+          state.cells.clear();
+          state.selected = null;
+          state.action = null;
+          state.actionPoints = [];
+          resetResultDisplay();
+          canvas.width = image.naturalWidth;
+          canvas.height = image.naturalHeight;
+          canvas.hidden = false;
+          emptyPreview.hidden = true;
+          redraw();
+          setStatus(imageStatus, `已讀取 ${image.naturalWidth}×${image.naturalHeight} 的截圖。下一步請做八格三點校正。`, 'good');
+          canvasHint.textContent = '按「開始八格三點校正」，依序點某格中心、右邊第 8 格中心、下方第 8 格中心。';
+          updateControls();
+        };
+        image.onerror = () => setStatus(imageStatus, '這張圖片無法讀取，請換一張完整截圖。', 'error');
+        image.src = state.imageUrl;
+      }
+
+      function beginCalibration() {
+        state.action = 'calibrate';
+        state.actionPoints = [];
+        canvas.focus();
+        canvasHint.textContent = '校正第 1 點：請點任一完整格子的中心。';
+        setStatus(imageStatus, '正在校正格線。三點請分別是：同一格、右邊第 8 格、下方第 8 格；八格距離能大幅降低點擊誤差。', 'warn');
+      }
+
+      function completeCalibration() {
+        const [origin, right, down] = state.actionPoints;
+        const pitchX = Math.abs(right.x - origin.x) / CALIBRATION_STEPS;
+        const pitchY = Math.abs(down.y - origin.y) / CALIBRATION_STEPS;
+        const crossTolerance = Math.max(12, Math.min(pitchX, pitchY) * .65);
+        if (right.x <= origin.x || down.y <= origin.y || pitchX < 8 || pitchY < 8 || Math.abs(right.y - origin.y) > crossTolerance || Math.abs(down.x - origin.x) > crossTolerance) {
+          setStatus(imageStatus, '三點不像「同一格、右邊第 8 格、下方第 8 格」。請重新校正，三點都盡量點在格子中心。', 'error');
+          state.action = null;
+          state.actionPoints = [];
+          return;
+        }
+        state.grid = { x: origin.x, y: origin.y, pitchX, pitchY };
+        state.range = null;
+        state.cells.clear();
+        state.action = null;
+        state.actionPoints = [];
+        resetResultDisplay();
+        redraw();
+        updateControls();
+        canvasHint.textContent = '格線已校正。按「框選分析範圍」，依序點要分析區域的左上格與右下格。';
+        setStatus(imageStatus, `已用 ${CALIBRATION_STEPS} 格距離校正：每格約 ${pitchX.toFixed(1)}×${pitchY.toFixed(1)} 像素。請框選完整的局部題目。`, 'good');
+      }
+
+      function beginRange() {
+        state.action = 'range';
+        state.actionPoints = [];
+        canvas.focus();
+        canvasHint.textContent = '分析範圍第 1 點：點最左上角的格子中心。';
+        setStatus(imageStatus, '框選時請把每個數字周圍完整 8 格都納入；不要把通知視窗或廣告放進範圍。', 'warn');
+      }
+
+      function completeRange() {
+        const [first, second] = state.actionPoints;
+        state.range = {
+          top: Math.min(first.row, second.row), bottom: Math.max(first.row, second.row),
+          left: Math.min(first.col, second.col), right: Math.max(first.col, second.col)
+        };
+        state.cells.clear();
+        state.autoRead = false;
+        state.action = null;
+        state.actionPoints = [];
+        resetResultDisplay();
+        const rows = state.range.bottom - state.range.top + 1;
+        const cols = state.range.right - state.range.left + 1;
+        rangeText.textContent = `分析範圍：第 ${state.range.top + 1}～${state.range.bottom + 1} 列、第 ${state.range.left + 1}～${state.range.right + 1} 行（${rows}×${cols} 格）。`;
+        redraw();
+        updateControls();
+        canvasHint.textContent = '可按「半自動讀格」建立初稿，或先選數字／旗／未翻格，再逐格點擊。';
+        setStatus(imageStatus, `已框選 ${rows}×${cols} 格。建議先按「半自動讀格」，再把所有藍色數字格逐一填入。`, 'good');
+      }
+
+      function pixelFrom(source, x, y) {
+        const px = clamp(Math.round(x), 0, source.width - 1);
+        const py = clamp(Math.round(y), 0, source.height - 1);
+        const offset = (py * source.width + px) * 4;
+        return [source.data[offset], source.data[offset + 1], source.data[offset + 2]];
+      }
+
+      function sampleCell(row, col, source) {
+        const point = centerOf(row, col);
+        const offsets = [-.32, -.16, 0, .16, .32];
+        const values = offsets.flatMap(dy => offsets.map(dx => pixelFrom(source, point.x + dx * state.grid.pitchX, point.y + dy * state.grid.pitchY)));
+        const blueVotes = values.filter(([r, g, b]) => b > 115 && g > 88 && g > r + 8 && b > r + 22).length;
+        const pinkVotes = values.filter(([r, g, b]) => r > 160 && r > g + 22 && r > b + 10 && b > g + 6).length;
+        const neutralVotes = values.filter(([r, g, b]) => Math.min(r, g, b) > 184 && Math.max(r, g, b) - Math.min(r, g, b) < 48).length;
+        return { blueVotes, pinkVotes, neutralVotes };
+      }
+
+      function readDigit(row, col, source) {
+        const point = centerOf(row, col);
+        const halfWidth = Math.max(4, Math.floor(state.grid.pitchX * .37));
+        const halfHeight = Math.max(4, Math.floor(state.grid.pitchY * .37));
+        const x0 = clamp(Math.round(point.x - halfWidth), 0, source.width - 1);
+        const x1 = clamp(Math.round(point.x + halfWidth), 0, source.width - 1);
+        const y0 = clamp(Math.round(point.y - halfHeight), 0, source.height - 1);
+        const y1 = clamp(Math.round(point.y + halfHeight), 0, source.height - 1);
+        const mask = [];
+        const pixels = [];
+        for (let y = y0; y <= y1; y += 1) {
+          const line = [];
+          for (let x = x0; x <= x1; x += 1) {
+            const [r, g, b] = pixelFrom(source, x, y);
+            const bright = r > 185 && g > 185 && b > 185;
+            line.push(bright);
+            if (bright) pixels.push([x - x0, y - y0]);
+          }
+          mask.push(line);
+        }
+        if (pixels.length < Math.max(6, mask.length * mask[0].length * .018)) return { value: 0, confidence: 1 };
+        const minX = Math.min(...pixels.map(([x]) => x));
+        const maxX = Math.max(...pixels.map(([x]) => x));
+        const minY = Math.min(...pixels.map(([, y]) => y));
+        const maxY = Math.max(...pixels.map(([, y]) => y));
+        const width = maxX - minX + 1;
+        const height = maxY - minY + 1;
+        if (height >= Math.max(6, state.grid.pitchY * .35) && width / height < .48) return { value: 1, confidence: .9 };
+
+        const density = {};
+        Object.entries(segmentBounds).forEach(([name, [left, right, top, bottom]]) => {
+          const fromX = minX + Math.round((width - 1) * left);
+          const toX = minX + Math.round((width - 1) * right);
+          const fromY = minY + Math.round((height - 1) * top);
+          const toY = minY + Math.round((height - 1) * bottom);
+          let total = 0;
+          let white = 0;
+          for (let y = fromY; y <= toY; y += 1) {
+            for (let x = fromX; x <= toX; x += 1) {
+              total += 1;
+              if (mask[y]?.[x]) white += 1;
+            }
+          }
+          density[name] = total ? white / total : 0;
+        });
+        const ranked = Object.entries(digitSegments).map(([value, expected]) => {
+          const score = Object.keys(segmentBounds).reduce((sum, segment) => sum + (expected.has(segment) ? density[segment] : 1 - density[segment]), 0) / 7;
+          return { value: Number(value), score };
+        }).sort((a, b) => b.score - a.score);
+        const best = ranked[0];
+        return best.score >= .54 ? { value: best.value, confidence: best.score } : { value: null, confidence: best.score };
+      }
+
+      function autoRead() {
+        if (!state.range) return;
+        state.cells.clear();
+        resetResultDisplay();
+        redraw();
+        const source = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let flags = 0;
+        let clues = 0;
+        let zeroes = 0;
+        let ignored = 0;
+        for (let row = state.range.top; row <= state.range.bottom; row += 1) {
+          for (let col = state.range.left; col <= state.range.right; col += 1) {
+            const sample = sampleCell(row, col, source);
+            if (sample.pinkVotes >= 2) {
+              record(row, col, 'flag');
+              flags += 1;
+            } else if (sample.blueVotes >= 5) {
+              const digit = readDigit(row, col, source);
+              if (digit.value === null) {
+                record(row, col, 'ignored');
+                ignored += 1;
+              } else {
+                record(row, col, 'clue', digit.value);
+                if (digit.value === 0) zeroes += 1;
+                else clues += 1;
+              }
+            } else if (sample.neutralVotes >= 12) {
+              record(row, col, 'unknown');
+            } else {
+              record(row, col, 'ignored');
+              ignored += 1;
+            }
+          }
+        }
+        state.autoRead = true;
+        redraw();
+        const tone = ignored ? 'warn' : 'good';
+        setStatus(imageStatus, `半自動讀格完成：讀到 ${clues} 個數字、${zeroes} 個空白 0、${flags} 個粉紅旗。${ignored ? `另有 ${ignored} 格無法判讀，已標成灰色「略」並自動排除。` : '沒有需要略過的格子。'}`, tone);
+        canvasHint.textContent = ignored ? '灰色「略」已排除；碰到略過格的數字不會參與推理。其餘可用區塊可直接檢查。' : '藍色已翻格的數字已自動填入；可直接按「檢查必然地雷／安全格」。';
+      }
+
+      function applyToolTo(cell) {
+        if (!state.range || !inRange(cell.row, cell.col)) {
+          setStatus(imageStatus, '請只在藍色框選的分析範圍內輸入格子。', 'warn');
+          return;
+        }
+        if (state.tool === 'erase') state.cells.delete(key(cell.row, cell.col));
+        if (state.tool === 'unknown') record(cell.row, cell.col, 'unknown');
+        if (state.tool === 'flag') record(cell.row, cell.col, 'flag');
+        if (state.tool === 'ignored') record(cell.row, cell.col, 'ignored');
+        if (state.tool === 'clue') record(cell.row, cell.col, 'clue', state.clue);
+        state.selected = cell;
+        resetResultDisplay();
+        redraw();
+      }
+
+      function neighbors(row, col) {
+        const output = [];
+        for (let dr = -1; dr <= 1; dr += 1) {
+          for (let dc = -1; dc <= 1; dc += 1) {
+            if (dr === 0 && dc === 0) continue;
+            output.push({ row: row + dr, col: col + dc });
+          }
+        }
+        return output;
+      }
+
+      function buildConstraints() {
+        const constraints = [];
+        const skipped = [];
+        const invalid = [];
+        const clueEntries = [...state.cells.entries()].filter(([, cell]) => cell.type === 'clue');
+        for (const [id, clue] of clueEntries) {
+          const [row, col] = parseKey(id);
+          const around = neighbors(row, col);
+          const outside = around.filter(cell => !inRange(cell.row, cell.col));
+          if (outside.length) {
+            skipped.push(`${row + 1},${col + 1}`);
+            continue;
+          }
+          let fixedMines = 0;
+          const variables = [];
+          let incomplete = false;
+          for (const cell of around) {
+            const recordHere = getRecord(cell.row, cell.col);
+            if (!recordHere) {
+              incomplete = true;
+              continue;
+            }
+            if (recordHere.type === 'flag') fixedMines += 1;
+            if (recordHere.type === 'unknown') variables.push(key(cell.row, cell.col));
+            if (recordHere.type === 'needs-clue' || recordHere.type === 'ignored') incomplete = true;
+          }
+          if (incomplete) {
+            skipped.push(`${row + 1},${col + 1}`);
+            continue;
+          }
+          const target = clue.value - fixedMines;
+          if (target < 0 || target > variables.length) {
+            invalid.push(`${row + 1},${col + 1}`);
+            continue;
+          }
+          if (variables.length) constraints.push({ vars: [...new Set(variables)], target, label: `${row + 1},${col + 1}` });
+          else if (target !== 0) invalid.push(`${row + 1},${col + 1}`);
+        }
+        return { constraints, skipped, invalid, clueCount: clueEntries.length };
+      }
+
+      function componentsFrom(constraints) {
+        const variableToConstraints = new Map();
+        constraints.forEach((constraint, index) => {
+          constraint.vars.forEach(variable => {
+            if (!variableToConstraints.has(variable)) variableToConstraints.set(variable, []);
+            variableToConstraints.get(variable).push(index);
+          });
+        });
+        const seen = new Set();
+        const output = [];
+        for (const variable of variableToConstraints.keys()) {
+          if (seen.has(variable)) continue;
+          const variables = new Set();
+          const constraintIds = new Set();
+          const queue = [variable];
+          seen.add(variable);
+          while (queue.length) {
+            const current = queue.pop();
+            variables.add(current);
+            for (const constraintId of variableToConstraints.get(current)) {
+              if (constraintIds.has(constraintId)) continue;
+              constraintIds.add(constraintId);
+              for (const next of constraints[constraintId].vars) {
+                if (!seen.has(next)) { seen.add(next); queue.push(next); }
+              }
+            }
+          }
+          output.push({ variables: [...variables], constraints: [...constraintIds].map(id => constraints[id]) });
+        }
+        return output;
+      }
+
+      function enumerateComponent(component, limit = 50000) {
+        const degree = new Map(component.variables.map(variable => [variable, 0]));
+        component.constraints.forEach(constraint => constraint.vars.forEach(variable => degree.set(variable, degree.get(variable) + 1)));
+        const variables = [...component.variables].sort((a, b) => degree.get(b) - degree.get(a));
+        const variableIndex = new Map(variables.map((variable, index) => [variable, index]));
+        const constraints = component.constraints.map(constraint => ({
+          target: constraint.target,
+          vars: constraint.vars.map(variable => variableIndex.get(variable)),
+          assigned: 0,
+          remaining: constraint.vars.length
+        }));
+        const linked = variables.map(() => []);
+        constraints.forEach((constraint, cIndex) => constraint.vars.forEach(variable => linked[variable].push(cIndex)));
+        const values = Array(variables.length).fill(0);
+        const mineTotals = Array(variables.length).fill(0);
+        let solutions = 0;
+        let stopped = false;
+
+        function validAffected(indices) {
+          return indices.every(index => {
+            const constraint = constraints[index];
+            return constraint.assigned <= constraint.target && constraint.assigned + constraint.remaining >= constraint.target;
+          });
+        }
+
+        function search(index) {
+          if (stopped) return;
+          if (index === variables.length) {
+            solutions += 1;
+            values.forEach((value, i) => { mineTotals[i] += value; });
+            if (solutions > limit) stopped = true;
+            return;
+          }
+          const affected = linked[index];
+          for (const value of [0, 1]) {
+            values[index] = value;
+            affected.forEach(cIndex => { constraints[cIndex].assigned += value; constraints[cIndex].remaining -= 1; });
+            if (validAffected(affected)) search(index + 1);
+            affected.forEach(cIndex => { constraints[cIndex].assigned -= value; constraints[cIndex].remaining += 1; });
+            if (stopped) break;
+          }
+        }
+        search(0);
+        return { variables, mineTotals, solutions, stopped };
+      }
+
+      function solve() {
+        if (!state.range) return;
+        resetResultDisplay();
+        const { constraints, skipped, invalid, clueCount } = buildConstraints();
+        const omitted = skipped.length + invalid.length;
+        if (!constraints.length) {
+          setStatus(solveStatus, clueCount ? `沒有完整可用的數字條件。已略過 ${omitted} 個靠近遮罩、邊界或資料矛盾的數字格。` : '目前沒有可辨識的數字格可用。', 'warn');
+          return;
+        }
+        const results = new Map();
+        let uncertain = 0;
+        let stoppedComponents = 0;
+        let inconsistent = false;
+        for (const component of componentsFrom(constraints)) {
+          const outcome = enumerateComponent(component);
+          if (outcome.solutions === 0) { inconsistent = true; break; }
+          if (outcome.stopped) {
+            stoppedComponents += 1;
+            uncertain += outcome.variables.length;
+            continue;
+          }
+          outcome.variables.forEach((variable, index) => {
+            if (outcome.mineTotals[index] === outcome.solutions) results.set(variable, 'mine');
+            else if (outcome.mineTotals[index] === 0) results.set(variable, 'safe');
+            else uncertain += 1;
+          });
+        }
+        if (inconsistent) {
+          setStatus(solveStatus, '找不到任何符合數字的配置。請檢查：數字是否填錯、旗是否漏填，或框選範圍是否少收了鄰格。', 'error');
+          return;
+        }
+        state.results = results;
+        const mines = [...results].filter(([, type]) => type === 'mine').map(([id]) => id);
+        const safes = [...results].filter(([, type]) => type === 'safe').map(([id]) => id);
+        mineCount.textContent = String(mines.length);
+        safeCount.textContent = String(safes.length);
+        uncertainCount.textContent = String(uncertain);
+        const listItems = [...mines.map(id => ({ id, type: 'mine' })), ...safes.map(id => ({ id, type: 'safe' }))]
+          .sort((a, b) => a.id.localeCompare(b.id, 'en', { numeric: true }))
+          .map(({ id, type }) => {
+            const [row, col] = parseKey(id);
+            return `<li class="${type}">${type === 'mine' ? '必為地雷' : '必安全'}：第 ${row + 1} 列、第 ${col + 1} 行</li>`;
+          });
+        answerList.innerHTML = listItems.length ? listItems.join('') : '<li class="small">目前沒有可保證的格子；還需要更多相鄰數字，或這一區本來就不唯一。</li>';
+        redraw();
+        updateControls();
+        const notes = [];
+        if (stoppedComponents) notes.push(`有 ${stoppedComponents} 個過大的連通區塊未枚舉完，該區未作必然標示。`);
+        if (omitted) notes.push(`已略過 ${omitted} 個資訊不完整、被遮住或資料矛盾的數字格。`);
+        const suffix = notes.length ? notes.join('') : '所有已分析區塊都已完整檢查。';
+        const tone = results.size ? 'good' : 'warn';
+        setStatus(solveStatus, `已用 ${constraints.length} 條數字條件比對所有可行配置，找到 ${mines.length} 個必為地雷、${safes.length} 個必安全。${suffix}`, tone);
+      }
+
+      function exportImage() {
+        if (!state.results.size) return;
+        const link = document.createElement('a');
+        link.download = '踩地雷-必然標示.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+
+      function clearAll() {
+        if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
+        state.image = null;
+        state.imageUrl = null;
+        state.grid = null;
+        state.range = null;
+        state.cells.clear();
+        state.results.clear();
+        state.action = null;
+        state.actionPoints = [];
+        state.selected = null;
+        canvas.hidden = true;
+        emptyPreview.hidden = false;
+        emptyPreview.textContent = '上傳後，這裡會顯示截圖與推理標示。';
+        rangeText.textContent = '尚未設定分析範圍。';
+        setStatus(imageStatus, '等待圖片。', '');
+        setStatus(solveStatus, '請先上傳圖片、校正格線並框選分析範圍。', '');
+        canvasHint.textContent = '先上傳圖片。校正時請點「某格中心 → 右邊第 8 格中心 → 下方第 8 格中心」。';
+        resetResultDisplay();
+        updateControls();
+      }
+
+      canvas.addEventListener('click', (event) => {
+        if (!state.image) return;
+        canvas.focus();
+        const point = pointFromEvent(event);
+        if (state.action === 'calibrate') {
+          state.actionPoints.push(point);
+          if (state.actionPoints.length === 1) canvasHint.textContent = '校正第 2 點：點第一點右邊第 8 格的中心。';
+          else if (state.actionPoints.length === 2) canvasHint.textContent = '校正第 3 點：點第一點下方第 8 格的中心。';
+          else completeCalibration();
+          return;
+        }
+        const cell = cellAt(point);
+        if (!cell || !inImage(cell.row, cell.col)) return;
+        if (state.action === 'range') {
+          state.actionPoints.push(cell);
+          if (state.actionPoints.length === 1) canvasHint.textContent = '分析範圍第 2 點：點最右下角的格子中心。';
+          else completeRange();
+          return;
+        }
+        applyToolTo(cell);
+      });
+
+      canvas.addEventListener('keydown', (event) => {
+        if (!state.selected || !state.range) return;
+        if (/^[0-8]$/.test(event.key)) { setTool('clue', event.key); applyToolTo(state.selected); event.preventDefault(); }
+        if (event.key.toLowerCase() === 'f') { setTool('flag'); applyToolTo(state.selected); event.preventDefault(); }
+        if (event.key.toLowerCase() === 'u') { setTool('unknown'); applyToolTo(state.selected); event.preventDefault(); }
+        if (event.key.toLowerCase() === 'i') { setTool('ignored'); applyToolTo(state.selected); event.preventDefault(); }
+        if (event.key === 'Backspace' || event.key === 'Delete') { setTool('erase'); applyToolTo(state.selected); event.preventDefault(); }
+      });
+
+      fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+      dropZone.addEventListener('dragover', event => { event.preventDefault(); dropZone.classList.add('drag'); });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+      dropZone.addEventListener('drop', event => { event.preventDefault(); dropZone.classList.remove('drag'); loadFile(event.dataTransfer.files[0]); });
+      calibrateBtn.addEventListener('click', beginCalibration);
+      rangeBtn.addEventListener('click', beginRange);
+      autoReadBtn.addEventListener('click', autoRead);
+      clearBtn.addEventListener('click', clearAll);
+      solveBtn.addEventListener('click', solve);
+      exportBtn.addEventListener('click', exportImage);
+      clearResultsBtn.addEventListener('click', () => { resetResultDisplay(); redraw(); setStatus(solveStatus, '已清除紅、綠解答標示，原本讀入的格子資料仍保留。', ''); });
+      document.querySelectorAll('.tool').forEach(button => button.addEventListener('click', () => setTool(button.dataset.tool)));
+      document.querySelectorAll('.clue-tool').forEach(button => button.addEventListener('click', () => setTool('clue', button.dataset.clue)));
+      canvas.tabIndex = 0;
+      updateControls();
+    })();
+  </script>
+</body>
+</html>
