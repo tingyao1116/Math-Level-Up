@@ -173,7 +173,13 @@
         description: "先點生肖，再點數字，兩者組合成一個答案。",
         universe: zodiac.flatMap((z) => [1,2,3,4,5,6,7,8,9].map((n) => `${z}${n}`)),
         choiceOrder: "sorted",
-        answerType: "pair"
+        answerType: "pair",
+        firstItems: zodiac,
+        secondItems: [1,2,3,4,5,6,7,8,9].map(String),
+        firstLabel: "生肖列",
+        secondLabel: "數字列",
+        firstHint: "生肖",
+        secondHint: "數字"
       },
       classic: {
         label: "模式2：左右+生肖(1~9)",
@@ -189,8 +195,21 @@
         choiceOrder: "sorted",
         answerType: "single"
       },
+      jpKoPair: {
+        label: "模式4：日文列 + 韓文列（組合作答）",
+        description: "先點日文數字，再點韓文數字；兩列固定由 0 排到 9。",
+        universe: jp.flatMap((j) => ko.map((k) => `${j}${k}`)),
+        choiceOrder: "sorted",
+        answerType: "pair",
+        firstItems: jp,
+        secondItems: ko,
+        firstLabel: "日文數字列（0~9）",
+        secondLabel: "韓文數字列（0~9）",
+        firstHint: "日文",
+        secondHint: "韓文"
+      },
       jpKo: {
-        label: "模式4：前日文後韓文（100種）",
+        label: "模式5：前日文後韓文（100種）",
         description: "前日文 0~9 + 後韓文 0~9，共 100 組。",
         universe: jp.flatMap((j) => ko.map((k) => `${j}${k}`)),
         choiceOrder: "shuffle",
@@ -241,7 +260,7 @@
     let ended = false;
     let timer = null;
     let currentMode = modes.classic;
-    let pendingZodiac = "";
+    let pendingFirst = "";
     let showIntervalMs = 3000;
     let bestScore = Number(localStorage.getItem(BEST_SCORE_KEY) || 0);
     let bestLevel = Number(localStorage.getItem(BEST_LEVEL_KEY) || 0);
@@ -314,57 +333,57 @@
       }
       pairComposeEl.innerHTML = `
         <div class="pair-area">
-          <p class="pair-title">模式4作答方式：先選生肖，再選數字</p>
-          <div class="pair-preview">目前組合：${pendingZodiac || "（尚未選生肖）"}${pendingZodiac ? " + 數字" : ""}</div>
+          <p class="pair-title">作答方式：先選${currentMode.firstHint}，再選${currentMode.secondHint}</p>
+          <div class="pair-preview">目前組合：${pendingFirst || `（尚未選${currentMode.firstHint}）`}${pendingFirst ? ` + ${currentMode.secondHint}` : ""}</div>
         </div>
       `;
     }
 
     function renderChoices() {
       choicesEl.innerHTML = "";
-      pendingZodiac = "";
+      pendingFirst = "";
       renderPairCompose();
 
       if (currentMode.answerType === "pair") {
-        const zodiacArea = document.createElement("div");
-        zodiacArea.className = "pair-area";
-        zodiacArea.innerHTML = `<p class="pair-title">生肖列</p><div class="choices" id="zodiacRow"></div>`;
+        const firstArea = document.createElement("div");
+        firstArea.className = "pair-area";
+        firstArea.innerHTML = `<p class="pair-title">${currentMode.firstLabel}</p><div class="choices" id="firstRow"></div>`;
 
-        const numberArea = document.createElement("div");
-        numberArea.className = "pair-area";
-        numberArea.innerHTML = `<p class="pair-title">數字列</p><div class="choices" id="numberRow"></div>`;
+        const secondArea = document.createElement("div");
+        secondArea.className = "pair-area";
+        secondArea.innerHTML = `<p class="pair-title">${currentMode.secondLabel}</p><div class="choices" id="secondRow"></div>`;
 
-        choicesEl.appendChild(zodiacArea);
-        choicesEl.appendChild(numberArea);
+        choicesEl.appendChild(firstArea);
+        choicesEl.appendChild(secondArea);
 
-        const zodiacRow = document.getElementById("zodiacRow");
-        const numberRow = document.getElementById("numberRow");
+        const firstRow = document.getElementById("firstRow");
+        const secondRow = document.getElementById("secondRow");
 
-        zodiac.forEach((z) => {
+        currentMode.firstItems.forEach((item) => {
           const b = document.createElement("button");
           b.className = "choice-btn";
-          b.textContent = z;
+          b.textContent = item;
           b.addEventListener("click", () => {
-            pendingZodiac = z;
+            pendingFirst = item;
             renderPairCompose();
           });
-          zodiacRow.appendChild(b);
+          firstRow.appendChild(b);
         });
 
-        [1,2,3,4,5,6,7,8,9].forEach((n) => {
+        currentMode.secondItems.forEach((item) => {
           const b = document.createElement("button");
           b.className = "choice-btn";
-          b.textContent = String(n);
+          b.textContent = item;
           b.addEventListener("click", () => {
-            if (!pendingZodiac) {
-              updateStatus("請先選生肖，再選數字。");
+            if (!pendingFirst) {
+              updateStatus(`請先選${currentMode.firstHint}，再選${currentMode.secondHint}。`);
               return;
             }
-            handleChoice(`${pendingZodiac}${n}`);
-            pendingZodiac = "";
+            handleChoice(`${pendingFirst}${item}`);
+            pendingFirst = "";
             renderPairCompose();
           });
-          numberRow.appendChild(b);
+          secondRow.appendChild(b);
         });
         return;
       }
@@ -442,11 +461,27 @@
 
     function speakPrompt(text) {
       if (!("speechSynthesis" in window)) return;
-      const utter = new SpeechSynthesisUtterance(String(text));
+      window.speechSynthesis.cancel();
+      const value = String(text);
+
+      if (modeSelectEl.value === "jpKo" || modeSelectEl.value === "jpKoPair") {
+        const jaPart = jp.find((item) => value.startsWith(item));
+        if (jaPart) {
+          const koPart = value.slice(jaPart.length);
+          const jaUtter = new SpeechSynthesisUtterance(jaPart);
+          const koUtter = new SpeechSynthesisUtterance(koPart);
+          jaUtter.lang = "ja-JP";
+          koUtter.lang = "ko-KR";
+          jaUtter.rate = koUtter.rate = 0.95;
+          window.speechSynthesis.speak(jaUtter);
+          window.speechSynthesis.speak(koUtter);
+          return;
+        }
+      }
+
+      const utter = new SpeechSynthesisUtterance(value);
       utter.lang = "zh-TW";
       utter.rate = 0.95;
-      utter.pitch = 1;
-      window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utter);
     }
 
@@ -472,7 +507,7 @@
       answerIndex = 0;
       showing = false;
       ended = false;
-      pendingZodiac = "";
+      pendingFirst = "";
       choicesEl.innerHTML = "";
       pairComposeEl.innerHTML = "";
       displayEl.textContent = "準備開始";

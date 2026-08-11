@@ -139,6 +139,39 @@
       color: #365f7a;
       font-size: 0.96rem;
     }
+    .sequence-card {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-left: 4px solid #0f766e;
+      border-radius: 8px;
+      background: #f4fbfa;
+      color: #174b54;
+    }
+    .sequence-card p { margin: 4px 0; color: #174b54; }
+    .is-hidden { display: none; }
+    .advanced-order {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px dashed #9fc9c3;
+      border-radius: 8px;
+      background: #f8fcfb;
+    }
+    .advanced-order p { margin: 0 0 8px; }
+    .advanced-step {
+      display: grid;
+      grid-template-columns: 52px 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 0;
+      border-top: 1px solid #e0eeeb;
+    }
+    .advanced-step:first-child { border-top: 0; }
+    .advanced-step .step-number { color: #1d6770; font-weight: 700; }
+    .advanced-step .step-name { color: #1d3657; font-weight: 700; }
+    .advanced-step button {
+      min-width: 42px;
+      padding: 5px 8px;
+    }
     .tip {
       background: var(--accent);
       border: 1px solid #f2dba1;
@@ -174,7 +207,7 @@
 
       <article class="panel transform-lab">
         <h2>二、完整變換實驗室：每一種圖形都能平移、縮放、對稱</h2>
-        <p>固定順序是「基準圖形 → 絕對值效果（可選）→ 對稱／旋轉 → x、y 縮放 → 平移」。先追蹤一個重點座標，再讀變換後的圖形與方程式。</p>
+        <p>先選基準圖形與操作，再選「誰先做」。順序不同時，即使使用相同的平移量、縮放倍數與對稱方式，最後圖形也可能不同。</p>
 
         <div class="control-block">
           <h3>1. 選基準圖形</h3>
@@ -193,6 +226,21 @@
             <strong>對稱／旋轉：</strong>
             <div class="buttons" id="symmetryButtons"></div>
           </div>
+          <div class="operation-row">
+            <strong>操作模式：</strong>
+            <div class="buttons" id="modeButtons"></div>
+          </div>
+          <div id="basicOrderBlock">
+            <div class="operation-row">
+              <strong>簡易版順序：</strong>
+              <div class="buttons" id="orderButtons"></div>
+            </div>
+          </div>
+          <div class="advanced-order is-hidden" id="advancedOrderBlock">
+            <p><strong>自訂版：</strong>絕對值、對稱、x/y 縮放、x/y 平移共六件事；按「上移／下移」可任意重排。</p>
+            <div id="advancedOrderList"></div>
+          </div>
+          <div class="sequence-card" id="sequencePreview"></div>
           <div class="formula-box">
             <div id="coreMap"></div>
             <div id="coreAfter"></div>
@@ -286,14 +334,14 @@
 
   <script>
     const families = {
-      quadratic: { label: "二次函數", base: "\\(y=(x-1)^2-2\\)", sample: () => sampleFn(-1.6, 3.6, (x) => (x - 1) ** 2 - 2), keys: [{ x: 1, y: -2, label: "頂點" }], guide: ["v", 1, "對稱軸 x=1"], note: "頂點是 (1, -2)。縮放與平移後，先追蹤頂點的位置；關於 x 軸鏡射時開口會上下翻轉。" },
-      cubic: { label: "三次函數", base: "\\(y=0.35(x-1)^3-1\\)", sample: () => sampleFn(-1.5, 3.5, (x) => 0.35 * (x - 1) ** 3 - 1), keys: [{ x: 1, y: -1, label: "反曲點" }], note: "反曲點是 (1, -1)。平移、縮放、對稱後，S 形方向與反曲點是最可靠的辨認重點。" },
-      sine: { label: "正弦函數", base: "\\(y=\\sin x\\)", sample: () => sampleFn(-2 * Math.PI, 2 * Math.PI, (x) => Math.sin(x)), keys: [{ x: Math.PI / 2, y: 1, label: "最高點" }], guide: ["h", 0, "中線 y=0"], note: "不做絕對值或對稱時，變換後是 y=sy sin((x-h)/sx)+k；振幅為 sy，週期為 2πsx，中線為 y=k。" },
-      exponential: { label: "指數函數", base: "\\(y=2^x\\)", sample: () => sampleFn(-3.2, 2.7, (x) => 2 ** x), keys: [{ x: 0, y: 1, label: "關鍵點" }], guide: ["h", 0, "漸近線 y=0"], note: "基準圖通過 (0, 1)，且以 y=0 為水平漸近線。先看漸近線與關鍵點，再讀平移。" },
-      logarithm: { label: "對數函數", base: "\\(y=\\ln x\\)", sample: () => sampleFn(0.08, 7, (x) => Math.log(x)), keys: [{ x: 1, y: 0, label: "關鍵點" }], guide: ["v", 0, "漸近線 x=0"], note: "基準圖通過 (1, 0)，且 x=0 是垂直漸近線。變換後務必再檢查定義域。" },
-      absolute: { label: "絕對值函數", base: "\\(y=|x-1|-2\\)", sample: () => sampleFn(-3.5, 5, (x) => Math.abs(x - 1) - 2), keys: [{ x: 1, y: -2, label: "頂點" }], note: "頂點是 (1, -2)。最適合比較 f(|x|)、f(-|x|)、|f(x)|、-|f(x)| 的複製與翻折效果。" },
-      circle: { label: "圓方程式", base: "\\((x-2)^2+(y-1)^2=2.25\\)", sample: () => sampleEllipse(2, 1, 1.5, 1.5), keys: [{ x: 2, y: 1, label: "圓心" }], conic: true, note: "圓心是 (2, 1)，半徑是 1.5。sx=sy 時，平移、鏡射、旋轉後仍是圓；sx≠sy 時會變成橢圓。" },
-      ellipse: { label: "橢圓方程式", base: "\\(\\frac{(x+1)^2}{6.25}+\\frac{(y-1)^2}{2.25}=1\\)", sample: () => sampleEllipse(-1, 1, 2.5, 1.5), keys: [{ x: -1, y: 1, label: "中心" }], conic: true, note: "中心是 (-1, 1)，水平半軸 2.5、垂直半軸 1.5。關於 y=x、y=-x 對稱或旋轉時，長短軸方向可能互換。" }
+      quadratic: { label: "二次函數", base: "\\(y=(x-1)^2-2\\)", expr: (x) => "\\left(" + x + "-1\\right)^2-2", sample: () => sampleFn(-1.6, 3.6, (x) => (x - 1) ** 2 - 2), keys: [{ x: 1, y: -2, label: "頂點" }], guide: ["v", 1, "對稱軸 x=1"], note: "頂點是 (1, -2)。縮放與平移後，先追蹤頂點的位置；關於 x 軸鏡射時開口會上下翻轉。" },
+      cubic: { label: "三次函數", base: "\\(y=0.35(x-1)^3-1\\)", expr: (x) => "0.35\\left(" + x + "-1\\right)^3-1", sample: () => sampleFn(-1.5, 3.5, (x) => 0.35 * (x - 1) ** 3 - 1), keys: [{ x: 1, y: -1, label: "反曲點" }], note: "反曲點是 (1, -1)。平移、縮放、對稱後，S 形方向與反曲點是最可靠的辨認重點。" },
+      sine: { label: "正弦函數", base: "\\(y=\\sin x\\)", expr: (x) => "\\sin\\left(" + x + "\\right)", sample: () => sampleFn(-2 * Math.PI, 2 * Math.PI, (x) => Math.sin(x)), keys: [{ x: Math.PI / 2, y: 1, label: "最高點" }], guide: ["h", 0, "中線 y=0"], note: "不做絕對值或對稱時，變換後是 y=sy sin((x-h)/sx)+k；振幅為 sy，週期為 2πsx，中線為 y=k。" },
+      exponential: { label: "指數函數", base: "\\(y=2^x\\)", expr: (x) => "2^{" + x + "}", sample: () => sampleFn(-3.2, 2.7, (x) => 2 ** x), keys: [{ x: 0, y: 1, label: "關鍵點" }], guide: ["h", 0, "漸近線 y=0"], note: "基準圖通過 (0, 1)，且以 y=0 為水平漸近線。先看漸近線與關鍵點，再讀平移。" },
+      logarithm: { label: "對數函數", base: "\\(y=\\ln x\\)", expr: (x) => "\\ln\\left(" + x + "\\right)", sample: () => sampleFn(0.08, 7, (x) => Math.log(x)), keys: [{ x: 1, y: 0, label: "關鍵點" }], guide: ["v", 0, "漸近線 x=0"], note: "基準圖通過 (1, 0)，且 x=0 是垂直漸近線。變換後務必再檢查定義域。" },
+      absolute: { label: "絕對值函數", base: "\\(y=|x-1|-2\\)", expr: (x) => "\\left|" + x + "-1\\right|-2", sample: () => sampleFn(-3.5, 5, (x) => Math.abs(x - 1) - 2), keys: [{ x: 1, y: -2, label: "頂點" }], note: "頂點是 (1, -2)。最適合比較 f(|x|)、f(-|x|)、|f(x)|、-|f(x)| 的複製與翻折效果。" },
+      circle: { label: "圓方程式", base: "\\((x-2)^2+(y-1)^2=2.25\\)", equation: (x, y) => "\\left(" + x + "-2\\right)^2+\\left(" + y + "-1\\right)^2=2.25", sample: () => sampleEllipse(2, 1, 1.5, 1.5), keys: [{ x: 2, y: 1, label: "圓心" }], conic: true, note: "圓心是 (2, 1)，半徑是 1.5。sx=sy 時，平移、鏡射、旋轉後仍是圓；sx≠sy 時會變成橢圓。" },
+      ellipse: { label: "橢圓方程式", base: "\\(\\frac{(x+1)^2}{6.25}+\\frac{(y-1)^2}{2.25}=1\\)", equation: (x, y) => "\\frac{\\left(" + x + "+1\\right)^2}{6.25}+\\frac{\\left(" + y + "-1\\right)^2}{2.25}=1", sample: () => sampleEllipse(-1, 1, 2.5, 1.5), keys: [{ x: -1, y: 1, label: "中心" }], conic: true, note: "中心是 (-1, 1)，水平半軸 2.5、垂直半軸 1.5。關於 y=x、y=-x 對稱或旋轉時，長短軸方向可能互換。" }
     };
 
     const pointOperations = {
@@ -314,6 +362,41 @@
       yNegAbs: { label: "-|f(x)|：上翻下", tex: "\\(g(x)=-|f(x)|\\)：上方圖形翻到下方。", note: "y>0 的點改成 -y；最後整張圖不會高於 x 軸。", apply: (pts) => pts.map(([x, y]) => [x, -Math.abs(y)]) }
     };
 
+    const sequenceOrders = {
+      operationTranslateScale: {
+        label: "對稱 → 平移 → 縮放",
+        steps: ["operation", "translate", "scale"],
+        summary: "先把圖形對稱或旋轉，再把整張圖平移，最後從原點方向縮放。"
+      },
+      operationScaleTranslate: {
+        label: "對稱 → 縮放 → 平移",
+        steps: ["operation", "scale", "translate"],
+        summary: "先把圖形對稱或旋轉，再縮放，最後平移。這是目前頁面原先採用的順序。"
+      },
+      translateScaleOperation: {
+        label: "平移 → 縮放 → 對稱",
+        steps: ["translate", "scale", "operation"],
+        summary: "先平移、再縮放；最後才關於所選的軸對稱或旋轉。"
+      },
+      scaleTranslateOperation: {
+        label: "縮放 → 平移 → 對稱",
+        steps: ["scale", "translate", "operation"],
+        summary: "先縮放、再平移；最後才關於所選的軸對稱或旋轉。"
+      }
+    };
+    const modes = {
+      basic: { label: "簡易版：4 種順序" },
+      advanced: { label: "自訂版：6 件事排序" }
+    };
+    const actionLabels = {
+      absolute: "絕對值效果",
+      symmetry: "對稱／旋轉",
+      scaleX: "x 方向縮放",
+      scaleY: "y 方向縮放",
+      translateX: "x 平移",
+      translateY: "y 平移"
+    };
+
     const controls = [
       { key: "sx", label: "x 方向縮放 sx", min: 0.4, max: 3, step: 0.1, value: 1 },
       { key: "sy", label: "y 方向縮放 sy", min: 0.4, max: 3, step: 0.1, value: 1 },
@@ -325,10 +408,16 @@
       families: document.getElementById("familyButtons"),
       absolute: document.getElementById("absoluteButtons"),
       operations: document.getElementById("symmetryButtons"),
+      modes: document.getElementById("modeButtons"),
+      orders: document.getElementById("orderButtons"),
+      basicOrderBlock: document.getElementById("basicOrderBlock"),
+      advancedOrderBlock: document.getElementById("advancedOrderBlock"),
+      advancedOrderList: document.getElementById("advancedOrderList"),
       base: document.getElementById("coreBaseEq"),
       note: document.getElementById("familyNote"),
       map: document.getElementById("coreMap"),
       after: document.getElementById("coreAfter"),
+      sequence: document.getElementById("sequencePreview"),
       params: document.getElementById("coreParams"),
       tip: document.getElementById("labTip"),
       before: document.getElementById("beforeCanvas"),
@@ -337,6 +426,9 @@
     let familyKey = "quadratic";
     let operationKey = "identity";
     let absoluteKey = "none";
+    let orderKey = "operationScaleTranslate";
+    let modeKey = "basic";
+    let advancedOrder = ["absolute", "symmetry", "scaleX", "scaleY", "translateX", "translateY"];
     const baseColor = "#0f766e";
     const resultColor = "#0b3d91";
 
@@ -466,16 +558,58 @@
       const x = px(point.x, range, width); const y = py(point.y, range, height);
       ctx.save(); ctx.fillStyle = "#fff"; ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 4.5, 0, 2 * Math.PI); ctx.fill(); ctx.stroke(); ctx.fillStyle = color; ctx.fillText(label, Math.min(width - 130, x + 7), Math.max(15, y - 8)); ctx.restore();
     }
-    function keyCopies(point) {
+    function absoluteKeyCopies(point) {
       if (absoluteKey === "xAbs") return point.x >= 0 ? [point, { x: -point.x, y: point.y, label: point.label }] : [];
       if (absoluteKey === "xNegAbs") return point.x <= 0 ? [point, { x: -point.x, y: point.y, label: point.label }] : [];
       if (absoluteKey === "yAbs") return [{ x: point.x, y: Math.abs(point.y), label: point.label }];
       if (absoluteKey === "yNegAbs") return [{ x: point.x, y: -Math.abs(point.y), label: point.label }];
       return [point];
     }
-    function movePoint(point) {
-      const [u, v] = pointOperations[operationKey].fn(point.x, point.y);
-      return { x: state.sx * u + state.h, y: state.sy * v + state.k, label: point.label };
+    function activeSteps() {
+      if (modeKey === "advanced") return advancedOrder.slice();
+      const expanded = [];
+      sequenceOrders[orderKey].steps.forEach((stepName) => {
+        if (stepName === "operation") expanded.push("absolute", "symmetry");
+        if (stepName === "scale") expanded.push("scaleX", "scaleY");
+        if (stepName === "translate") expanded.push("translateX", "translateY");
+      });
+      return expanded;
+    }
+    function coordinateAction(point, action) {
+      if (action === "symmetry") return pointOperations[operationKey].fn(point[0], point[1]);
+      if (action === "scaleX") return [state.sx * point[0], point[1]];
+      if (action === "scaleY") return [point[0], state.sy * point[1]];
+      if (action === "translateX") return [point[0] + state.h, point[1]];
+      if (action === "translateY") return [point[0], point[1] + state.k];
+      return point;
+    }
+    function transformPointSet(points) {
+      let result = points.slice();
+      activeSteps().forEach((action) => {
+        if (action === "absolute") {
+          result = absoluteOperations[absoluteKey].apply(result);
+        } else {
+          result = result.map(([x, y]) => {
+            if (!Number.isFinite(x) || !Number.isFinite(y)) return [NaN, NaN];
+            return coordinateAction([x, y], action);
+          });
+        }
+      });
+      return result;
+    }
+    function transformKeyPoints(points) {
+      let result = points.map((point) => ({ x: point.x, y: point.y, label: point.label }));
+      activeSteps().forEach((action) => {
+        if (action === "absolute") {
+          result = result.flatMap(absoluteKeyCopies);
+        } else {
+          result = result.map((point) => {
+            const [x, y] = coordinateAction([point.x, point.y], action);
+            return { x, y, label: point.label };
+          });
+        }
+      });
+      return result;
     }
     function relation() {
       const symbol = absoluteKey === "none" ? "f" : "g";
@@ -499,6 +633,42 @@
         b.addEventListener("click", () => choose(key)); container.appendChild(b);
       });
     }
+    function advancedActionName(action) {
+      if (action === "absolute") return actionLabels[action] + "：" + absoluteOperations[absoluteKey].label;
+      if (action === "symmetry") return actionLabels[action] + "：" + pointOperations[operationKey].label;
+      return actionLabels[action];
+    }
+    function renderAdvancedOrder() {
+      elements.advancedOrderList.innerHTML = "";
+      advancedOrder.forEach((action, index) => {
+        const row = document.createElement("div");
+        row.className = "advanced-step";
+        const number = document.createElement("span");
+        number.className = "step-number";
+        number.textContent = "第 " + (index + 1) + " 步";
+        const name = document.createElement("span");
+        name.className = "step-name";
+        name.textContent = advancedActionName(action);
+        const up = document.createElement("button");
+        up.type = "button";
+        up.textContent = "上移";
+        up.disabled = index === 0;
+        up.addEventListener("click", () => {
+          [advancedOrder[index - 1], advancedOrder[index]] = [advancedOrder[index], advancedOrder[index - 1]];
+          render();
+        });
+        const down = document.createElement("button");
+        down.type = "button";
+        down.textContent = "下移";
+        down.disabled = index === advancedOrder.length - 1;
+        down.addEventListener("click", () => {
+          [advancedOrder[index + 1], advancedOrder[index]] = [advancedOrder[index], advancedOrder[index + 1]];
+          render();
+        });
+        row.append(number, name, up, down);
+        elements.advancedOrderList.appendChild(row);
+      });
+    }
     function params() {
       elements.params.innerHTML = "";
       controls.forEach((item) => {
@@ -509,23 +679,183 @@
         input.addEventListener("input", () => { state[item.key] = Number(input.value); render(); }); row.append(label, input, value); elements.params.appendChild(row);
       });
     }
+    function operationBody(inputX, inputY, outputX, outputY) {
+      let mappedX = inputX;
+      let mappedY = inputY;
+      if (operationKey === "xAxis") mappedY = "-" + inputY;
+      if (operationKey === "yAxis") mappedX = "-" + inputX;
+      if (operationKey === "origin") { mappedX = "-" + inputX; mappedY = "-" + inputY; }
+      if (operationKey === "lineYeqX") { mappedX = inputY; mappedY = inputX; }
+      if (operationKey === "lineYeqNegX") { mappedX = "-" + inputY; mappedY = "-" + inputX; }
+      if (operationKey === "rotate90") { mappedX = "-" + inputY; mappedY = inputX; }
+      return "(" + outputX + "," + outputY + ")=(" + mappedX + "," + mappedY + ")";
+    }
+    function operationMap(inputX, inputY, outputX, outputY) {
+      return "\\(" + operationBody(inputX, inputY, outputX, outputY) + "\\)";
+    }
+    function translateMap(inputX, inputY, outputX, outputY) {
+      return "\\((" + outputX + "," + outputY + ")=(" + inputX + plus(state.h) + "," + inputY + plus(state.k) + ")\\)";
+    }
+    function scaleMap(inputX, inputY, outputX, outputY) {
+      return "\\((" + outputX + "," + outputY + ")=(" + round(state.sx) + inputX + "," + round(state.sy) + inputY + ")\\)";
+    }
+    function finalSequenceMap() {
+      if (modeKey === "advanced") {
+        return "\\((x',y')=A_6\\circ A_5\\circ\\cdots\\circ A_1(x,y)\\)，其中每個 \\(A_i\\) 如上方步驟所列。";
+      }
+      if (orderKey === "operationTranslateScale") return "\\((x',y')=(" + round(state.sx) + "(u" + plus(state.h) + ")," + round(state.sy) + "(v" + plus(state.k) + "))\\)";
+      if (orderKey === "operationScaleTranslate") return "\\((x',y')=(" + round(state.sx) + "u" + plus(state.h) + "," + round(state.sy) + "v" + plus(state.k) + ")\\)";
+      if (orderKey === "translateScaleOperation") return "\\((a,b)=(" + round(state.sx) + "(x" + plus(state.h) + ")," + round(state.sy) + "(y" + plus(state.k) + ")),\\quad " + operationBody("a", "b", "x'", "y'") + "\\)";
+      return "\\((a,b)=(" + round(state.sx) + "x" + plus(state.h) + "," + round(state.sy) + "y" + plus(state.k) + "),\\quad " + operationBody("a", "b", "x'", "y'") + "\\)";
+    }
+    function actionFormula(action) {
+      if (action === "absolute") return absoluteOperations[absoluteKey].tex;
+      if (action === "symmetry") return operationMap("x", "y", "x'", "y'");
+      if (action === "scaleX") return "\\((x,y)\\mapsto(" + round(state.sx) + "x,y)\\)";
+      if (action === "scaleY") return "\\((x,y)\\mapsto(x," + round(state.sy) + "y)\\)";
+      if (action === "translateX") return "\\((x,y)\\mapsto(x" + plus(state.h) + ",y)\\)";
+      return "\\((x,y)\\mapsto(x,y" + plus(state.k) + ")\\)";
+    }
+    function renderSequencePreview() {
+      if (modeKey === "advanced") {
+        const steps = advancedOrder.map((action, index) => "<p><strong>第 " + (index + 1) + " 步 " + actionLabels[action] + "：</strong>" + actionFormula(action) + "</p>").join("");
+        elements.sequence.innerHTML = "<p><strong>目前順序：自訂版</strong>。按上移／下移可改變六件事的先後。</p>" + steps +
+          "<p><strong>提醒：</strong>絕對值若放在中段，會對當時的圖形做複製或翻折，不能一律壓縮成單一 \\(y=\\cdots\\)；右圖與每步座標式就是精確結果。</p>";
+        return;
+      }
+      const order = sequenceOrders[orderKey];
+      let steps = "";
+      if (orderKey === "operationTranslateScale") {
+        steps = "<p><strong>第 2 步 平移 T：</strong>" + translateMap("u", "v", "p", "q") + "</p>" +
+          "<p><strong>第 3 步 縮放 D：</strong>" + scaleMap("p", "q", "x'", "y'") + "</p>";
+      } else if (orderKey === "operationScaleTranslate") {
+        steps = "<p><strong>第 2 步 縮放 D：</strong>" + scaleMap("u", "v", "p", "q") + "</p>" +
+          "<p><strong>第 3 步 平移 T：</strong>" + translateMap("p", "q", "x'", "y'") + "</p>";
+      } else if (orderKey === "translateScaleOperation") {
+        steps = "<p><strong>第 1 步 平移 T：</strong>" + translateMap("x", "y", "p", "q") + "</p>" +
+          "<p><strong>第 2 步 縮放 D：</strong>" + scaleMap("p", "q", "a", "b") + "</p>" +
+          "<p><strong>第 3 步 對稱模組 M：</strong>先 " + absoluteOperations[absoluteKey].tex + "，再 " + operationMap("a", "b", "x'", "y'") + "</p>";
+      } else {
+        steps = "<p><strong>第 1 步 縮放 D：</strong>" + scaleMap("x", "y", "p", "q") + "</p>" +
+          "<p><strong>第 2 步 平移 T：</strong>" + translateMap("p", "q", "a", "b") + "</p>" +
+          "<p><strong>第 3 步 對稱模組 M：</strong>先 " + absoluteOperations[absoluteKey].tex + "，再 " + operationMap("a", "b", "x'", "y'") + "</p>";
+      }
+      elements.sequence.innerHTML = "<p><strong>目前順序：</strong>" + order.label + "</p>" +
+        (orderKey.indexOf("operation") === 0 ? "<p><strong>第 1 步 對稱模組 M：</strong>先 " + absoluteOperations[absoluteKey].tex + "，再 " + operationMap("x", "y", "u", "v") + "</p>" : "") +
+        steps +
+        "<p><strong>為什麼不同：</strong>" + order.summary + "簡易版中，絕對值與對稱／旋轉永遠視為同一個模組 M。</p>";
+    }
+    function grouped(expression) { return "\\left(" + expression + "\\right)"; }
+    function subtractExpression(expression, value) {
+      if (Math.abs(value) < 1e-9) return expression;
+      return grouped(expression) + (value > 0 ? "-" + round(value) : "+" + round(-value));
+    }
+    function inverseCoordinates(steps) {
+      let x = "x";
+      let y = "y";
+      steps.slice().reverse().forEach((action) => {
+        const oldX = x;
+        const oldY = y;
+        if (action === "scaleX") x = fraction(oldX, state.sx);
+        if (action === "scaleY") y = fraction(oldY, state.sy);
+        if (action === "translateX") x = subtractExpression(oldX, state.h);
+        if (action === "translateY") y = subtractExpression(oldY, state.k);
+        if (action === "symmetry") {
+          if (operationKey === "xAxis") y = "-" + grouped(oldY);
+          if (operationKey === "yAxis") x = "-" + grouped(oldX);
+          if (operationKey === "origin") { x = "-" + grouped(oldX); y = "-" + grouped(oldY); }
+          if (operationKey === "lineYeqX") { x = oldY; y = oldX; }
+          if (operationKey === "lineYeqNegX") { x = "-" + grouped(oldY); y = "-" + grouped(oldX); }
+          if (operationKey === "rotate90") { x = oldY; y = "-" + grouped(oldX); }
+        }
+      });
+      return { x, y };
+    }
+    function absoluteExpression(family, x) {
+      if (absoluteKey === "xAbs") return family.expr("\\left|" + x + "\\right|");
+      if (absoluteKey === "xNegAbs") return family.expr("-\\left|" + x + "\\right|");
+      if (absoluteKey === "yAbs") return "\\left|" + family.expr(x) + "\\right|";
+      if (absoluteKey === "yNegAbs") return "-\\left|" + family.expr(x) + "\\right|";
+      return family.expr(x);
+    }
+    function verticalFunctionFormula(family) {
+      let formula = (x) => family.expr(x);
+      activeSteps().forEach((action) => {
+        const previous = formula;
+        if (action === "scaleX") formula = (x) => previous(fraction(x, state.sx));
+        if (action === "scaleY") formula = (x) => Math.abs(state.sy - 1) < 1e-9 ? previous(x) : round(state.sy) + grouped(previous(x));
+        if (action === "translateX") formula = (x) => previous(subtractExpression(x, state.h));
+        if (action === "translateY") formula = (x) => subtractExpression(previous(x), -state.k);
+        if (action === "symmetry" && operationKey === "xAxis") formula = (x) => "-" + grouped(previous(x));
+        if (action === "symmetry" && operationKey === "yAxis") formula = (x) => previous("-" + grouped(x));
+        if (action === "symmetry" && operationKey === "origin") formula = (x) => "-" + grouped(previous("-" + grouped(x)));
+        if (action === "absolute" && absoluteKey === "xAbs") formula = (x) => previous("\\left|" + x + "\\right|");
+        if (action === "absolute" && absoluteKey === "xNegAbs") formula = (x) => previous("-\\left|" + x + "\\right|");
+        if (action === "absolute" && absoluteKey === "yAbs") formula = (x) => "\\left|" + previous(x) + "\\right|";
+        if (action === "absolute" && absoluteKey === "yNegAbs") formula = (x) => "-\\left|" + previous(x) + "\\right|";
+      });
+      return formula("x");
+    }
+    function canShowClosedEquation() {
+      return absoluteKey === "none" || activeSteps().indexOf("absolute") === 0;
+    }
+    function keepsVerticalFunction(family) {
+      return !family.conic && ["identity", "xAxis", "yAxis", "origin"].includes(operationKey);
+    }
+    function transformedEquation(family) {
+      if (keepsVerticalFunction(family)) return "\\(y=" + verticalFunctionFormula(family) + "\\)";
+      if (!canShowClosedEquation()) return null;
+      const stepsWithoutAbsolute = activeSteps().filter((action) => action !== "absolute");
+      const inverse = inverseCoordinates(stepsWithoutAbsolute);
+      if (family.conic) {
+        if (absoluteKey !== "none") return null;
+        return "\\(" + family.equation(inverse.x, inverse.y) + "\\)";
+      }
+      return "\\(" + inverse.y + "=" + absoluteExpression(family, inverse.x) + "\\)";
+    }
+    function graphOperator(action) {
+      if (action === "absolute") {
+        const names = { xAbs: "\\mathcal A_{x\\mapsto |x|}", xNegAbs: "\\mathcal A_{x\\mapsto -|x|}", yAbs: "\\mathcal A_{y\\mapsto |y|}", yNegAbs: "\\mathcal A_{y\\mapsto -|y|}", none: "I" };
+        return names[absoluteKey];
+      }
+      if (action === "symmetry") {
+        const names = { identity: "I", xAxis: "S_x", yAxis: "S_y", origin: "S_O", lineYeqX: "S_{y=x}", lineYeqNegX: "S_{y=-x}", rotate90: "R_{90^\\circ}" };
+        return names[operationKey];
+      }
+      if (action === "scaleX") return "D_x(" + round(state.sx) + ")";
+      if (action === "scaleY") return "D_y(" + round(state.sy) + ")";
+      if (action === "translateX") return "T_x(" + round(state.h) + ")";
+      return "T_y(" + round(state.k) + ")";
+    }
+    function transformedGraphRelation() {
+      const composition = activeSteps().slice().reverse().map(graphOperator).join("\\circ ");
+      return "\\(\\mathcal G_{\\mathrm{final}}=" + composition + "\\bigl(\\mathcal G_0\\bigr)\\)";
+    }
     function text() {
-      const family = families[familyKey]; const operation = pointOperations[operationKey]; const absolute = absoluteOperations[absoluteKey];
+      const family = families[familyKey]; const absolute = absoluteOperations[absoluteKey]; const operation = pointOperations[operationKey];
       elements.base.innerHTML = "目前基準圖形：<strong>" + family.label + "</strong>，基準式：" + family.base;
       elements.note.textContent = family.note;
-      const finalMap = "\\((x',y')=(" + round(state.sx) + "u" + plus(state.h) + "," + round(state.sy) + "v" + plus(state.k) + ")\\)";
-      elements.map.innerHTML = "<div class=\"formula\"><strong>絕對值：</strong>" + absolute.tex + "</div><div class=\"formula\"><strong>對稱／旋轉：</strong>" + operation.tex + "</div><div class=\"formula\"><strong>縮放、平移：</strong>" + finalMap + "</div>";
-      elements.after.innerHTML = family.conic
-        ? "<div class=\"formula\"><strong>變換後方程式：</strong>把上面的座標映射反解後代回基準方程式。圖上已用等比例座標呈現；特別注意 sx≠sy 時圓會變成橢圓。</div>"
-        : "<div class=\"formula\"><strong>變換後關係：</strong>" + (absoluteKey === "none" ? "" : "先由絕對值效果得到 g，接著 ") + relation() + "</div>";
-      elements.tip.textContent = "綠色是基準圖形，藍色是完成所有操作後的圖形，空心點是關鍵點。 " + absolute.note + " " + operation.note;
+      const finalMap = finalSequenceMap();
+      renderSequencePreview();
+      elements.map.innerHTML = "<div class=\"formula\"><strong>絕對值：</strong>" + absolute.tex + "</div><div class=\"formula\"><strong>對稱／旋轉 S：</strong>" + operation.tex + "</div><div class=\"formula\"><strong>依目前順序的最後座標式：</strong>" + finalMap + "</div>";
+      const closedEquation = transformedEquation(family);
+      elements.after.innerHTML = closedEquation
+        ? "<div class=\"formula\"><strong>變換後的函數／方程式：</strong>" + closedEquation + "</div><div class=\"formula\">" + (keepsVerticalFunction(family) ? "這一式是依目前順序逐步套用得到，且仍保持 \\(y=F(x)\\) 的函數形式。" : "這一式已依照目前順序，將最後的 \\(x,y\\) 反解回基準圖形的座標。") + "</div>"
+        : "<div class=\"formula\"><strong>變換後的圖形關係：</strong>" + transformedGraphRelation() + "</div><div class=\"formula\">絕對值被安排在第 " + (activeSteps().indexOf("absolute") + 1) + " 步，會對當時圖形做複製或翻折；因此不能誠實地一律壓成單一 \\(y=\\cdots\\)。上式、六個座標步驟與右圖共同給出精確的最終圖形。</div>";
+      const key = family.keys[0];
+      const mappedKeys = transformKeyPoints([key]);
+      const mappedText = mappedKeys.length
+        ? mappedKeys.map((point) => "(" + round(point.x) + ", " + round(point.y) + ")").join("、")
+        : "此絕對值效果不保留這個關鍵點";
+      const orderLabel = modeKey === "basic" ? sequenceOrders[orderKey].label : "自訂版六步順序";
+      elements.tip.textContent = "關鍵點追蹤：" + key.label + " (" + round(key.x) + ", " + round(key.y) + ") → " + mappedText + "。綠色是基準圖形，藍色是完全依照「" + orderLabel + "」得到的圖形。 " + absolute.note + " " + operation.note;
     }
     function graphs() {
       const family = families[familyKey]; const operation = pointOperations[operationKey]; const absolute = absoluteOperations[absoluteKey];
       const firstCtx = ctxFor(elements.before); const secondCtx = ctxFor(elements.afterCanvas);
       const [w1, h1] = canvasSize(firstCtx); const [w2, h2] = canvasSize(secondCtx);
-      const original = family.sample(); const abs = absolute.apply(original);
-      const final = abs.map(([x, y]) => { if (!Number.isFinite(x) || !Number.isFinite(y)) return [NaN, NaN]; const [u, v] = operation.fn(x, y); return [state.sx * u + state.h, state.sy * v + state.k]; });
+      const original = family.sample();
+      const final = transformPointSet(original);
       const range = graphRange(original, final, w1, h1);
       firstCtx.clearRect(0, 0, w1, h1); secondCtx.clearRect(0, 0, w2, h2);
       grid(firstCtx, w1, h1, range); grid(secondCtx, w2, h2, range);
@@ -534,17 +864,30 @@
       curve(firstCtx, original, range, baseColor); curve(secondCtx, final, range, resultColor);
       family.keys.forEach((key) => {
         dot(firstCtx, key, range, baseColor, key.label + " (" + round(key.x) + ", " + round(key.y) + ")");
-        keyCopies(key).map(movePoint).forEach((result) => dot(secondCtx, result, range, resultColor, result.label + " (" + round(result.x) + ", " + round(result.y) + ")"));
+        transformKeyPoints([key]).forEach((result) => dot(secondCtx, result, range, resultColor, result.label + " (" + round(result.x) + ", " + round(result.y) + ")"));
       });
     }
     function typeset(nodes) {
-      requestAnimationFrame(() => { if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise(nodes).catch((error) => console.warn("MathJax typeset failed", error)); });
+      const renderMath = () => {
+        if (!window.MathJax || !window.MathJax.typesetPromise) return;
+        window.MathJax.typesetPromise(nodes).catch((error) => console.warn("MathJax typeset failed", error));
+      };
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        requestAnimationFrame(renderMath);
+      } else {
+        window.addEventListener("load", renderMath, { once: true });
+      }
     }
     function render() {
       buttons(elements.families, families, familyKey, (key) => { familyKey = key; render(); });
       buttons(elements.absolute, absoluteOperations, absoluteKey, (key) => { absoluteKey = key; render(); });
       buttons(elements.operations, pointOperations, operationKey, (key) => { operationKey = key; render(); });
-      params(); text(); graphs(); typeset([elements.base, elements.map, elements.after]);
+      buttons(elements.modes, modes, modeKey, (key) => { modeKey = key; render(); });
+      buttons(elements.orders, sequenceOrders, orderKey, (key) => { orderKey = key; render(); });
+      elements.basicOrderBlock.classList.toggle("is-hidden", modeKey !== "basic");
+      elements.advancedOrderBlock.classList.toggle("is-hidden", modeKey !== "advanced");
+      renderAdvancedOrder();
+      params(); text(); graphs(); typeset([elements.base, elements.map, elements.after, elements.sequence]);
     }
     render();
     window.addEventListener("resize", render);
