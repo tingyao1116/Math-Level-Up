@@ -179,12 +179,124 @@
       padding: 10px;
       margin-top: 8px;
     }
+    .sin-lab {
+      margin-top: 14px;
+      border-color: #c9d9fb;
+      background: linear-gradient(145deg, #fbfdff, #f4f8ff);
+    }
+    .sin-lab h2 { margin-top: 0; }
+    .sin-rule-grid, .sin-route-grid, .sin-practice-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 12px;
+    }
+    .sin-rule, .sin-route, .sin-practice-card {
+      border: 1px solid #d8e4f6;
+      border-radius: 10px;
+      padding: 11px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    .sin-rule h3, .sin-route h3, .sin-practice-card h3 { margin: 0 0 6px; color: #1d4f67; font-size: 1rem; }
+    .sin-controls, .sin-quiz-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 12px 0 8px;
+    }
+    .sin-controls label { font-weight: 700; color: #1d3657; }
+    .sin-controls select, .sin-answer-grid input {
+      border: 1px solid #b6cfec;
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #22436f;
+      background: #fff;
+      font: inherit;
+    }
+    .sin-controls select { min-width: min(100%, 330px); }
+    .sin-canvas-wrap {
+      margin-top: 12px;
+      padding: 10px;
+      border: 1px solid #d8e4f6;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .sin-canvas-wrap canvas { height: 340px; }
+    .sin-answer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(110px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .sin-answer-grid label { display: grid; gap: 5px; color: #1d3657; font-weight: 700; }
+    .sin-answer-grid input { width: 100%; }
+    .sin-feedback {
+      min-height: 1.8em;
+      margin-top: 8px;
+      color: #1d4f67;
+      font-weight: 700;
+    }
+    .sin-score { color: #365f7a; font-weight: 700; }
+    .combine-lab {
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid #cfdef4;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #f8fbff, #f7fcfb);
+    }
+    .combine-lab h3 { margin: 0 0 7px; color: #1d4f67; }
+    .combine-rule-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .combine-rule {
+      border: 1px solid #dbe8f6;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .combine-rule p { margin: 4px 0; }
+    .combine-practice {
+      margin-top: 13px;
+      padding: 12px;
+      border: 1px solid #b9ded9;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    .combine-choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .combine-choice {
+      min-height: 52px;
+      border-radius: 10px;
+      text-align: left;
+      line-height: 1.55;
+    }
+    .combine-choice.correct { background: #0f766e; color: #fff; border-color: #0f766e; }
+    .combine-choice.wrong { background: #fff1f1; color: #9f2d2d; border-color: #e9b5b5; }
+    .combine-feedback {
+      min-height: 2em;
+      margin-top: 9px;
+      color: #1d4f67;
+      font-weight: 700;
+    }
     ul { margin: 8px 0 0; padding-left: 18px; color: var(--sub); }
     .quiz p { margin: 6px 0; }
     @media (max-width: 900px) {
-      .row, .graphWrap { grid-template-columns: 1fr; }
+      .row, .graphWrap, .sin-rule-grid, .sin-route-grid, .sin-practice-grid, .combine-rule-grid { grid-template-columns: 1fr; }
+      .sin-answer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .operation-row { grid-template-columns: 1fr; }
       .operation-row > strong { padding-top: 0; }
+    }
+    @media (max-width: 520px) {
+      .sin-answer-grid, .combine-choice-grid { grid-template-columns: 1fr; }
+      .sin-canvas-wrap canvas { height: 300px; }
     }
   </style>
 </head>
@@ -312,9 +424,110 @@
         </article>
       </section>
 
+      <article class="panel sin-lab">
+        <h2>五、正弦函數專題：從 \(y=a\sin(bx+c)+d\) 看懂伸縮與平移</h2>
+        <p>先固定 \(b>0\)，並約定 \(-\pi\le c<\pi\)。這樣一張圖的「向右／向左位置」才會有唯一的 \(c\)；否則 \(c\) 加上整數倍 \(2\pi\)，其實仍是同一張圖，無法公平判分。</p>
+        <div class="sin-rule-grid">
+          <section class="sin-rule">
+            <h3>先讀外面：\(a,d\)</h3>
+            <p>中線是 \(y=d\)；振幅是 \(|a|=\frac{\text{最高值}-\text{最低值}}2\)。從中線向右穿越時，若曲線先上升則 \(a>0\)，先下降則 \(a<0\)。</p>
+          </section>
+          <section class="sin-rule">
+            <h3>再讀裡面：\(b,c\)</h3>
+            <p>週期 \(T=\frac{2\pi}{b}\)，所以 \(b=\frac{2\pi}{T}\)。先找曲線以「原本正弦的方向」穿過中線的位置 \(x=h\)，則 \(h=-\frac cb\)，也就是 \(c=-bh\)。</p>
+          </section>
+        </div>
+
+        <div class="sin-controls">
+          <label for="sinExampleSelect">操作範例：</label>
+          <select id="sinExampleSelect" aria-label="選擇正弦函數伸縮平移範例"></select>
+        </div>
+        <div class="formula-box" id="sinExampleFormula" aria-live="polite"></div>
+        <div class="sin-route-grid">
+          <section class="sin-route">
+            <h3>路線 A：先縮放，再平移</h3>
+            <p id="sinRouteScaleFirst"></p>
+          </section>
+          <section class="sin-route">
+            <h3>路線 B：先平移，再縮放</h3>
+            <p id="sinRouteTranslateFirst"></p>
+          </section>
+        </div>
+        <div class="sin-canvas-wrap">
+          <h3 class="subheading">範例圖：中線、週期與五個標記點</h3>
+          <canvas id="sinExampleCanvas" aria-label="正弦函數伸縮與平移的標記圖形"></canvas>
+          <p>藍色虛線是中線；A 到 B 是一個週期。A、P、M、Q、B 對應一個週期中的五個關鍵位置，先由它們讀出中線、振幅與週期。</p>
+        </div>
+        <div class="tip">最常錯：\(f(bx+c)\) 的平移量不是直接看 \(-c\)。若先做「水平縮放」，最後真正看見的平移量是 \(h=-\frac cb\)；例如 \(\sin(2x-\pi)=\sin\bigl(2(x-\frac\pi2)\bigr)\)，是右移 \(\frac\pi2\)，不是右移 \(\pi\)。</div>
+
+        <section class="sin-practice-card">
+          <h3>讀圖練習：判斷 \(a,b,c,d\)</h3>
+          <p id="sinQuizPrompt">請由圖形填入 \(y=a\sin(bx+c)+d\)。本題都採 \(b>0\)、\(-\pi\le c<\pi\)，且 \(c\) 請寫成 \(\pi\) 的倍數。</p>
+          <div class="sin-quiz-actions">
+            <button type="button" id="sinNewQuestion">換一題</button>
+            <button type="button" id="sinHint">提示</button>
+            <button type="button" id="sinReveal">顯示解析</button>
+            <span class="sin-score" id="sinScore">答對 0 / 0 題</span>
+          </div>
+          <div class="sin-canvas-wrap">
+            <canvas id="sinQuizCanvas" aria-label="供學生判斷參數的正弦函數圖形"></canvas>
+            <p>圖上標有中線、整數／分數 \(\pi\) 刻度，以及一個週期的 A、P、M、Q、B。先讀 \(d,a\)，再讀 \(T,b\)，最後由 A 的位置求 \(c=-bh\)。</p>
+          </div>
+          <div class="sin-answer-grid">
+            <label>\(a\)<input id="sinAnswerA" inputmode="text" placeholder="如 -2、3/2"></label>
+            <label>\(b\)<input id="sinAnswerB" inputmode="text" placeholder="如 1、1/2"></label>
+            <label>\(c\)<input id="sinAnswerC" inputmode="text" placeholder="如 -π/2、π"></label>
+            <label>\(d\)<input id="sinAnswerD" inputmode="text" placeholder="如 0、-1/2"></label>
+          </div>
+          <div class="sin-quiz-actions">
+            <button type="button" id="sinCheck">檢查答案</button>
+            <span>\(a,b,d\) 可填整數或分母為個位數的分數；\(c\) 可填 \(\pi/2\)、\(-2\pi/3\) 等。</span>
+          </div>
+          <div class="sin-feedback" id="sinFeedback" aria-live="polite"></div>
+        </section>
+
+        <section class="combine-lab">
+          <h3>正弦、餘弦疊合：\(A\sin x+B\cos x\) 的最大值與最小值</h3>
+          <p>把兩個波合成一個振幅固定的正弦波；先找振幅 \(R\)，再看角度範圍是否允許函數走到最高或最低點。</p>
+          <div class="combine-rule-grid">
+            <section class="combine-rule">
+              <h3>核心合成公式</h3>
+              <p class="formula">\[A\sin x+B\cos x=R\sin(x+\varphi)\]</p>
+              <p>當 \(A,B\) 不同時為 \(0\) 時，\(R=\sqrt{A^2+B^2}>0\)，且 \(\cos\varphi=\frac{A}{R}\)、\(\sin\varphi=\frac{B}{R}\)。</p>
+            </section>
+            <section class="combine-rule">
+              <h3>簡易版：沒有角度範圍</h3>
+              <p>因為 \(-1\le\sin(x+\varphi)\le1\)，所以最大值是 \(R\)，最小值是 \(-R\)。</p>
+              <p><strong>例：</strong>\(2\sin x-2\cos x=2\sqrt2\sin(x-\frac\pi4)\)，最大值 \(2\sqrt2\)，最小值 \(-2\sqrt2\)。</p>
+            </section>
+          </div>
+          <div class="tip">
+            <strong>進階版的固定流程：</strong>先寫成 \(R\sin(x+\varphi)\)，列出區間內可能使 \(\sin(x+\varphi)=1\) 或 \(-1\) 的角，再把「區間兩端」一併代入比較。區間有限時，答案不一定是 \(\pm R\)。
+          </div>
+          <div class="tip">
+            <strong>常見錯誤：</strong>只算出 \(R\) 就直接寫最大、最小值；這只在 \(x\) 沒有限制時成立。進階題不可把 \(\varphi\) 或三角值改成小數，應保留 \(\pi\)、根號與分數。
+          </div>
+
+          <section class="combine-practice">
+            <h3>分層精確練習</h3>
+            <p id="combinePrompt">請選出函數的最大值與最小值；所有答案都保留根號，不使用近似值。</p>
+            <div class="sin-quiz-actions">
+              <button type="button" class="active" id="combineBasicMode">簡易版：\(x\) 無範圍</button>
+              <button type="button" id="combineAdvancedMode">進階版：有角度範圍</button>
+              <button type="button" id="combineNext">換一題</button>
+              <button type="button" id="combineHint">提示</button>
+              <button type="button" id="combineReveal">顯示完整解析</button>
+              <span class="sin-score" id="combineScore">答對 0 / 0 題</span>
+            </div>
+            <div class="combine-choice-grid" id="combineChoices" aria-label="最大值與最小值選項"></div>
+            <div class="combine-feedback" id="combineFeedback" aria-live="polite"></div>
+          </section>
+        </section>
+      </article>
+
       <section class="row">
         <article class="panel quiz">
-          <h2>五、可直接上課的例題</h2>
+          <h2>六、可直接上課的例題</h2>
           <p><strong>例1（二次）</strong>：\(y=x^2\) 右移 3、上移 2，得到 \(y=(x-3)^2+2\)。</p>
           <p><strong>例2（圓）</strong>：\(x^2+y^2=25\) 右移 4、下移 1，得到 \((x-4)^2+(y+1)^2=25\)。</p>
           <p><strong>例3（三角）</strong>：\(y=\sin x\) 做 \(x\) 方向壓縮 2 倍，再上移 1，得到 \(y=\sin(2x)+1\)。</p>
@@ -322,7 +535,7 @@
           <p><strong>例5（對數）</strong>：\(y=\log_2 x\) 右移 5，得到 \(y=\log_2(x-5)\)，定義域變 \(x>5\)。</p>
         </article>
         <article class="panel quiz">
-          <h2>六、分層練習（基礎/進階/挑戰）</h2>
+          <h2>七、分層練習（基礎/進階/挑戰）</h2>
           <p><strong>基礎</strong>：把 \(y=x^2\) 上移 4，寫出新式。</p>
           <p><strong>進階</strong>：把 \(y=\cos x\) 右移 \(\frac{\pi}{3}\) 且 \(x\) 方向伸長 2 倍，寫出新式。</p>
           <p><strong>挑戰</strong>：已知 \(y=f(x)\) 變成 \(y'=-2f\!\left(\frac{x'+1}{3}\right)+5\)，請還原幾何操作順序。</p>
@@ -878,6 +1091,509 @@
         window.addEventListener("load", renderMath, { once: true });
       }
     }
+
+    // 正弦函數專題：全部採 b>0，c 以 π 的有理倍數表示，避免同圖有無限多組 c。
+    const rational = (n, d = 1) => ({ n, d });
+    function gcdPositive(a, b) {
+      a = Math.abs(a); b = Math.abs(b);
+      while (b) [a, b] = [b, a % b];
+      return a || 1;
+    }
+    function simplifyRational(value) {
+      let n = value.n; let d = value.d;
+      if (d < 0) { n = -n; d = -d; }
+      const divisor = gcdPositive(n, d);
+      return { n: n / divisor, d: d / divisor };
+    }
+    function addRational(left, right) {
+      return simplifyRational({ n: left.n * right.d + right.n * left.d, d: left.d * right.d });
+    }
+    function multiplyRational(left, right) {
+      return simplifyRational({ n: left.n * right.n, d: left.d * right.d });
+    }
+    function divideRational(left, right) {
+      return simplifyRational({ n: left.n * right.d, d: left.d * right.n });
+    }
+    function negateRational(value) { return { n: -value.n, d: value.d }; }
+    function absoluteRational(value) { return { n: Math.abs(value.n), d: value.d }; }
+    function rationalValue(value) { return value.n / value.d; }
+    function rationalKey(value) {
+      const simplified = simplifyRational(value);
+      return simplified.n + "/" + simplified.d;
+    }
+    function rationalTex(value) {
+      const simplified = simplifyRational(value);
+      if (simplified.d === 1) return String(simplified.n);
+      return (simplified.n < 0 ? "-" : "") + "\\frac{" + Math.abs(simplified.n) + "}{" + simplified.d + "}";
+    }
+    function rationalText(value) {
+      const simplified = simplifyRational(value);
+      return simplified.d === 1 ? String(simplified.n) : simplified.n + "/" + simplified.d;
+    }
+    function piTex(value) {
+      const simplified = simplifyRational(value);
+      if (simplified.n === 0) return "0";
+      const sign = simplified.n < 0 ? "-" : "";
+      const numerator = Math.abs(simplified.n);
+      if (simplified.d === 1) return sign + (numerator === 1 ? "\\pi" : numerator + "\\pi");
+      return sign + "\\frac{" + (numerator === 1 ? "\\pi" : numerator + "\\pi") + "}{" + simplified.d + "}";
+    }
+    function piText(value) {
+      const simplified = simplifyRational(value);
+      if (simplified.n === 0) return "0";
+      const sign = simplified.n < 0 ? "-" : "";
+      const numerator = Math.abs(simplified.n);
+      if (simplified.d === 1) return sign + (numerator === 1 ? "π" : numerator + "π");
+      return sign + (numerator === 1 ? "π" : numerator + "π") + "/" + simplified.d;
+    }
+    function signedTex(base, value, formatter = rationalTex) {
+      if (value.n === 0) return base;
+      const magnitude = formatter(absoluteRational(value));
+      return base + (value.n > 0 ? "+" : "-") + magnitude;
+    }
+    function sineFactorTex(value) {
+      const simplified = simplifyRational(value);
+      if (simplified.n === simplified.d) return "";
+      if (simplified.n === -simplified.d) return "-";
+      return rationalTex(simplified);
+    }
+    function sineInnerTex(item) {
+      const bTex = item.b.n === item.b.d ? "x" : rationalTex(item.b) + "x";
+      return signedTex(bTex, item.cPi, piTex);
+    }
+    function sineEquationTex(item) {
+      return "y=" + signedTex(sineFactorTex(item.a) + "\\sin\\left(" + sineInnerTex(item) + "\\right)", item.d);
+    }
+    function horizontalShiftPi(item) { return divideRational(negateRational(item.cPi), item.b); }
+    function periodPi(item) { return divideRational(rational(2), item.b); }
+    function movementText(hPi) {
+      if (hPi.n === 0) return "不平移";
+      return hPi.n > 0 ? "右移 " + piText(hPi) : "左移 " + piText(absoluteRational(hPi));
+    }
+    function xShiftTex(hPi) {
+      if (hPi.n === 0) return "x";
+      return hPi.n > 0 ? "x-" + piTex(hPi) : "x+" + piTex(absoluteRational(hPi));
+    }
+    function xPlusPiTex(cPi) { return signedTex("x", cPi, piTex); }
+    function bxTex(item) { return item.b.n === item.b.d ? "x" : rationalTex(item.b) + "x"; }
+    function scaledShiftTex(item, hPi) {
+      return item.b.n === item.b.d ? xShiftTex(hPi) : rationalTex(item.b) + "\\left(" + xShiftTex(hPi) + "\\right)";
+    }
+    const sinTransformItems = [
+      { id: "example", title: "範例：x 壓縮、右移 π/2、上移 1", a: rational(2), b: rational(2), cPi: rational(-1), d: rational(1) },
+      { id: "q-basic", title: "基礎：振幅 2、週期 2π", a: rational(2), b: rational(1), cPi: rational(0), d: rational(-1) },
+      { id: "q-reflect", title: "基礎：含 x 軸翻折", a: rational(-1), b: rational(1), cPi: rational(1, 2), d: rational(2) },
+      { id: "q-half", title: "進階：係數含 1/2", a: rational(3, 2), b: rational(2), cPi: rational(-1, 2), d: rational(1, 2) },
+      { id: "q-stretch", title: "進階：週期拉長為 4π", a: rational(-2, 3), b: rational(1, 2), cPi: rational(1, 2), d: rational(-1) },
+      { id: "q-short", title: "挑戰：週期縮短且含 π/3", a: rational(1), b: rational(3), cPi: rational(1, 3), d: rational(0) }
+    ];
+    const sinLab = {
+      exampleSelect: document.getElementById("sinExampleSelect"),
+      exampleFormula: document.getElementById("sinExampleFormula"),
+      routeScaleFirst: document.getElementById("sinRouteScaleFirst"),
+      routeTranslateFirst: document.getElementById("sinRouteTranslateFirst"),
+      exampleCanvas: document.getElementById("sinExampleCanvas"),
+      quizCanvas: document.getElementById("sinQuizCanvas"),
+      prompt: document.getElementById("sinQuizPrompt"),
+      feedback: document.getElementById("sinFeedback"),
+      score: document.getElementById("sinScore"),
+      answerA: document.getElementById("sinAnswerA"),
+      answerB: document.getElementById("sinAnswerB"),
+      answerC: document.getElementById("sinAnswerC"),
+      answerD: document.getElementById("sinAnswerD"),
+      newQuestion: document.getElementById("sinNewQuestion"),
+      hint: document.getElementById("sinHint"),
+      reveal: document.getElementById("sinReveal"),
+      check: document.getElementById("sinCheck")
+    };
+    const sinQuizState = { index: 1, correct: 0, total: 0, answered: false };
+
+    function resizeCanvasContext(canvas) {
+      const pixelRatio = window.devicePixelRatio || 1;
+      const width = Math.max(320, Math.round(canvas.clientWidth || 700));
+      const height = Math.max(260, Math.round(canvas.clientHeight || 340));
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      return { ctx, width, height };
+    }
+    function uniqueRationals(values) {
+      const seen = new Set();
+      return values.filter((value) => {
+        const key = rationalKey(value);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+    function drawMarkedSineGraph(canvas, item) {
+      const { ctx, width, height } = resizeCanvasContext(canvas);
+      const a = rationalValue(item.a); const b = rationalValue(item.b); const d = rationalValue(item.d);
+      const hPi = horizontalShiftPi(item); const tPi = periodPi(item);
+      const h = rationalValue(hPi) * Math.PI; const period = rationalValue(tPi) * Math.PI;
+      const xMin = h - period * 0.58; const xMax = h + period * 1.18;
+      const lowR = addRational(item.d, negateRational(absoluteRational(item.a)));
+      const highR = addRational(item.d, absoluteRational(item.a));
+      const rawLow = Math.min(0, rationalValue(lowR)); const rawHigh = Math.max(0, rationalValue(highR));
+      const paddingY = Math.max(0.75, (rawHigh - rawLow) * 0.24);
+      const yMin = rawLow - paddingY; const yMax = rawHigh + paddingY;
+      const pad = { left: 61, right: 20, top: 30, bottom: 54 };
+      const toX = (x) => pad.left + (x - xMin) / (xMax - xMin) * (width - pad.left - pad.right);
+      const toY = (y) => height - pad.bottom - (y - yMin) / (yMax - yMin) * (height - pad.top - pad.bottom);
+      const xAxis = toY(0); const yAxis = toX(0);
+      const keyXPi = [
+        hPi,
+        addRational(hPi, divideRational(tPi, rational(4))),
+        addRational(hPi, divideRational(tPi, rational(2))),
+        addRational(hPi, multiplyRational(tPi, rational(3, 4))),
+        addRational(hPi, tPi)
+      ];
+      const yMarks = uniqueRationals([rational(0), lowR, item.d, highR]);
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+      ctx.lineWidth = 1;
+      ctx.font = "12px Microsoft JhengHei, Noto Sans TC, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.strokeStyle = "#e5edf8";
+      keyXPi.forEach((xPi) => {
+        const px = toX(rationalValue(xPi) * Math.PI);
+        ctx.beginPath(); ctx.moveTo(px, pad.top); ctx.lineTo(px, height - pad.bottom); ctx.stroke();
+      });
+      yMarks.forEach((yR) => {
+        const py = toY(rationalValue(yR));
+        ctx.beginPath(); ctx.moveTo(pad.left, py); ctx.lineTo(width - pad.right, py); ctx.stroke();
+      });
+      ctx.strokeStyle = "#47698c";
+      ctx.lineWidth = 1.4;
+      if (xAxis >= pad.top && xAxis <= height - pad.bottom) {
+        ctx.beginPath(); ctx.moveTo(pad.left, xAxis); ctx.lineTo(width - pad.right + 2, xAxis); ctx.stroke();
+        ctx.fillStyle = "#365f7a"; ctx.textAlign = "left"; ctx.fillText("x", width - pad.right + 5, xAxis - 8);
+      }
+      if (yAxis >= pad.left && yAxis <= width - pad.right) {
+        ctx.beginPath(); ctx.moveTo(yAxis, pad.top); ctx.lineTo(yAxis, height - pad.bottom); ctx.stroke();
+        ctx.fillStyle = "#365f7a"; ctx.textAlign = "left"; ctx.fillText("y", yAxis + 7, pad.top - 8);
+      }
+      ctx.strokeStyle = "#86a9d7";
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(pad.left, toY(d)); ctx.lineTo(width - pad.right, toY(d)); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = "#365f7a";
+      ctx.textAlign = "right";
+      yMarks.forEach((yR) => ctx.fillText(rationalText(yR), pad.left - 7, toY(rationalValue(yR))));
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      keyXPi.forEach((xPi) => {
+        const px = toX(rationalValue(xPi) * Math.PI);
+        ctx.fillText(piText(xPi), px, height - pad.bottom + 10);
+      });
+      ctx.strokeStyle = "#155eae";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (let i = 0; i <= 640; i += 1) {
+        const x = xMin + (xMax - xMin) * i / 640;
+        const y = a * Math.sin(b * x + rationalValue(item.cPi) * Math.PI) + d;
+        if (i === 0) ctx.moveTo(toX(x), toY(y)); else ctx.lineTo(toX(x), toY(y));
+      }
+      ctx.stroke();
+      const names = ["A", "P", "M", "Q", "B"];
+      ctx.textBaseline = "middle";
+      keyXPi.forEach((xPi, index) => {
+        const x = rationalValue(xPi) * Math.PI;
+        const phase = index * Math.PI / 2;
+        const y = a * Math.sin(phase) + d;
+        const px = toX(x); const py = toY(y);
+        ctx.beginPath(); ctx.fillStyle = "#0b4f94"; ctx.arc(px, py, 4.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#0b4f94"; ctx.textAlign = "left";
+        const labelY = py < pad.top + 19 ? py + 13 : py - 12;
+        ctx.fillText(names[index], px + 6, labelY);
+      });
+      const left = toX(h); const right = toX(h + period); const bracketY = pad.top + 10;
+      ctx.strokeStyle = "#4a6f9a"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(left, bracketY); ctx.lineTo(right, bracketY); ctx.moveTo(left, bracketY - 4); ctx.lineTo(left, bracketY + 4); ctx.moveTo(right, bracketY - 4); ctx.lineTo(right, bracketY + 4); ctx.stroke();
+      ctx.fillStyle = "#365f7a"; ctx.textAlign = "center"; ctx.fillText("一個週期 T=" + piText(tPi), (left + right) / 2, bracketY - 10);
+    }
+    function setExampleContent() {
+      const item = sinTransformItems.find((entry) => entry.id === sinLab.exampleSelect.value) || sinTransformItems[0];
+      const hPi = horizontalShiftPi(item); const scalePi = divideRational(rational(1), item.b);
+      const cBeforeScale = negateRational(item.cPi);
+      const verticalMove = item.d.n === 0 ? "最後不作 y 平移。" : "最後 " + (item.d.n > 0 ? "上移 " : "下移 ") + rationalText(absoluteRational(item.d)) + "。";
+      const vertical = item.a.n < 0
+        ? "再關於 x 軸鏡射並做 y 方向伸縮 " + rationalText(absoluteRational(item.a)) + " 倍，" + verticalMove
+        : "再做 y 方向伸縮 " + rationalText(item.a) + " 倍，" + verticalMove;
+      sinLab.exampleFormula.innerHTML = "<div class=\"formula\"><strong>目標函數：</strong>\\(" + sineEquationTex(item) + "\\)</div>" +
+        "<div class=\"formula\"><strong>標準平移式：</strong>\\(y=" + sineFactorTex(item.a) + "\\sin\\left(" + scaledShiftTex(item, hPi) + "\\right)" + (item.d.n === 0 ? "" : (item.d.n > 0 ? "+" : "-") + rationalTex(absoluteRational(item.d))) + "\\)，因此水平 " + movementText(hPi) + "、週期 \\(T=" + piTex(periodPi(item)) + "\\)。</div>" +
+        "<div class=\"formula\"><strong>y 方向的最後兩步：</strong>" + vertical + "</div>";
+      sinLab.routeScaleFirst.innerHTML = "\\(f(x)\\to f(" + bxTex(item) + ")\\to f\\left(" + scaledShiftTex(item, hPi) + "\\right)=f(" + sineInnerTex(item) + ")\\)。先把 x 方向縮放為原來的 \\(" + rationalTex(scalePi) + "\\) 倍，再 " + movementText(hPi) + "。";
+      sinLab.routeTranslateFirst.innerHTML = "\\(f(x)\\to f(" + xPlusPiTex(item.cPi) + ")\\to f(" + sineInnerTex(item) + ")\\)。先 " + movementText(cBeforeScale) + "，再把 x 方向縮放為原來的 \\(" + rationalTex(scalePi) + "\\) 倍。";
+      drawMarkedSineGraph(sinLab.exampleCanvas, item);
+      typeset([sinLab.exampleFormula, sinLab.routeScaleFirst, sinLab.routeTranslateFirst]);
+    }
+    function currentSinQuestion() { return sinTransformItems[sinQuizState.index]; }
+    function clearSinAnswers() {
+      [sinLab.answerA, sinLab.answerB, sinLab.answerC, sinLab.answerD].forEach((input) => { input.value = ""; });
+    }
+    function renderSinQuestion() {
+      const item = currentSinQuestion();
+      sinQuizState.answered = false;
+      clearSinAnswers();
+      sinLab.prompt.innerHTML = "請由圖形填入 \\(y=a\\sin(bx+c)+d\\)。本題採 \\(b>0\\)、\\(-\\pi\\le c<\\pi\\)，且 \\(c\\) 請寫成 \\(\\pi\\) 的倍數。";
+      sinLab.feedback.textContent = "";
+      drawMarkedSineGraph(sinLab.quizCanvas, item);
+      typeset([sinLab.prompt]);
+    }
+    function updateSinScore() {
+      sinLab.score.textContent = "答對 " + sinQuizState.correct + " / " + sinQuizState.total + " 題";
+    }
+    function parseSimpleRational(input) {
+      const text = input.trim().replace(/\s+/g, "");
+      const match = text.match(/^([+-]?)(\d+)(?:\/(\d+))?$/);
+      if (!match) return null;
+      const denominator = match[3] ? Number(match[3]) : 1;
+      if (!denominator) return null;
+      return (match[1] === "-" ? -1 : 1) * Number(match[2]) / denominator;
+    }
+    function parsePiCoefficient(input) {
+      const text = input.trim().replace(/\s+/g, "").replace(/\\pi/gi, "pi").replace(/\u03c0/g, "pi");
+      if (text === "0" || text === "+0" || text === "-0") return 0;
+      const match = text.match(/^([+-]?)(?:(\d+)(?:\/(\d+))?)?pi(?:\/(\d+))?$/i);
+      if (!match) return null;
+      const numerator = match[2] ? Number(match[2]) : 1;
+      const firstDenominator = match[3] ? Number(match[3]) : 1;
+      const secondDenominator = match[4] ? Number(match[4]) : 1;
+      if (!firstDenominator || !secondDenominator) return null;
+      return (match[1] === "-" ? -1 : 1) * numerator / (firstDenominator * secondDenominator);
+    }
+    function nearlyEqual(left, right) { return left !== null && Math.abs(left - right) < 1e-9; }
+    function showSinHint() {
+      sinLab.feedback.innerHTML = "提示：先看藍色虛線的 y 值得到 \\(d\\)，再用最高、最低值算 \\(|a|\\)。A 到 B 的長度是週期 \\(T\\)，所以 \\(b=2\\pi/T\\)；最後 A 的 x 座標是 \\(h\\)，代入 \\(c=-bh\\)。";
+      typeset([sinLab.feedback]);
+    }
+    function showSinSolution() {
+      const item = currentSinQuestion(); const hPi = horizontalShiftPi(item); const tPi = periodPi(item);
+      const low = addRational(item.d, negateRational(absoluteRational(item.a)));
+      const high = addRational(item.d, absoluteRational(item.a));
+      sinLab.feedback.innerHTML = "解析：中線是 \\(y=" + rationalTex(item.d) + "\\)，故 \\(d=" + rationalTex(item.d) + "\\)；最高、最低值為 \\(" + rationalTex(high) + "\\)、\\(" + rationalTex(low) + "\\)，振幅為 \\(|a|=" + rationalTex(absoluteRational(item.a)) + "\\)。A 到 B 的週期 \\(T=" + piTex(tPi) + "\\)，故 \\(b=" + rationalTex(item.b) + "\\)。A 在 \\(x=h=" + piTex(hPi) + "\\)，所以 \\(c=-bh=" + piTex(item.cPi) + "\\)。A 點往右是" + (item.a.n > 0 ? "上升" : "下降") + "，故 \\(a=" + rationalTex(item.a) + "\\)。答案：\\(" + sineEquationTex(item) + "\\)。";
+      typeset([sinLab.feedback]);
+    }
+    function checkSinAnswer() {
+      const item = currentSinQuestion();
+      const inputA = parseSimpleRational(sinLab.answerA.value);
+      const inputB = parseSimpleRational(sinLab.answerB.value);
+      const inputC = parsePiCoefficient(sinLab.answerC.value);
+      const inputD = parseSimpleRational(sinLab.answerD.value);
+      if ([inputA, inputB, inputC, inputD].some((value) => value === null)) {
+        sinLab.feedback.textContent = "格式請使用整數或分數；c 請用 π、π/2、-2π/3 這類寫法。";
+        return;
+      }
+      const isCorrect = nearlyEqual(inputA, rationalValue(item.a)) && nearlyEqual(inputB, rationalValue(item.b)) && nearlyEqual(inputC, rationalValue(item.cPi)) && nearlyEqual(inputD, rationalValue(item.d));
+      if (isCorrect) {
+        if (!sinQuizState.answered) { sinQuizState.answered = true; sinQuizState.correct += 1; sinQuizState.total += 1; updateSinScore(); }
+        sinLab.feedback.innerHTML = "答對了。你已經從中線、振幅、週期與 A 點的位置完整讀出四個參數。\\(" + sineEquationTex(item) + "\\)";
+        typeset([sinLab.feedback]);
+      } else {
+        sinLab.feedback.textContent = "還差一步：先確認中線與上下距離，接著用 A 到 B 的距離求 b，最後才由 c=-bh 處理相位。";
+      }
+    }
+    function nextSinQuestion() {
+      let nextIndex = sinQuizState.index;
+      while (nextIndex === sinQuizState.index) nextIndex = 1 + Math.floor(Math.random() * (sinTransformItems.length - 1));
+      sinQuizState.index = nextIndex;
+      renderSinQuestion();
+    }
+    function initSinTransformLab() {
+      sinTransformItems.forEach((item) => {
+        const option = document.createElement("option"); option.value = item.id; option.textContent = item.title; sinLab.exampleSelect.appendChild(option);
+      });
+      sinLab.exampleSelect.value = "example";
+      sinLab.exampleSelect.addEventListener("change", setExampleContent);
+      sinLab.newQuestion.addEventListener("click", nextSinQuestion);
+      sinLab.hint.addEventListener("click", showSinHint);
+      sinLab.reveal.addEventListener("click", showSinSolution);
+      sinLab.check.addEventListener("click", checkSinAnswer);
+      [sinLab.answerA, sinLab.answerB, sinLab.answerC, sinLab.answerD].forEach((input) => input.addEventListener("keydown", (event) => { if (event.key === "Enter") checkSinAnswer(); }));
+      setExampleContent(); renderSinQuestion(); updateSinScore();
+      window.addEventListener("resize", () => { setExampleContent(); drawMarkedSineGraph(sinLab.quizCanvas, currentSinQuestion()); });
+    }
+
+    const combinePracticeItems = {
+      basic: [
+        {
+          id: "combine-basic-34",
+          expr: "3\\sin x+4\\cos x",
+          domain: "x\\in\\mathbb R",
+          rewrite: "R=\\sqrt{3^2+4^2}=5",
+          max: "5", min: "-5",
+          hint: "先算 \\(R=\\sqrt{A^2+B^2}=\\sqrt{3^2+4^2}\\)。因為沒有角度範圍，\\(\\sin(x+\\varphi)\\) 可以取到 \\(1\\) 和 \\(-1\\)。",
+          solution: "令 \\(3\\sin x+4\\cos x=5\\sin(x+\\varphi)\\)。因 \\(R=5\\)，且 \\(x\\) 沒有限制，所以最大值為 \\(5\\)，最小值為 \\(-5\\)。",
+          wrong: [{ max: "4", min: "-4" }, { max: "5", min: "-4" }, { max: "\\sqrt{7}", min: "-\\sqrt{7}" }]
+        },
+        {
+          id: "combine-basic-2-2",
+          expr: "2\\sin x-2\\cos x",
+          domain: "x\\in\\mathbb R",
+          rewrite: "2\\sqrt2\\sin\\left(x-\\frac\\pi4\\right)",
+          max: "2\\sqrt2", min: "-2\\sqrt2",
+          hint: "\\(R=\\sqrt{2^2+(-2)^2}=2\\sqrt2\\)。不要把 \\(2^2+(-2)^2\\) 算成 \\(0\\)。",
+          solution: "\\(2\\sin x-2\\cos x=2\\sqrt2\\sin(x-\\frac\\pi4)\\)。沒有角度範圍時，最大值就是振幅 \\(2\\sqrt2\\)，最小值為它的相反數 \\(-2\\sqrt2\\)。",
+          wrong: [{ max: "2", min: "-2" }, { max: "4", min: "-4" }, { max: "2\\sqrt2", min: "-2" }]
+        },
+        {
+          id: "combine-basic-root",
+          expr: "\\sqrt3\\sin x+\\cos x",
+          domain: "x\\in\\mathbb R",
+          rewrite: "2\\sin\\left(x+\\frac\\pi6\\right)",
+          max: "2", min: "-2",
+          hint: "\\(R=\\sqrt{(\\sqrt3)^2+1^2}=\\sqrt4\\)。根號平方後要先化簡。",
+          solution: "\\(\\sqrt3\\sin x+\\cos x=2\\sin(x+\\frac\\pi6)\\)。振幅為 \\(2\\)，又沒有角度範圍，所以最大、最小值是 \\(2\\)、\\(-2\\)。",
+          wrong: [{ max: "\\sqrt3", min: "-\\sqrt3" }, { max: "\\sqrt4", min: "-\\sqrt4" }, { max: "2", min: "-1" }]
+        },
+        {
+          id: "combine-basic-other-root",
+          expr: "\\sin x+\\sqrt3\\cos x",
+          domain: "x\\in\\mathbb R",
+          rewrite: "2\\sin\\left(x+\\frac\\pi3\\right)",
+          max: "2", min: "-2",
+          hint: "把 \\(R\\cos\\varphi\\) 對應到 \\(\\sin x\\) 的係數，把 \\(R\\sin\\varphi\\) 對應到 \\(\\cos x\\) 的係數。",
+          solution: "\\(\\sin x+\\sqrt3\\cos x=2\\sin(x+\\frac\\pi3)\\)。因 \\(x\\) 可取任意實數，括號中的角可讓正弦取到 \\(\\pm1\\)，故最大、最小值為 \\(2\\)、\\(-2\\)。",
+          wrong: [{ max: "\\sqrt3", min: "-\\sqrt3" }, { max: "2", min: "-\\sqrt3" }, { max: "1", min: "-1" }]
+        }
+      ],
+      advanced: [
+        {
+          id: "combine-advanced-quarter",
+          expr: "\\sqrt3\\sin x+\\cos x",
+          domain: "0\\le x\\le\\frac\\pi3",
+          rewrite: "2\\sin\\left(x+\\frac\\pi6\\right)",
+          max: "2", min: "1",
+          hint: "令 \\(t=x+\\frac\\pi6\\)，則 \\(\\frac\\pi6\\le t\\le\\frac\\pi2\\)。在這段內 \\(\\sin t\\) 從 \\(\\frac12\\) 增至 \\(1\\)。",
+          solution: "\\(\\sqrt3\\sin x+\\cos x=2\\sin(x+\\frac\\pi6)\\)。當 \\(0\\le x\\le\\frac\\pi3\\) 時，\\(\\frac\\pi6\\le x+\\frac\\pi6\\le\\frac\\pi2\\)，故函數值由 \\(2\\cdot\\frac12=1\\) 增至 \\(2\\)。最大值為 \\(2\\)，最小值為 \\(1\\)。",
+          wrong: [{ max: "2", min: "-2" }, { max: "\\sqrt3", min: "1" }, { max: "1", min: "-1" }]
+        },
+        {
+          id: "combine-advanced-negative",
+          expr: "\\sin x+\\sqrt3\\cos x",
+          domain: "-\\pi\\le x\\le0",
+          rewrite: "2\\sin\\left(x+\\frac\\pi3\\right)",
+          max: "\\sqrt3", min: "-2",
+          hint: "令 \\(t=x+\\frac\\pi3\\)。區間變成 \\(-\\frac{2\\pi}{3}\\le t\\le\\frac\\pi3\\)，其中含 \\(t=-\\frac\\pi2\\)。別漏掉這個最低點。",
+          solution: "\\(t=x+\\frac\\pi3\\in[-\\frac{2\\pi}{3},\\frac\\pi3]\\)。區間內 \\(t=-\\frac\\pi2\\) 時，值為 \\(-2\\)。兩端值分別是 \\(-\\sqrt3\\)、\\(\\sqrt3\\)，故最大值為 \\(\\sqrt3\\)，最小值為 \\(-2\\)。",
+          wrong: [{ max: "2", min: "-2" }, { max: "\\sqrt3", min: "-\\sqrt3" }, { max: "2", min: "-\\sqrt3" }]
+        },
+        {
+          id: "combine-advanced-cross-cycle",
+          expr: "2\\sin x-2\\cos x",
+          domain: "\\frac{5\\pi}{3}\\le x\\le\\frac{7\\pi}{3}",
+          rewrite: "2\\sqrt2\\sin\\left(x-\\frac\\pi4\\right)",
+          max: "2\\sqrt2", min: "-2\\sqrt2",
+          hint: "區間雖跨過 \\(2\\pi\\)，仍可直接找 \\(x=\\frac{7\\pi}{4}\\) 與 \\(x=\\frac{9\\pi}{4}\\)；它們都在題目的區間內。",
+          solution: "\\(2\\sin x-2\\cos x=2\\sqrt2\\sin(x-\\frac\\pi4)\\)。在題設區間中，\\(x=\\frac{7\\pi}{4}\\) 使括號為 \\(\\frac{3\\pi}{2}\\)，得最小值 \\(-2\\sqrt2\\)；\\(x=\\frac{9\\pi}{4}\\) 使括號為 \\(2\\pi\\)，得最大值 \\(2\\sqrt2\\)。端點也必須比較，但不會更大或更小。",
+          wrong: [{ max: "2", min: "-2" }, { max: "2\\sqrt2", min: "-2" }, { max: "\\sqrt2", min: "-\\sqrt2" }]
+        },
+        {
+          id: "combine-advanced-345",
+          expr: "3\\sin x+4\\cos x",
+          domain: "0\\le x\\le\\frac\\pi2",
+          rewrite: "5\\sin(x+\\varphi),\\quad \\sin\\varphi=\\frac45,\\ \\cos\\varphi=\\frac35",
+          max: "5", min: "3",
+          hint: "\\(0<\\varphi<\\frac\\pi2\\)，所以 \\(x=\\frac\\pi2-\\varphi\\) 在題設區間內，可取到最大振幅。接著別忘了比較兩端。",
+          solution: "令 \\(3\\sin x+4\\cos x=5\\sin(x+\\varphi)\\)，其中 \\(0<\\varphi<\\frac\\pi2\\)。故 \\(x=\\frac\\pi2-\\varphi\\in[0,\\frac\\pi2]\\) 時取到 \\(5\\)。端點值為 \\(F(0)=4\\)、\\(F(\\frac\\pi2)=3\\)，且區間內沒有使正弦取 \\(-1\\) 的角，所以最大值為 \\(5\\)，最小值為 \\(3\\)。",
+          wrong: [{ max: "5", min: "-5" }, { max: "4", min: "3" }, { max: "5", min: "4" }]
+        }
+      ]
+    };
+    const combineLab = {
+      prompt: document.getElementById("combinePrompt"),
+      choices: document.getElementById("combineChoices"),
+      feedback: document.getElementById("combineFeedback"),
+      basic: document.getElementById("combineBasicMode"),
+      advanced: document.getElementById("combineAdvancedMode"),
+      next: document.getElementById("combineNext"),
+      hint: document.getElementById("combineHint"),
+      reveal: document.getElementById("combineReveal"),
+      score: document.getElementById("combineScore")
+    };
+    const combineState = { mode: "basic", index: 0, correct: 0, total: 0, answered: false };
+    function currentCombineItem() { return combinePracticeItems[combineState.mode][combineState.index]; }
+    function combinePairKey(pair) { return pair.max + "|" + pair.min; }
+    function combinePairTex(pair) { return "\\(\\max=" + pair.max + "\\)，\\(\\min=" + pair.min + "\\)"; }
+    function shuffledCombineOptions(item) {
+      const seen = new Set();
+      return [{ max: item.max, min: item.min, correct: true }, ...item.wrong.map((pair) => ({ ...pair, correct: false }))]
+        .filter((pair) => {
+          const key = combinePairKey(pair);
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .sort(() => Math.random() - 0.5);
+    }
+    function renderCombineScore() {
+      combineLab.score.textContent = "答對 " + combineState.correct + " / " + combineState.total + " 題";
+    }
+    function renderCombinePractice() {
+      const item = currentCombineItem();
+      combineState.answered = false;
+      combineLab.basic.classList.toggle("active", combineState.mode === "basic");
+      combineLab.advanced.classList.toggle("active", combineState.mode === "advanced");
+      combineLab.prompt.innerHTML = "<strong>" + (combineState.mode === "basic" ? "簡易版" : "進階版") + "：</strong>求 \\(F(x)=" + item.expr + "\\) 的最大值、最小值；" + (combineState.mode === "basic" ? "沒有指定角度範圍。" : "其中 \\(" + item.domain + "\\)。") + "<br><span class=\"family-note\">請保留根號、分數與 \\(\\pi\\)，不要用小數近似。</span>";
+      combineLab.choices.innerHTML = "";
+      shuffledCombineOptions(item).forEach((pair) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "combine-choice";
+        button.innerHTML = combinePairTex(pair);
+        button.addEventListener("click", () => checkCombineChoice(button, pair, item));
+        combineLab.choices.appendChild(button);
+      });
+      combineLab.feedback.textContent = "";
+      typeset([combineLab.prompt, combineLab.choices]);
+    }
+    function checkCombineChoice(button, pair, item) {
+      if (combineState.answered) return;
+      combineState.answered = true;
+      combineState.total += 1;
+      if (pair.correct) {
+        combineState.correct += 1;
+        button.classList.add("correct");
+        combineLab.feedback.innerHTML = "答對了。\\(" + item.rewrite + "\\)，所以 " + combinePairTex(item) + "。";
+      } else {
+        button.classList.add("wrong");
+        combineLab.feedback.innerHTML = "這組不正確。先用 \\(R=\\sqrt{A^2+B^2}\\) 找振幅；有區間時還要比較端點與區間內的最高、最低點。";
+      }
+      renderCombineScore();
+      typeset([combineLab.feedback]);
+    }
+    function showCombineHint() {
+      combineLab.feedback.innerHTML = "提示：" + currentCombineItem().hint;
+      typeset([combineLab.feedback]);
+    }
+    function showCombineSolution() {
+      combineLab.feedback.innerHTML = "解析：" + currentCombineItem().solution;
+      typeset([combineLab.feedback]);
+    }
+    function nextCombineQuestion() {
+      const items = combinePracticeItems[combineState.mode];
+      let nextIndex = combineState.index;
+      while (nextIndex === combineState.index) nextIndex = Math.floor(Math.random() * items.length);
+      combineState.index = nextIndex;
+      renderCombinePractice();
+    }
+    function initCombineLab() {
+      combineLab.basic.addEventListener("click", () => {
+        combineState.mode = "basic"; combineState.index = 0; renderCombinePractice();
+      });
+      combineLab.advanced.addEventListener("click", () => {
+        combineState.mode = "advanced"; combineState.index = 0; renderCombinePractice();
+      });
+      combineLab.next.addEventListener("click", nextCombineQuestion);
+      combineLab.hint.addEventListener("click", showCombineHint);
+      combineLab.reveal.addEventListener("click", showCombineSolution);
+      renderCombinePractice();
+      renderCombineScore();
+    }
     function render() {
       buttons(elements.families, families, familyKey, (key) => { familyKey = key; render(); });
       buttons(elements.absolute, absoluteOperations, absoluteKey, (key) => { absoluteKey = key; render(); });
@@ -890,6 +1606,8 @@
       params(); text(); graphs(); typeset([elements.base, elements.map, elements.after, elements.sequence]);
     }
     render();
+    initSinTransformLab();
+    initCombineLab();
     window.addEventListener("resize", render);
   </script>
 </body>

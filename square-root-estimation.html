@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>根號估計與直式開根號｜互動教學</title>
+  <style>
+    :root {
+      --ink: #172554;
+      --muted: #475569;
+      --line: #cbd5e1;
+      --paper: #ffffff;
+      --page: #f8fafc;
+      --teal: #0f766e;
+      --teal-dark: #115e59;
+      --teal-pale: #ecfdf5;
+      --sky: #0369a1;
+      --sky-pale: #e0f2fe;
+      --violet: #6d28d9;
+      --violet-pale: #f5f3ff;
+      --amber: #9a3412;
+      --amber-pale: #fff7ed;
+      --green: #166534;
+      --green-pale: #dcfce7;
+      --rose: #9f1239;
+      --rose-pale: #fff1f2;
+      --shadow: 0 14px 35px rgba(15, 23, 42, .08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background: radial-gradient(circle at 93% 2%, #dbeafe 0, transparent 28%), linear-gradient(145deg, #f0fdfa, var(--page) 42%, #eef2ff);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .wrap { width: min(1120px, calc(100% - 28px)); margin: 0 auto; padding: 26px 0 48px; }
+    .hero, .card { border: 1px solid var(--line); border-radius: 20px; background: var(--paper); box-shadow: var(--shadow); }
+    .hero { padding: clamp(22px, 4vw, 42px); margin-bottom: 18px; overflow: hidden; position: relative; }
+    .hero::after { content: "√"; position: absolute; right: clamp(15px, 6vw, 70px); bottom: -68px; color: #ccfbf1; font: 900 clamp(155px, 22vw, 280px)/1 Georgia, serif; pointer-events: none; }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { position: relative; z-index: 1; margin-bottom: 8px; font-size: clamp(31px, 5vw, 48px); line-height: 1.24; letter-spacing: .02em; }
+    h2 { margin-bottom: 8px; font-size: clamp(23px, 3vw, 30px); line-height: 1.4; }
+    h3 { margin-bottom: 7px; font-size: 19px; line-height: 1.45; }
+    h4 { margin-bottom: 5px; font-size: 16px; }
+    p, li { color: var(--muted); }
+    .lead { position: relative; z-index: 1; max-width: 790px; margin-bottom: 15px; font-size: 17px; }
+    .nav, .pills, .controls, .button-row, .legend, .quiz-options { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .nav { position: relative; z-index: 1; margin-top: 16px; }
+    .nav a, .btn {
+      min-height: 42px; padding: 8px 13px; border: 1px solid var(--teal); border-radius: 10px;
+      color: #fff; background: var(--teal); text-decoration: none; font-weight: 800; line-height: 1.35;
+    }
+    .nav a:hover, .btn:hover { background: var(--teal-dark); }
+    .btn.secondary { color: var(--teal); background: #fff; }
+    .btn.secondary:hover { color: #fff; background: var(--teal); }
+    .btn:focus-visible, .quiz-option:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
+    .pills { position: relative; z-index: 1; }
+    .pill, .tag, .level { display: inline-block; border-radius: 999px; font-size: 13px; font-weight: 800; }
+    .pill { padding: 3px 10px; color: #155e75; background: #ecfeff; border: 1px solid #a5f3fc; }
+    .tag { padding: 2px 10px; color: #0b3b37; background: #ccfbf1; border: 1px solid #99f6e4; }
+    .level { padding: 3px 10px; color: var(--sky); background: var(--sky-pale); border: 1px solid #7dd3fc; }
+    .level.advanced { color: var(--violet); background: var(--violet-pale); border-color: #c4b5fd; }
+    .card { margin-top: 16px; padding: clamp(18px, 3vw, 28px); }
+    .section-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .section-head h2 { margin: 0; }
+    .section-intro { max-width: 950px; margin-bottom: 14px; }
+    .grid-2, .grid-3 { display: grid; gap: 13px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .mini, .example, .notice, .tool, .step-panel, .paper, .quiz-card {
+      border: 1px solid var(--line); border-radius: 14px; padding: 15px; background: #fcfdff;
+    }
+    .mini p:last-child, .example p:last-child, .notice p:last-child { margin-bottom: 0; }
+    .example { border-color: #99f6e4; background: var(--teal-pale); }
+    .notice { border-color: #fdba74; background: var(--amber-pale); }
+    .notice strong { color: var(--amber); }
+    .formula, .math, .mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .formula { display: block; margin: 9px 0; padding: 10px 12px; overflow-x: auto; border-left: 4px solid #38bdf8; border-radius: 7px; color: #172554; background: #eff6ff; font-weight: 800; white-space: nowrap; }
+    .math { color: #172554; font-weight: 800; }
+    .method-map { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 8px; align-items: stretch; margin: 18px 0 0; }
+    .map-box { padding: 12px; border: 1px solid #bae6fd; border-radius: 13px; background: #f0f9ff; text-align: center; }
+    .map-box strong { display: block; color: var(--sky); }
+    .map-arrow { display: grid; place-items: center; color: #0284c7; font-size: 26px; font-weight: 900; }
+    .number-line { position: relative; min-height: 103px; margin: 16px 6px 8px; padding-top: 40px; }
+    .number-line .rail { height: 5px; border-radius: 999px; background: #94a3b8; }
+    .tick, .mark { position: absolute; transform: translateX(-50%); }
+    .tick { top: 30px; width: 2px; height: 22px; background: #64748b; }
+    .tick span { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); color: #334155; font-size: 13px; font-weight: 800; white-space: nowrap; }
+    .mark { top: 9px; z-index: 2; padding: 2px 7px; border: 1px solid #5eead4; border-radius: 999px; color: #115e59; background: #fff; font-size: 13px; font-weight: 900; white-space: nowrap; }
+    .mark::after { content: ""; position: absolute; top: 25px; left: 50%; width: 2px; height: 14px; background: var(--teal); }
+    .tool { background: linear-gradient(135deg, #f0fdfa, #fff 48%); }
+    label { display: block; margin-bottom: 4px; color: #134e4a; font-size: 14px; font-weight: 800; }
+    input { width: min(100%, 230px); min-height: 42px; padding: 8px 10px; border: 1px solid #94a3b8; border-radius: 9px; color: var(--ink); background: #fff; }
+    .result { min-height: 88px; margin-top: 12px; padding: 12px; border: 1px dashed #2dd4bf; border-radius: 11px; color: #134e4a; background: #fff; }
+    .result strong { color: var(--teal-dark); }
+    .status { min-height: 28px; margin: 10px 0 0; font-weight: 800; }
+    .status.ok { color: var(--green); }
+    .status.warn { color: var(--amber); }
+    .status.no { color: var(--rose); }
+    .bisection-box { margin-top: 12px; padding: 14px; border: 1px solid #a5f3fc; border-radius: 13px; background: #ecfeff; }
+    .bounds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+    .bound { padding: 9px; border: 1px solid #bae6fd; border-radius: 10px; background: #fff; text-align: center; }
+    .bound b { display: block; color: var(--sky); font-size: 14px; }
+    .bound span { display: block; font: 900 18px ui-monospace, Consolas, monospace; }
+    .history { margin: 11px 0 0; padding-left: 20px; color: var(--muted); font-size: 14px; }
+    .history li { margin-bottom: 2px; }
+    .digit-track { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 5px; margin: 12px 0; }
+    .digit { min-height: 44px; padding: 4px; border: 1px solid #cbd5e1; border-radius: 8px; color: #334155; background: #fff; font-weight: 900; }
+    .digit:hover:not(:disabled) { border-color: var(--teal); background: var(--teal-pale); }
+    .digit:disabled { cursor: default; }
+    .digit.good { color: var(--green); border-color: #4ade80; background: var(--green-pale); }
+    .digit.over { color: var(--rose); border-color: #fda4af; background: var(--rose-pale); }
+    .digit.near { box-shadow: 0 0 0 3px #fde68a; }
+    .decimal-answer { margin: 10px 0 0; font-size: 19px; font-weight: 900; }
+    .formula-tool { border-color: #c4b5fd; background: linear-gradient(135deg, var(--violet-pale), #fff 58%); }
+    .formula-tool label { color: #4c1d95; }
+    .formula-tool input { border-color: #c4b5fd; }
+    .formula-result { border-color: #c4b5fd; color: #4c1d95; }
+    .comparison { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; margin-top: 10px; }
+    .compare-item { padding: 10px; border: 1px solid #ddd6fe; border-radius: 10px; background: #fff; text-align: center; }
+    .compare-item strong { display: block; color: var(--violet); }
+    .compare-arrow { color: var(--violet); font-size: 24px; font-weight: 900; }
+    .long-root-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(290px, .9fr); gap: 16px; align-items: start; }
+    .step-panel { background: linear-gradient(145deg, #eff6ff, #fff 62%); }
+    .action-counter { margin-bottom: 10px; color: var(--sky); font-weight: 900; }
+    .action-title { min-height: 31px; margin-bottom: 4px; color: var(--ink); font-size: 20px; font-weight: 900; }
+    .action-copy { min-height: 82px; margin-bottom: 12px; }
+    .action-copy p { margin-bottom: 6px; }
+    .paper { min-height: 400px; background: repeating-linear-gradient(to bottom, #fff 0, #fff 33px, #e0e7ff 34px); overflow-x: auto; }
+    .root-paper { width: min(100%, 510px); margin: 6px auto; color: #172554; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: clamp(15px, 2.2vw, 18px); line-height: 1.85; }
+    .answer-line { display: flex; align-items: flex-end; min-height: 58px; border-bottom: 3px solid #1e3a8a; font-size: 25px; font-weight: 900; }
+    .radical { position: relative; padding: 0 8px 0 3px; border-top: 3px solid #1e3a8a; }
+    .radical::before { content: "√"; position: absolute; left: -18px; top: -7px; font: 34px/1 Georgia, serif; }
+    .work-row { display: grid; grid-template-columns: 118px 1fr; gap: 7px; min-height: 35px; padding-top: 3px; }
+    .work-label { color: #475569; font-size: 13px; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+    .work-value { min-width: 200px; border-bottom: 1px solid #64748b; text-align: right; font-weight: 800; white-space: pre; }
+    .work-row.new .work-value { color: var(--violet); }
+    .work-row.emphasis .work-value { color: var(--teal-dark); font-size: 1.09em; }
+    .group-strip { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 0; }
+    .group { padding: 3px 8px; border: 1px solid #93c5fd; border-radius: 8px; color: #1e40af; background: #eff6ff; font: 800 15px ui-monospace, Consolas, monospace; }
+    .group.current { color: #115e59; border-color: #5eead4; background: #ccfbf1; box-shadow: 0 0 0 3px #fef3c7; }
+    .long-note { margin-top: 13px; padding: 12px; border-radius: 11px; color: #14532d; background: var(--green-pale); }
+    .long-note strong { color: var(--green); }
+    .quiz-card { background: #fffbeb; border-color: #fcd34d; }
+    .quiz-question { color: var(--ink); font-weight: 800; }
+    .quiz-option { flex: 1 1 160px; min-height: 43px; padding: 7px 10px; border: 1px solid #fbbf24; border-radius: 9px; color: #78350f; background: #fff; font-weight: 800; }
+    .quiz-option:hover:not(:disabled) { color: #fff; background: #b45309; }
+    .quiz-option.correct { color: var(--green); border-color: #4ade80; background: var(--green-pale); }
+    .quiz-option.wrong { color: var(--rose); border-color: #fda4af; background: var(--rose-pale); }
+    .quiz-feedback { min-height: 28px; margin: 10px 0 0; font-weight: 800; }
+    .foot { margin: 20px 0 0; color: #64748b; text-align: center; font-size: 14px; }
+    @media (max-width: 760px) {
+      .wrap { width: min(100% - 20px, 1120px); padding-top: 10px; }
+      .grid-2, .grid-3, .long-root-layout { grid-template-columns: 1fr; }
+      .method-map { grid-template-columns: 1fr; }
+      .map-arrow { transform: rotate(90deg); min-height: 22px; }
+      .long-root-layout .paper { order: -1; }
+      .action-copy { min-height: auto; }
+    }
+    @media (max-width: 490px) {
+      .hero, .card { border-radius: 15px; }
+      .bounds { grid-template-columns: 1fr; }
+      .digit-track { grid-template-columns: repeat(5, 1fr); }
+      .comparison { grid-template-columns: 1fr; }
+      .compare-arrow { transform: rotate(90deg); text-align: center; }
+      .work-row { grid-template-columns: 88px 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>根號估計：從夾住答案，到自己開根號</h1>
+      <p class="lead">遇到 <span class="math">√20、√50、√12.25</span>，不必立刻拿計算機。先用平方數找位置，再把範圍一格一格縮小；最後，連直式開根號每一個動作也能自己做出來。</p>
+      <div class="pills">
+        <span class="pill">先講觀念，再講算法</span>
+        <span class="pill">每個判斷都回到「平方比較」</span>
+        <span class="pill">可課堂投影，也可自己按步練習</span>
+      </div>
+      <nav class="nav" aria-label="本頁導覽">
+        <a href="#idea">先抓位置</a>
+        <a href="#bisection">二分法</a>
+        <a href="#tenths">十分法</a>
+        <a href="#formula">乘法公式估計</a>
+        <a href="#long-root">直式開根號</a>
+        <a href="#check">自我檢查</a>
+        <a class="btn secondary" href="./index.html">回到首頁</a>
+      </nav>
+    </section>
+
+    <section class="card" id="idea">
+      <div class="section-head">
+        <h2>0. 所有估計法都在做同一件事：比較平方</h2>
+        <span class="level">觀念起點</span>
+      </div>
+      <p class="section-intro">如果 <span class="math">a² &lt; N &lt; b²</span>，而 <span class="math">a、b</span> 都是正數，便能確定 <span class="math">a &lt; √N &lt; b</span>。根號不是神祕的新運算：它問的是「哪一個正數平方後會變成 <span class="math">N</span>？」</p>
+      <div class="grid-3">
+        <article class="mini">
+          <span class="tag">先背附近平方數</span>
+          <h3>例：√20 在哪裡？</h3>
+          <span class="formula">4² = 16 &lt; 20 &lt; 25 = 5²</span>
+          <p>所以 <span class="math">4 &lt; √20 &lt; 5</span>。這是後面所有小數估計的起點。</p>
+        </article>
+        <article class="mini">
+          <span class="tag">平方越大，根號越大</span>
+          <h3>比較不用真的開根號</h3>
+          <span class="formula">√37 &lt; 7，因為 37 &lt; 49 = 7²</span>
+          <p>比較 <span class="math">√37</span> 和整數時，先把整數平方；這比直接猜答案可靠。</p>
+        </article>
+        <article class="notice">
+          <h3>常見錯誤：只看被開方數的十位數</h3>
+          <p><strong>錯誤想法：</strong>20 介於 4 和 5，所以 √20 也許介於 2 和 3。<br><strong>改正：</strong>要比較的是 <em>平方</em>：<span class="math">4²、5²</span>，不是 4、5 本身。</p>
+        </article>
+      </div>
+      <div class="number-line" aria-label="根號二十位於四和五之間的數線">
+        <div class="rail"></div>
+        <div class="tick" style="left: 0%"><span>4</span></div>
+        <div class="tick" style="left: 100%"><span>5</span></div>
+        <div class="mark" style="left: 47.2%">√20 ≈ 4.47</div>
+      </div>
+      <div class="method-map" aria-label="三種估計方法的關係">
+        <div class="map-box"><strong>先夾住整數</strong><span class="math">4 &lt; √20 &lt; 5</span></div>
+        <div class="map-arrow" aria-hidden="true">→</div>
+        <div class="map-box"><strong>縮小小數範圍</strong><span class="math">4.4 &lt; √20 &lt; 4.5</span></div>
+        <div class="map-arrow" aria-hidden="true">→</div>
+        <div class="map-box"><strong>快速預測</strong><span class="math">√20 ≈ 4 + 4/8 = 4.5</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="bisection">
+      <div class="section-head">
+        <h2>1. 基本二分法：每次把答案範圍切一半</h2>
+        <span class="level">基礎</span>
+      </div>
+      <p class="section-intro">已知根號在兩個數之間，就取正中間的數 <span class="math">m</span>，只要算 <span class="math">m²</span>。若 <span class="math">m² &lt; N</span>，表示 <span class="math">m</span> 太小，左端往右移；反之右端往左移。</p>
+      <div class="grid-2">
+        <article class="example">
+          <h3>手算示範：估 √20</h3>
+          <ol>
+            <li>已知 <span class="math">4 &lt; √20 &lt; 5</span>。</li>
+            <li>中點是 <span class="math">4.5</span>，而 <span class="math">4.5² = 20.25 &gt; 20</span>，所以 <span class="math">√20 &lt; 4.5</span>。</li>
+            <li>新範圍為 <span class="math">4 &lt; √20 &lt; 4.5</span>；中點 <span class="math">4.25² = 18.0625 &lt; 20</span>。</li>
+            <li>所以再縮成 <span class="math">4.25 &lt; √20 &lt; 4.5</span>。每按一次，範圍就減半。</li>
+          </ol>
+        </article>
+        <div class="tool">
+          <h3>按一次，做一次二分判斷</h3>
+          <div class="controls">
+            <div>
+              <label for="bisect-number">要估計的 N（正數）</label>
+              <input id="bisect-number" type="number" min="0.01" step="0.01" value="20" inputmode="decimal">
+            </div>
+            <div class="button-row" style="align-self:end">
+              <button class="btn secondary" id="bisect-reset" type="button">重新設定</button>
+              <button class="btn" id="bisect-next" type="button">下一次二分</button>
+            </div>
+          </div>
+          <div class="bisection-box" aria-live="polite">
+            <div class="bounds">
+              <div class="bound"><b>下界 L</b><span id="lower-value">4</span></div>
+              <div class="bound"><b>中點 m</b><span id="middle-value">4.5</span></div>
+              <div class="bound"><b>上界 U</b><span id="upper-value">5</span></div>
+            </div>
+            <div id="bisect-message" class="status">先按「下一次二分」，檢查中點的平方。</div>
+            <ol id="bisect-history" class="history"></ol>
+          </div>
+        </div>
+      </div>
+      <div class="notice"><strong>二分法的小提醒：</strong>中點平方「小於」目標時，根號在中點右邊；中點平方「大於」目標時，根號在中點左邊。不要把左右方向顛倒。</div>
+    </section>
+
+    <section class="card" id="tenths">
+      <div class="section-head">
+        <h2>2. 十分法：先選到 0.1，再選到 0.01</h2>
+        <span class="level">基礎</span>
+      </div>
+      <p class="section-intro">十分法不是亂猜小數，而是在已知下界上，一格一格試 <span class="math">0.1</span>。找出「平方仍不超過 <span class="math">N</span>」的最大數；接著把步長改成 <span class="math">0.01</span>，做完全同樣的事。</p>
+      <div class="grid-2">
+        <article class="mini">
+          <h3>例：√20 的十分位</h3>
+          <span class="formula">4.4² = 19.36 &lt; 20；4.5² = 20.25 &gt; 20</span>
+          <p>因此 <span class="math">4.4 &lt; √20 &lt; 4.5</span>，十分位是 4。接著試 <span class="math">4.41、4.42、…</span>，就能找百分位。</p>
+          <p>這是「由粗到細」的試位；直式開根號其實也在做逐位選數字，只是把試算整理得更省力。</p>
+        </article>
+        <div class="tool">
+          <h3>點選你要試的下一位</h3>
+          <div class="controls">
+            <div>
+              <label for="decimal-number">要估計的 N（正數）</label>
+              <input id="decimal-number" type="number" min="0.01" step="0.01" value="20" inputmode="decimal">
+            </div>
+            <div class="button-row" style="align-self:end">
+              <button class="btn secondary" id="decimal-reset" type="button">重來</button>
+              <button class="btn" id="decimal-next-place" type="button">改試下一位</button>
+            </div>
+          </div>
+          <p id="decimal-prompt" class="status">先找最大整數下界，再選十分位。</p>
+          <div class="digit-track" id="digit-track" aria-label="可選數字零到九"></div>
+          <div id="decimal-answer" class="decimal-answer" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="notice"><strong>常見錯誤：</strong>看到 <span class="math">4.5² &gt; 20</span>，答案不是 4.5；應回到前一個仍不超過 20 的數 4.4。若要寫估計範圍，就要同時寫出上下兩端。</div>
+    </section>
+
+    <section class="card" id="formula">
+      <div class="section-head">
+        <h2>3. 用乘法公式快速估計：把「差多少」分給 2a</h2>
+        <span class="level advanced">進階</span>
+      </div>
+      <p class="section-intro">當 <span class="math">N</span> 靠近一個完全平方數 <span class="math">a²</span> 時，設 <span class="math">√N = a + x</span>。展開平方後，根號的變化量 <span class="math">x</span> 就能快速估出來。</p>
+      <div class="grid-2">
+        <article class="example">
+          <h3>從乘法公式推出估計式</h3>
+          <span class="formula">(a + x)² = a² + 2ax + x²</span>
+          <p>令 <span class="math">N = a² + d</span>，則 <span class="math">d = 2ax + x²</span>。</p>
+          <p>若 <span class="math">x</span> 很小，<span class="math">x²</span> 更小，先忽略它：</p>
+          <span class="formula">x ≈ d / (2a)，所以 √N ≈ a + (N − a²) / (2a)</span>
+          <p>例如 <span class="math">√50</span> 靠近 <span class="math">7² = 49</span>：<span class="math">√50 ≈ 7 + 1/14 ≈ 7.0714</span>。</p>
+        </article>
+        <div class="tool formula-tool">
+          <h3>乘法公式估計器</h3>
+          <div class="controls">
+            <div>
+              <label for="formula-number">N（建議選靠近平方數的數）</label>
+              <input id="formula-number" type="number" min="0.01" step="0.01" value="50" inputmode="decimal">
+            </div>
+            <div class="button-row" style="align-self:end"><button class="btn" id="formula-calc" type="button">用公式估計</button></div>
+          </div>
+          <div id="formula-result" class="result formula-result" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:13px">
+        <article class="mini">
+          <h3>更快驗算候選小數</h3>
+          <p>要驗 <span class="math">7.07</span> 是否接近 <span class="math">√50</span>，不要硬做 7.07 × 7.07：</p>
+          <span class="formula">(7 + 0.07)² = 49 + 2×7×0.07 + 0.07² = 49.9849</span>
+          <p>因為仍小於 50，故 <span class="math">7.07 &lt; √50</span>。</p>
+        </article>
+        <article class="notice">
+          <h3>估計式不是精確等號</h3>
+          <p><strong>不能把 ≈ 寫成 =。</strong>由於 <span class="math">x²</span> 被先省略，這是近似值。實際上 <span class="math">a + d/(2a)</span> 的平方會比 <span class="math">N</span> 多出一個正的 <span class="math">x²</span>，所以這個一次估計通常略偏大。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card" id="long-root">
+      <div class="section-head">
+        <h2>4. 直式開根號：每按一次，只做一個動作</h2>
+        <span class="level advanced">逐步算法</span>
+      </div>
+      <p class="section-intro">直式法把被開方數<strong>從小數點向左右，每兩位分一組</strong>。每一組決定根號的一位數。請先選例子，再一直按「下一個動作」；右邊會像在紙上書寫一樣逐行顯示。</p>
+      <div class="controls" style="margin-bottom:13px">
+        <div>
+          <label for="long-root-example">範例</label>
+          <select id="long-root-example" style="min-height:42px;padding:8px 10px;border:1px solid #94a3b8;border-radius:9px;color:#172554;background:#fff;font:inherit">
+            <option value="12.25">√12.25 = 3.5（含小數點）</option>
+            <option value="529">√529 = 23（整數根）</option>
+            <option value="2">√2 ≈ 1.414（無限小數）</option>
+            <option value="0.04">√0.04 = 0.2（小於 1）</option>
+          </select>
+        </div>
+        <div class="button-row" style="align-self:end">
+          <button class="btn secondary" id="long-root-reset" type="button">從第一步開始</button>
+          <button class="btn" id="long-root-next" type="button">下一個動作</button>
+        </div>
+      </div>
+      <div class="long-root-layout">
+        <div class="step-panel" aria-live="polite">
+          <div id="long-root-counter" class="action-counter">準備開始</div>
+          <div id="long-root-title" class="action-title">先把數字每兩位分成一組</div>
+          <div id="long-root-copy" class="action-copy"><p>例如 12.25 要分成 <span class="math">12 ｜ 25</span>。小數點不用拿掉，它只是在告訴我們：算到第二組時，根號答案也要點上小數點。</p></div>
+          <div class="group-strip" id="group-strip" aria-label="被開方數分組"></div>
+          <div class="button-row">
+            <button class="btn" id="long-root-next-bottom" type="button">下一個動作</button>
+          </div>
+          <div id="long-root-note" class="long-note"><strong>先記住兩個核心：</strong>第一位找 <span class="math">x²</span>；後續每一位找 <span class="math">(20P + x)×x</span> 不超過目前的數。P 是已經寫出的根號部分（先不管小數點）。</div>
+        </div>
+        <div class="paper" aria-label="直式開根號算式紙面">
+          <div class="root-paper">
+            <div class="answer-line"><span>答案：</span><span id="paper-root" class="radical">＿</span></div>
+            <div id="paper-work"></div>
+          </div>
+        </div>
+      </div>
+      <div class="notice"><strong>最常卡住的地方：</strong>後續不是只把已得根號乘 2。假如已得到 <span class="math">P = 3</span>，就要用 <span class="math">20P = 60</span>；試 5 時要算 <span class="math">(60 + 5)×5</span>，不是 <span class="math">6×5</span>。這個 0 是因為每次帶下來的是「兩位」＝乘 100。</div>
+    </section>
+
+    <section class="card" id="check">
+      <div class="section-head">
+        <h2>5. 自我檢查：你真的抓到每一法的關鍵了嗎？</h2>
+        <span class="level">基礎 → 進階</span>
+      </div>
+      <div class="grid-3">
+        <article class="quiz-card" data-answer="b" data-explain="因為 5²=25 小於 30，6²=36 大於 30，所以 √30 在 5 和 6 之間。">
+          <span class="tag">基礎</span>
+          <p class="quiz-question">√30 最先應夾在哪兩個整數之間？</p>
+          <div class="quiz-options">
+            <button class="quiz-option" type="button" data-choice="a">4 和 5</button>
+            <button class="quiz-option" type="button" data-choice="b">5 和 6</button>
+            <button class="quiz-option" type="button" data-choice="c">6 和 7</button>
+          </div>
+          <p class="quiz-feedback" aria-live="polite"></p>
+        </article>
+        <article class="quiz-card" data-answer="c" data-explain="4.4²=19.36 小於 20，而 4.5²=20.25 大於 20，因此 √20 的十分位是 4。">
+          <span class="tag">進階</span>
+          <p class="quiz-question">4.4² &lt; 20 &lt; 4.5²，√20 的十分位是多少？</p>
+          <div class="quiz-options">
+            <button class="quiz-option" type="button" data-choice="a">3</button>
+            <button class="quiz-option" type="button" data-choice="b">5</button>
+            <button class="quiz-option" type="button" data-choice="c">4</button>
+          </div>
+          <p class="quiz-feedback" aria-live="polite"></p>
+        </article>
+        <article class="quiz-card" data-answer="a" data-explain="已知根號部分 P=3，下一位要找 (20P+x)x=(60+x)x；x=5 時剛好是 325。">
+          <span class="tag">挑戰</span>
+          <p class="quiz-question">直式中 P=3、目前數是 325，下一位應試哪個數？</p>
+          <div class="quiz-options">
+            <button class="quiz-option" type="button" data-choice="a">5</button>
+            <button class="quiz-option" type="button" data-choice="b">4</button>
+            <button class="quiz-option" type="button" data-choice="c">6</button>
+          </div>
+          <p class="quiz-feedback" aria-live="polite"></p>
+        </article>
+      </div>
+      <p class="foot">解根號估計題時，先寫「平方比較」；要保留幾位小數，就把範圍縮小到那一位的前後。答完再平方一次，是最可靠的自我檢查。</p>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const fmt = (value, digits = 8) => {
+        if (!Number.isFinite(value)) return '—';
+        const fixed = Number(value.toFixed(digits));
+        return String(fixed);
+      };
+      const square = value => value * value;
+      const validPositive = value => Number.isFinite(value) && value > 0;
+
+      // 二分法：始終維持 lower² ≤ N ≤ upper² 的不變量。
+      const bisectInput = document.getElementById('bisect-number');
+      const bisectLower = document.getElementById('lower-value');
+      const bisectMiddle = document.getElementById('middle-value');
+      const bisectUpper = document.getElementById('upper-value');
+      const bisectMessage = document.getElementById('bisect-message');
+      const bisectHistory = document.getElementById('bisect-history');
+      let bisectState = null;
+
+      function resetBisection() {
+        const n = Number(bisectInput.value);
+        if (!validPositive(n)) {
+          bisectState = null;
+          bisectMessage.textContent = '請輸入大於 0 的數。';
+          bisectMessage.className = 'status no';
+          return;
+        }
+        const rootFloor = Math.floor(Math.sqrt(n));
+        if (rootFloor * rootFloor === n) {
+          bisectState = { n, lower: rootFloor, upper: rootFloor, exact: true, history: [] };
+          bisectLower.textContent = fmt(rootFloor);
+          bisectMiddle.textContent = fmt(rootFloor);
+          bisectUpper.textContent = fmt(rootFloor);
+          bisectMessage.textContent = `√${fmt(n)} = ${rootFloor}，這是完全平方數，不必二分。`;
+          bisectMessage.className = 'status ok';
+          bisectHistory.innerHTML = '';
+          return;
+        }
+        bisectState = { n, lower: rootFloor, upper: rootFloor + 1, exact: false, history: [] };
+        renderBisection('先按「下一次二分」，檢查中點的平方。', '');
+      }
+
+      function renderBisection(message, tone) {
+        const { lower, upper, history } = bisectState;
+        const middle = (lower + upper) / 2;
+        bisectLower.textContent = fmt(lower);
+        bisectMiddle.textContent = fmt(middle);
+        bisectUpper.textContent = fmt(upper);
+        bisectMessage.textContent = message;
+        bisectMessage.className = `status ${tone}`;
+        bisectHistory.innerHTML = history.slice(-4).map(item => `<li>${item}</li>`).join('');
+      }
+
+      function nextBisection() {
+        if (!bisectState) resetBisection();
+        if (!bisectState || bisectState.exact) return;
+        const { n } = bisectState;
+        const middle = (bisectState.lower + bisectState.upper) / 2;
+        const midSq = square(middle);
+        let message;
+        if (Math.abs(midSq - n) < 1e-12) {
+          bisectState.lower = middle;
+          bisectState.upper = middle;
+          message = `${fmt(middle)}² = ${fmt(n)}，剛好找到 √${fmt(n)} = ${fmt(middle)}。`;
+          bisectState.history.push(message);
+          renderBisection(message, 'ok');
+          return;
+        }
+        if (midSq < n) {
+          bisectState.lower = middle;
+          message = `${fmt(middle)}² = ${fmt(midSq)} ＜ ${fmt(n)}，中點太小，左端移到 ${fmt(middle)}。`;
+        } else {
+          bisectState.upper = middle;
+          message = `${fmt(middle)}² = ${fmt(midSq)} ＞ ${fmt(n)}，中點太大，右端移到 ${fmt(middle)}。`;
+        }
+        bisectState.history.push(message);
+        renderBisection(message, 'ok');
+      }
+
+      document.getElementById('bisect-reset').addEventListener('click', resetBisection);
+      document.getElementById('bisect-next').addEventListener('click', nextBisection);
+      bisectInput.addEventListener('change', resetBisection);
+      resetBisection();
+
+      // 十分法：每一輪選出在新位數上不超過 N 的最大數字。
+      const decimalInput = document.getElementById('decimal-number');
+      const decimalPrompt = document.getElementById('decimal-prompt');
+      const decimalAnswer = document.getElementById('decimal-answer');
+      const digitTrack = document.getElementById('digit-track');
+      let decimalState = null;
+
+      function resetDecimal() {
+        const n = Number(decimalInput.value);
+        if (!validPositive(n)) {
+          decimalState = null;
+          decimalPrompt.textContent = '請輸入大於 0 的數。';
+          decimalPrompt.className = 'status no';
+          digitTrack.innerHTML = '';
+          decimalAnswer.textContent = '';
+          return;
+        }
+        const base = Math.floor(Math.sqrt(n));
+        decimalState = { n, value: base, place: 1, base, finished: false };
+        decimalAnswer.innerHTML = `先有 <span class="math">${base} ≤ √${fmt(n)} &lt; ${base + 1}</span>`;
+        renderDecimalDigits();
+      }
+
+      function renderDecimalDigits() {
+        if (!decimalState) return;
+        const { n, value, place } = decimalState;
+        const unit = 10 ** (-place);
+        const label = place === 1 ? '十分位' : place === 2 ? '百分位' : `小數第 ${place} 位`;
+        decimalPrompt.textContent = `現在選${label}：在 ${fmt(value)} 後面試 0～9，找平方仍 ≤ ${fmt(n)} 的最大數字。`;
+        decimalPrompt.className = 'status';
+        digitTrack.innerHTML = '';
+        let best = 0;
+        for (let digit = 0; digit <= 9; digit += 1) {
+          const candidate = value + digit * unit;
+          if (square(candidate) <= n + 1e-12) best = digit;
+        }
+        for (let digit = 0; digit <= 9; digit += 1) {
+          const candidate = value + digit * unit;
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'digit';
+          button.textContent = digit;
+          button.setAttribute('aria-label', `試數字 ${digit}，候選值 ${fmt(candidate)}`);
+          button.addEventListener('click', () => chooseDecimalDigit(digit, candidate, best));
+          digitTrack.appendChild(button);
+        }
+      }
+
+      function chooseDecimalDigit(digit, candidate, best) {
+        if (!decimalState || decimalState.finished) return;
+        const buttons = [...digitTrack.querySelectorAll('.digit')];
+        buttons.forEach((button, index) => {
+          button.disabled = true;
+          if (index === best) button.classList.add('good');
+          if (index > best) button.classList.add('over');
+          if (index === digit) button.classList.add('near');
+        });
+        const { n, value, place } = decimalState;
+        const unit = 10 ** (-place);
+        const candidateSq = square(candidate);
+        if (digit !== best) {
+          const direction = digit > best ? '已超過目標，數字要再小一點。' : '還能再大，請看綠色的最大可用數字。';
+          decimalPrompt.textContent = `${fmt(candidate)}² = ${fmt(candidateSq)} ${candidateSq > n ? '＞' : '＜'} ${fmt(n)}。${direction}`;
+          decimalPrompt.className = 'status warn';
+          return;
+        }
+        decimalState.value = value + best * unit;
+        decimalState.finished = true;
+        decimalPrompt.textContent = `對！${fmt(decimalState.value)}² = ${fmt(square(decimalState.value))} ≤ ${fmt(n)}，下一個數字再大就會超過。`;
+        decimalPrompt.className = 'status ok';
+        const upper = decimalState.value + unit;
+        decimalAnswer.innerHTML = `<span class="math">${fmt(decimalState.value)} ≤ √${fmt(n)} &lt; ${fmt(upper)}</span>`;
+      }
+
+      function nextDecimalPlace() {
+        if (!decimalState) resetDecimal();
+        if (!decimalState) return;
+        if (!decimalState.finished) {
+          decimalPrompt.textContent = '請先選出這一位的最大可用數字，才可以進到下一位。';
+          decimalPrompt.className = 'status warn';
+          return;
+        }
+        if (decimalState.place >= 4) {
+          decimalPrompt.textContent = '已做到小數第 4 位；要更多位時，可用同樣規則繼續。';
+          decimalPrompt.className = 'status ok';
+          return;
+        }
+        decimalState.place += 1;
+        decimalState.finished = false;
+        renderDecimalDigits();
+      }
+
+      document.getElementById('decimal-reset').addEventListener('click', resetDecimal);
+      document.getElementById('decimal-next-place').addEventListener('click', nextDecimalPlace);
+      decimalInput.addEventListener('change', resetDecimal);
+      resetDecimal();
+
+      // 乘法公式估計：選最近的整數平方數作為 a²。
+      const formulaInput = document.getElementById('formula-number');
+      const formulaResult = document.getElementById('formula-result');
+      function calculateFormula() {
+        const n = Number(formulaInput.value);
+        if (!validPositive(n)) {
+          formulaResult.textContent = '請輸入大於 0 的數。';
+          return;
+        }
+        const root = Math.sqrt(n);
+        const floorA = Math.floor(root);
+        const ceilA = Math.ceil(root);
+        const a = Math.abs(n - floorA ** 2) <= Math.abs(ceilA ** 2 - n) ? floorA : ceilA;
+        if (a === 0) {
+          formulaResult.innerHTML = `√${fmt(n)} 小於 1；先用十分法較直觀。精確值約為 <strong>${fmt(root, 6)}</strong>。`;
+          return;
+        }
+        const d = n - a ** 2;
+        const first = a + d / (2 * a);
+        const x0 = d / (2 * a);
+        const refined = a + d / (2 * a + x0);
+        const firstSquare = square(first);
+        const direction = firstSquare > n ? '略大於' : firstSquare < n ? '略小於' : '剛好等於';
+        formulaResult.innerHTML = `選附近平方數：<span class="math">${a}² = ${fmt(a ** 2)}</span>，差 <span class="math">d = ${fmt(n)} − ${fmt(a ** 2)} = ${fmt(d)}</span>。<br>` +
+          `<span class="math">√${fmt(n)} ≈ ${a} + ${fmt(d)}/${2 * a} = <strong>${fmt(first, 6)}</strong></span><br>` +
+          `驗算：${fmt(first, 6)}² = ${fmt(firstSquare, 6)}，所以第一次估計${direction} ${fmt(n)}。再把分母的 <span class="math">2a</span> 微調為 <span class="math">2a+x</span>，可得 <strong>${fmt(refined, 6)}</strong>（實際約 ${fmt(root, 6)}）。`;
+      }
+      document.getElementById('formula-calc').addEventListener('click', calculateFormula);
+      formulaInput.addEventListener('change', calculateFormula);
+      calculateFormula();
+
+      // 直式開根號：以 BigInt 保存每一組運算，避免小數顯示造成的累積誤差。
+      const longRootExample = document.getElementById('long-root-example');
+      const longRootCounter = document.getElementById('long-root-counter');
+      const longRootTitle = document.getElementById('long-root-title');
+      const longRootCopy = document.getElementById('long-root-copy');
+      const longRootNote = document.getElementById('long-root-note');
+      const groupStrip = document.getElementById('group-strip');
+      const paperRoot = document.getElementById('paper-root');
+      const paperWork = document.getElementById('paper-work');
+      const longRootNext = document.getElementById('long-root-next');
+      const longRootNextBottom = document.getElementById('long-root-next-bottom');
+      let longRootState = null;
+
+      function splitPairs(raw, extraPairs = 2) {
+        const [integerRaw, decimalRaw = ''] = raw.split('.');
+        const integer = (integerRaw.replace(/^0+(?=\d)/, '') || '0');
+        const leftPad = integer.length % 2 ? `0${integer}` : integer;
+        const integerPairs = [];
+        for (let i = 0; i < leftPad.length; i += 2) integerPairs.push(leftPad.slice(i, i + 2));
+        const decimalPad = decimalRaw + '0'.repeat((2 - decimalRaw.length % 2) % 2);
+        const decimalPairs = [];
+        for (let i = 0; i < decimalPad.length; i += 2) decimalPairs.push(decimalPad.slice(i, i + 2));
+        while (decimalPairs.length < extraPairs) decimalPairs.push('00');
+        return { pairs: [...integerPairs, ...decimalPairs], integerPairs: integerPairs.length };
+      }
+
+      function rootText(digits, integerPairs) {
+        if (!digits.length) return '＿';
+        if (digits.length <= integerPairs) return digits.join('');
+        return `${digits.slice(0, integerPairs).join('')}.${digits.slice(integerPairs).join('')}`;
+      }
+
+      function largestDigit(current, priorRoot) {
+        if (priorRoot === 0n) {
+          let digit = 0n;
+          for (let test = 0n; test <= 9n; test += 1n) if (test * test <= current) digit = test;
+          return digit;
+        }
+        let digit = 0n;
+        for (let test = 0n; test <= 9n; test += 1n) {
+          if ((20n * priorRoot + test) * test <= current) digit = test;
+        }
+        return digit;
+      }
+
+      function buildLongRootActions(raw) {
+        const { pairs, integerPairs } = splitPairs(raw, raw === '2' ? 3 : 0);
+        const actions = [{
+          title: '動作 0：從小數點向兩邊，每兩位分一組',
+          copy: `<p><span class="math">${raw}</span> 分成 <span class="math">${pairs.slice(0, integerPairs).join(' ｜ ')}${pairs.length > integerPairs ? ' ． ' + pairs.slice(integerPairs).join(' ｜ ') : ''}</span>。</p><p>每一組會決定根號答案的一位；跨過小數點後，答案也從那裡點上小數點。</p>`,
+          currentGroup: -1,
+          rootDigits: [],
+          work: [],
+          note: '<strong>規則：</strong>第一組找最大的 <span class="math">x</span>，使 <span class="math">x²</span> 不超過這一組；從第二組開始，使用 <span class="math">(20P+x)×x</span>。'
+        }];
+        let remainder = 0n;
+        let root = 0n;
+        const rootDigits = [];
+        const work = [];
+        pairs.forEach((pair, index) => {
+          const groupNumber = BigInt(pair);
+          const previousRemainder = remainder;
+          remainder = remainder * 100n + groupNumber;
+          const beforeRoot = root;
+          const digit = largestDigit(remainder, beforeRoot);
+          const product = beforeRoot === 0n ? digit * digit : (20n * beforeRoot + digit) * digit;
+          const divisorText = beforeRoot === 0n ? `${digit}²` : `(${20n * beforeRoot} + ${digit}) × ${digit}`;
+          const baseText = beforeRoot === 0n ? `找最大的 x，使 x² ≤ ${remainder}` : `已得 P = ${beforeRoot}，先算 20P = ${20n * beforeRoot}；找最大的 x，使 (${20n * beforeRoot}+x)×x ≤ ${remainder}`;
+          const broughtText = index === 0 ? `先寫下第一組 ${pair}。` : `餘數 ${previousRemainder} 的右邊帶下下一組 ${pair}，得到 ${remainder}。`;
+          const workAfterBring = [...work, { label: index === 0 ? '第一組' : `帶下第 ${index + 1} 組`, value: `${previousRemainder === 0n && index === 0 ? '' : previousRemainder.toString() + ' → '}${remainder}`, type: 'new' }];
+          actions.push({
+            title: `動作 ${actions.length}：${index === 0 ? '寫下第一組' : '帶下下一組'}`,
+            copy: `<p>${broughtText}</p><p>目前要處理的數是 <span class="math">${remainder}</span>。</p>`,
+            currentGroup: index,
+            rootDigits: [...rootDigits],
+            work: workAfterBring,
+            note: '<strong>注意：</strong>每次帶下的是兩位，所以餘數等於乘 100 後再加上這一組。'
+          });
+          actions.push({
+            title: `動作 ${actions.length}：選第 ${index + 1} 位數字 ${digit}`,
+            copy: `<p>${baseText}。</p><p>因此選 <span class="math">x = ${digit}</span>；下一位根號先寫上 ${digit}。</p>`,
+            currentGroup: index,
+            rootDigits: [...rootDigits, digit.toString()],
+            work: [...workAfterBring, { label: index === 0 ? '試第一位' : '試下一位', value: `${divisorText} = ${product}`, type: 'emphasis' }],
+            note: index === 0
+              ? '<strong>第一位只比 x²：</strong>這正是用平方數找根號的整數部分。'
+              : `<strong>為什麼是 20P？</strong>原本根號已有 P，新增一位後相當於把它放大 10 倍；平方展開的中間項因此出現 20P。`
+          });
+          remainder -= product;
+          root = beforeRoot * 10n + digit;
+          rootDigits.push(digit.toString());
+          const workAfterSubtract = [...workAfterBring, { label: '減去乘積', value: `${remainder + product} − ${product} = ${remainder}`, type: 'emphasis' }];
+          work.length = 0;
+          work.push(...workAfterSubtract);
+          actions.push({
+            title: `動作 ${actions.length}：相減，留下餘數 ${remainder}`,
+            copy: `<p>從目前數 <span class="math">${remainder + product}</span> 減去 <span class="math">${product}</span>，餘數是 <span class="math">${remainder}</span>。</p><p>根號目前已寫成 <span class="math">${rootText(rootDigits, integerPairs)}</span>。${index + 1 < pairs.length ? '接著再帶下下一組。' : '本示範的組數已完成。'}</p>`,
+            currentGroup: index,
+            rootDigits: [...rootDigits],
+            work: [...work],
+            note: remainder === 0n
+              ? '<strong>餘數是 0：</strong>這一組剛好除盡；若後面還有組，仍可照規則繼續。'
+              : '<strong>餘數還不是 0：</strong>帶下下一組後，繼續選下一位數字，就能得到更多小數位。'
+          });
+        });
+        actions.push({
+          title: `完成：√${raw} ≈ ${rootText(rootDigits, integerPairs)}`,
+          copy: `<p>你已經完成 ${pairs.length} 組的逐位選數字。</p><p>最後平方驗算一次：答案越多位，平方就越接近原來的 <span class="math">${raw}</span>。</p>`,
+          currentGroup: pairs.length,
+          rootDigits: [...rootDigits],
+          work: [...work],
+          note: '<strong>回頭連結：</strong>直式法和十分法都在找「平方不超過目標的最大下一位」；只是直式用 (20P+x)×x 把計算整理得更快。'
+        });
+        return { pairs, integerPairs, actions };
+      }
+
+      function renderLongRoot() {
+        const { pairs, integerPairs, actions, step } = longRootState;
+        const action = actions[step];
+        longRootCounter.textContent = step === 0 ? '起點：先準備分組' : `第 ${step} / ${actions.length - 1} 個動作`;
+        longRootTitle.textContent = action.title;
+        longRootCopy.innerHTML = action.copy;
+        longRootNote.innerHTML = action.note;
+        groupStrip.innerHTML = pairs.map((pair, index) => {
+          const separator = index === integerPairs ? '<span aria-hidden="true">．</span>' : '';
+          return `${separator}<span class="group ${index === action.currentGroup ? 'current' : ''}">${pair}</span>`;
+        }).join('');
+        paperRoot.textContent = rootText(action.rootDigits, integerPairs);
+        paperWork.innerHTML = action.work.map(row => `<div class="work-row ${row.type || ''}"><span class="work-label">${row.label}</span><span class="work-value">${row.value}</span></div>`).join('');
+        const finished = step >= actions.length - 1;
+        longRootNext.disabled = finished;
+        longRootNextBottom.disabled = finished;
+        longRootNext.textContent = finished ? '本例已完成' : '下一個動作';
+        longRootNextBottom.textContent = finished ? '本例已完成' : '下一個動作';
+      }
+
+      function resetLongRoot() {
+        const built = buildLongRootActions(longRootExample.value);
+        longRootState = { ...built, step: 0 };
+        renderLongRoot();
+      }
+      function nextLongRoot() {
+        if (!longRootState) resetLongRoot();
+        if (longRootState.step < longRootState.actions.length - 1) {
+          longRootState.step += 1;
+          renderLongRoot();
+        }
+      }
+      document.getElementById('long-root-reset').addEventListener('click', resetLongRoot);
+      longRootNext.addEventListener('click', nextLongRoot);
+      longRootNextBottom.addEventListener('click', nextLongRoot);
+      longRootExample.addEventListener('change', resetLongRoot);
+      resetLongRoot();
+
+      // 自我檢查題：答對、答錯都立即告訴學生應回到哪個判斷。
+      document.querySelectorAll('.quiz-card').forEach(card => {
+        const answer = card.dataset.answer;
+        const explain = card.dataset.explain;
+        const feedback = card.querySelector('.quiz-feedback');
+        card.querySelectorAll('.quiz-option').forEach(button => {
+          button.addEventListener('click', () => {
+            const correct = button.dataset.choice === answer;
+            card.querySelectorAll('.quiz-option').forEach(option => {
+              option.disabled = true;
+              if (option.dataset.choice === answer) option.classList.add('correct');
+            });
+            if (!correct) button.classList.add('wrong');
+            feedback.textContent = `${correct ? '答對。' : '再看一次。'}${explain}`;
+            feedback.className = `quiz-feedback ${correct ? 'status ok' : 'status no'}`;
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

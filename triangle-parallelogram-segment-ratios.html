@@ -165,10 +165,33 @@
     .range-item { padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
     .range-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
     output { color: var(--blue); font-family: Cambria, "Times New Roman", serif; font-size: 1.1rem; font-weight: 850; }
-    input[type="range"] { width: 100%; margin: 7px 0 1px; accent-color: var(--blue); }
+    .ratio-inputs { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 7px; margin-top: 8px; }
+    .ratio-inputs label { font-size: .85rem; }
+    .ratio-inputs input { min-height: 38px; margin-top: 3px; padding: 5px 8px; box-sizing: border-box; text-align: center; }
+    .ratio-symbol { padding-bottom: 9px; color: var(--blue); font-family: Cambria, "Times New Roman", serif; font-size: 1.35rem; font-weight: 850; }
     .ratio-line { margin: 3px 0 0; color: var(--muted); font-size: .89rem; }
+    .answer-actions { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+    .answer-actions button { background: var(--teal); }
+    .answer-actions button:hover { background: #08746b; }
+    .answer-hint { color: var(--muted); font-size: .9rem; font-weight: 700; }
+    .answer-prompt { display: block; color: #17415e; font-weight: 800; }
+    .random-box { margin: 14px 0 2px; padding: 13px 14px; border: 1px solid #cfc0eb; border-radius: 12px; background: #faf8ff; }
+    .random-box h4 { margin: 0; color: #5a3989; font-size: 1.02rem; }
+    .random-box p { margin: 5px 0 10px; color: var(--muted); font-size: .9rem; }
+    .random-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+    .random-actions button { color: #fff; background: #7653a7; }
+    .random-actions button:hover { background: #5e3e8b; }
+    .random-note { min-height: 22px; margin: 10px 0 0 !important; color: #5b417f !important; font-weight: 800; }
+    .measure-box { margin: 14px 0 2px; padding: 13px 14px; border: 1px solid #b9d9e2; border-radius: 12px; background: #f6fcff; }
+    .measure-box h3 { margin: 0; color: #17415e; font-size: 1.02rem; }
+    .measure-box p { margin: 6px 0 10px; color: var(--muted); font-size: .9rem; }
+    .measure-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .measure-grid label { color: var(--ink); font-size: .9rem; font-weight: 800; }
+    .measure-grid input { width: 100%; margin-top: 5px; box-sizing: border-box; }
     .para-result { min-height: 105px; margin-top: 14px; padding: 13px 14px; border-radius: 12px; color: #17415e; background: #edf7fd; }
     .para-result strong { color: var(--teal); font-family: Cambria, "Times New Roman", serif; font-size: 1.23rem; }
+    .length-summary { margin-top: 10px; padding: 9px 10px; border-left: 4px solid var(--gold); border-radius: 7px; background: #fffdf4; color: #5f4a10; font-size: .92rem; font-weight: 700; }
+    .length-summary p { margin: 4px 0 0; }
     .hidden { display: none !important; }
     .comparison { width: 100%; border-collapse: collapse; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; }
     .comparison th, .comparison td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
@@ -191,7 +214,8 @@
       .hero { border-radius: 21px; }
     }
     @media (max-width: 480px) {
-      .input-row, .range-grid { grid-template-columns: 1fr; }
+      .input-row, .range-grid, .measure-grid { grid-template-columns: 1fr; }
+      .answer-actions, .random-actions { align-items: flex-start; flex-direction: column; }
       .area-wheel { grid-template-columns: 1fr; }
       .diagram-frame svg { min-height: 245px; }
     }
@@ -317,29 +341,58 @@
           </div>
           <div>
             <p id="para-mode-note" class="mode-note"></p>
+            <div class="measure-box">
+              <h3>先選分點；需要「長度」時再設定圖形尺寸</h3>
+              <p>每個分點都可分別輸入同一邊的<strong>兩段整數長度</strong>，例如輸入 <span class="math">AE=3、ED=7</span>。頁面會自動化成最簡整數比；每段數字限制在 <span class="math">0</span> 到 <span class="math">10</span>，端點可輸入 <span class="math">0:1</span> 或 <span class="math">1:0</span>。比例不必知道邊長；若要算交點 P 周圍的中間分段長度，請輸入兩鄰邊與夾角。</p>
+              <div class="measure-grid">
+                <label for="para-ab">AB 長度<input id="para-ab" type="number" inputmode="decimal" min="0.1" max="999" step="0.1" value="10"></label>
+                <label for="para-ad">AD 長度<input id="para-ad" type="number" inputmode="decimal" min="0.1" max="999" step="0.1" value="7"></label>
+                <label for="para-angle">∠DAB（度）<input id="para-angle" type="number" inputmode="decimal" min="1" max="179" step="1" value="75"></label>
+              </div>
+            </div>
 
             <div id="same-controls">
               <h3>同方向：兩條截線都由 AD 截到 BC</h3>
               <p>設 <span class="math">E,G∈AD；F,H∈BC；EF 與 GH 交於 P</span>。因為 <span class="math">AD∥BC</span>，由相似三角形可立刻得到兩條截線被 P 分出的比相等。</p>
               <div class="formula small"><span class="math">EP : PF = GP : PH</span></div>
-              <div class="range-grid">
-                <div class="range-item"><div class="range-top"><label for="same-e">E 在 AD 的位置</label><output id="same-e-out"></output></div><input id="same-e" type="range" min="10" max="90" step="10" value="20"><p class="ratio-line" id="same-e-ratio"></p></div>
-                <div class="range-item"><div class="range-top"><label for="same-f">F 在 BC 的位置</label><output id="same-f-out"></output></div><input id="same-f" type="range" min="10" max="90" step="10" value="70"><p class="ratio-line" id="same-f-ratio"></p></div>
-                <div class="range-item"><div class="range-top"><label for="same-g">G 在 AD 的位置</label><output id="same-g-out"></output></div><input id="same-g" type="range" min="10" max="90" step="10" value="80"><p class="ratio-line" id="same-g-ratio"></p></div>
-                <div class="range-item"><div class="range-top"><label for="same-h">H 在 BC 的位置</label><output id="same-h-out"></output></div><input id="same-h" type="range" min="10" max="90" step="10" value="40"><p class="ratio-line" id="same-h-ratio"></p></div>
+              <div class="random-box">
+                <h4>隨機出題：同方向二截線</h4>
+                <p>所有題目中的已知邊比，以及答案化成最簡整數比後的兩項，都不超過 10。簡易題讓兩條截線各有一個頂點端點，且固定點一個在 AD 左邊、一個在 BC 右邊；進階題讓 AD、BC 兩邊的分點都自由變化。</p>
+                <div class="random-actions">
+                  <button id="same-random-easy" type="button">簡易隨機題：左右各一個頂點</button>
+                  <button id="same-random-advanced" type="button">進階隨機題：兩邊都變化</button>
+                </div>
+                <p id="same-random-note" class="random-note" aria-live="polite">可先自行輸入，也可按按鈕出一題。</p>
               </div>
+              <div class="range-grid">
+                <div class="range-item"><div class="range-top"><span>E 將 AD 分成</span><output id="same-e-out"></output></div><div class="ratio-inputs"><label for="same-e-a">AE<input id="same-e-a" type="number" inputmode="numeric" min="0" max="10" step="1" value="1"></label><span class="ratio-symbol">:</span><label for="same-e-d">ED<input id="same-e-d" type="number" inputmode="numeric" min="0" max="10" step="1" value="4"></label></div><p class="ratio-line" id="same-e-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><span>F 將 BC 分成</span><output id="same-f-out"></output></div><div class="ratio-inputs"><label for="same-f-b">BF<input id="same-f-b" type="number" inputmode="numeric" min="0" max="10" step="1" value="7"></label><span class="ratio-symbol">:</span><label for="same-f-c">FC<input id="same-f-c" type="number" inputmode="numeric" min="0" max="10" step="1" value="3"></label></div><p class="ratio-line" id="same-f-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><span>G 將 AD 分成</span><output id="same-g-out"></output></div><div class="ratio-inputs"><label for="same-g-a">AG<input id="same-g-a" type="number" inputmode="numeric" min="0" max="10" step="1" value="4"></label><span class="ratio-symbol">:</span><label for="same-g-d">GD<input id="same-g-d" type="number" inputmode="numeric" min="0" max="10" step="1" value="1"></label></div><p class="ratio-line" id="same-g-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><span>H 將 BC 分成</span><output id="same-h-out"></output></div><div class="ratio-inputs"><label for="same-h-b">BH<input id="same-h-b" type="number" inputmode="numeric" min="0" max="10" step="1" value="2"></label><span class="ratio-symbol">:</span><label for="same-h-c">HC<input id="same-h-c" type="number" inputmode="numeric" min="0" max="10" step="1" value="3"></label></div><p class="ratio-line" id="same-h-ratio"></p></div>
+              </div>
+              <div class="answer-actions"><button id="same-show-answer" type="button">看答案</button><span class="answer-hint">先自行判斷 P 會如何分截線，再核對。</span></div>
               <div id="same-result" class="para-result" aria-live="polite"></div>
             </div>
 
             <div id="different-controls" class="hidden">
               <h3>不同方向：一條截左右邊，一條截上下邊</h3>
               <p>設 <span class="math">E∈AD、F∈BC；G∈AB、H∈DC</span>。這次 P 在兩條線上的位置通常<strong>不相同</strong>；先各自求出 <span class="math">EP:PF</span> 與 <span class="math">GP:PH</span>，不能套用同方向的等比結論。</p>
-              <div class="range-grid">
-                <div class="range-item"><div class="range-top"><label for="diff-e">E 在 AD 的位置</label><output id="diff-e-out"></output></div><input id="diff-e" type="range" min="10" max="90" step="10" value="20"><p class="ratio-line" id="diff-e-ratio"></p></div>
-                <div class="range-item"><div class="range-top"><label for="diff-f">F 在 BC 的位置</label><output id="diff-f-out"></output></div><input id="diff-f" type="range" min="10" max="90" step="10" value="70"><p class="ratio-line" id="diff-f-ratio"></p></div>
-                <div class="range-item"><div class="range-top"><label for="diff-g">G 在 AB 的位置</label><output id="diff-g-out"></output></div><input id="diff-g" type="range" min="10" max="90" step="10" value="30"><p class="ratio-line" id="diff-g-ratio"></p></div>
-                <div class="range-item"><div class="range-top"><label for="diff-h">H 在 DC 的位置</label><output id="diff-h-out"></output></div><input id="diff-h" type="range" min="10" max="90" step="10" value="80"><p class="ratio-line" id="diff-h-ratio"></p></div>
+              <div class="random-box">
+                <h4>隨機出題：不同方向二截線</h4>
+                <p>所有題目中的已知邊比，以及答案化成最簡整數比後的兩項，都不超過 10。簡易題讓 EF、GH 各有一個端點固定在頂點；進階題讓截左右邊、截上下邊的兩條截線端點都自由變化。</p>
+                <div class="random-actions">
+                  <button id="different-random-easy" type="button">簡易隨機題：每線一端是頂點</button>
+                  <button id="different-random-advanced" type="button">進階隨機題：兩組邊都變化</button>
+                </div>
+                <p id="different-random-note" class="random-note" aria-live="polite">可先自行輸入，也可按按鈕出一題。</p>
               </div>
+              <div class="range-grid">
+                <div class="range-item"><div class="range-top"><span>E 將 AD 分成</span><output id="diff-e-out"></output></div><div class="ratio-inputs"><label for="diff-e-a">AE<input id="diff-e-a" type="number" inputmode="numeric" min="0" max="10" step="1" value="1"></label><span class="ratio-symbol">:</span><label for="diff-e-d">ED<input id="diff-e-d" type="number" inputmode="numeric" min="0" max="10" step="1" value="4"></label></div><p class="ratio-line" id="diff-e-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><span>F 將 BC 分成</span><output id="diff-f-out"></output></div><div class="ratio-inputs"><label for="diff-f-b">BF<input id="diff-f-b" type="number" inputmode="numeric" min="0" max="10" step="1" value="7"></label><span class="ratio-symbol">:</span><label for="diff-f-c">FC<input id="diff-f-c" type="number" inputmode="numeric" min="0" max="10" step="1" value="3"></label></div><p class="ratio-line" id="diff-f-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><span>G 將 AB 分成</span><output id="diff-g-out"></output></div><div class="ratio-inputs"><label for="diff-g-a">AG<input id="diff-g-a" type="number" inputmode="numeric" min="0" max="10" step="1" value="3"></label><span class="ratio-symbol">:</span><label for="diff-g-b">GB<input id="diff-g-b" type="number" inputmode="numeric" min="0" max="10" step="1" value="7"></label></div><p class="ratio-line" id="diff-g-ratio"></p></div>
+                <div class="range-item"><div class="range-top"><span>H 將 DC 分成</span><output id="diff-h-out"></output></div><div class="ratio-inputs"><label for="diff-h-d">DH<input id="diff-h-d" type="number" inputmode="numeric" min="0" max="10" step="1" value="4"></label><span class="ratio-symbol">:</span><label for="diff-h-c">HC<input id="diff-h-c" type="number" inputmode="numeric" min="0" max="10" step="1" value="1"></label></div><p class="ratio-line" id="diff-h-ratio"></p></div>
+              </div>
+              <div class="answer-actions"><button id="different-show-answer" type="button">看答案</button><span class="answer-hint">先各自求兩條截線上的分段比，再核對。</span></div>
               <div id="different-result" class="para-result" aria-live="polite"></div>
             </div>
           </div>
@@ -351,7 +404,7 @@
           <span class="tag gold">為什麼可以畫成歪的？</span>
           <h3>平行四邊形可「剪切」成矩形來讀比</h3>
           <p>把平行四邊形沿著平行方向推成矩形，不會破壞平行、共線，也不會改變同一直線上的分段比。因此可以把底、側都想成 10 等分的格線，再把位置轉回原圖。</p>
-          <div class="note"><strong>面積連結：</strong>同一組平行線夾出的帶狀區域，高固定時，面積跟底邊（或寬度）成正比；這正是用「位置百分比」讀分段比的理由。</div>
+          <div class="note"><strong>面積連結：</strong>同一組平行線夾出的帶狀區域，高固定時，面積跟底邊（或寬度）成正比；這正是把分點位置化成最簡整數比的理由。</div>
         </article>
         <article class="card">
           <span class="tag purple">兩類二截線的比較</span>
@@ -409,6 +462,8 @@
       const ns = 'http://www.w3.org/2000/svg';
       let triangleMode = 'ceva';
       let paraMode = 'same';
+      let sameAnswerShown = false;
+      let differentAnswerShown = false;
 
       const gcd = (a, b) => {
         a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b));
@@ -419,6 +474,34 @@
         const divisor = gcd(a, b);
         return `${Math.round(a / divisor)} : ${Math.round(b / divisor)}`;
       };
+      const bigAbs = (value) => value < 0n ? -value : value;
+      const bigGcd = (a, b) => {
+        a = bigAbs(a); b = bigAbs(b);
+        while (b !== 0n) [a, b] = [b, a % b];
+        return a || 1n;
+      };
+      const fraction = (numerator, denominator) => {
+        if (denominator === 0n) throw new Error('分母不可為 0');
+        if (denominator < 0n) { numerator = -numerator; denominator = -denominator; }
+        const divisor = bigGcd(numerator, denominator);
+        return { n: numerator / divisor, d: denominator / divisor };
+      };
+      const fracAdd = (a, b) => fraction(a.n * b.d + b.n * a.d, a.d * b.d);
+      const fracSub = (a, b) => fraction(a.n * b.d - b.n * a.d, a.d * b.d);
+      const fracMul = (a, b) => fraction(a.n * b.n, a.d * b.d);
+      const fracDiv = (a, b) => fraction(a.n * b.d, a.d * b.n);
+      const fracAbs = (a) => fraction(bigAbs(a.n), a.d);
+      const fracToNumber = (a) => Number(a.n) / Number(a.d);
+      const fracIsZero = (a) => a.n === 0n;
+      const fracIsUnitInterval = (a) => a.n >= 0n && a.n <= a.d;
+      const fracIsStrictInterior = (a) => a.n > 0n && a.n < a.d;
+      const bigRatio = (a, b) => {
+        a = bigAbs(a); b = bigAbs(b);
+        const divisor = bigGcd(a, b);
+        return `${a / divisor} : ${b / divisor}`;
+      };
+      const ratioFromFractions = (a, b) => bigRatio(a.n * b.d, b.n * a.d);
+      const splitRatioFromFraction = (a) => bigRatio(a.n, a.d - a.n);
       const point = (x, y) => ({ x, y });
       const interpolate = (a, b, t) => point(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
       const pText = (p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
@@ -483,10 +566,6 @@
         $('triangle-result').innerHTML = `<span>${theorem}：<span class="math">AF/FB = (DC×EA)/(BD×CE)</span></span><span class="answer">AF : FB = (${dc}×${ea}) : (${bd}×${ce}) = ${answer}</span>`;
       }
 
-      function positionRatio(n, first, second) {
-        return `${first}:${second} = ${simpleRatio(n, 100 - n)}`;
-      }
-
       function unitToPara(x, y) {
         const A = point(92, 311), B = point(490, 311), D = point(173, 67);
         return point(A.x + (B.x - A.x) * x + (D.x - A.x) * y, A.y + (B.y - A.y) * x + (D.y - A.y) * y);
@@ -497,28 +576,295 @@
         return { A, B, C, D, edge: `<path class="edge" d="M ${pText(A)} L ${pText(B)} L ${pText(C)} L ${pText(D)} Z"></path>` };
       }
 
-      function syncRange(id, ratioText) {
-        const value = Number($(id).value);
-        $(`${id}-out`).textContent = `${value}%`;
-        $(`${id}-ratio`).textContent = ratioText(value);
-        return value;
+      function readNonNegativeInteger(id) {
+        const raw = $(id).value.trim();
+        const value = Number(raw);
+        return raw !== '' && Number.isSafeInteger(value) && value >= 0 && value <= 10 ? value : null;
+      }
+
+      function pointPositionText(left, right, pointName, startName, endName) {
+        const ratio = simpleRatio(left, right);
+        if (left === 0) return `${pointName} = ${startName}（${startName}${pointName} : ${pointName}${endName} = ${ratio}）`;
+        if (right === 0) return `${pointName} = ${endName}（${startName}${pointName} : ${pointName}${endName} = ${ratio}）`;
+        return `${startName}${pointName} : ${pointName}${endName} = ${ratio}`;
+      }
+
+      function readSegmentRatio(key, leftId, rightId, pointName, startName, endName) {
+        const left = readNonNegativeInteger(leftId);
+        const right = readNonNegativeInteger(rightId);
+        const output = $(`${key}-out`);
+        const description = $(`${key}-ratio`);
+        if (left === null || right === null) {
+          output.textContent = '—';
+          description.textContent = '請輸入 0 到 10 的整數。';
+          return null;
+        }
+        if (left === 0 && right === 0) {
+          output.textContent = '—';
+          description.textContent = '兩段長度不可同時為 0。';
+          return null;
+        }
+        output.textContent = simpleRatio(left, right);
+        description.textContent = pointPositionText(left, right, pointName, startName, endName);
+        return { position: left / (left + right), fraction: fraction(BigInt(left), BigInt(left + right)) };
+      }
+
+      function randomInteger(min, max) {
+        return min + Math.floor(Math.random() * (max - min + 1));
+      }
+
+      function randomInteriorRatio() {
+        const left = randomInteger(1, 10);
+        const right = randomInteger(1, 10);
+        return { left, right, position: left / (left + right) };
+      }
+
+      function randomOrderedInteriorRatios() {
+        let first = randomInteriorRatio();
+        let second = randomInteriorRatio();
+        while (first.position === second.position) second = randomInteriorRatio();
+        return first.position < second.position ? [first, second] : [second, first];
+      }
+
+      function splitPartsFromFraction(value) {
+        const left = bigAbs(value.n);
+        const right = value.d - value.n;
+        const divisor = bigGcd(left, right);
+        return { left: left / divisor, right: right / divisor };
+      }
+
+      function ratioPartsWithinTen(value) {
+        const parts = splitPartsFromFraction(value);
+        return parts.left <= 10n && parts.right <= 10n;
+      }
+
+      function sameIntersectionFraction(values) {
+        const e = fraction(BigInt(values.ea), BigInt(values.ea + values.ed));
+        const f = fraction(BigInt(values.fb), BigInt(values.fb + values.fc));
+        const g = fraction(BigInt(values.ga), BigInt(values.ga + values.gd));
+        const h = fraction(BigInt(values.hb), BigInt(values.hb + values.hc));
+        const firstPart = fracSub(g, e);
+        const secondPart = fracSub(f, h);
+        const denominator = fracAdd(firstPart, secondPart);
+        if (fracIsZero(denominator)) return null;
+        const lambda = fracDiv(firstPart, denominator);
+        return fracIsUnitInterval(lambda) ? lambda : null;
+      }
+
+      function friendlySameQuestion(makeValues, requireInteriorIntersection = false) {
+        for (let attempt = 0; attempt < 2000; attempt += 1) {
+          const values = makeValues();
+          const lambda = sameIntersectionFraction(values);
+          const intersectionOk = lambda && (!requireInteriorIntersection || fracIsStrictInterior(lambda));
+          if (intersectionOk && ratioPartsWithinTen(lambda)) return values;
+        }
+        return null;
+      }
+
+      function differentIntersectionFractions(values) {
+        const e = fraction(BigInt(values.ea), BigInt(values.ea + values.ed));
+        const f = fraction(BigInt(values.fb), BigInt(values.fb + values.fc));
+        const g = fraction(BigInt(values.ga), BigInt(values.ga + values.gb));
+        const h = fraction(BigInt(values.hd), BigInt(values.hd + values.hc));
+        const hMinusG = fracSub(h, g);
+        const xNumerator = fracAdd(g, fracMul(e, hMinusG));
+        const xDenominator = fracSub(fraction(1n, 1n), fracMul(hMinusG, fracSub(f, e)));
+        if (fracIsZero(xDenominator)) return null;
+        const x = fracDiv(xNumerator, xDenominator);
+        const y = fracAdd(e, fracMul(x, fracSub(f, e)));
+        return fracIsUnitInterval(x) && fracIsUnitInterval(y) ? { x, y } : null;
+      }
+
+      function friendlyDifferentQuestion(makeValues, requireInteriorIntersection = false) {
+        for (let attempt = 0; attempt < 2000; attempt += 1) {
+          const values = makeValues();
+          const result = differentIntersectionFractions(values);
+          const intersectionOk = result && (!requireInteriorIntersection || (fracIsStrictInterior(result.x) && fracIsStrictInterior(result.y)));
+          if (intersectionOk && ratioPartsWithinTen(result.x) && ratioPartsWithinTen(result.y)) return values;
+        }
+        return null;
+      }
+
+      function setInputValue(id, value) {
+        $(id).value = String(value);
+      }
+
+      function applySameRandomQuestion(values, note) {
+        Object.entries(values).forEach(([id, value]) => setInputValue(id, value));
+        sameAnswerShown = false;
+        $('same-random-note').textContent = note;
+        updateSame();
+      }
+
+      function randomEasySameValues() {
+        const e = randomInteriorRatio();
+        const f = randomInteriorRatio();
+        const g = randomInteriorRatio();
+        const h = randomInteriorRatio();
+        const values = { ea: e.left, ed: e.right, fb: f.left, fc: f.right, ga: g.left, gd: g.right, hb: h.left, hc: h.right };
+        const efUsesLeftVertex = Math.random() < 0.5;
+        if (efUsesLeftVertex) {
+          const leftVertex = Math.random() < 0.5 ? { name: 'E=A', values: { ea: 0, ed: 1 } } : { name: 'E=D', values: { ea: 1, ed: 0 } };
+          const rightVertex = Math.random() < 0.5 ? { name: 'H=B', values: { hb: 0, hc: 1 } } : { name: 'H=C', values: { hb: 1, hc: 0 } };
+          return { ...values, ...leftVertex.values, ...rightVertex.values, easyLeftVertex: leftVertex.name, easyRightVertex: rightVertex.name };
+        }
+        const leftVertex = Math.random() < 0.5 ? { name: 'G=A', values: { ga: 0, gd: 1 } } : { name: 'G=D', values: { ga: 1, gd: 0 } };
+        const rightVertex = Math.random() < 0.5 ? { name: 'F=B', values: { fb: 0, fc: 1 } } : { name: 'F=C', values: { fb: 1, fc: 0 } };
+        return { ...values, ...leftVertex.values, ...rightVertex.values, easyLeftVertex: leftVertex.name, easyRightVertex: rightVertex.name };
+      }
+
+      function makeEasySameQuestion() {
+        const values = friendlySameQuestion(randomEasySameValues, true);
+        if (!values) return;
+        applySameRandomQuestion({
+          'same-e-a': values.ea, 'same-e-d': values.ed,
+          'same-f-b': values.fb, 'same-f-c': values.fc,
+          'same-g-a': values.ga, 'same-g-d': values.gd,
+          'same-h-b': values.hb, 'same-h-c': values.hc
+        }, `簡易題已產生：左邊 AD 的 ${values.easyLeftVertex}、右邊 BC 的 ${values.easyRightVertex} 是頂點；請求 EP : PF = GP : PH。`);
+      }
+
+      function makeAdvancedSameQuestion() {
+        const values = friendlySameQuestion(() => {
+          const [e, g] = randomOrderedInteriorRatios();
+          const [h, f] = randomOrderedInteriorRatios();
+          return { ea: e.left, ed: e.right, fb: f.left, fc: f.right, ga: g.left, gd: g.right, hb: h.left, hc: h.right };
+        });
+        if (!values) return;
+        applySameRandomQuestion({
+          'same-e-a': values.ea, 'same-e-d': values.ed,
+          'same-f-b': values.fb, 'same-f-c': values.fc,
+          'same-g-a': values.ga, 'same-g-d': values.gd,
+          'same-h-b': values.hb, 'same-h-c': values.hc
+        }, '進階題已產生：AD、BC 兩邊的分點都變化；請求 EP : PF = GP : PH。');
+      }
+
+      function applyDifferentRandomQuestion(values, note) {
+        Object.entries(values).forEach(([id, value]) => setInputValue(id, value));
+        differentAnswerShown = false;
+        $('different-random-note').textContent = note;
+        updateDifferent();
+      }
+
+      function randomDifferentInteriorValues() {
+        const e = randomInteriorRatio();
+        const f = randomInteriorRatio();
+        const g = randomInteriorRatio();
+        const h = randomInteriorRatio();
+        return { ea: e.left, ed: e.right, fb: f.left, fc: f.right, ga: g.left, gb: g.right, hd: h.left, hc: h.right };
+      }
+
+      function randomEasyDifferentValues() {
+        const values = randomDifferentInteriorValues();
+        const efVertices = [
+          { name: 'E=A', values: { ea: 0, ed: 1 } },
+          { name: 'E=D', values: { ea: 1, ed: 0 } },
+          { name: 'F=B', values: { fb: 0, fc: 1 } },
+          { name: 'F=C', values: { fb: 1, fc: 0 } }
+        ];
+        const ghVertices = [
+          { name: 'G=A', values: { ga: 0, gb: 1 } },
+          { name: 'G=B', values: { ga: 1, gb: 0 } },
+          { name: 'H=D', values: { hd: 0, hc: 1 } },
+          { name: 'H=C', values: { hd: 1, hc: 0 } }
+        ];
+        const efVertex = efVertices[randomInteger(0, efVertices.length - 1)];
+        const vertexName = efVertex.name.slice(-1);
+        let ghVertex = ghVertices[randomInteger(0, ghVertices.length - 1)];
+        while (ghVertex.name.slice(-1) === vertexName) ghVertex = ghVertices[randomInteger(0, ghVertices.length - 1)];
+        return { ...values, ...efVertex.values, ...ghVertex.values, easyEfVertex: efVertex.name, easyGhVertex: ghVertex.name };
+      }
+
+      function makeEasyDifferentQuestion() {
+        const values = friendlyDifferentQuestion(randomEasyDifferentValues, true);
+        if (!values) return;
+        applyDifferentRandomQuestion({
+          'diff-e-a': values.ea, 'diff-e-d': values.ed,
+          'diff-f-b': values.fb, 'diff-f-c': values.fc,
+          'diff-g-a': values.ga, 'diff-g-b': values.gb,
+          'diff-h-d': values.hd, 'diff-h-c': values.hc
+        }, `簡易題已產生：EF 上的 ${values.easyEfVertex}、GH 上的 ${values.easyGhVertex} 都是頂點；請分別求 EP : PF 與 GP : PH。`);
+      }
+
+      function makeAdvancedDifferentQuestion() {
+        const values = friendlyDifferentQuestion(randomDifferentInteriorValues);
+        if (!values) return;
+        applyDifferentRandomQuestion({
+          'diff-e-a': values.ea, 'diff-e-d': values.ed,
+          'diff-f-b': values.fb, 'diff-f-c': values.fc,
+          'diff-g-a': values.ga, 'diff-g-b': values.gb,
+          'diff-h-d': values.hd, 'diff-h-c': values.hc
+        }, '進階題已產生：兩組對邊上的四個分點都變化，請分別求 EP : PF 與 GP : PH。');
+      }
+
+      function promptForAnswer(id, message) {
+        $(id).innerHTML = `<span class="answer-prompt">${message}</span>`;
+      }
+
+      function paraMeasures() {
+        const ab = Number($('para-ab').value);
+        const ad = Number($('para-ad').value);
+        const angle = Number($('para-angle').value);
+        if (!Number.isFinite(ab) || !Number.isFinite(ad) || !Number.isFinite(angle) || ab <= 0 || ad <= 0 || angle <= 0 || angle >= 180) return null;
+        return { ab, ad, cosine: Math.cos(angle * Math.PI / 180) };
+      }
+
+      function unitDistance(first, second, measure) {
+        const dx = second.x - first.x;
+        const dy = second.y - first.y;
+        return Math.sqrt(measure.ab ** 2 * dx ** 2 + measure.ad ** 2 * dy ** 2 + 2 * measure.ab * measure.ad * measure.cosine * dx * dy);
+      }
+
+      function lengthText(length) {
+        return `${length.toFixed(2)} 單位`;
+      }
+
+      function middleLengthSummary(E, F, G, H, P) {
+        const measure = paraMeasures();
+        if (!measure) return '<div class="length-summary">請輸入正的 AB、AD 長度與介於 0°、180° 間的夾角，才能換算實際長度。</div>';
+        const ef = unitDistance(E, F, measure);
+        const gh = unitDistance(G, H, measure);
+        const ep = unitDistance(E, P, measure);
+        const pf = unitDistance(P, F, measure);
+        const gp = unitDistance(G, P, measure);
+        const ph = unitDistance(P, H, measure);
+        return `<div class="length-summary"><strong>交點周圍的中間分段長度</strong><p>EF = ${lengthText(ef)}：EP = ${lengthText(ep)}，PF = ${lengthText(pf)}。<br>GH = ${lengthText(gh)}：GP = ${lengthText(gp)}，PH = ${lengthText(ph)}。</p></div>`;
       }
 
       function updateSame() {
-        const e = syncRange('same-e', (n) => `AE : ED = ${simpleRatio(n, 100 - n)}`);
-        const f = syncRange('same-f', (n) => `BF : FC = ${simpleRatio(n, 100 - n)}`);
-        const g = syncRange('same-g', (n) => `AG : GD = ${simpleRatio(n, 100 - n)}`);
-        const h = syncRange('same-h', (n) => `BH : HC = ${simpleRatio(n, 100 - n)}`);
-        const denominator = f - e - h + g;
-        const lambda = denominator ? (g - e) / denominator : NaN;
-        if (!(lambda > 0 && lambda < 1)) {
-          $('same-result').innerHTML = '<strong>目前兩條線沒有在平行四邊形內相交。</strong><br>把 E、F 放得較低，G、H 放得較高（或反過來），使兩條截線的上下順序交換。';
-          renderSameDiagram(e, f, g, h, null);
+        const eData = readSegmentRatio('same-e', 'same-e-a', 'same-e-d', 'E', 'A', 'D');
+        const fData = readSegmentRatio('same-f', 'same-f-b', 'same-f-c', 'F', 'B', 'C');
+        const gData = readSegmentRatio('same-g', 'same-g-a', 'same-g-d', 'G', 'A', 'D');
+        const hData = readSegmentRatio('same-h', 'same-h-b', 'same-h-c', 'H', 'B', 'C');
+        if (!eData || !fData || !gData || !hData) {
+          $('same-result').innerHTML = '<strong>請先完成四組分段比。</strong><br>每組的兩段長度不可同時為 0。';
           return;
         }
-        const answer = simpleRatio(g - e, f - h);
-        $('same-result').innerHTML = `<strong>EP : PF = GP : PH = ${answer}</strong><br>從 AD 往 BC 走，P 位在兩條截線的 ${(lambda * 100).toFixed(1)}% 處。因為 P 兩側形成的三角形有一組對邊平行，所以兩條截線的分段比相同。`;
-        renderSameDiagram(e, f, g, h, lambda);
+        const e = eData.fraction, f = fData.fraction, g = gData.fraction, h = hData.fraction;
+        const firstPart = fracSub(g, e);
+        const secondPart = fracSub(f, h);
+        const denominator = fracAdd(firstPart, secondPart);
+        if (fracIsZero(denominator)) {
+          const state = fracIsZero(firstPart) && fracIsZero(secondPart) ? '兩條截線完全重合，沒有唯一的交點 P。' : '兩條截線彼此平行，沒有交點 P。';
+          $('same-result').innerHTML = `<strong>${state}</strong><br>請調整其中一個分點，才可計算中間分段。`;
+          renderSameDiagram(eData.position * 100, fData.position * 100, gData.position * 100, hData.position * 100, null);
+          return;
+        }
+        const lambda = fracDiv(firstPart, denominator);
+        if (!fracIsUnitInterval(lambda)) {
+          $('same-result').innerHTML = '<strong>目前兩條線沒有在平行四邊形內相交。</strong><br>把 E、F 放得較低，G、H 放得較高（或反過來），使兩條截線的上下順序交換。';
+          renderSameDiagram(eData.position * 100, fData.position * 100, gData.position * 100, hData.position * 100, null);
+          return;
+        }
+        const E = point(0, eData.position), F = point(1, fData.position), G = point(0, gData.position), H = point(1, hData.position);
+        const lambdaNumber = fracToNumber(lambda);
+        const P = point(lambdaNumber, E.y + (F.y - E.y) * lambdaNumber);
+        const answer = ratioFromFractions(fracAbs(firstPart), fracAbs(secondPart));
+        const endpointNote = lambda.n === 0n || lambda.n === lambda.d ? '此時 P 正好落在截線端點；零長度分段也會一併列出。' : '因為 P 兩側形成的三角形有一組對邊平行，所以兩條截線的分段比相同。';
+        const answerHtml = `<strong>EP : PF = GP : PH = ${answer}</strong><br>P 將兩條截線都分成最簡整數比 <span class="math">${answer}</span>。${endpointNote}${middleLengthSummary(E, F, G, H, P)}`;
+        if (sameAnswerShown) $('same-result').innerHTML = answerHtml;
+        else promptForAnswer('same-result', '圖形已更新。請先自行求出 EP : PF 與 GP : PH，再按「看答案」核對最簡整數比。');
+        renderSameDiagram(eData.position * 100, fData.position * 100, gData.position * 100, hData.position * 100, lambdaNumber);
       }
 
       function renderSameDiagram(e, f, g, h, lambda) {
@@ -529,7 +875,16 @@
         [base.A, base.B, base.C, base.D].forEach((p) => { content += dot(p); });
         [E, F, G, H].forEach((p) => { content += dot(p, 'special-point'); });
         content += label('A', base.A, -19, 19) + label('B', base.B, 8, 19) + label('C', base.C, 9, -7) + label('D', base.D, -20, -8);
-        content += label('E', E, -22, 6) + label('F', F, 9, 6) + label('G', G, -22, 6) + label('H', H, 9, 6);
+        if (e === g) content += label(e === 0 ? 'E=G=A' : e === 100 ? 'E=G=D' : 'E=G', E, -22, 6);
+        else {
+          content += label(e === 0 ? 'E=A' : e === 100 ? 'E=D' : 'E', E, -22, 6);
+          content += label(g === 0 ? 'G=A' : g === 100 ? 'G=D' : 'G', G, -22, 6);
+        }
+        if (f === h) content += label(f === 0 ? 'F=H=B' : f === 100 ? 'F=H=C' : 'F=H', F, 9, 6);
+        else {
+          content += label(f === 0 ? 'F=B' : f === 100 ? 'F=C' : 'F', F, 9, 6);
+          content += label(h === 0 ? 'H=B' : h === 100 ? 'H=C' : 'H', H, 9, 6);
+        }
         if (lambda !== null) {
           const P = unitToPara(lambda, (e + (f - e) * lambda) / 100);
           content += dot(P, 'intersection') + label('P', P, 9, -10);
@@ -538,33 +893,63 @@
       }
 
       function updateDifferent() {
-        const e = syncRange('diff-e', (n) => `AE : ED = ${simpleRatio(n, 100 - n)}`);
-        const f = syncRange('diff-f', (n) => `BF : FC = ${simpleRatio(n, 100 - n)}`);
-        const g = syncRange('diff-g', (n) => `AG : GB = ${simpleRatio(n, 100 - n)}`);
-        const h = syncRange('diff-h', (n) => `DH : HC = ${simpleRatio(n, 100 - n)}`);
-        // e、f、g、h 是百分比整數；先保留分母 100 的精確整數運算，避免小數誤差。
-        const xNum = 100 * g + e * (h - g);
-        const xDen = 10000 - (h - g) * (f - e);
-        const yNum = e * xDen + (f - e) * xNum;
-        const yDen = 100 * xDen;
-        const x = xNum / xDen;
-        const y = yNum / yDen;
-        const ratioOne = simpleRatio(xNum, xDen - xNum);
-        const ratioTwo = simpleRatio(yNum, yDen - yNum);
-        $('different-result').innerHTML = `<strong>EP : PF = ${ratioOne}</strong>；<strong>GP : PH = ${ratioTwo}</strong><br>P 在 EF 上距 E ${(x * 100).toFixed(1)}% 處，在 GH 上距 G ${(y * 100).toFixed(1)}% 處。兩個百分比不同，正好說明此類不能直接套同方向結論。`;
-        renderDifferentDiagram(e, f, g, h, x, y);
+        const eData = readSegmentRatio('diff-e', 'diff-e-a', 'diff-e-d', 'E', 'A', 'D');
+        const fData = readSegmentRatio('diff-f', 'diff-f-b', 'diff-f-c', 'F', 'B', 'C');
+        const gData = readSegmentRatio('diff-g', 'diff-g-a', 'diff-g-b', 'G', 'A', 'B');
+        const hData = readSegmentRatio('diff-h', 'diff-h-d', 'diff-h-c', 'H', 'D', 'C');
+        if (!eData || !fData || !gData || !hData) {
+          $('different-result').innerHTML = '<strong>請先完成四組分段比。</strong><br>每組的兩段長度不可同時為 0。';
+          return;
+        }
+        const e = eData.fraction, f = fData.fraction, g = gData.fraction, h = hData.fraction;
+        const hMinusG = fracSub(h, g);
+        const xNumerator = fracAdd(g, fracMul(e, hMinusG));
+        const xDenominator = fracSub(fraction(1n, 1n), fracMul(hMinusG, fracSub(f, e)));
+        if (fracIsZero(xDenominator)) {
+          const state = fracIsZero(xNumerator) ? '兩條截線完全重合，沒有唯一的交點 P。' : '兩條截線彼此平行，沒有交點 P。';
+          $('different-result').innerHTML = `<strong>${state}</strong><br>請調整其中一個分點，才可計算中間分段。`;
+          renderDifferentDiagram(eData.position * 100, fData.position * 100, gData.position * 100, hData.position * 100, null, null);
+          return;
+        }
+        const x = fracDiv(xNumerator, xDenominator);
+        const y = fracAdd(e, fracMul(x, fracSub(f, e)));
+        if (!fracIsUnitInterval(x) || !fracIsUnitInterval(y)) {
+          $('different-result').innerHTML = '<strong>目前兩條線沒有在平行四邊形內相交。</strong><br>請調整端點位置，讓交點同時落在 EF 與 GH 兩條線段上。';
+          renderDifferentDiagram(eData.position * 100, fData.position * 100, gData.position * 100, hData.position * 100, null, null);
+          return;
+        }
+        const xNumber = fracToNumber(x);
+        const yNumber = fracToNumber(y);
+        const E = point(0, eData.position), F = point(1, fData.position), G = point(gData.position, 0), H = point(hData.position, 1), P = point(xNumber, yNumber);
+        const ratioOne = splitRatioFromFraction(x);
+        const ratioTwo = splitRatioFromFraction(y);
+        const endpointNote = x.n === 0n || x.n === x.d || y.n === 0n || y.n === y.d
+          ? '此時 P 正好落在截線端點；零長度分段也會一併列出。'
+          : x.n * y.d === y.n * x.d
+            ? '這一組數值剛好讓兩條截線的分段比相同；但這不是不同方向二截線的固定結論，不能直接套用同方向定理。'
+            : '兩條截線的分段比不同，正好說明此類不能直接套同方向結論。';
+        const answerHtml = `<strong>EP : PF = ${ratioOne}</strong>；<strong>GP : PH = ${ratioTwo}</strong><br>P 在 EF 上的分段比為 <span class="math">${ratioOne}</span>；在 GH 上的分段比為 <span class="math">${ratioTwo}</span>。${endpointNote}${middleLengthSummary(E, F, G, H, P)}`;
+        if (differentAnswerShown) $('different-result').innerHTML = answerHtml;
+        else promptForAnswer('different-result', '圖形已更新。請先分別求 EP : PF 與 GP : PH，再按「看答案」核對最簡整數比。');
+        renderDifferentDiagram(eData.position * 100, fData.position * 100, gData.position * 100, hData.position * 100, xNumber, yNumber);
       }
 
       function renderDifferentDiagram(e, f, g, h, x, y) {
         const svg = $('para-svg');
         const base = paraBase();
-        const E = unitToPara(0, e / 100), F = unitToPara(1, f / 100), G = unitToPara(g / 100, 0), H = unitToPara(h / 100, 1), P = unitToPara(x, y);
+        const E = unitToPara(0, e / 100), F = unitToPara(1, f / 100), G = unitToPara(g / 100, 0), H = unitToPara(h / 100, 1);
         let content = base.edge + line(E, F, 'secant-one') + line(G, H, 'secant-two');
         [base.A, base.B, base.C, base.D].forEach((p) => { content += dot(p); });
         [E, F, G, H].forEach((p) => { content += dot(p, 'special-point'); });
-        content += dot(P, 'intersection');
         content += label('A', base.A, -19, 19) + label('B', base.B, 8, 19) + label('C', base.C, 9, -7) + label('D', base.D, -20, -8);
-        content += label('E', E, -22, 6) + label('F', F, 9, 6) + label('G', G, 0, 21) + label('H', H, 0, -11) + label('P', P, 9, -10);
+        content += label(e === 0 ? 'E=A' : e === 100 ? 'E=D' : 'E', E, -22, 6);
+        content += label(f === 0 ? 'F=B' : f === 100 ? 'F=C' : 'F', F, 9, 6);
+        content += label(g === 0 ? 'G=A' : g === 100 ? 'G=B' : 'G', G, 0, 21);
+        content += label(h === 0 ? 'H=D' : h === 100 ? 'H=C' : 'H', H, 0, -11);
+        if (x !== null && y !== null) {
+          const P = unitToPara(x, y);
+          content += dot(P, 'intersection') + label('P', P, 9, -10);
+        }
         svg.innerHTML = content;
       }
 
@@ -577,6 +962,8 @@
 
       function setParaMode(mode) {
         paraMode = mode;
+        if (mode === 'same') sameAnswerShown = false;
+        else differentAnswerShown = false;
         $('same-tab').setAttribute('aria-selected', String(mode === 'same'));
         $('different-tab').setAttribute('aria-selected', String(mode === 'different'));
         $('same-controls').classList.toggle('hidden', mode !== 'same');
@@ -592,8 +979,37 @@
       $('same-tab').addEventListener('click', () => setParaMode('same'));
       $('different-tab').addEventListener('click', () => setParaMode('different'));
       ['bd', 'dc', 'ce', 'ea'].forEach((id) => $(id).addEventListener('input', updateTriangleCalculator));
-      ['same-e', 'same-f', 'same-g', 'same-h'].forEach((id) => $(id).addEventListener('input', updateSame));
-      ['diff-e', 'diff-f', 'diff-g', 'diff-h'].forEach((id) => $(id).addEventListener('input', updateDifferent));
+      ['same-e-a', 'same-e-d', 'same-f-b', 'same-f-c', 'same-g-a', 'same-g-d', 'same-h-b', 'same-h-c'].forEach((id) => $(id).addEventListener('input', () => {
+        sameAnswerShown = false;
+        $('same-random-note').textContent = '已手動調整題目；請先自行作答，再按「看答案」核對。';
+        updateSame();
+      }));
+      ['diff-e-a', 'diff-e-d', 'diff-f-b', 'diff-f-c', 'diff-g-a', 'diff-g-b', 'diff-h-d', 'diff-h-c'].forEach((id) => $(id).addEventListener('input', () => {
+        differentAnswerShown = false;
+        $('different-random-note').textContent = '已手動調整題目；請先自行作答，再按「看答案」核對。';
+        updateDifferent();
+      }));
+      $('same-show-answer').addEventListener('click', () => {
+        sameAnswerShown = true;
+        updateSame();
+      });
+      $('different-show-answer').addEventListener('click', () => {
+        differentAnswerShown = true;
+        updateDifferent();
+      });
+      $('same-random-easy').addEventListener('click', makeEasySameQuestion);
+      $('same-random-advanced').addEventListener('click', makeAdvancedSameQuestion);
+      $('different-random-easy').addEventListener('click', makeEasyDifferentQuestion);
+      $('different-random-advanced').addEventListener('click', makeAdvancedDifferentQuestion);
+      ['para-ab', 'para-ad', 'para-angle'].forEach((id) => $(id).addEventListener('input', () => {
+        if (paraMode === 'same') {
+          sameAnswerShown = false;
+          updateSame();
+        } else {
+          differentAnswerShown = false;
+          updateDifferent();
+        }
+      }));
 
       renderTriangle();
       setParaMode('same');

@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多項式除法：長除法、綜合除法與餘式定理</title>
+  <style>
+    :root {
+      --bg: #f7fbff;
+      --paper: #ffffff;
+      --ink: #172554;
+      --sub: #475569;
+      --line: #d9e4f0;
+      --brand: #1d4ed8;
+      --brand-deep: #1e3a8a;
+      --long: #b45309;
+      --long-soft: #fff7ed;
+      --syn: #0f766e;
+      --syn-soft: #f0fdfa;
+      --warn: #9a3412;
+      --warn-soft: #fff7ed;
+      --ok: #166534;
+      --ok-soft: #f0fdf4;
+      --violet: #6d28d9;
+      --violet-soft: #f5f3ff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+      background:
+        radial-gradient(circle at 8% 0%, #dbeafe 0, transparent 28rem),
+        radial-gradient(circle at 95% 4%, #ccfbf1 0, transparent 26rem),
+        var(--bg);
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 18px 44px; }
+    .hero, .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(30, 58, 138, 0.07);
+    }
+    .hero { padding: clamp(20px, 4vw, 34px); }
+    h1, h2, h3 { line-height: 1.35; color: #102454; }
+    h1 { margin: 0 0 8px; font-size: clamp(30px, 5vw, 45px); }
+    h2 { margin: 0 0 10px; font-size: clamp(24px, 3.5vw, 30px); }
+    h3 { margin: 0 0 7px; font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .lead { max-width: 850px; color: var(--sub); font-size: 17px; }
+    .tag-row, .button-row, .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag, .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-weight: 700;
+      font-size: 14px;
+      background: #e0e7ff;
+      color: #3730a3;
+      border: 1px solid #c7d2fe;
+    }
+    .tag.teal { background: #ccfbf1; color: #115e59; border-color: #99f6e4; }
+    .tag.orange { background: #ffedd5; color: #9a3412; border-color: #fed7aa; }
+    .toc {
+      display: grid;
+      gap: 9px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      margin-top: 20px;
+    }
+    .toc a {
+      padding: 10px 12px;
+      color: var(--brand-deep);
+      text-decoration: none;
+      font-weight: 700;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .toc a:hover { background: #eff6ff; }
+    .section { margin-top: 22px; }
+    .card { padding: 18px; }
+    .grid { display: grid; gap: 14px; }
+    .grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .split-card { border-top: 5px solid var(--brand); }
+    .long-card { border-top-color: var(--long); background: linear-gradient(180deg, var(--long-soft), #fff 30%); }
+    .synthetic-card { border-top-color: var(--syn); background: linear-gradient(180deg, var(--syn-soft), #fff 30%); }
+    .formula {
+      display: inline-block;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      font-family: "Cambria Math", Cambria, "Times New Roman", serif;
+      font-size: 1.08em;
+      color: #172554;
+    }
+    .equation {
+      margin: 10px 0;
+      padding: 11px 13px;
+      overflow-x: auto;
+      border: 1px solid #cbdcf0;
+      border-radius: 12px;
+      background: #f8fbff;
+      font-size: 19px;
+      white-space: nowrap;
+    }
+    .callout {
+      margin-top: 12px;
+      padding: 11px 13px;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      background: #eff6ff;
+    }
+    .callout.warn { border-color: #fed7aa; background: var(--warn-soft); color: #7c2d12; }
+    .callout.ok { border-color: #bbf7d0; background: var(--ok-soft); color: #166534; }
+    .callout.violet { border-color: #ddd6fe; background: var(--violet-soft); color: #4c1d95; }
+    .compare-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .compare-table th, .compare-table td { border: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; }
+    .compare-table th { background: #f8fbff; }
+    .compare-table .long-head { background: #fff7ed; color: #9a3412; }
+    .compare-table .syn-head { background: #f0fdfa; color: #115e59; }
+    .lesson-flow { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-top: 10px; }
+    .flow-step { position: relative; padding: 12px 12px 12px 46px; border-radius: 13px; background: #f8fafc; border: 1px solid var(--line); }
+    .flow-step b:first-child { position: absolute; left: 12px; top: 12px; color: #fff; background: var(--brand); width: 25px; height: 25px; text-align: center; border-radius: 50%; }
+    label { display: block; margin: 9px 0 4px; font-weight: 700; color: #334155; }
+    input, button {
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid #b9cadd;
+      padding: 8px 10px;
+    }
+    input { width: 100%; background: #fff; color: #0f172a; }
+    .input-grid { display: grid; gap: 10px; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); }
+    button {
+      cursor: pointer;
+      color: #fff;
+      background: var(--brand);
+      border-color: var(--brand);
+      font-weight: 700;
+    }
+    button:hover { filter: brightness(.96); }
+    button.secondary { color: var(--brand-deep); background: #fff; border-color: #93c5fd; }
+    button.orange { background: var(--long); border-color: var(--long); }
+    button.teal { background: var(--syn); border-color: var(--syn); }
+    .preset { width: auto; padding: 6px 10px; font-size: 14px; }
+    .output { margin-top: 12px; }
+    .output:empty { display: none; }
+    .math-block { overflow-x: auto; }
+    .long-step { padding: 10px 0; border-bottom: 1px dashed #cbd5e1; }
+    .long-step:last-child { border-bottom: 0; }
+    .long-step .action { font-weight: 800; color: #9a3412; }
+    .long-step .subtraction { color: #7c2d12; }
+    .synthetic-table { width: auto; min-width: 420px; margin: 12px 0; border-collapse: separate; border-spacing: 0; text-align: center; }
+    .synthetic-table th, .synthetic-table td { min-width: 70px; padding: 8px 10px; border-bottom: 1px solid #99d8d0; }
+    .synthetic-table th:first-child, .synthetic-table td:first-child { border-right: 2px solid #0f766e; }
+    .synthetic-table tr:last-child td { border-bottom: 0; font-weight: 800; color: #115e59; }
+    .synthetic-table .product-row td { color: #0f766e; background: #f0fdfa; }
+    .synthetic-table .sum-row td { background: #ecfdf5; }
+    .mini-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .mini-table th, .mini-table td { border: 1px solid var(--line); padding: 7px 9px; text-align: center; }
+    .mini-table th { background: #f8fafc; }
+    .number-trace { display: grid; gap: 8px; margin-top: 8px; }
+    .trace-row { border-radius: 10px; border: 1px solid var(--line); background: #f8fbff; padding: 8px 10px; font-family: Consolas, monospace; }
+    .small { color: var(--sub); font-size: 14px; }
+    .facts { margin: 8px 0 0; padding-left: 22px; }
+    .facts li { margin: 5px 0; }
+    details { border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 10px 12px; }
+    details + details { margin-top: 8px; }
+    summary { cursor: pointer; font-weight: 800; color: #1e3a8a; }
+    .quiz-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .quiz-card { border: 1px solid var(--line); border-radius: 14px; padding: 13px; background: #fbfdff; }
+    .choice-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+    .choice-row button { width: auto; padding: 6px 10px; background: #fff; color: var(--brand-deep); border-color: #93c5fd; }
+    .feedback { min-height: 27px; margin-top: 8px; font-weight: 700; }
+    .back { display: inline-block; margin-top: 20px; font-weight: 800; color: var(--brand-deep); text-decoration: none; }
+    .muted { color: var(--sub); }
+    .fraction { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 2px; }
+    .fraction .top { border-bottom: 1px solid currentColor; padding: 0 3px 1px; }
+    .fraction .bottom { padding: 1px 3px 0; }
+    @media (max-width: 780px) {
+      body { font-size: 16px; }
+      .wrap { padding: 14px 10px 32px; }
+      .hero, .card { border-radius: 14px; padding: 15px; }
+      .two, .three, .quiz-grid, .input-grid { grid-template-columns: minmax(0, 1fr); }
+      .compare-table { font-size: 14px; }
+      .compare-table th, .compare-table td { padding: 7px; }
+      .equation { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="tag-row">
+        <span class="tag">高一代數</span>
+        <span class="tag orange">長除法＝逐步減掉</span>
+        <span class="tag teal">綜合除法＝乘後相加</span>
+      </div>
+      <h1>多項式除法：看懂兩種寫法，其實是一個原理</h1>
+      <p class="lead">先把每一步為什麼要「減」或「加」說清楚，再用同一題比較長除法與綜合除法。接著連到數字的長除法、短除法與換進位想法，最後用除法原理推出倍數變化、餘式定理與因式定理。</p>
+      <nav class="toc" aria-label="本頁段落">
+        <a href="#idea">1. 先抓核心差異</a>
+        <a href="#workbench">2. 同題逐步對照</a>
+        <a href="#numbers">3. 數字除法與換進位</a>
+        <a href="#algorithm">4. 除法原理三種型</a>
+        <a href="#candy">5. 糖果：倍數怎麼變</a>
+        <a href="#theorems">6. 餘式／因式定理</a>
+      </nav>
+    </header>
+
+    <section class="section" id="idea">
+      <h2>1. 先抓住：不是「減法變加法」，而是把反向先放進去了</h2>
+      <div class="grid two">
+        <article class="card long-card">
+          <h3>多項式長除法：每輪都要消掉最高次項</h3>
+          <p>先用商式的一項乘回除式，再把這個乘積從目前式子<strong>減掉</strong>。因為我們要讓最高次項相消，才能往下一次。</p>
+          <div class="equation formula">目前式 −（本輪商式 × 除式）</div>
+          <p class="small">這和數字長除法完全同一個精神：估商、乘回、相減、再落下一項。</p>
+        </article>
+        <article class="card synthetic-card">
+          <h3>綜合除法：只限除式為 <span class="formula">x − r</span></h3>
+          <p>除式已寫成 <span class="formula">x − r</span>，長除法中本來要「減掉負的部分」的反向訊息，濃縮成<strong>乘 r 後相加</strong>。</p>
+          <div class="equation formula">下一格 = 原係數 + r × 前一格結果</div>
+          <p class="small">若除式是 <span class="formula">x + 2</span>，要放的不是 2，而是 <span class="formula">r = −2</span>：因為 <span class="formula">x + 2 = x − (−2)</span>。</p>
+        </article>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <h3>老師可直接這樣說</h3>
+        <div class="lesson-flow">
+          <div class="flow-step"><b>1</b><strong>長除法：</strong>我把「多出來的那一塊」乘回去，再減掉它。</div>
+          <div class="flow-step"><b>2</b><strong>綜合除法：</strong>我不寫字母，只追蹤係數；<span class="formula">−r</span> 的反向效果已經改成「乘 r 後加」。</div>
+          <div class="flow-step"><b>3</b><strong>先檢查除式：</strong>一定先改成 <span class="formula">x−r</span>，否則最容易把 r 的正負號放錯。</div>
+        </div>
+        <div class="callout warn"><strong>最常犯錯：</strong>看到 <span class="formula">x+3</span> 就把 3 放進綜合除法。錯！要寫成 <span class="formula">x−(−3)</span>，所以放 <strong>−3</strong>。</div>
+      </div>
+    </section>
+
+    <section class="section" id="workbench">
+      <h2>2. 同一題逐步對照：長除法的「減」與綜合除法的「加」</h2>
+      <article class="card split-card">
+        <h3>互動工作台</h3>
+        <p class="muted">係數從最高次到常數項輸入；例如 <span class="formula">2x³−3x²−11x+6</span> 輸入 <code>2,-3,-11,6</code>。除式輸入為 <span class="formula">ax+b</span>。</p>
+        <div class="input-grid">
+          <div>
+            <label for="coeffInput">被除式 P(x) 的係數</label>
+            <input id="coeffInput" value="2,-3,-11,6" inputmode="text" aria-describedby="coeffHelp">
+            <div class="small" id="coeffHelp">不可漏寫 0，例如 x³−4x+1 要輸入 1,0,-4,1。</div>
+          </div>
+          <div>
+            <label for="aInput">a</label>
+            <input id="aInput" value="1" type="number" step="1">
+          </div>
+          <div>
+            <label for="bInput">b</label>
+            <input id="bInput" value="-3" type="number" step="1">
+          </div>
+        </div>
+        <div class="button-row" style="margin-top:10px;">
+          <button id="calculateBtn">更新兩種算法</button>
+          <button class="secondary preset" data-preset="unit">標準：÷ (x−3)</button>
+          <button class="secondary preset" data-preset="nonunit">重點：÷ (2x−6)</button>
+          <button class="secondary preset" data-preset="remainder">有餘數：÷ (x+2)</button>
+        </div>
+        <div class="output" id="workbenchSummary"></div>
+      </article>
+
+      <div class="grid two" style="margin-top:14px;">
+        <article class="card long-card">
+          <h3>Ａ．長除法：乘回以後要減</h3>
+          <div id="longOutput" class="output" aria-live="polite"></div>
+        </article>
+        <article class="card synthetic-card">
+          <h3>Ｂ．綜合除法：帶入 r，乘後相加</h3>
+          <div id="syntheticOutput" class="output" aria-live="polite"></div>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:14px;">
+        <h3>綜合除法最重要的限制：除式若是 <span class="formula">ax+b</span>，而 <span class="formula">a≠1</span></h3>
+        <p>先令 <span class="formula">r=−b/a</span>，因此 <span class="formula">ax+b=a(x−r)</span>。綜合除法實際上先完成的是「除以 <span class="formula">x−r</span>」；它吐出的商式還要<strong>再除以 a</strong>，才是原來除以 <span class="formula">ax+b</span> 的真正商式。</p>
+        <div class="equation formula">P(x) = (x−r)S(x)+R = (ax+b)<span class="fraction"><span class="top">S(x)</span><span class="bottom">a</span></span>+R</div>
+        <div class="callout warn"><strong>請特別看「÷ (2x−6)」預設：</strong>綜合除法得到 <span class="formula">S(x)=2x²+3x−2</span>；真正的商是 <span class="formula">Q(x)=S(x)/2=x²+(3/2)x−1</span>，不是直接抄 S(x)。</div>
+      </article>
+
+      <article class="card" style="margin-top:14px;">
+        <h3>兩種方法的工作分工</h3>
+        <table class="compare-table">
+          <thead><tr><th>比較</th><th class="long-head">長除法</th><th class="syn-head">綜合除法</th></tr></thead>
+          <tbody>
+            <tr><th>可用的除式</th><td>任何非零多項式</td><td>最直接只用在 <span class="formula">x−r</span>；<span class="formula">ax+b</span> 要補除以 a</td></tr>
+            <tr><th>板書動作</th><td>估商 → 乘回 → <strong>相減</strong></td><td>落下 → 乘 r → <strong>相加</strong></td></tr>
+            <tr><th>優點</th><td>結構完整，不怕二次以上除式</td><td>一次除式時快，容易看出餘數與因數</td></tr>
+            <tr><th>最容易錯</th><td>相減時沒有整個括號一起變號</td><td><span class="formula">x+c</span> 放成 c；或忘記 <span class="formula">a≠1</span> 還要除 a</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section class="section" id="numbers">
+      <h2>3. 從數字長除法、短除法，連到係數的「乘後相加」</h2>
+      <div class="grid three">
+        <article class="card">
+          <h3>數字長除法</h3>
+          <p><span class="formula">1003 ÷ 10 = 100 … 3</span></p>
+          <p class="small">也是：估一位商、乘回、相減、落下一位。它和多項式長除法的流程完全同型。</p>
+          <div class="equation formula">1003 = 10×100 + 3</div>
+        </article>
+        <article class="card synthetic-card">
+          <h3>Horner／綜合除法式讀數</h3>
+          <p>把 <span class="formula">1003</span> 看成 <span class="formula">1·10³+0·10²+0·10+3</span>：</p>
+          <div class="equation formula">(((1×10+0)×10+0)×10+3)=1003</div>
+          <p class="small">這正是「落下、乘 10、相加」；係數像各個位數。</p>
+        </article>
+        <article class="card">
+          <h3>反覆短除法換進位</h3>
+          <p>要把十進位數換成 b 進位，可反覆除以 b；餘數<strong>由下往上</strong>讀。</p>
+          <p class="small">它和綜合除法都有規律表格，但目的不同：一個找新進位的各位數，一個做多項式除法／代值。</p>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:14px;">
+        <h3>動手看「反覆短除法」與「Horner 讀值」</h3>
+        <div class="grid two">
+          <div>
+            <label for="numberInput">十進位整數</label>
+            <input id="numberInput" type="number" min="1" value="1003">
+            <label for="baseInput">要換成幾進位（2～16）</label>
+            <input id="baseInput" type="number" min="2" max="16" value="2">
+            <button id="baseBtn" style="margin-top:10px;">用反覆短除法換進位</button>
+            <div id="baseOutput" class="output"></div>
+          </div>
+          <div>
+            <h3 style="font-size:18px;">把數字當成 b 進位的位數來讀</h3>
+            <p>例如在十進位，<span class="formula">1003</span> 的位數為 <span class="formula">1,0,0,3</span>；從左到右做「×10 再 + 下一位」。</p>
+            <div id="hornerNumberOutput" class="output"></div>
+            <div class="callout violet"><strong>關鍵區分：</strong>若要把 <span class="formula">1003</span> 當作 b 進位表示法，它的每一位必須小於 b。Horner 是「由位數組回數值」；反覆短除法是「由數值拆出位數」。</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="algorithm">
+      <h2>4. 除法原理：一般型、整除型、分數型</h2>
+      <div class="grid three">
+        <article class="card">
+          <span class="pill">一般型</span>
+          <h3>先記原始身分</h3>
+          <div class="equation formula">P(x)=D(x)Q(x)+R(x)</div>
+          <p><span class="formula">deg R &lt; deg D</span>；若餘式是 0，代表剛好除盡。</p>
+        </article>
+        <article class="card">
+          <span class="pill">整除型</span>
+          <h3>餘式為 0 的特例</h3>
+          <div class="equation formula">P(x)=D(x)Q(x)</div>
+          <p>此時說 <span class="formula">D(x)</span> 整除 <span class="formula">P(x)</span>，也說 <span class="formula">D(x)</span> 是 <span class="formula">P(x)</span> 的因式。</p>
+        </article>
+        <article class="card">
+          <span class="pill">分數型</span>
+          <h3>兩邊同除以除式</h3>
+          <div class="equation formula"><span class="fraction"><span class="top">P(x)</span><span class="bottom">D(x)</span></span>=Q(x)+<span class="fraction"><span class="top">R(x)</span><span class="bottom">D(x)</span></span></div>
+          <p>這就是分式化簡時「多項式部分 + 真分式部分」的來源。</p>
+        </article>
+      </div>
+      <article class="card" style="margin-top:14px;">
+        <h3>用上面的工作台結果代入三種型</h3>
+        <div id="principleOutput" class="output"></div>
+      </article>
+    </section>
+
+    <section class="section" id="candy">
+      <h2>5. 除法原理告訴我們：被除式、除式放大後，商與餘怎麼變？</h2>
+      <article class="card">
+        <h3>先用 1 包糖果建立原型</h3>
+        <div class="equation formula">1003 = 100×10 + 3</div>
+        <p>1 包有 1003 顆，分給 100 人：每人 10 顆，剩 3 顆。把這一行的角色換成 <span class="formula">P=DQ+R</span>，就可以直接推理，不必重新長除一次。</p>
+        <div class="grid three" style="margin-top:12px;">
+          <article class="card" style="box-shadow:none;">
+            <span class="pill">原來</span>
+            <h3>1 包，100 人</h3>
+            <div class="equation formula">1003=100×10+3</div>
+            <p>商 10，餘 3。</p>
+          </article>
+          <article class="card" style="box-shadow:none;">
+            <span class="pill">被除式 3 倍</span>
+            <h3>3 包，100 人</h3>
+            <div class="equation formula">3009=100×30+9</div>
+            <p>商與餘都變 3 倍。</p>
+          </article>
+          <article class="card" style="box-shadow:none;">
+            <span class="pill">除式 2 倍</span>
+            <h3>1 包，200 人</h3>
+            <div class="equation formula">1003=200×5+3</div>
+            <p>商變成一半，餘數仍是 3。</p>
+          </article>
+        </div>
+      </article>
+      <div class="grid two" style="margin-top:14px;">
+        <article class="card">
+          <h3>被除式變 m 倍</h3>
+          <div class="equation formula">mP=D(mQ)+mR</div>
+          <p>因此：<strong>商變 m 倍，餘式也變 m 倍。</strong></p>
+          <p class="small">糖果例：3 包時，10 → 30，3 → 9。</p>
+        </article>
+        <article class="card">
+          <h3>除式變 n 倍</h3>
+          <div class="equation formula">P=(nD)<span class="fraction"><span class="top">Q</span><span class="bottom">n</span></span>+R</div>
+          <p>在多項式（允許分數係數）裡：<strong>商除以 n，餘式不變。</strong></p>
+          <p class="small">糖果例：100 人變 200 人，10 → 5，餘 3 不變。</p>
+        </article>
+      </div>
+      <div class="callout warn"><strong>重要界線：</strong>這裡談的是多項式除法，商可以有分數係數。若做「整數糖果」的普通除法，商通常要求是整數；當 Q 不能整除 n 時，要重新用整數除法解讀，餘數不一定保持原值。上面的 1003 與 200 人剛好沒有這個問題。</div>
+    </section>
+
+    <section class="section" id="theorems">
+      <h2>6. 餘式定理與因式定理：綜合除法最後一格的意義</h2>
+      <div class="grid two">
+        <article class="card synthetic-card">
+          <h3>餘式定理</h3>
+          <p>若 <span class="formula">P(x)</span> 除以 <span class="formula">x−c</span> 的餘式是 R：</p>
+          <div class="equation formula">P(x)=(x−c)Q(x)+R</div>
+          <p>把 <span class="formula">x=c</span> 代入，前面一項會變 0，所以</p>
+          <div class="equation formula">P(c)=R</div>
+          <p class="small">因此綜合除法最右下角，就是 P(c) 的值。</p>
+        </article>
+        <article class="card">
+          <h3>因式定理</h3>
+          <p>餘式剛好等於 0 時：</p>
+          <div class="equation formula">P(c)=0 ⇔ (x−c) 是 P(x) 的因式</div>
+          <p>不是「看到 c 就有因式」；一定要真的代入後等於 0。</p>
+          <div class="callout warn"><strong>符號提醒：</strong>若因式是 <span class="formula">x+4</span>，它是 <span class="formula">x−(−4)</span>，所以要檢查的是 <span class="formula">P(−4)</span>。</div>
+        </article>
+      </div>
+      <article class="card" style="margin-top:14px;">
+        <h3>用目前工作台的 P(x) 驗證</h3>
+        <p class="muted">目前除式 <span id="theoremDivisor" class="formula"></span> 的根是 <span id="theoremRoot" class="formula"></span>。按鈕會算出 P(r)，並和綜合除法最後一格比較。</p>
+        <button class="teal" id="theoremBtn">驗證 P(r)＝餘式</button>
+        <div id="theoremOutput" class="output"></div>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2>7. 三題即時自我檢查</h2>
+      <div class="quiz-grid">
+        <article class="quiz-card">
+          <h3>基礎：放哪個數？</h3>
+          <p>除式是 <span class="formula">x+4</span>，綜合除法左邊要放？</p>
+          <div class="choice-row" data-answer="-4" data-feedback="因為 x+4=x−(−4)，所以放 −4。">
+            <button data-value="4">4</button><button data-value="-4">−4</button><button data-value="0">0</button>
+          </div>
+          <div class="feedback"></div>
+        </article>
+        <article class="quiz-card">
+          <h3>進階：還差哪一步？</h3>
+          <p>除以 <span class="formula">3x−6</span>，綜合除法得到 S(x)。真正商是？</p>
+          <div class="choice-row" data-answer="S/3" data-feedback="3x−6=3(x−2)，綜合除法先除 x−2，所以 S 還要除以 3。">
+            <button data-value="S">S(x)</button><button data-value="S/3">S(x)÷3</button><button data-value="3S">3S(x)</button>
+          </div>
+          <div class="feedback"></div>
+        </article>
+        <article class="quiz-card">
+          <h3>挑戰：放大除式</h3>
+          <p><span class="formula">P=DQ+R</span> 中，改成除以 <span class="formula">2D</span>（多項式係數可分數），商與餘？</p>
+          <div class="choice-row" data-answer="half-same" data-feedback="P=(2D)(Q/2)+R；商變一半，餘式不變。">
+            <button data-value="double-double">都兩倍</button><button data-value="half-same">商一半、餘不變</button><button data-value="same-half">商不變、餘一半</button>
+          </div>
+          <div class="feedback"></div>
+        </article>
+      </div>
+      <div class="grid three" style="margin-top:14px;">
+        <details><summary>基礎練習</summary><p>1. 用綜合除法計算 <span class="formula">(x³−5x+6)÷(x−2)</span>。<br>2. <span class="formula">x³−5x+6</span> 除以 <span class="formula">x+2</span> 的餘式是多少？先寫出要代入的數。</p><p><strong>答案：</strong>1. 商 <span class="formula">x²+2x−1</span>，餘 4。2. 代 <span class="formula">−2</span>，餘 <span class="formula">P(−2)=8</span>。</p></details>
+        <details><summary>進階練習</summary><p>計算 <span class="formula">(2x³−3x²−11x+6)÷(2x−6)</span>，並說明為何不能直接把綜合除法的商抄下來。</p><p><strong>答案：</strong>商 <span class="formula">x²+(3/2)x−1</span>，餘 0；因為綜合除法對應先除 <span class="formula">x−3</span>，還要除以首項係數 2。</p></details>
+        <details><summary>挑戰練習</summary><p>已知 <span class="formula">P=DQ+R</span>。求 <span class="formula">3P</span> 除以 <span class="formula">2D</span> 後的商與餘式（允許分數係數）。</p><p><strong>答案：</strong><span class="formula">3P=(2D)(3Q/2)+3R</span>，所以商是 <span class="formula">3Q/2</span>，餘式是 <span class="formula">3R</span>。</p></details>
+      </div>
+    </section>
+
+    <a class="back" href="./index.html">← 返回教學首頁</a>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+      const zero = () => ({ n: 0, d: 1 });
+      const gcd = (a, b) => {
+        a = Math.abs(a); b = Math.abs(b);
+        while (b) [a, b] = [b, a % b];
+        return a || 1;
+      };
+      const frac = (n, d = 1) => {
+        if (!Number.isInteger(n) || !Number.isInteger(d) || d === 0) throw new Error("分數必須是分母不為 0 的整數比。");
+        if (d < 0) { n = -n; d = -d; }
+        const g = gcd(n, d);
+        return { n: n / g, d: d / g };
+      };
+      const add = (a, b) => frac(a.n * b.d + b.n * a.d, a.d * b.d);
+      const sub = (a, b) => frac(a.n * b.d - b.n * a.d, a.d * b.d);
+      const mul = (a, b) => frac(a.n * b.n, a.d * b.d);
+      const div = (a, b) => {
+        if (b.n === 0) throw new Error("不能除以 0。");
+        return frac(a.n * b.d, a.d * b.n);
+      };
+      const neg = (a) => frac(-a.n, a.d);
+      const isZero = (a) => a.n === 0;
+      const abs = (a) => frac(Math.abs(a.n), a.d);
+      const same = (a, b) => a.n === b.n && a.d === b.d;
+      const text = (a) => a.d === 1 ? String(a.n) : `${a.n}/${a.d}`;
+      const html = (a) => a.d === 1 ? String(a.n) : `<span class="fraction"><span class="top">${a.n}</span><span class="bottom">${a.d}</span></span>`;
+      const clean = (arr) => arr.map(v => typeof v === "number" ? frac(v) : v);
+      const powerHtml = (p) => p === 0 ? "" : p === 1 ? "x" : `x<sup>${p}</sup>`;
+      const coeffTermHtml = (co, pow, isFirst) => {
+        if (isZero(co)) return "";
+        const sign = co.n < 0 ? (isFirst ? "−" : " − ") : (isFirst ? "" : " + ");
+        const magnitude = abs(co);
+        if (pow === 0) return `${sign}${html(magnitude)}`;
+        const coefficient = same(magnitude, frac(1)) ? "" : html(magnitude);
+        return `${sign}${coefficient}${powerHtml(pow)}`;
+      };
+      const polyHtml = (coeffs) => {
+        const arr = clean(coeffs);
+        const degree = arr.length - 1;
+        let result = "";
+        arr.forEach((co, index) => {
+          const part = coeffTermHtml(co, degree - index, result === "");
+          if (part) result += part;
+        });
+        return result || "0";
+      };
+      const termHtml = (co, pow) => polyHtml([co, ...Array(Math.max(0, pow)).fill(zero())]);
+      const linearHtml = (a, b) => polyHtml([a, b]);
+      const parseInteger = (raw, label) => {
+        if (!/^-?\d+$/.test(String(raw).trim())) throw new Error(`${label} 請輸入整數。`);
+        return Number(String(raw).trim());
+      };
+      const parseCoeffs = (raw) => {
+        const parts = raw.split(",").map(s => s.trim());
+        if (parts.length < 2 || parts.some(s => !/^-?\d+$/.test(s))) {
+          throw new Error("係數請用至少兩個整數、以半形逗號分開，例如 2,-3,-11,6。");
+        }
+        const parsed = parts.map(Number);
+        if (parsed[0] === 0) throw new Error("最高次係數不能是 0；請從真正的最高次開始輸入。");
+        return parsed.map(value => frac(value));
+      };
+      const synthetic = (coeffs, root) => {
+        const sums = [coeffs[0]];
+        const products = [null];
+        for (let i = 1; i < coeffs.length; i += 1) {
+          const product = mul(root, sums[i - 1]);
+          products.push(product);
+          sums.push(add(coeffs[i], product));
+        }
+        return { sums, products, s: sums.slice(0, -1), remainder: sums[sums.length - 1] };
+      };
+      const longDivision = (coeffs, a, b) => {
+        const working = coeffs.map(v => frac(v.n, v.d));
+        const quotient = [];
+        const steps = [];
+        const gap = coeffs.length - 2;
+        for (let i = 0; i <= gap; i += 1) {
+          const currentDegree = coeffs.length - 1 - i;
+          const q = div(working[i], a);
+          quotient.push(q);
+          const before = working.slice(i).map(v => frac(v.n, v.d));
+          const product = [mul(q, a), mul(q, b), ...Array(Math.max(0, currentDegree - 1)).fill(zero())];
+          working[i] = sub(working[i], product[0]);
+          working[i + 1] = sub(working[i + 1], product[1]);
+          const after = working.slice(i + 1).map(v => frac(v.n, v.d));
+          steps.push({ currentDegree, q, before, product, after });
+        }
+        return { quotient, remainder: working[working.length - 1], steps };
+      };
+      const evaluate = (coeffs, x) => coeffs.reduce((acc, co) => add(mul(acc, x), co), zero());
+      const signedProductHtml = (co, variable) => `${html(co)}${variable}`;
+      const fracInline = (top, bottom) => `<span class="fraction"><span class="top">${top}</span><span class="bottom">${bottom}</span></span>`;
+
+      let current = null;
+      function renderLong(model) {
+        const { coeffs, a, b, long } = model;
+        const divisor = linearHtml(a, b);
+        let body = `<p>把 <span class="formula">${polyHtml(coeffs)}</span> 除以 <span class="formula">${divisor}</span>。每輪第一件事都是「最高次項相除」。</p>`;
+        body += '<div class="math-block">';
+        long.steps.forEach((step, index) => {
+          const beforePoly = polyHtml(step.before);
+          const productPoly = polyHtml(step.product);
+          const afterPoly = polyHtml(step.after);
+          body += `<div class="long-step">
+            <div class="action">第 ${index + 1} 輪：${termHtml(step.before[0], step.currentDegree)} ÷ ${termHtml(a, 1)} = ${termHtml(step.q, step.currentDegree - 1)}</div>
+            <div>本輪商式：<span class="formula">${termHtml(step.q, step.currentDegree - 1)}</span></div>
+            <div>乘回：<span class="formula">${termHtml(step.q, step.currentDegree - 1)}(${divisor}) = ${productPoly}</span></div>
+            <div class="subtraction">相減：<span class="formula">(${beforePoly}) − (${productPoly}) = ${afterPoly}</span></div>
+          </div>`;
+        });
+        body += '</div>';
+        body += `<div class="callout"><strong>結果：</strong><span class="formula">Q(x)=${polyHtml(long.quotient)}</span>，餘式 <span class="formula">R=${html(long.remainder)}</span>。</div>`;
+        $("longOutput").innerHTML = body;
+      }
+
+      function renderSynthetic(model) {
+        const { coeffs, root, syn, a } = model;
+        const coefficientCells = coeffs.map(v => `<td>${html(v)}</td>`).join("");
+        const productCells = syn.products.map((v, i) => i === 0 ? '<td>↓</td>' : `<td>${html(v)}</td>`).join("");
+        const sumCells = syn.sums.map(v => `<td>${html(v)}</td>`).join("");
+        const productWords = syn.products.slice(1).map((v, i) => {
+          const before = syn.sums[i];
+          const original = coeffs[i + 1];
+          const next = syn.sums[i + 1];
+          return `<li><span class="formula">${html(before)}×${html(root)}=${html(v)}</span>，再算 <span class="formula">${html(original)}+(${html(v)})=${html(next)}</span></li>`;
+        }).join("");
+        let fix = "";
+        if (!same(a, frac(1))) {
+          fix = `<div class="callout warn"><strong>別漏掉最後一步：</strong>這一列的商是 <span class="formula">S(x)=${polyHtml(syn.s)}</span>，它對應的是除以 <span class="formula">x−r</span>。原除式首項係數是 ${html(a)}，所以真正商為 <span class="formula">Q(x)=S(x)/${html(a)}=${polyHtml(syn.s.map(v => div(v, a)))}</span>。</div>`;
+        }
+        $("syntheticOutput").innerHTML = `
+          <p>因為 <span class="formula">${linearHtml(a, model.b)}=${html(a)}(x−${html(root)})</span>，先把左邊放 <span class="formula">r=${html(root)}</span>。</p>
+          <div class="math-block"><table class="synthetic-table"><tbody>
+            <tr><th rowspan="3">${html(root)}</th>${coefficientCells}</tr>
+            <tr class="product-row">${productCells}</tr>
+            <tr class="sum-row">${sumCells}</tr>
+          </tbody></table></div>
+          <p><strong>讀法：</strong>第一個係數直接落下；每次「前一格結果 × r」，再與下一個原係數相加。</p>
+          <ul class="facts">${productWords}</ul>
+          <div class="callout"><strong>綜合除法的結果：</strong><span class="formula">S(x)=${polyHtml(syn.s)}</span>，最後一格餘式 <span class="formula">R=${html(syn.remainder)}</span>。</div>
+          ${fix}`;
+      }
+
+      function renderPrinciple(model) {
+        const p = polyHtml(model.coeffs);
+        const d = linearHtml(model.a, model.b);
+        const q = polyHtml(model.long.quotient);
+        const r = html(model.long.remainder);
+        const divisible = isZero(model.long.remainder);
+        $("principleOutput").innerHTML = `
+          <div class="equation formula">${p} = (${d})(${q}) + ${r}</div>
+          <div class="equation formula">${fracInline(p, d)} = ${q} + ${fracInline(r, d)}</div>
+          <div class="callout ${divisible ? "ok" : ""}">${divisible
+            ? `<strong>整除型成立：</strong>餘式是 0，所以 <span class="formula">${d}</span> 是 <span class="formula">${p}</span> 的因式。`
+            : `<strong>尚未整除：</strong>餘式是 <span class="formula">${r}</span>，分數型最後仍保留 <span class="formula">${fracInline(r, d)}</span>。`}</div>`;
+      }
+
+      function renderSummary(model) {
+        const p = polyHtml(model.coeffs);
+        const d = linearHtml(model.a, model.b);
+        $("workbenchSummary").innerHTML = `<div class="equation formula">P(x)=${p}，除式 D(x)=${d}，r=${html(model.root)}</div>
+          <p class="small">下方兩邊都在算同一件事；長除法給出真正商，綜合除法則先把「除以 x−r」的係數流程壓縮。</p>`;
+      }
+
+      function renderTheoremLabels(model) {
+        $("theoremDivisor").innerHTML = linearHtml(model.a, model.b);
+        $("theoremRoot").innerHTML = html(model.root);
+        $("theoremOutput").innerHTML = "";
+      }
+
+      function updateWorkbench() {
+        try {
+          const coeffs = parseCoeffs($("coeffInput").value);
+          const a = frac(parseInteger($("aInput").value, "a"));
+          const b = frac(parseInteger($("bInput").value, "b"));
+          if (isZero(a)) throw new Error("a 不能是 0，否則除式不是一次式。\n");
+          const root = div(neg(b), a);
+          const syn = synthetic(coeffs, root);
+          const long = longDivision(coeffs, a, b);
+          if (!same(syn.remainder, long.remainder)) throw new Error("兩種算法的餘式不一致，請檢查輸入。\n");
+          current = { coeffs, a, b, root, syn, long };
+          renderSummary(current);
+          renderLong(current);
+          renderSynthetic(current);
+          renderPrinciple(current);
+          renderTheoremLabels(current);
+        } catch (error) {
+          const message = `<div class="callout warn"><strong>輸入需要調整：</strong>${String(error.message).replace(/\n/g, "")}</div>`;
+          $("workbenchSummary").innerHTML = message;
+          $("longOutput").innerHTML = "";
+          $("syntheticOutput").innerHTML = "";
+          $("principleOutput").innerHTML = "";
+        }
+      }
+
+      const presets = {
+        unit: { coeffs: "2,-3,-11,6", a: "1", b: "-3" },
+        nonunit: { coeffs: "2,-3,-11,6", a: "2", b: "-6" },
+        remainder: { coeffs: "1,2,-1,5", a: "1", b: "2" }
+      };
+      document.querySelectorAll(".preset").forEach(button => button.addEventListener("click", () => {
+        const preset = presets[button.dataset.preset];
+        $("coeffInput").value = preset.coeffs;
+        $("aInput").value = preset.a;
+        $("bInput").value = preset.b;
+        updateWorkbench();
+      }));
+      $("calculateBtn").addEventListener("click", updateWorkbench);
+      ["coeffInput", "aInput", "bInput"].forEach(id => $(id).addEventListener("keydown", event => {
+        if (event.key === "Enter") updateWorkbench();
+      }));
+
+      $("theoremBtn").addEventListener("click", () => {
+        if (!current) return;
+        const value = evaluate(current.coeffs, current.root);
+        const r = current.long.remainder;
+        const factor = isZero(r);
+        $("theoremOutput").innerHTML = `
+          <div class="equation formula">P(${html(current.root)})=${html(value)}，綜合除法最後一格 R=${html(r)}</div>
+          <div class="callout ${factor ? "ok" : "warn"}">${factor
+            ? `<strong>所以 P(r)=0：</strong><span class="formula">x−(${html(current.root)})</span> 是 P(x) 的因式；等價地，<span class="formula">${linearHtml(frac(1), neg(current.root))}</span> 是因式。`
+            : `<strong>所以 P(r)≠0：</strong>餘式不是 0，對應的一次式不是 P(x) 的因式。`}</div>`;
+      });
+
+      function digitChar(n) { return n < 10 ? String(n) : String.fromCharCode(55 + n); }
+      function renderBaseConversion() {
+        const n = Number($("numberInput").value);
+        const base = Number($("baseInput").value);
+        if (!Number.isInteger(n) || n < 1 || !Number.isInteger(base) || base < 2 || base > 16) {
+          $("baseOutput").innerHTML = '<div class="callout warn">請輸入正整數，並選擇 2 到 16 進位。</div>';
+          $("hornerNumberOutput").innerHTML = "";
+          return;
+        }
+        let currentN = n;
+        const rows = [];
+        const remainders = [];
+        while (currentN > 0) {
+          const q = Math.floor(currentN / base);
+          const r = currentN % base;
+          rows.push(`<div class="trace-row">${currentN} ÷ ${base} = ${q} … ${digitChar(r)}</div>`);
+          remainders.push(digitChar(r));
+          currentN = q;
+        }
+        const representation = remainders.reverse().join("");
+        $("baseOutput").innerHTML = `<div class="number-trace">${rows.join("")}</div><div class="callout ok"><strong>由下往上讀餘數：</strong>${n}<sub>10</sub> = ${representation}<sub>${base}</sub></div>`;
+
+        const decimalDigits = String(n).split("").map(Number);
+        let acc = decimalDigits[0];
+        const hRows = [`<div class="trace-row">先落下 ${decimalDigits[0]}</div>`];
+        for (let i = 1; i < decimalDigits.length; i += 1) {
+          const old = acc;
+          acc = acc * base + decimalDigits[i];
+          hRows.push(`<div class="trace-row">${old} × ${base} + ${decimalDigits[i]} = ${acc}</div>`);
+        }
+        const validDigits = decimalDigits.every(d => d < base);
+        $("hornerNumberOutput").innerHTML = `<div class="number-trace">${hRows.join("")}</div><div class="callout ${validDigits ? "ok" : "warn"}">${validDigits
+          ? `<strong>可以這樣讀：</strong>${n}<sub>${base}</sub> 的值是 ${acc}<sub>10</sub>。`
+          : `<strong>這只是乘後相加流程：</strong>因為數字 ${n} 中有位數不小於 ${base}，不能直接說 ${n} 是 ${base} 進位表示法。`}</div>`;
+      }
+      $("baseBtn").addEventListener("click", renderBaseConversion);
+
+      document.querySelectorAll(".choice-row").forEach(group => {
+        group.addEventListener("click", (event) => {
+          const button = event.target.closest("button[data-value]");
+          if (!button) return;
+          const feedback = group.parentElement.querySelector(".feedback");
+          const right = button.dataset.value === group.dataset.answer;
+          feedback.textContent = right ? `✓ 答對。${group.dataset.feedback}` : "再想一下：先把除式寫成 x−r，或把 P=DQ+R 代回去看。";
+          feedback.style.color = right ? "#166534" : "#9a3412";
+        });
+      });
+
+      updateWorkbench();
+      renderBaseConversion();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>三角形內點：面積比與線段比｜互動教學</title>
+  <style>
+    :root {
+      --ink: #15283c;
+      --muted: #526579;
+      --paper: #f5f9fc;
+      --card: #fff;
+      --line: #d6e2eb;
+      --blue: #1769aa;
+      --blue-pale: #e6f4ff;
+      --teal: #08776f;
+      --teal-pale: #e5f8f3;
+      --orange: #b65b12;
+      --orange-pale: #fff1e4;
+      --violet: #6b4ba3;
+      --violet-pale: #f1ebff;
+      --red: #b33f47;
+      --red-pale: #fff0f1;
+      --shadow: 0 16px 40px rgba(31, 65, 93, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 0%, #d9f2ff 0, transparent 30rem),
+        radial-gradient(circle at 97% 7%, #fff0cd 0, transparent 25rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.78;
+    }
+    .wrap { width: min(1150px, calc(100% - 32px)); margin: 0 auto; padding: 25px 0 58px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      margin: 18px 0 30px;
+      padding: clamp(27px, 5vw, 54px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(130deg, #173c67, #176eaa 56%, #078174);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow, .tag, .level {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .eyebrow { color: #dff7ff; background: rgba(255,255,255,.15); }
+    h1 { margin: 9px 0 8px; font-size: clamp(2rem, 5vw, 3.45rem); line-height: 1.18; }
+    .lead { max-width: 830px; margin: 0; color: #edfaff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .nav a { padding: 7px 13px; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; color: #fff; font-weight: 850; text-decoration: none; }
+    .nav a:hover { background: rgba(255,255,255,.15); }
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 39px; }
+    .section-head { margin-bottom: 15px; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.2rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.18rem; line-height: 1.5; }
+    h4 { margin: 0 0 5px; font-size: 1rem; }
+    .section-head p, .card > p { margin: 5px 0 0; color: var(--muted); }
+    .tag { color: var(--blue); background: var(--blue-pale); }
+    .tag.teal { color: var(--teal); background: var(--teal-pale); }
+    .tag.orange { color: var(--orange); background: var(--orange-pale); }
+    .tag.violet { color: var(--violet); background: var(--violet-pale); }
+    .card { padding: clamp(18px, 3vw, 27px); border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 7px 21px rgba(28, 60, 88, .05); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .three-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .formula {
+      margin: 13px 0;
+      padding: 13px 14px;
+      border-radius: 13px;
+      color: #143d59;
+      background: #eff8fc;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: clamp(1.12rem, 2.8vw, 1.48rem);
+      font-weight: 700;
+      line-height: 1.62;
+      text-align: center;
+    }
+    .formula.small { font-size: 1.05rem; }
+    .math { font-family: Cambria, "Times New Roman", serif; font-size: 1.06em; }
+    .note, .teacher-note, .error-note, .success-note {
+      margin-top: 13px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      background: var(--blue-pale);
+    }
+    .teacher-note { border-color: var(--orange); background: var(--orange-pale); }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .success-note { border-color: var(--teal); background: var(--teal-pale); }
+    .definition-table { width: 100%; border-collapse: collapse; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; }
+    .definition-table th, .definition-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .definition-table tr:last-child td { border-bottom: 0; }
+    .definition-table th { color: #17415e; background: #edf7fd; font-weight: 850; }
+    .activity-card { padding: clamp(17px, 3vw, 26px); }
+    .activity-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(285px, .75fr); gap: 19px; align-items: start; }
+    .diagram-frame { padding: 8px; border: 1px solid #bdd8e7; border-radius: 18px; background: linear-gradient(135deg, #fff, #f0f9fc); }
+    #ratio-map { display: block; width: 100%; height: auto; min-height: 426px; touch-action: none; user-select: none; }
+    .map-grid { stroke: #dce8ef; stroke-width: 1; }
+    .axis { stroke: #7690a1; stroke-width: 1.6; }
+    .axis-label { fill: #587084; font-family: Cambria, "Times New Roman", serif; font-size: 14px; font-weight: 700; }
+    .vertex-label, .point-label, .map-label { fill: #142c43; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 17px; font-weight: 900; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+    .map-label { font-size: 14px; }
+    .triangle-edge { fill: none; stroke: #25445c; stroke-width: 3; stroke-linejoin: round; }
+    .cevian { fill: none; stroke: #417184; stroke-width: 2.4; stroke-dasharray: 7 5; }
+    .cevian.active { stroke: var(--orange); stroke-width: 5; stroke-dasharray: none; }
+    .region-a { fill: #4aa6dc; fill-opacity: .42; }
+    .region-b { fill: #34b999; fill-opacity: .39; }
+    .region-c { fill: #9b77da; fill-opacity: .38; }
+    .region-muted { opacity: .2; }
+    .lower-left { fill: #ffc257; fill-opacity: .38; stroke: #c77810; stroke-width: 1.6; }
+    .lower-right { fill: #ff9966; fill-opacity: .35; stroke: #c75e32; stroke-width: 1.6; }
+    .point { fill: #fff; stroke: #25445c; stroke-width: 2.5; }
+    .side-point { fill: #fff8dc; stroke: #b46a00; stroke-width: 2.7; }
+    .k-point { fill: #fff; stroke: #b34c12; stroke-width: 4; cursor: grab; }
+    .k-point:active { cursor: grabbing; }
+    .drag-chip { margin: 9px 0 0; padding: 8px 10px; border-radius: 10px; color: #30566d; background: #eff8fc; font-size: .92rem; font-weight: 750; }
+    .control-title { margin: 0; color: #23455e; font-size: 1.03rem; }
+    .button-row, .tab-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    button { min-height: 40px; padding: 8px 12px; border: 1px solid transparent; border-radius: 10px; color: #fff; background: var(--blue); cursor: pointer; font: inherit; font-weight: 850; }
+    button:hover { background: #10598f; }
+    button.alt { color: #31516a; border-color: #c9dae5; background: #edf5f9; }
+    button.alt:hover { background: #dcebf3; }
+    button.is-selected { color: #fff; border-color: var(--orange); background: var(--orange); }
+    button:focus, input:focus, a:focus, summary:focus { outline: 3px solid #83cae9; outline-offset: 2px; }
+    .range-stack { display: grid; gap: 9px; margin-top: 17px; }
+    .range-item { padding: 10px 11px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    .range-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    label { color: #324b61; font-size: .95rem; font-weight: 850; }
+    output { color: var(--blue); font-family: Cambria, "Times New Roman", serif; font-size: 1.15rem; font-weight: 850; }
+    input[type="range"] { width: 100%; margin: 6px 0 0; accent-color: var(--blue); }
+    .live-panel { min-height: 157px; margin-top: 17px; padding: 14px; border: 1px solid #bfdbe9; border-radius: 14px; background: #f3faff; }
+    .live-panel h3 { color: #15517d; }
+    .live-panel p { margin: 4px 0 0; color: #365d75; }
+    .live-formula { display: block; margin-top: 9px; color: #075f58; font-family: Cambria, "Times New Roman", serif; font-size: 1.25rem; font-weight: 800; }
+    .ratio-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 17px; }
+    .ratio-card { padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .ratio-card:nth-child(1) { border-top: 4px solid #298ec8; }
+    .ratio-card:nth-child(2) { border-top: 4px solid #169e84; }
+    .ratio-card:nth-child(3) { border-top: 4px solid #8360c0; }
+    .ratio-card p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .ratio-card strong { display: block; margin-top: 5px; color: #1c455f; font-family: Cambria, "Times New Roman", serif; font-size: 1.2rem; }
+    .walk-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .walk-card { position: relative; padding: 17px 16px 15px 54px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+    .walk-number { position: absolute; top: 14px; left: 14px; display: grid; place-items: center; width: 29px; height: 29px; border-radius: 50%; color: #fff; background: var(--blue); font-family: Cambria, "Times New Roman", serif; font-weight: 900; }
+    .walk-card:nth-child(2) .walk-number { background: var(--teal); }
+    .walk-card:nth-child(3) .walk-number { background: var(--orange); }
+    .walk-card p { margin: 3px 0 0; color: var(--muted); }
+    .comparison { width: 100%; border-collapse: collapse; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; }
+    .comparison th, .comparison td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .comparison tr:last-child td { border-bottom: 0; }
+    .comparison th { color: #17415e; background: #edf7fd; font-weight: 850; }
+    .comparison td:first-child { width: 20%; color: #21445e; font-weight: 850; }
+    .level { margin-bottom: 8px; }
+    .level.basic { color: #0d665f; background: var(--teal-pale); }
+    .level.advance { color: #945605; background: #fff4db; }
+    .level.challenge { color: #68449d; background: var(--violet-pale); }
+    details { margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; background: #fbfdff; }
+    summary { padding: 9px 11px; cursor: pointer; color: var(--blue); font-weight: 850; }
+    details p { margin: 0; padding: 0 12px 12px; color: #3c5168; }
+    .question-panel { margin-top: 16px; padding: 16px; border: 1px solid #bfdbe9; border-radius: 15px; background: #f4faff; }
+    .question-panel h3 { color: #15517d; }
+    .question-panel p { margin: 4px 0 0; color: #365d75; }
+    .reverse-layout { display: grid; grid-template-columns: minmax(300px, 1.08fr) minmax(230px, .92fr); gap: 16px; align-items: center; margin-top: 13px; }
+    .reverse-diagram-frame { padding: 7px; border: 1px solid #c7dce8; border-radius: 13px; background: linear-gradient(135deg, #fff, #edf8fd); }
+    #reverse-diagram { display: block; width: 100%; height: auto; min-height: 282px; }
+    .reverse-diagram .triangle { fill: #fff; stroke: #29495f; stroke-width: 3; stroke-linejoin: round; }
+    .reverse-diagram .cevian { fill: none; stroke: #7e9aaa; stroke-width: 2.2; stroke-dasharray: 6 5; }
+    .reverse-diagram .cevian-given-blue { fill: none; stroke: #1b81bb; stroke-width: 5.2; stroke-linecap: round; }
+    .reverse-diagram .cevian-given-teal { fill: none; stroke: #108b78; stroke-width: 5.2; stroke-linecap: round; }
+    .reverse-diagram .side-given-blue { stroke: #1b81bb; stroke-width: 6; stroke-linecap: round; }
+    .reverse-diagram .side-given-teal { stroke: #108b78; stroke-width: 6; stroke-linecap: round; }
+    .reverse-diagram .side-unknown { stroke: #a7b8c3; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 8 6; }
+    .reverse-diagram .vertex, .reverse-diagram .division { fill: #fff; stroke: #29495f; stroke-width: 2.4; }
+    .reverse-diagram .division { fill: #fff7d8; stroke: #b46a00; }
+    .reverse-diagram .k { fill: #fff; stroke: #c26018; stroke-width: 3.6; }
+    .reverse-diagram .point-name { fill: #173249; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 15px; font-weight: 900; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+    .reverse-diagram .ratio-badge rect { rx: 8; ry: 8; stroke-width: 1.5; }
+    .reverse-diagram .ratio-badge text { font-family: Cambria, "Times New Roman", serif; font-size: 14px; font-weight: 800; text-anchor: middle; dominant-baseline: middle; }
+    .reverse-diagram .badge-blue rect { fill: #e2f4ff; stroke: #1680bb; }
+    .reverse-diagram .badge-blue text { fill: #135d89; }
+    .reverse-diagram .badge-teal rect { fill: #e1f7f1; stroke: #13866f; }
+    .reverse-diagram .badge-teal text { fill: #086253; }
+    .reverse-diagram .badge-unknown rect { fill: #f0f4f6; stroke: #98aab5; stroke-dasharray: 4 3; }
+    .reverse-diagram .badge-unknown text { fill: #617986; }
+    .reverse-legend { margin: 7px 2px 0; color: #4e6a7d; font-size: .88rem; font-weight: 750; }
+    .given-ratios, .answer-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; margin-top: 13px; }
+    .given-ratio { padding: 11px 12px; border-radius: 11px; color: #1f536f; background: #e5f4fc; font-family: Cambria, "Times New Roman", serif; font-size: 1.17rem; font-weight: 800; text-align: center; }
+    .target-ratios, .target-answer-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 11px; }
+    .target-ratio { padding: 8px 10px; border: 1px dashed #9eafba; border-radius: 10px; color: #627987; background: #f4f7f8; font-family: Cambria, "Times New Roman", serif; font-weight: 800; text-align: center; }
+    .target-answer-area { margin-top: 16px; padding: 14px; border: 1px solid #d4e2e9; border-radius: 14px; background: #fbfdff; }
+    .target-answer-area h3 { margin: 0; color: #254b64; font-size: 1.02rem; }
+    .target-answer-area p { margin: 3px 0 0; color: var(--muted); font-size: .92rem; }
+    .target-answer-grid label { padding: 9px 10px; border: 1px solid #d4e2e9; border-radius: 10px; background: #fff; }
+    .answer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    input[type="number"] { width: 100%; min-height: 40px; margin-top: 5px; padding: 7px 9px; border: 1px solid #b4c8d6; border-radius: 9px; color: var(--ink); background: #fff; font: inherit; }
+    .quiz-feedback { min-height: 61px; margin-top: 12px; padding: 11px 13px; border-radius: 11px; color: #2c526a; background: #eff7fb; }
+    .quiz-feedback.correct { color: #075f58; background: var(--teal-pale); }
+    .quiz-feedback.incorrect { color: #8a3940; background: var(--red-pale); }
+    .vector-layout { display: grid; grid-template-columns: minmax(290px, 1fr) minmax(300px, 1fr); gap: 16px; }
+    .vector-diagram-frame { margin-top: 12px; padding: 7px; border: 1px solid #c8dce8; border-radius: 15px; background: linear-gradient(135deg, #fff, #eff8fc); }
+    #vector-diagram { display: block; width: 100%; height: auto; min-height: 310px; }
+    .vector-diagram .triangle { fill: rgba(255,255,255,.6); stroke: #29495f; stroke-width: 2.5; stroke-linejoin: round; }
+    .vector-diagram .guide { fill: none; stroke: #a6b8c4; stroke-width: 1.7; stroke-dasharray: 5 5; }
+    .vector-diagram .arrow-a { stroke: #217fb9; stroke-width: 3.5; stroke-linecap: round; }
+    .vector-diagram .arrow-b { stroke: #10907b; stroke-width: 3.5; stroke-linecap: round; }
+    .vector-diagram .arrow-c { stroke: #8a64c4; stroke-width: 3.5; stroke-linecap: round; }
+    .vector-diagram .arrow-k { stroke: #c46718; stroke-width: 4.8; stroke-linecap: round; }
+    .vector-diagram .origin { fill: #fff; stroke: #334f62; stroke-width: 2.4; }
+    .vector-diagram .vertex { fill: #fff; stroke: #334f62; stroke-width: 2.4; }
+    .vector-diagram .k { fill: #fff; stroke: #c46718; stroke-width: 3.4; }
+    .vector-diagram text { fill: #193348; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 15px; font-weight: 900; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+    .vector-diagram text.vector-a { fill: #12669b; }
+    .vector-diagram text.vector-b { fill: #087260; }
+    .vector-diagram text.vector-c { fill: #6f4aa4; }
+    .vector-diagram text.vector-k { fill: #a74e0d; }
+    .vector-formula-box { min-height: 108px; margin-top: 12px; padding: 13px; border-radius: 13px; color: #1f516b; background: #eff8fc; line-height: 2; }
+    .vector-formula-box .math-line { display: block; color: #144764; font-family: Cambria, "Times New Roman", serif; font-size: 1.12rem; font-weight: 750; }
+    .vec { position: relative; display: inline-block; padding-top: .32em; line-height: 1; white-space: nowrap; }
+    .vec::before { position: absolute; top: -.46em; left: 50%; content: "→"; transform: translateX(-50%); font-family: Cambria, "Times New Roman", serif; font-size: .95em; font-weight: 800; }
+    .vector-input-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; margin-top: 13px; }
+    .vector-input-group { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    .vector-input-group h4 { color: #274c64; }
+    .fraction-inputs { display: grid; grid-template-columns: minmax(42px, .7fr) 18px minmax(42px, .7fr); align-items: center; gap: 5px; }
+    .fraction-inputs input { min-width: 0; }
+    .fraction-inputs span { color: #586f80; font-family: Cambria, "Times New Roman", serif; font-size: 1.25rem; font-weight: 900; text-align: center; }
+    .vector-result { min-height: 88px; margin-top: 13px; padding: 12px 14px; border-radius: 12px; color: #204e69; background: #eff8fc; }
+    .vector-result.correct { color: #075f58; background: var(--teal-pale); }
+    .vector-result.incorrect { color: #8a3940; background: var(--red-pale); }
+    .footer { margin: 44px 0 0; color: var(--muted); text-align: center; }
+    @media (max-width: 890px) {
+      .activity-layout { grid-template-columns: 1fr; }
+      #ratio-map { min-height: 360px; }
+    }
+    @media (max-width: 690px) {
+      .wrap { width: min(100% - 22px, 1150px); padding-top: 15px; }
+      .grid, .three-grid, .walk-grid, .ratio-cards, .given-ratios, .answer-grid, .reverse-layout, .target-ratios, .target-answer-grid, .vector-layout, .vector-input-grid { grid-template-columns: 1fr; }
+      .hero { border-radius: 22px; }
+      .comparison { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回到數學小遊戲首頁</a>
+
+    <header class="hero">
+      <span class="eyebrow">三角形內點・面積座標・線段比</span>
+      <h1>三塊面積，讀出兩組線段比例</h1>
+      <p class="lead">三角形內任取一點 K，三塊面積的比例不只決定 K 的位置，也同時決定邊上六小段與三條中線被 K 分出的比例。先用面積看圖，再把規律收成可直接解題的式子。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#map">拖曳主圖</a>
+        <a href="#three-actions">三個關鍵動作</a>
+        <a href="#formula-sheet">比例總表</a>
+        <a href="#reverse-practice">反推出題</a>
+        <a href="#vectors">向量反推</a>
+        <a href="#practice">例題與練習</a>
+      </nav>
+    </header>
+
+    <section class="section" aria-labelledby="setup-title">
+      <div class="section-head">
+        <span class="tag orange">先約定符號</span>
+        <h2 id="setup-title">把三塊面積寫成 a：b：c</h2>
+        <p>在 △ABC 內取一點 K，連結 K 與三個頂點。面積標記要先放對位置：<strong>哪一塊的對面是 A，就配 a</strong>；其餘依序是 b、c。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <table class="definition-table">
+            <thead><tr><th>面積塊</th><th>記號</th><th>它對著哪個頂點？</th></tr></thead>
+            <tbody>
+              <tr><td>△KBC</td><td><span class="math">a</span></td><td>A</td></tr>
+              <tr><td>△KCA</td><td><span class="math">b</span></td><td>B</td></tr>
+              <tr><td>△KAB</td><td><span class="math">c</span></td><td>C</td></tr>
+            </tbody>
+          </table>
+          <div class="note"><strong>定位口訣：</strong>a、b、c 不是照順時針亂排；它們分別對應頂點 A、B、C。這樣座標公式和所有線段公式才會一致。</div>
+        </article>
+        <article class="card">
+          <h3>今天要讀出的兩組「六段」</h3>
+          <p>令 <span class="math">D=AK∩BC、E=BK∩CA、F=CK∩AB</span>。已知最簡整數面積比 <span class="math">a:b:c</span> 後，可以立即得到：</p>
+          <div class="formula small">邊上六小段：BD、DC、CE、EA、AF、FB<br>中線六小段：AK、KD、BK、KE、CK、KF</div>
+          <div class="teacher-note"><strong>重要：</strong>題目只給面積比時，得到的是「比例」而非每一段的實際公分數；還要有一段真實長度，才能求出確切長度。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="map" class="section" aria-labelledby="map-title">
+      <div class="section-head">
+        <span class="tag teal">可拖曳的座標主圖</span>
+        <h2 id="map-title">改變 a：b：c，K 與六段比例一起變</h2>
+        <p>拖曳橘色 K 點，或調整右邊三個面積滑桿。圖上的 A(2,8)、B(0,0)、C(9,1) 故意不做成等腰三角形：規律不靠對稱，而是靠面積與同一直線的關係。</p>
+      </div>
+      <article class="card activity-card">
+        <div class="activity-layout">
+          <div>
+            <div class="diagram-frame">
+              <svg id="ratio-map" viewBox="0 0 680 510" role="img" aria-label="可拖曳三角形內點 K 的面積比與線段比座標圖"></svg>
+            </div>
+            <p class="drag-chip">操作：拖曳橘色 <strong>K</strong> 點可自由改變位置；靠近邊時會留一點安全距離，讓三塊面積仍然看得見。</p>
+          </div>
+          <div>
+            <h3 class="control-title">先選一條中線來追蹤</h3>
+            <div class="button-row" role="group" aria-label="選擇追蹤的頂點">
+              <button class="vertex-button is-selected" data-vertex="A" type="button">看 A—K—D</button>
+              <button class="vertex-button alt" data-vertex="B" type="button">看 B—K—E</button>
+              <button class="vertex-button alt" data-vertex="C" type="button">看 C—K—F</button>
+            </div>
+            <h3 class="control-title" style="margin-top:17px">再按三個動作讀圖</h3>
+            <div class="tab-row" role="group" aria-label="選擇教學動作">
+              <button class="step-button is-selected" data-step="1" type="button">① 底邊</button>
+              <button class="step-button alt" data-step="2" type="button">② 上方兩塊</button>
+              <button class="step-button alt" data-step="3" type="button">③ 中線</button>
+            </div>
+            <div id="live-panel" class="live-panel" aria-live="polite"></div>
+
+            <div class="range-stack" aria-label="面積比例調整">
+              <div class="range-item"><div class="range-top"><label for="a-range">a = [△KBC]</label><output id="a-out"></output></div><input id="a-range" type="range" min="1" max="18" step="1" value="2"></div>
+              <div class="range-item"><div class="range-top"><label for="b-range">b = [△KCA]</label><output id="b-out"></output></div><input id="b-range" type="range" min="1" max="18" step="1" value="3"></div>
+              <div class="range-item"><div class="range-top"><label for="c-range">c = [△KAB]</label><output id="c-out"></output></div><input id="c-range" type="range" min="1" max="18" step="1" value="5"></div>
+            </div>
+            <div class="button-row" aria-label="快速套用面積比例">
+              <button class="preset-button alt" data-a="1" data-b="1" data-c="1" type="button">重心 1：1：1</button>
+              <button class="preset-button alt" data-a="2" data-b="3" data-c="5" type="button">例題 2：3：5</button>
+              <button class="preset-button alt" data-a="7" data-b="2" data-c="1" type="button">不均勻 7：2：1</button>
+              <button id="random-button" class="alt" type="button">隨機一組</button>
+            </div>
+          </div>
+        </div>
+        <div class="ratio-cards" aria-live="polite">
+          <div class="ratio-card"><p>邊 BC 上的分點 D</p><strong id="side-a-ratio"></strong><p id="side-a-detail"></p></div>
+          <div class="ratio-card"><p>邊 CA 上的分點 E</p><strong id="side-b-ratio"></strong><p id="side-b-detail"></p></div>
+          <div class="ratio-card"><p>邊 AB 上的分點 F</p><strong id="side-c-ratio"></strong><p id="side-c-detail"></p></div>
+        </div>
+        <div class="ratio-cards" aria-live="polite">
+          <div class="ratio-card"><p>中線 A—K—D</p><strong id="middle-a-ratio"></strong><p id="middle-a-detail"></p></div>
+          <div class="ratio-card"><p>中線 B—K—E</p><strong id="middle-b-ratio"></strong><p id="middle-b-detail"></p></div>
+          <div class="ratio-card"><p>中線 C—K—F</p><strong id="middle-c-ratio"></strong><p id="middle-c-detail"></p></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="three-actions" class="section" aria-labelledby="actions-title">
+      <div class="section-head">
+        <span class="tag orange">解題時固定做這三件事</span>
+        <h2 id="actions-title">不背六條式子，也能從圖上重新推回來</h2>
+        <p>以下以 <span class="math">A—K—D</span> 為例；換成 B—K—E 或 C—K—F，只要把字母循環替換即可。</p>
+      </div>
+      <div class="walk-grid">
+        <article class="walk-card">
+          <span class="walk-number">1</span>
+          <h3>先看底邊：同高</h3>
+          <p>△KBD 與 △KDC 從 K 向 BC 的高相同，所以 <span class="math">BD:DC=[△KBD]:[△KDC]</span>。這一步提醒我們：同高三角形要把「底」和「面積」成對看。</p>
+        </article>
+        <article class="walk-card">
+          <span class="walk-number">2</span>
+          <h3>再看上方兩塊</h3>
+          <p>△KAB 的面積是 c，△KAC 的面積是 b。它們共用 AK；而 B、D、C 在同一直線上，因此它們對 AK 的高比正是 <span class="math">BD:DC</span>。</p>
+          <div class="formula small">BD : DC = c : b</div>
+        </article>
+        <article class="walk-card">
+          <span class="walk-number">3</span>
+          <h3>最後讀中線的內外段</h3>
+          <p>△ABC 與 △KBC 共用 BC，故 <span class="math">AD:KD=(a+b+c):a</span>。將 AD 拆成 AK+KD，便得到「K 前面經過的兩塊」對「對面那一塊」的比。</p>
+          <div class="formula small">AK : KD = (b+c) : a</div>
+        </article>
+      </div>
+      <div class="error-note"><strong>學生最常卡住的地方：</strong>第 1 步的底部小三角形面積，並不等於原本標的 a、b、c；a、b、c 要在第 2 步看「共用 AK 的兩塊」時才直接出現。這正是為什麼要分成三個動作。</div>
+    </section>
+
+    <section id="formula-sheet" class="section" aria-labelledby="formula-title">
+      <div class="section-head">
+        <span class="tag">一頁總表</span>
+        <h2 id="formula-title">由 a：b：c 直接讀出的六段比例</h2>
+        <p>設定 <span class="math">a=[△KBC]、b=[△KCA]、c=[△KAB]</span> 為最簡整數比，並令 <span class="math">D=AK∩BC、E=BK∩CA、F=CK∩AB</span>。</p>
+      </div>
+      <article class="card">
+        <table class="comparison">
+          <thead><tr><th>通過哪個頂點？</th><th>邊上兩段</th><th>中線被 K 分成兩段</th><th>記憶方向</th></tr></thead>
+          <tbody>
+            <tr><td>A—K—D</td><td><span class="math">BD:DC=c:b</span></td><td><span class="math">AK:KD=(b+c):a</span></td><td>邊 BC 讀 B 附近的 c、C 附近的 b；中線則把另外兩塊 b+c 對著 a。</td></tr>
+            <tr><td>B—K—E</td><td><span class="math">CE:EA=a:c</span></td><td><span class="math">BK:KE=(c+a):b</span></td><td>沿 CA 從 C 到 A，依序讀 a、c；中線的對面區塊是 b。</td></tr>
+            <tr><td>C—K—F</td><td><span class="math">AF:FB=b:a</span></td><td><span class="math">CK:KF=(a+b):c</span></td><td>沿 AB 從 A 到 B，依序讀 b、a；中線的對面區塊是 c。</td></tr>
+          </tbody>
+        </table>
+        <div class="success-note"><strong>快速自檢：</strong>每次顯示都會約成最簡整數比。例如 a:b:c=2:4:6 必須寫成 1:2:3；六條邊上小段與三條中線的比也同樣要約分。</div>
+      </article>
+    </section>
+
+    <section id="reverse-practice" class="section" aria-labelledby="reverse-title">
+      <div class="section-head">
+        <span class="tag teal">反推練習・每次隨機出題</span>
+        <h2 id="reverse-title">先由兩組線段比，反推面積 a：b：c</h2>
+        <p>六種可用比例是三組邊上分段比與三組中線分段比。單獨一組線段比只能確定部分關係，還不能決定三塊面積；因此每題給兩組已知，先找出最簡整數面積比，再求另外四組線段比。</p>
+      </div>
+      <article class="card">
+        <div class="button-row" role="group" aria-label="選擇反推題難度">
+          <button id="basic-reverse-mode" class="is-selected" type="button">基礎：兩組邊上比例</button>
+          <button id="advanced-reverse-mode" class="alt" type="button">進階：邊上＋中線比例</button>
+          <button id="challenge-reverse-mode" class="alt" type="button">挑戰：隨機比例＋放大</button>
+        </div>
+        <div id="reverse-question" class="question-panel" aria-live="polite"></div>
+        <div class="answer-grid" aria-label="輸入面積最簡整數比">
+          <label for="quiz-a">a = [△KBC]<input id="quiz-a" type="number" inputmode="numeric" min="1" step="1" placeholder="a"></label>
+          <label for="quiz-b">b = [△KCA]<input id="quiz-b" type="number" inputmode="numeric" min="1" step="1" placeholder="b"></label>
+          <label for="quiz-c">c = [△KAB]<input id="quiz-c" type="number" inputmode="numeric" min="1" step="1" placeholder="c"></label>
+        </div>
+        <div class="button-row" aria-label="先檢查面積比例">
+          <button id="check-area-ratio" type="button">先檢查面積比例</button>
+        </div>
+        <div id="ratio-answer-area" class="target-answer-area" aria-live="polite"></div>
+        <div class="button-row">
+          <button id="check-reverse" type="button">檢查全部答案</button>
+          <button id="new-reverse-question" class="alt" type="button">換一題</button>
+        </div>
+        <div id="reverse-feedback" class="quiz-feedback" aria-live="polite">先把兩個已知比都翻成 a、b、c 的關係，再將共同字母的倍率對齊。</div>
+        <details id="reverse-solution"><summary>查看完整反推步驟與其餘邊長比</summary><div id="reverse-solution-body"></div></details>
+      </article>
+    </section>
+
+    <section class="section" aria-labelledby="coordinate-title">
+      <div class="section-head">
+        <span class="tag violet">座標延伸</span>
+        <h2 id="coordinate-title">圖不對稱時，面積比就是 K 的座標權重</h2>
+        <p>這也就是截圖中「三分點公式」的來源。它不是新規則，而是把三塊面積當成 A、B、C 的加權平均。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="formula">K = (aA + bB + cC) / (a + b + c)</div>
+          <p>此處的 a、b、c 要維持同一個約定：a 對 A、b 對 B、c 對 C。主圖採用 A(2,8)、B(0,0)、C(9,1)。</p>
+          <div id="coordinate-result" class="success-note" aria-live="polite"></div>
+        </article>
+        <article class="card">
+          <h3>座標題的作答流程</h3>
+          <ol>
+            <li>先確認哪三塊面積依序是 a、b、c。</li>
+            <li>把 a 配 A、b 配 B、c 配 C，分別算 x、y 的加權平均。</li>
+            <li>若題目給的是比 2：3：5，直接代 2、3、5 即可，不必先換成小數。</li>
+          </ol>
+          <div class="error-note"><strong>常見錯誤：</strong>把 a 配到 B 或 C，計算過程即使完全正確，K 也會跑到錯的位置。先畫小圖標出「對頂點」最保險。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="vectors" class="section" aria-labelledby="vectors-title">
+      <div class="section-head">
+        <span class="tag violet">向量延伸・加權平均</span>
+        <h2 id="vectors-title">面積比也能寫成 K 的向量位置</h2>
+        <p>取任意原點 O。三塊面積比 <span class="math">a:b:c</span> 會成為 A、B、C 的權重；換到以 A 為起點的表示時，就能直接用 <span class="math">AB</span>、<span class="math">AC</span> 反推三塊面積。</p>
+      </div>
+      <div class="vector-layout">
+        <article class="card">
+          <span class="tag teal">由面積比寫向量</span>
+          <h3>用 <span class="math">OA、OB、OC</span> 表示 <span class="math">OK</span></h3>
+          <p>下圖會跟著上方主圖目前的 <span class="math">a:b:c</span> 更新；O 可以是任意原點，不必在三角形上。</p>
+          <div class="vector-diagram-frame">
+            <svg id="vector-diagram" class="vector-diagram" viewBox="0 0 500 330" role="img" aria-label="以任意原點 O 表示 OA、OB、OC 與 OK 向量的示意圖"></svg>
+          </div>
+          <div id="vector-formulas" class="vector-formula-box" aria-live="polite"></div>
+          <div class="note"><strong>重點：</strong><span class="math">a、b、c</span> 分別配給 A、B、C，而不是配給相鄰的邊。這和三分點座標公式是完全同一件事。</div>
+        </article>
+
+        <article class="card">
+          <span class="tag orange">由向量反推面積比</span>
+          <h3>若 <span class="math">AK</span> 用 <span class="math">AB、AC</span> 表示</h3>
+          <div class="formula small"><span class="vec">AK</span> = u<span class="vec">AB</span> + v<span class="vec">AC</span><br><span class="math">a:b:c = (1-u-v):u:v</span></div>
+          <p>輸入 <span class="math">u、v</span> 的兩個分數。若 <span class="math">u&gt;0、v&gt;0、u+v&lt;1</span>，則 K 在 △ABC 內部，工具會把答案化為最簡整數面積比。</p>
+          <div class="vector-input-grid" aria-label="輸入 AK 的向量係數">
+            <div class="vector-input-group">
+              <h4><span class="vec">AB</span> 的係數 u</h4>
+              <div class="fraction-inputs"><input id="vector-ab-num" type="number" inputmode="numeric" min="0" step="1" value="1" aria-label="AB 係數分子"><span>／</span><input id="vector-ab-den" type="number" inputmode="numeric" min="1" step="1" value="4" aria-label="AB 係數分母"></div>
+            </div>
+            <div class="vector-input-group">
+              <h4><span class="vec">AC</span> 的係數 v</h4>
+              <div class="fraction-inputs"><input id="vector-ac-num" type="number" inputmode="numeric" min="0" step="1" value="2" aria-label="AC 係數分子"><span>／</span><input id="vector-ac-den" type="number" inputmode="numeric" min="1" step="1" value="5" aria-label="AC 係數分母"></div>
+            </div>
+          </div>
+          <div class="button-row">
+            <button id="calculate-vector-area" type="button">由向量求面積比</button>
+            <button id="apply-vector-area" class="alt" type="button">套用到上方主圖</button>
+          </div>
+          <div id="vector-result" class="vector-result" aria-live="polite">例如 <span class="math">AK=(1/4)AB+(2/5)AC</span>，可反推 <span class="math">a:b:c=7:5:8</span>。</div>
+          <div class="teacher-note"><strong>推導提醒：</strong><span class="math">u=b/(a+b+c)</span>、<span class="math">v=c/(a+b+c)</span>，所以剩下的 <span class="math">1-u-v</span> 正是 <span class="math">a/(a+b+c)</span>。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="practice" class="section" aria-labelledby="practice-title">
+      <div class="section-head">
+        <span class="tag teal">可直接上課使用</span>
+        <h2 id="practice-title">例題、易錯點與分層練習</h2>
+        <p>先把滑桿切到「例題 2：3：5」，可以一邊對照圖、一邊講解下列答案。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="level basic">基礎例題</span>
+          <h3>已知三塊面積比，讀出所有比例</h3>
+          <p>若 <span class="math">[△KBC]:[△KCA]:[△KAB]=2:3:5</span>，求三邊的分段比，以及 <span class="math">AK:KD</span>。</p>
+          <div class="formula small">BD:DC=5:3；CE:EA=2:5；AF:FB=3:2<br>AK:KD=(3+5):2=4:1</div>
+          <div class="note"><strong>講解重點：</strong>問邊 BC 時，不要使用 a；要讀取靠 B 的 c 與靠 C 的 b。問 AK:KD 時，再把 K 與 A 中間那一側的兩塊 b、c 相加。</div>
+        </article>
+        <article class="card">
+          <span class="level advance">進階練習</span>
+          <h3>由一條中線比反推面積</h3>
+          <p>已知 <span class="math">a:b:c=3:2:4</span>，且 <span class="math">AD=27</span>，求 AK、KD、BD:DC。</p>
+          <details><summary>查看解答</summary><p><span class="math">AD:KD=(3+2+4):3=9:3=3:1</span>，所以 KD=9、AK=18。又 <span class="math">BD:DC=c:b=4:2=2:1</span>。</p></details>
+          <div class="teacher-note"><strong>教師提醒：</strong>這題的 AD 是整條中線，不是 AK；先用 AD:KD，再做相減，學生較不會把 27 直接錯分成 AK:KD。</div>
+        </article>
+        <article class="card">
+          <span class="level challenge">挑戰</span>
+          <h3>座標與面積比一起用</h3>
+          <p>若 A(2,8)、B(0,0)、C(9,1)，且三塊面積比為 <span class="math">2:3:5</span>，求 K 座標。</p>
+          <details><summary>查看解答</summary><p><span class="math">K=(2A+3B+5C)/10</span>，所以 <span class="math">x=(2×2+3×0+5×9)/10=4.9</span>，<span class="math">y=(2×8+3×0+5×1)/10=2.1</span>；故 K=(4.9,2.1)。</p></details>
+          <div class="error-note"><strong>自我檢查：</strong>K 應落在靠 C 的一側，因為 c=5 最大，代表對 C 的權重最大；若算到左上角，就要回頭檢查 a、b、c 的配對。</div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">三角形內點的面積比：先固定 a、b、c 的位置，再用「底邊 → 上方兩塊 → 中線」三個動作讀出比例。</p>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const $ = (id) => document.getElementById(id);
+      const svg = $('ratio-map');
+      const coord = { left: 80, bottom: 440, unitX: 58, unitY: 43 };
+      const vertices = {
+        A: { x: 2, y: 8 },
+        B: { x: 0, y: 0 },
+        C: { x: 9, y: 1 }
+      };
+      const state = { a: 2, b: 3, c: 5, vertex: 'A', step: 1, dragging: false };
+      let reverseQuestion = null;
+      let reverseMode = 'basic';
+      let vectorAreaResult = null;
+
+      const screen = (point) => ({ x: coord.left + point.x * coord.unitX, y: coord.bottom - point.y * coord.unitY });
+      const fromScreen = (point) => ({ x: (point.x - coord.left) / coord.unitX, y: (coord.bottom - point.y) / coord.unitY });
+      const svgPointText = (point) => `${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
+      const total = () => state.a + state.b + state.c;
+      const weighted = (items, weights) => {
+        const sum = weights.reduce((acc, value) => acc + value, 0);
+        return items.reduce((acc, item, index) => ({ x: acc.x + item.x * weights[index] / sum, y: acc.y + item.y * weights[index] / sum }), { x: 0, y: 0 });
+      };
+      const actualK = () => weighted([vertices.A, vertices.B, vertices.C], [state.a, state.b, state.c]);
+      const niceNumber = (value) => Math.abs(value - Math.round(value)) < 0.00001 ? String(Math.round(value)) : value.toFixed(1);
+      const gcd = (a, b) => b ? gcd(b, a % b) : a;
+      const normalizeTriple = (a, b, c) => {
+        const values = [a, b, c].map((value) => Math.max(1, Math.round(Number(value))));
+        const divisor = values.reduce((current, value) => gcd(current, value));
+        return { a: values[0] / divisor, b: values[1] / divisor, c: values[2] / divisor };
+      };
+      const ratioParts = (a, b) => {
+        const divisor = gcd(Math.round(a), Math.round(b));
+        return { left: Math.round(a) / divisor, right: Math.round(b) / divisor };
+      };
+      const ratio = (a, b) => {
+        const parts = ratioParts(a, b);
+        return `${parts.left} : ${parts.right}`;
+      };
+      const fractionLabel = (numerator, denominator) => {
+        const parts = ratioParts(numerator, denominator);
+        return parts.left === parts.right ? '1' : `${parts.left}/${parts.right}`;
+      };
+      const lcm = (a, b) => Math.abs(a * b) / gcd(a, b);
+      const activeData = () => ({
+        A: {
+          start: 'A', end: 'D', divider: 'D', sideStart: 'B', sideEnd: 'C',
+          side: ratio(state.c, state.b), middle: ratio(state.b + state.c, state.a),
+          sideFormula: 'BD : DC = c : b', middleFormula: 'AK : KD = (b + c) : a',
+          lowerFormula: '△KBD : △KDC = BD : DC', upperFormula: '△KAB : △KAC = c : b = BD : DC',
+          upperAreas: ['c', 'b'], opposite: 'a'
+        },
+        B: {
+          start: 'B', end: 'E', divider: 'E', sideStart: 'C', sideEnd: 'A',
+          side: ratio(state.a, state.c), middle: ratio(state.c + state.a, state.b),
+          sideFormula: 'CE : EA = a : c', middleFormula: 'BK : KE = (c + a) : b',
+          lowerFormula: '△KCE : △KEA = CE : EA', upperFormula: '△KBC : △KBA = a : c = CE : EA',
+          upperAreas: ['a', 'c'], opposite: 'b'
+        },
+        C: {
+          start: 'C', end: 'F', divider: 'F', sideStart: 'A', sideEnd: 'B',
+          side: ratio(state.b, state.a), middle: ratio(state.a + state.b, state.c),
+          sideFormula: 'AF : FB = b : a', middleFormula: 'CK : KF = (a + b) : c',
+          lowerFormula: '△KAF : △KFB = AF : FB', upperFormula: '△KCA : △KCB = b : a = AF : FB',
+          upperAreas: ['b', 'a'], opposite: 'c'
+        }
+      })[state.vertex];
+
+      function setControls() {
+        ['a', 'b', 'c'].forEach((letter) => {
+          $(`${letter}-range`).value = state[letter];
+          $(`${letter}-out`).textContent = state[letter];
+        });
+      }
+
+      function gridSvg() {
+        let output = '';
+        for (let x = 0; x <= 9; x += 1) {
+          const px = coord.left + x * coord.unitX;
+          output += `<line class="map-grid" x1="${px}" y1="58" x2="${px}" y2="440"></line>`;
+          output += `<text class="axis-label" x="${px - 4}" y="460">${x}</text>`;
+        }
+        for (let y = 0; y <= 8; y += 1) {
+          const py = coord.bottom - y * coord.unitY;
+          output += `<line class="map-grid" x1="80" y1="${py}" x2="602" y2="${py}"></line>`;
+          if (y > 0) output += `<text class="axis-label" x="61" y="${py + 5}">${y}</text>`;
+        }
+        output += '<line class="axis" x1="80" y1="440" x2="624" y2="440"></line><line class="axis" x1="80" y1="454" x2="80" y2="42"></line>';
+        output += '<text class="axis-label" x="628" y="446">x</text><text class="axis-label" x="73" y="39">y</text>';
+        return output;
+      }
+
+      function renderMap() {
+        const A = screen(vertices.A), B = screen(vertices.B), C = screen(vertices.C);
+        const KCoord = actualK();
+        const K = screen(KCoord);
+        const DCoord = weighted([vertices.B, vertices.C], [state.b, state.c]);
+        const ECoord = weighted([vertices.C, vertices.A], [state.c, state.a]);
+        const FCoord = weighted([vertices.A, vertices.B], [state.a, state.b]);
+        const D = screen(DCoord), E = screen(ECoord), F = screen(FCoord);
+        const data = activeData();
+        const endLookup = { D, E, F };
+        const startLookup = { A, B, C };
+        const activeStart = startLookup[data.start];
+        const activeEnd = endLookup[data.end];
+        const mutedA = state.step === 2 && !data.upperAreas.includes('a') ? ' region-muted' : '';
+        const mutedB = state.step === 2 && !data.upperAreas.includes('b') ? ' region-muted' : '';
+        const mutedC = state.step === 2 && !data.upperAreas.includes('c') ? ' region-muted' : '';
+        let overlay = '';
+        if (state.step === 1) {
+          const sideLookup = { A: [B, D, C], B: [C, E, A], C: [A, F, B] };
+          const [first, split, second] = sideLookup[state.vertex];
+          overlay = `<polygon class="lower-left" points="${svgPointText(K)} ${svgPointText(first)} ${svgPointText(split)}"></polygon><polygon class="lower-right" points="${svgPointText(K)} ${svgPointText(split)} ${svgPointText(second)}"></polygon>`;
+        }
+        let output = gridSvg();
+        output += `<polygon class="region-a${mutedA}" points="${svgPointText(K)} ${svgPointText(B)} ${svgPointText(C)}"></polygon>`;
+        output += `<polygon class="region-b${mutedB}" points="${svgPointText(K)} ${svgPointText(C)} ${svgPointText(A)}"></polygon>`;
+        output += `<polygon class="region-c${mutedC}" points="${svgPointText(K)} ${svgPointText(A)} ${svgPointText(B)}"></polygon>`;
+        output += overlay;
+        output += `<path class="triangle-edge" d="M ${svgPointText(A)} L ${svgPointText(B)} L ${svgPointText(C)} Z"></path>`;
+        output += `<line class="cevian${state.vertex === 'A' ? ' active' : ''}" x1="${A.x}" y1="${A.y}" x2="${D.x}" y2="${D.y}"></line>`;
+        output += `<line class="cevian${state.vertex === 'B' ? ' active' : ''}" x1="${B.x}" y1="${B.y}" x2="${E.x}" y2="${E.y}"></line>`;
+        output += `<line class="cevian${state.vertex === 'C' ? ' active' : ''}" x1="${C.x}" y1="${C.y}" x2="${F.x}" y2="${F.y}"></line>`;
+        output += `<circle class="point" cx="${A.x}" cy="${A.y}" r="5"></circle><circle class="point" cx="${B.x}" cy="${B.y}" r="5"></circle><circle class="point" cx="${C.x}" cy="${C.y}" r="5"></circle>`;
+        output += `<circle class="side-point" cx="${D.x}" cy="${D.y}" r="5.4"></circle><circle class="side-point" cx="${E.x}" cy="${E.y}" r="5.4"></circle><circle class="side-point" cx="${F.x}" cy="${F.y}" r="5.4"></circle>`;
+        output += `<circle id="drag-k" class="k-point" cx="${K.x}" cy="${K.y}" r="8"></circle>`;
+        output += `<text class="vertex-label" x="${A.x - 24}" y="${A.y - 11}">A(2,8)</text><text class="vertex-label" x="${B.x - 25}" y="${B.y + 25}">B</text><text class="vertex-label" x="${C.x + 10}" y="${C.y + 20}">C</text>`;
+        output += `<text class="point-label" x="${D.x + 8}" y="${D.y + 18}">D</text><text class="point-label" x="${E.x + 8}" y="${E.y - 10}">E</text><text class="point-label" x="${F.x - 22}" y="${F.y + 19}">F</text><text class="point-label" x="${K.x + 11}" y="${K.y - 11}">K</text>`;
+        output += `<text class="map-label" x="${(K.x + B.x + C.x) / 3 - 10}" y="${(K.y + B.y + C.y) / 3 + 3}">a=${state.a}</text>`;
+        output += `<text class="map-label" x="${(K.x + C.x + A.x) / 3 + 7}" y="${(K.y + C.y + A.y) / 3}">b=${state.b}</text>`;
+        output += `<text class="map-label" x="${(K.x + A.x + B.x) / 3 - 25}" y="${(K.y + A.y + B.y) / 3}">c=${state.c}</text>`;
+        if (state.step === 3) {
+          output += `<text class="map-label" x="${(activeStart.x + activeEnd.x) / 2 + 14}" y="${(activeStart.y + activeEnd.y) / 2 - 11}">${data.middleFormula}</text>`;
+        } else if (state.step === 2) {
+          const anchor = { A: D, B: E, C: F }[state.vertex];
+          output += `<text class="map-label" x="${anchor.x + 15}" y="${anchor.y - 21}">${data.sideFormula}</text>`;
+        } else {
+          const anchor = { A: D, B: E, C: F }[state.vertex];
+          output += `<text class="map-label" x="${anchor.x + 14}" y="${anchor.y + 34}">同高看底邊</text>`;
+        }
+        svg.innerHTML = output;
+      }
+
+      function updateText() {
+        const data = activeData();
+        const stepCopy = {
+          1: {
+            title: `動作 ①｜先在 ${data.sideStart}${data.divider}${data.sideEnd} 的底邊上比`,
+            text: `${data.lowerFormula}。兩個小三角形的頂點都是 K，底都在同一條邊上，所以高相同。`,
+            formula: '同高三角形：底邊比 = 面積比'
+          },
+          2: {
+            title: `動作 ②｜再把上方兩塊面積接到邊長`,
+            text: `此時直接使用題目給的 a、b、c：${data.upperFormula}。因此可以把三塊面積的比例翻譯成邊上的兩小段。`,
+            formula: data.sideFormula
+          },
+          3: {
+            title: `動作 ③｜中線用「兩塊合起來」對「對面一塊」`,
+            text: `K 前面靠近 ${data.start} 的部分，穿過另外兩塊面積；把它們加總後，就得到中線內外段的比例。`,
+            formula: data.middleFormula
+          }
+        }[state.step];
+        $('live-panel').innerHTML = `<h3>${stepCopy.title}</h3><p>${stepCopy.text}</p><span class="live-formula">面積最簡整數比 a : b : c = ${state.a} : ${state.b} : ${state.c}<br>${stepCopy.formula}</span>`;
+        $('side-a-ratio').textContent = `BD : DC = ${ratio(state.c, state.b)}`;
+        $('side-a-detail').textContent = `讀 c : b = ${state.c} : ${state.b}（最簡整數比）`;
+        $('side-b-ratio').textContent = `CE : EA = ${ratio(state.a, state.c)}`;
+        $('side-b-detail').textContent = `讀 a : c = ${state.a} : ${state.c}（最簡整數比）`;
+        $('side-c-ratio').textContent = `AF : FB = ${ratio(state.b, state.a)}`;
+        $('side-c-detail').textContent = `讀 b : a = ${state.b} : ${state.a}（最簡整數比）`;
+        $('middle-a-ratio').textContent = `AK : KD = ${ratio(state.b + state.c, state.a)}`;
+        $('middle-a-detail').textContent = `(${state.b} + ${state.c}) : ${state.a}，已約成最簡整數比`;
+        $('middle-b-ratio').textContent = `BK : KE = ${ratio(state.c + state.a, state.b)}`;
+        $('middle-b-detail').textContent = `(${state.c} + ${state.a}) : ${state.b}，已約成最簡整數比`;
+        $('middle-c-ratio').textContent = `CK : KF = ${ratio(state.a + state.b, state.c)}`;
+        $('middle-c-detail').textContent = `(${state.a} + ${state.b}) : ${state.c}，已約成最簡整數比`;
+        const K = actualK();
+        $('coordinate-result').innerHTML = `<strong>目前主圖：</strong><span class="math">a:b:c=${state.a}:${state.b}:${state.c}</span>，<span class="math">K=(${niceNumber(K.x)}, ${niceNumber(K.y)})</span><br>以 <span class="math">K=(${state.a}A+${state.b}B+${state.c}C)/${total()}</span> 算得。`;
+      }
+
+      function render() {
+        setControls();
+        renderMap();
+        updateText();
+        renderVectorSection();
+      }
+
+      function setAreaRatio(a, b, c) {
+        const normalized = normalizeTriple(a, b, c);
+        state.a = normalized.a;
+        state.b = normalized.b;
+        state.c = normalized.c;
+        render();
+      }
+
+      function barycentric(point) {
+        const A = vertices.A, B = vertices.B, C = vertices.C;
+        const den = (B.y - C.y) * (A.x - C.x) + (C.x - B.x) * (A.y - C.y);
+        let a = ((B.y - C.y) * (point.x - C.x) + (C.x - B.x) * (point.y - C.y)) / den;
+        let b = ((C.y - A.y) * (point.x - C.x) + (A.x - C.x) * (point.y - C.y)) / den;
+        let c = 1 - a - b;
+        a = Math.max(.035, a); b = Math.max(.035, b); c = Math.max(.035, c);
+        const sum = a + b + c;
+        return { a: a / sum, b: b / sum, c: c / sum };
+      }
+
+      function moveFromPointer(event) {
+        const rect = svg.getBoundingClientRect();
+        const raw = { x: (event.clientX - rect.left) * 680 / rect.width, y: (event.clientY - rect.top) * 510 / rect.height };
+        const position = barycentric(fromScreen(raw));
+        setAreaRatio(position.a * 18, position.b * 18, position.c * 18);
+      }
+
+      function renderVectorSection() {
+        const vectorDiagram = $('vector-diagram');
+        if (!vectorDiagram) return;
+        const O = { x: 62, y: 268 };
+        const A = { x: 176, y: 52 };
+        const B = { x: 126, y: 159 };
+        const C = { x: 414, y: 209 };
+        const K = weighted([A, B, C], [state.a, state.b, state.c]);
+        const label = (name, point, dx, dy, color = '') => `<text class="${color}" x="${point.x + dx}" y="${point.y + dy}">${name}</text>`;
+        const line = (name, target, color, marker) => `<line class="${color}" x1="${O.x}" y1="${O.y}" x2="${target.x}" y2="${target.y}" marker-end="url(#${marker})"></line>`;
+        let output = `<defs>
+          <marker id="arrow-a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 0 0 L 8 4 L 0 8 Z" fill="#217fb9"></path></marker>
+          <marker id="arrow-b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 0 0 L 8 4 L 0 8 Z" fill="#10907b"></path></marker>
+          <marker id="arrow-c" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 0 0 L 8 4 L 0 8 Z" fill="#8a64c4"></path></marker>
+          <marker id="arrow-k" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M 0 0 L 9 4.5 L 0 9 Z" fill="#c46718"></path></marker>
+        </defs>`;
+        output += `<path class="triangle" d="M ${svgPointText(A)} L ${svgPointText(B)} L ${svgPointText(C)} Z"></path>`;
+        output += `<line class="guide" x1="${A.x}" y1="${A.y}" x2="${K.x}" y2="${K.y}"></line><line class="guide" x1="${B.x}" y1="${B.y}" x2="${K.x}" y2="${K.y}"></line><line class="guide" x1="${C.x}" y1="${C.y}" x2="${K.x}" y2="${K.y}"></line>`;
+        output += line('A', A, 'arrow-a', 'arrow-a') + line('B', B, 'arrow-b', 'arrow-b') + line('C', C, 'arrow-c', 'arrow-c') + line('K', K, 'arrow-k', 'arrow-k');
+        output += `<circle class="origin" cx="${O.x}" cy="${O.y}" r="5"></circle><circle class="vertex" cx="${A.x}" cy="${A.y}" r="5"></circle><circle class="vertex" cx="${B.x}" cy="${B.y}" r="5"></circle><circle class="vertex" cx="${C.x}" cy="${C.y}" r="5"></circle><circle class="k" cx="${K.x}" cy="${K.y}" r="6.5"></circle>`;
+        output += label('O', O, -19, 19) + label('A', A, -8, -12) + label('B', B, -19, 18) + label('C', C, 10, 16) + label('K', K, 10, -9);
+        output += label('OA', { x: (O.x + A.x) / 2, y: (O.y + A.y) / 2 }, -20, -9, 'vector-a');
+        output += label('OB', { x: (O.x + B.x) / 2, y: (O.y + B.y) / 2 }, -23, 9, 'vector-b');
+        output += label('OC', { x: (O.x + C.x) / 2, y: (O.y + C.y) / 2 }, 4, 13, 'vector-c');
+        output += label('OK', { x: (O.x + K.x) / 2, y: (O.y + K.y) / 2 }, 8, -8, 'vector-k');
+        vectorDiagram.innerHTML = output;
+        const vectorFormulas = $('vector-formulas');
+        const S = total();
+        vectorFormulas.innerHTML = `<strong>目前主圖：</strong><span class="math">a:b:c=${state.a}:${state.b}:${state.c}</span>，<span class="math">S=a+b+c=${S}</span>
+          <span class="math-line"><span class="vec">OK</span> = ${fractionLabel(state.a, S)}<span class="vec">OA</span> + ${fractionLabel(state.b, S)}<span class="vec">OB</span> + ${fractionLabel(state.c, S)}<span class="vec">OC</span></span>
+          <span class="math-line"><span class="vec">AK</span> = ${fractionLabel(state.b, S)}<span class="vec">AB</span> + ${fractionLabel(state.c, S)}<span class="vec">AC</span></span>`;
+      }
+
+      function calculateVectorArea() {
+        const values = ['vector-ab-num', 'vector-ab-den', 'vector-ac-num', 'vector-ac-den'].map((id) => Number($(id).value));
+        const [abNum, abDen, acNum, acDen] = values;
+        const resultBox = $('vector-result');
+        if (values.some((value) => !Number.isInteger(value) || value < 0) || abDen < 1 || acDen < 1 || abNum < 1 || acNum < 1) {
+          vectorAreaResult = null;
+          resultBox.className = 'vector-result incorrect';
+          resultBox.textContent = '請輸入兩個正分數：分子至少為 1，分母至少為 1。';
+          return;
+        }
+        const commonDenominator = lcm(abDen, acDen);
+        const bRaw = abNum * (commonDenominator / abDen);
+        const cRaw = acNum * (commonDenominator / acDen);
+        const aRaw = commonDenominator - bRaw - cRaw;
+        if (aRaw <= 0) {
+          vectorAreaResult = null;
+          resultBox.className = 'vector-result incorrect';
+          resultBox.innerHTML = `目前 <span class="math">u+v=${fractionLabel(bRaw + cRaw, commonDenominator)}</span> 不小於 1，K 不在 △ABC 的內部。請調小兩個係數的和。`;
+          return;
+        }
+        vectorAreaResult = normalizeTriple(aRaw, bRaw, cRaw);
+        resultBox.className = 'vector-result correct';
+        resultBox.innerHTML = `<strong>向量係數：</strong><span class="math">u=${fractionLabel(abNum, abDen)}</span>，<span class="math">v=${fractionLabel(acNum, acDen)}</span><br><span class="math">1-u-v=${aRaw}/${commonDenominator}</span>，所以 <span class="math">a:b:c=${aRaw}:${bRaw}:${cRaw}=${vectorAreaResult.a}:${vectorAreaResult.b}:${vectorAreaResult.c}</span>。`;
+      }
+
+      function applyVectorArea() {
+        if (!vectorAreaResult) {
+          $('vector-result').className = 'vector-result incorrect';
+          $('vector-result').textContent = '請先按「由向量求面積比」，確認係數能對應到三角形內部的 K。';
+          return;
+        }
+        setAreaRatio(vectorAreaResult.a, vectorAreaResult.b, vectorAreaResult.c);
+        $('vector-result').className = 'vector-result correct';
+        $('vector-result').innerHTML = `已套用到上方主圖：<span class="math">a:b:c=${vectorAreaResult.a}:${vectorAreaResult.b}:${vectorAreaResult.c}</span>。可回到主圖觀察 K 與六種線段比。`;
+      }
+
+      function segmentRatioRecords(a, b, c) {
+        const create = (label, algebra, numerator, denominator, kind) => ({
+          label,
+          algebra,
+          value: ratio(numerator, denominator),
+          parts: ratioParts(numerator, denominator),
+          kind
+        });
+        return [
+          create('BD : DC', 'c : b', c, b, 'side'),
+          create('CE : EA', 'a : c', a, c, 'side'),
+          create('AF : FB', 'b : a', b, a, 'side'),
+          create('AK : KD', '(b + c) : a', b + c, a, 'middle'),
+          create('BK : KE', '(c + a) : b', c + a, b, 'middle'),
+          create('CK : KF', '(a + b) : c', a + b, c, 'middle')
+        ];
+      }
+
+      function reverseSvgPoint(point) {
+        return `${point.x.toFixed(1)} ${point.y.toFixed(1)}`;
+      }
+
+      function reverseBadge(x, y, text, variant) {
+        const width = Math.max(132, text.length * 7.8 + 22);
+        return `<g class="ratio-badge badge-${variant}"><rect x="${x}" y="${y}" width="${width}" height="30"></rect><text x="${x + width / 2}" y="${y + 16}">${text}</text></g>`;
+      }
+
+      function renderReverseDiagram(records) {
+        const A = { x: 245, y: 28 }, B = { x: 50, y: 270 }, C = { x: 478, y: 270 };
+        const K = weighted([A, B, C], [reverseQuestion.a, reverseQuestion.b, reverseQuestion.c]);
+        const D = weighted([B, C], [reverseQuestion.b, reverseQuestion.c]);
+        const E = weighted([C, A], [reverseQuestion.c, reverseQuestion.a]);
+        const F = weighted([A, B], [reverseQuestion.a, reverseQuestion.b]);
+        const points = { A, B, C, D, E, F, K };
+        const isGiven = (index) => reverseQuestion.indexes.includes(index);
+        const variantFor = (index) => {
+          if (!isGiven(index)) return 'unknown';
+          return reverseQuestion.indexes.indexOf(index) === 0 ? 'blue' : 'teal';
+        };
+        const edgeFor = (index) => ({
+          0: [B, C],
+          1: [C, A],
+          2: [A, B]
+        })[index];
+        const middleFor = (index) => ({
+          3: [A, D],
+          4: [B, E],
+          5: [C, F]
+        })[index];
+        const badges = [
+          { x: 185, y: 290 },
+          { x: 330, y: 122 },
+          { x: 10, y: 122 },
+          { x: 282, y: 64 },
+          { x: 307, y: 202 },
+          { x: 8, y: 202 }
+        ];
+        let output = `<path class="triangle" d="M ${reverseSvgPoint(A)} L ${reverseSvgPoint(B)} L ${reverseSvgPoint(C)} Z"></path>`;
+        [0, 1, 2].forEach((index) => {
+          const [start, end] = edgeFor(index);
+          output += `<line class="side-${isGiven(index) ? `given-${variantFor(index)}` : 'unknown'}" x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}"></line>`;
+        });
+        output += `<line class="cevian" x1="${A.x}" y1="${A.y}" x2="${D.x}" y2="${D.y}"></line><line class="cevian" x1="${B.x}" y1="${B.y}" x2="${E.x}" y2="${E.y}"></line><line class="cevian" x1="${C.x}" y1="${C.y}" x2="${F.x}" y2="${F.y}"></line>`;
+        [3, 4, 5].filter(isGiven).forEach((index) => {
+          const [start, end] = middleFor(index);
+          output += `<line class="cevian-given-${variantFor(index)}" x1="${start.x}" y1="${start.y}" x2="${end.x}" y2="${end.y}"></line>`;
+        });
+        ['A', 'B', 'C'].forEach((name) => {
+          const point = points[name];
+          output += `<circle class="vertex" cx="${point.x}" cy="${point.y}" r="5"></circle>`;
+        });
+        ['D', 'E', 'F'].forEach((name) => {
+          const point = points[name];
+          output += `<circle class="division" cx="${point.x}" cy="${point.y}" r="5"></circle>`;
+        });
+        output += `<circle class="k" cx="${K.x}" cy="${K.y}" r="7"></circle>`;
+        output += `<text class="point-name" x="${A.x - 10}" y="${A.y - 10}">A</text><text class="point-name" x="${B.x - 18}" y="${B.y + 18}">B</text><text class="point-name" x="${C.x + 10}" y="${C.y + 18}">C</text>`;
+        output += `<text class="point-name" x="${D.x - 5}" y="${D.y + 19}">D</text><text class="point-name" x="${E.x + 10}" y="${E.y - 6}">E</text><text class="point-name" x="${F.x - 18}" y="${F.y - 7}">F</text><text class="point-name" x="${K.x + 11}" y="${K.y - 10}">K</text>`;
+        reverseQuestion.indexes.forEach((index) => {
+          const record = records[index];
+          output += reverseBadge(badges[index].x, badges[index].y, `已知 ${record.label} = ${record.value}`, variantFor(index));
+        });
+        $('reverse-diagram').innerHTML = output;
+      }
+
+      function advancedDerivation(records, givens) {
+        const sideIndex = reverseQuestion.indexes.find((index) => records[index].kind === 'side');
+        const middleIndex = reverseQuestion.indexes.find((index) => records[index].kind === 'middle');
+        const side = records[sideIndex];
+        const middle = records[middleIndex];
+        const x = side.parts.left;
+        const y = side.parts.right;
+        const m = middle.parts.left;
+        const n = middle.parts.right;
+        const formulas = {
+          0: {
+            setup: `由 <span class="math">${side.label}=c:b=${side.value}</span>，先把 <span class="math">c:b</span> 放大 <span class="math">${m}</span> 倍：<span class="math">c:b=${x * m}:${y * m}</span>，所以 <span class="math">b+c=${m * (x + y)}</span>。`,
+            solve: `再將 <span class="math">${middle.label}=(b+c):a=${middle.value}</span> 放大 <span class="math">${x + y}</span> 倍，得 <span class="math">(b+c):a=${m * (x + y)}:${n * (x + y)}</span>；故 <span class="math">a:b:c=${n * (x + y)}:${y * m}:${x * m}</span>。`
+          },
+          1: {
+            setup: `由 <span class="math">${side.label}=a:c=${side.value}</span>，先把 <span class="math">a:c</span> 放大 <span class="math">${m}</span> 倍：<span class="math">a:c=${x * m}:${y * m}</span>，所以 <span class="math">c+a=${m * (x + y)}</span>。`,
+            solve: `再將 <span class="math">${middle.label}=(c+a):b=${middle.value}</span> 放大 <span class="math">${x + y}</span> 倍，得 <span class="math">(c+a):b=${m * (x + y)}:${n * (x + y)}</span>；故 <span class="math">a:b:c=${x * m}:${n * (x + y)}:${y * m}</span>。`
+          },
+          2: {
+            setup: `由 <span class="math">${side.label}=b:a=${side.value}</span>，先把 <span class="math">b:a</span> 放大 <span class="math">${m}</span> 倍：<span class="math">b:a=${x * m}:${y * m}</span>，所以 <span class="math">a+b=${m * (x + y)}</span>。`,
+            solve: `再將 <span class="math">${middle.label}=(a+b):c=${middle.value}</span> 放大 <span class="math">${x + y}</span> 倍，得 <span class="math">(a+b):c=${m * (x + y)}:${n * (x + y)}</span>；故 <span class="math">a:b:c=${y * m}:${x * m}:${n * (x + y)}</span>。`
+          }
+        }[sideIndex];
+        return `<p><strong>第 1 步：</strong>把兩組已知比換成面積關係：<span class="math">${givens.map((item) => `${item.label}=${item.algebra}=${item.value}`).join('；')}</span>。</p><p><strong>第 2 步：</strong>${formulas.setup}${formulas.solve} 將分數同乘分母後約分，即得 <span class="math">a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。</p>`;
+      }
+
+      function renderRatioAnswerFields(targets) {
+        $('ratio-answer-area').innerHTML = `<h3>再求其餘 ${targets.length} 種線段比</h3><p>請填最簡整數比，例如 <span class="math">3:2</span>。題目已知的兩組不必重填。</p><div class="target-answer-grid">${targets.map((item) => `<label for="quiz-ratio-${item.index}">${item.label}<input id="quiz-ratio-${item.index}" type="text" inputmode="text" autocomplete="off" placeholder="例如 3:2"></label>`).join('')}</div>`;
+      }
+
+      function renderReverseQuestion() {
+        const records = segmentRatioRecords(reverseQuestion.a, reverseQuestion.b, reverseQuestion.c);
+        const givens = reverseQuestion.indexes.map((index) => records[index]);
+        const targets = records.map((item, index) => ({ ...item, index })).filter((item) => !reverseQuestion.indexes.includes(item.index));
+        const modeTitle = reverseMode === 'challenge' ? '挑戰反推題：隨機比例 × 放大對齊' : (reverseMode === 'advanced' ? '進階反推題：邊上比＋中線比' : '基礎反推題：兩組邊上比');
+        const modeText = reverseMode === 'challenge'
+          ? '兩個亮色線段比先隨機產生，沒有預設面積比。請將邊上比與中線比放大，使共同的「兩塊面積和」相同，再組出 a:b:c。'
+          : (reverseMode === 'advanced'
+            ? '其中一個已知比例位於中線上；亮色實線與標籤就是兩個已知，另外四種線段比都要由面積比反推。'
+            : '兩組已知比例都在三角形的邊上；先求面積比，再完成其餘一種邊上比例與三種中線比例。');
+        $('reverse-question').innerHTML = `<h3>${modeTitle}</h3><p>△ABC 內有點 K，且 <span class="math">D=AK∩BC、E=BK∩CA、F=CK∩AB</span>。${modeText}</p><div class="reverse-layout"><div class="reverse-diagram-frame"><svg id="reverse-diagram" class="reverse-diagram" viewBox="0 0 510 330" role="img" aria-label="反推題三角形圖示，兩個已知邊上或中線比例標示在對應線段上"></svg><p class="reverse-legend">藍色、綠色粗線與標籤＝已知比例；灰色虛線＝未給出的線段。</p></div><div><p><strong>請先由圖上的兩組已知比求最簡整數面積比 <span class="math">a:b:c</span>。</strong></p><div class="given-ratios">${givens.map((item) => `<div class="given-ratio">${item.label} = ${item.value}</div>`).join('')}</div><p style="margin-top:13px"><strong>本題另外 ${targets.length} 種待求：</strong></p><div class="target-ratios">${targets.map((item) => `<div class="target-ratio">${item.label} = ？</div>`).join('')}</div></div></div>`;
+        renderReverseDiagram(records);
+        renderRatioAnswerFields(targets);
+        const ratioWork = reverseMode === 'advanced' || reverseMode === 'challenge'
+          ? advancedDerivation(records, givens)
+          : `<p><strong>第 1 步：</strong>將已知邊長比先翻成面積字母：<span class="math">${givens.map((item) => `${item.label}=${item.algebra}=${item.value}`).join('；')}</span>。</p><p><strong>第 2 步：</strong>把兩式中共同出現的字母倍率對齊，再約成最簡整數比，得到 <span class="math">a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。</p>`;
+        $('reverse-solution-body').innerHTML = `${ratioWork}<p><strong>第 3 步：</strong>代回其餘 ${targets.length} 種線段比：</p><div class="formula small">${targets.map((item) => `${item.label}=${item.algebra}=${item.value}`).join('<br>')}<br>（完整對照：${records.map((item) => `${item.label}=${item.value}`).join('；')}）</div>`;
+      }
+
+      function randomReducedPair(requireLeftAtLeastTwo = false) {
+        let pair;
+        do {
+          pair = ratioParts(1 + Math.floor(Math.random() * 8), 1 + Math.floor(Math.random() * 8));
+        } while (pair.left === pair.right || (requireLeftAtLeastTwo && pair.left < 2));
+        return pair;
+      }
+
+      function createChallengeQuestion() {
+        let created;
+        do {
+          const pattern = Math.floor(Math.random() * 3);
+          const side = randomReducedPair();
+          const middle = randomReducedPair(true);
+          const sum = side.left + side.right;
+          let raw;
+          if (pattern === 0) raw = { a: middle.right * sum, b: side.right * middle.left, c: side.left * middle.left, indexes: [0, 3] };
+          if (pattern === 1) raw = { a: side.left * middle.left, b: middle.right * sum, c: side.right * middle.left, indexes: [1, 4] };
+          if (pattern === 2) raw = { a: side.right * middle.left, b: side.left * middle.left, c: middle.right * sum, indexes: [2, 5] };
+          const normalized = normalizeTriple(raw.a, raw.b, raw.c);
+          const largestLinePart = Math.max(...segmentRatioRecords(normalized.a, normalized.b, normalized.c).flatMap((item) => [item.parts.left, item.parts.right]));
+          created = { ...normalized, indexes: raw.indexes, largestLinePart };
+        } while ((created.a === 1 && created.b === 1 && created.c === 1) || created.largestLinePart > 36);
+        delete created.largestLinePart;
+        return created;
+      }
+
+      function newReverseQuestion() {
+        if (reverseMode === 'challenge') {
+          reverseQuestion = createChallengeQuestion();
+        } else {
+          let generated;
+          do {
+            generated = normalizeTriple(
+              1 + Math.floor(Math.random() * 8),
+              1 + Math.floor(Math.random() * 8),
+              1 + Math.floor(Math.random() * 8)
+            );
+          } while (generated.a === 1 && generated.b === 1 && generated.c === 1);
+          const pairChoices = reverseMode === 'advanced' ? [[0, 3], [1, 4], [2, 5]] : [[0, 1], [0, 2], [1, 2]];
+          reverseQuestion = { ...generated, indexes: pairChoices[Math.floor(Math.random() * pairChoices.length)] };
+        }
+        ['quiz-a', 'quiz-b', 'quiz-c'].forEach((id) => { $(id).value = ''; });
+        $('reverse-feedback').className = 'quiz-feedback';
+        $('reverse-feedback').textContent = reverseMode === 'challenge' ? '先將邊上比放大成「兩塊面積和」，再把中線比放大到同一個和，最後讀出三塊面積。' : (reverseMode === 'advanced' ? '先用邊上比例設定兩塊面積，再利用中線比例中的「兩塊和」求第三塊面積。' : '先把兩個已知比都翻成 a、b、c 的關係，再將共同字母的倍率對齊。');
+        $('reverse-solution').open = false;
+        renderReverseQuestion();
+      }
+
+      function setReverseMode(mode) {
+        reverseMode = mode;
+        $('basic-reverse-mode').classList.toggle('is-selected', mode === 'basic');
+        $('basic-reverse-mode').classList.toggle('alt', mode !== 'basic');
+        $('advanced-reverse-mode').classList.toggle('is-selected', mode === 'advanced');
+        $('advanced-reverse-mode').classList.toggle('alt', mode !== 'advanced');
+        $('challenge-reverse-mode').classList.toggle('is-selected', mode === 'challenge');
+        $('challenge-reverse-mode').classList.toggle('alt', mode !== 'challenge');
+        newReverseQuestion();
+      }
+
+      function parseRatioInput(value) {
+        const match = String(value).trim().replaceAll('：', ':').match(/^(\d+)\s*:\s*(\d+)$/);
+        if (!match || Number(match[1]) < 1 || Number(match[2]) < 1) return null;
+        return ratioParts(Number(match[1]), Number(match[2]));
+      }
+
+      function getAreaRatioCheck() {
+        const raw = ['quiz-a', 'quiz-b', 'quiz-c'].map((id) => Number($(id).value));
+        if (raw.some((value) => !Number.isInteger(value) || value < 1)) {
+          return { valid: false, raw };
+        }
+        const normalized = normalizeTriple(raw[0], raw[1], raw[2]);
+        return {
+          valid: true,
+          raw,
+          normalized,
+          correct: normalized.a === reverseQuestion.a && normalized.b === reverseQuestion.b && normalized.c === reverseQuestion.c,
+          isLowest: raw[0] === normalized.a && raw[1] === normalized.b && raw[2] === normalized.c
+        };
+      }
+
+      function checkAreaRatio() {
+        const area = getAreaRatioCheck();
+        if (!area.valid) {
+          $('reverse-feedback').className = 'quiz-feedback incorrect';
+          $('reverse-feedback').textContent = '請在 a、b、c 三格各填入一個正整數，再組成最簡整數比。';
+        } else if (area.correct && area.isLowest) {
+          $('reverse-feedback').className = 'quiz-feedback correct';
+          $('reverse-feedback').innerHTML = `面積比例正確！<span class="math">a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。現在可以繼續求下方其餘線段比。`;
+        } else if (area.correct) {
+          $('reverse-feedback').className = 'quiz-feedback incorrect';
+          $('reverse-feedback').innerHTML = `比例方向正確，但 <span class="math">${area.raw.join(':')}</span> 還不是最簡整數比；請約成 <span class="math">${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。`;
+        } else {
+          $('reverse-feedback').className = 'quiz-feedback incorrect';
+          $('reverse-feedback').textContent = reverseMode === 'challenge' ? '面積比例還不對。先用放大對齊，讓邊上兩塊的和與中線比的前項相同，再填 a、b、c。' : '面積比例還不對。請先把兩個已知線段比換成 a、b、c 的關係，再重新檢查比例順序。';
+        }
+        return area;
+      }
+
+      function checkReverseQuestion() {
+        const area = getAreaRatioCheck();
+        if (!area.valid) {
+          $('reverse-feedback').className = 'quiz-feedback incorrect';
+          $('reverse-feedback').textContent = '請先在 a、b、c 三格各填入一個正整數，再檢查全部答案。';
+          return;
+        }
+        const records = segmentRatioRecords(reverseQuestion.a, reverseQuestion.b, reverseQuestion.c);
+        const targets = records.map((item, index) => ({ ...item, index })).filter((item) => !reverseQuestion.indexes.includes(item.index));
+        const targetChecks = targets.map((item) => {
+          const submitted = parseRatioInput($(`quiz-ratio-${item.index}`).value);
+          return Boolean(submitted && submitted.left === item.parts.left && submitted.right === item.parts.right);
+        });
+        const allTargetsCorrect = targetChecks.every(Boolean);
+        if (area.correct && area.isLowest && allTargetsCorrect) {
+          $('reverse-feedback').className = 'quiz-feedback correct';
+          $('reverse-feedback').innerHTML = `全部答對！面積最簡整數比為 <span class="math">a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>，其餘 ${targets.length} 種線段比也都已約成最簡整數比。`;
+        } else if (area.correct) {
+          $('reverse-feedback').className = 'quiz-feedback incorrect';
+          const areaNote = area.isLowest ? '面積比正確。' : `面積比例方向正確，但 <span class="math">${area.raw.join(':')}</span> 還不是最簡整數比；應約成 <span class="math">${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。`;
+          const segmentNote = allTargetsCorrect ? '其餘線段比也正確。' : `其餘 ${targets.length} 種線段比尚有錯誤或未填完；每一格都要填成最簡整數比。`;
+          $('reverse-feedback').innerHTML = `${areaNote}${segmentNote}`;
+        } else {
+          $('reverse-feedback').className = 'quiz-feedback incorrect';
+          $('reverse-feedback').textContent = reverseMode === 'challenge' ? '還差一步。找出邊上比中兩塊面積的和，先放大到和等於中線比的前項，再由中線比的後項讀出第三塊面積。' : (reverseMode === 'advanced' ? '還差一步。先用邊上比例設定兩塊面積，再把它們相加後代入已知中線比，最後求第三塊面積。' : '還差一步。請先把每個已知邊長比換成對應的 a、b、c，再讓兩個式子的共同字母數值相同。');
+        }
+      }
+
+      ['a', 'b', 'c'].forEach((letter) => {
+        $(`${letter}-range`).addEventListener('input', () => setAreaRatio(
+          $('a-range').value,
+          $('b-range').value,
+          $('c-range').value
+        ));
+      });
+      document.querySelectorAll('.vertex-button').forEach((button) => button.addEventListener('click', () => {
+        state.vertex = button.dataset.vertex;
+        document.querySelectorAll('.vertex-button').forEach((item) => {
+          item.classList.toggle('is-selected', item === button);
+          item.classList.toggle('alt', item !== button);
+        });
+        render();
+      }));
+      document.querySelectorAll('.step-button').forEach((button) => button.addEventListener('click', () => {
+        state.step = Number(button.dataset.step);
+        document.querySelectorAll('.step-button').forEach((item) => {
+          item.classList.toggle('is-selected', item === button);
+          item.classList.toggle('alt', item !== button);
+        });
+        render();
+      }));
+      document.querySelectorAll('.preset-button').forEach((button) => button.addEventListener('click', () => {
+        setAreaRatio(button.dataset.a, button.dataset.b, button.dataset.c);
+      }));
+      $('random-button').addEventListener('click', () => setAreaRatio(
+        1 + Math.floor(Math.random() * 8),
+        1 + Math.floor(Math.random() * 8),
+        1 + Math.floor(Math.random() * 8)
+      ));
+      $('check-reverse').addEventListener('click', checkReverseQuestion);
+      $('check-area-ratio').addEventListener('click', checkAreaRatio);
+      $('new-reverse-question').addEventListener('click', newReverseQuestion);
+      $('calculate-vector-area').addEventListener('click', calculateVectorArea);
+      $('apply-vector-area').addEventListener('click', applyVectorArea);
+      $('basic-reverse-mode').addEventListener('click', () => setReverseMode('basic'));
+      $('advanced-reverse-mode').addEventListener('click', () => setReverseMode('advanced'));
+      $('challenge-reverse-mode').addEventListener('click', () => setReverseMode('challenge'));
+      svg.addEventListener('pointerdown', (event) => {
+        state.dragging = true;
+        svg.setPointerCapture(event.pointerId);
+        moveFromPointer(event);
+      });
+      svg.addEventListener('pointermove', (event) => { if (state.dragging) moveFromPointer(event); });
+      svg.addEventListener('pointerup', () => { state.dragging = false; });
+      svg.addEventListener('pointercancel', () => { state.dragging = false; });
+
+      render();
+      calculateVectorArea();
+      newReverseQuestion();
+    })();
+  </script>
+</body>
+</html>
