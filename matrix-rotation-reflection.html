@@ -121,6 +121,7 @@
     .output-card { min-height: 220px; }
     .result-title { color: var(--teal); font-size: 18px; font-weight: 900; }
     .matrix-result { min-height: 78px; padding: 9px 0; overflow-x: auto; }
+    .exact-steps { margin: 9px 0; padding: 7px 0; overflow-x: auto; }
     .route { color: var(--muted); font-size: 15px; }
     .svg-card { grid-column: 1 / -1; padding: 13px; border: 1px solid var(--line); border-radius: 17px; background: #fff; }
     #matrixSvg { width: 100%; display: block; max-height: 460px; }
@@ -378,7 +379,8 @@
         <section class="output-card" aria-live="polite">
           <div class="result-title" id="labTitle">\(C=AB\) 的判讀</div>
           <div class="matrix-result" id="labMatrices"></div>
-          <p class="route" id="labRoute"></p>
+          <div class="formula exact-steps" id="labRoute"></div>
+          <div class="formula exact-steps" id="labBasis"></div>
           <div class="note" id="labReading"></div>
         </section>
         <section class="svg-card">
@@ -435,7 +437,8 @@
         bType: document.getElementById("bType"), bAngle: document.getElementById("bAngle"),
         pointX: document.getElementById("pointX"), pointY: document.getElementById("pointY"),
         resetLab: document.getElementById("resetLab"), labMatrices: document.getElementById("labMatrices"),
-        labRoute: document.getElementById("labRoute"), labReading: document.getElementById("labReading"),
+        labRoute: document.getElementById("labRoute"), labBasis: document.getElementById("labBasis"),
+        labReading: document.getElementById("labReading"),
         matrixSvg: document.getElementById("matrixSvg"), quizLabel: document.getElementById("quizLabel"),
         quizPrompt: document.getElementById("quizPrompt"), quizOptions: document.getElementById("quizOptions"),
         quizFeedback: document.getElementById("quizFeedback"), checkQuiz: document.getElementById("checkQuiz"),
@@ -456,6 +459,46 @@
         return Number.isInteger(rounded) ? String(rounded) : String(rounded);
       };
       const formatPoint = (point) => `(${formatNumber(point[0])}, ${formatNumber(point[1])})`;
+      const exactValues = [
+        [0, "0"],
+        [0.2588190451, "\\frac{\\sqrt{6}-\\sqrt{2}}{4}"],
+        [0.5, "\\frac{1}{2}"],
+        [0.7071067812, "\\frac{\\sqrt{2}}{2}"],
+        [0.8660254038, "\\frac{\\sqrt{3}}{2}"],
+        [0.9659258263, "\\frac{\\sqrt{6}+\\sqrt{2}}{4}"],
+        [1, "1"]
+      ];
+      function texNumber(value) {
+        const cleaned = clean(value);
+        const sign = cleaned < 0 ? "-" : "";
+        const absolute = Math.abs(cleaned);
+        const exact = exactValues.find(([candidate]) => Math.abs(absolute - candidate) < 0.0001);
+        return sign + (exact ? exact[1] : formatNumber(absolute));
+      }
+      function vectorTex(point) {
+        return "\\begin{bmatrix}" + texNumber(point[0]) + "\\\\" + texNumber(point[1]) + "\\end{bmatrix}";
+      }
+      function productTermTex(coefficient, value) {
+        return "\\left(" + texNumber(coefficient) + "\\right)\\cdot\\left(" + texNumber(value) + "\\right)";
+      }
+      function transformedVectorTex(mat, point) {
+        return "\\begin{bmatrix}" +
+          productTermTex(mat[0][0], point[0]) + "+" + productTermTex(mat[0][1], point[1]) + "\\\\" +
+          productTermTex(mat[1][0], point[0]) + "+" + productTermTex(mat[1][1], point[1]) +
+          "\\end{bmatrix}";
+      }
+      function linearTermTex(coefficient, variable, first) {
+        const cleaned = clean(coefficient);
+        if (cleaned === 0) return "";
+        const sign = cleaned < 0 ? "-" : (first ? "" : "+");
+        const magnitude = Math.abs(cleaned);
+        return sign + (Math.abs(magnitude - 1) < 0.0001 ? variable : texNumber(magnitude) + "\\," + variable);
+      }
+      function linearFormTex(row) {
+        const first = linearTermTex(row[0], "x", true);
+        const second = linearTermTex(row[1], "y", first === "");
+        return (first + second) || "0";
+      }
       const normalizeDegree = (value) => {
         const result = ((round(value) % 360) + 360) % 360;
         return Math.abs(result - 360) < 0.0001 ? 0 : result;
@@ -472,7 +515,7 @@
       ];
       const apply = (mat, point) => [mat[0][0] * point[0] + mat[0][1] * point[1], mat[1][0] * point[0] + mat[1][1] * point[1]];
       const determinant = (mat) => clean(mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]);
-      const matrixTex = (mat) => `\\begin{bmatrix}${formatNumber(mat[0][0])}&${formatNumber(mat[0][1])}\\\\${formatNumber(mat[1][0])}&${formatNumber(mat[1][1])}\\end{bmatrix}`;
+      const matrixTex = (mat) => `\\begin{bmatrix}${texNumber(mat[0][0])}&${texNumber(mat[0][1])}\\\\${texNumber(mat[1][0])}&${texNumber(mat[1][1])}\\end{bmatrix}`;
       const operationName = (type, degree) => type === "R" ? `R_{${degree}^\\circ}` : `M_{${degree}^\\circ}`;
 
       function setTypeset(target) {
@@ -516,6 +559,7 @@
         const middleTriangle = triangle.map((p) => apply(B, p));
         const finalTriangle = triangle.map((p) => apply(C, p));
         const middlePoint = apply(B, point), finalPoint = apply(C, point);
+        const startAndEndCoincide = Math.hypot(point[0] - finalPoint[0], point[1] - finalPoint[1]) < 0.0001;
         const [px, py] = toScreen(point), [mx, my] = toScreen(middlePoint), [fx, fy] = toScreen(finalPoint);
         const e1 = toScreen(apply(C, [1, 0])), e2 = toScreen(apply(C, [0, 1]));
         const origin = toScreen([0, 0]);
@@ -533,10 +577,10 @@
           <polygon points="${polygonPoints(finalTriangle, toScreen)}" fill="#ca6914" fill-opacity=".16" stroke="#ca6914" stroke-width="2.8"/>
           <line x1="${origin[0]}" y1="${origin[1]}" x2="${e1[0]}" y2="${e1[1]}" stroke="#135b94" stroke-width="2.5" marker-end="url(#arrowNavy)"/>
           <line x1="${origin[0]}" y1="${origin[1]}" x2="${e2[0]}" y2="${e2[1]}" stroke="#ca6914" stroke-width="2.5" marker-end="url(#arrowNavy)"/>
-          ${svgText(e1[0] + 6, e1[1] - 7, "C e₁", "#135b94", 12)}${svgText(e2[0] + 7, e2[1] - 7, "C e₂", "#ca6914", 12)}
+          ${svgText(e1[0] + 6, e1[1] - 7, "第 1 欄", "#135b94", 12)}${svgText(e2[0] + 7, e2[1] - 7, "第 2 欄", "#ca6914", 12)}
           <path d="M ${px} ${py} L ${mx} ${my} L ${fx} ${fy}" fill="none" stroke="#168278" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrowTeal)"/>
           <circle cx="${px}" cy="${py}" r="5" fill="#168278"/><circle cx="${mx}" cy="${my}" r="5" fill="#7653b8"/><circle cx="${fx}" cy="${fy}" r="5" fill="#ca6914"/>
-          ${svgText(px + 7, py - 8, "P", "#168278", 12)}${svgText(mx + 7, my - 8, "BP", "#7653b8", 12)}${svgText(fx + 7, fy - 8, "ABP", "#ca6914", 12)}
+          ${svgText(px + 7, py - 8, startAndEndCoincide ? "P = ABP" : "P", "#168278", 12)}${svgText(mx + 7, my - 8, "BP", "#7653b8", 12)}${startAndEndCoincide ? "" : svgText(fx + 7, fy - 8, "ABP", "#ca6914", 12)}
           ${svgText(55, 31, "藍：原圖　紫：B 後　橘：AB 後", "#456680", 13)}
         `;
       }
@@ -549,10 +593,20 @@
         el.labMatrices.innerHTML = `\\[
           A=${matrixTex(A)},\\quad B=${matrixTex(B)},\\quad C=AB=${matrixTex(C)}
         \\]`;
-        el.labRoute.innerHTML = `\\(P=${formatPoint(point)}\\xrightarrow{\\ B\\ }${formatPoint(afterB)}\\xrightarrow{\\ A\\ }${formatPoint(afterA)}\\)。`;
+        el.labRoute.innerHTML = "\\[\\begin{aligned}" +
+          "\\boldsymbol p&=" + vectorTex(point) + "\\\\[2pt]" +
+          "B\\boldsymbol p&=B\\," + vectorTex(point) + "=" + transformedVectorTex(B, point) + "\\approx" + vectorTex(afterB) + "\\\\[2pt]" +
+          "AB\\boldsymbol p&=C\\," + vectorTex(point) + "=" + transformedVectorTex(C, point) + "\\approx" + vectorTex(afterA) +
+          "\\end{aligned}\\]";
+        const e1Vector = apply(C, [1, 0]), e2Vector = apply(C, [0, 1]);
+        el.labBasis.innerHTML = "\\[C\\mathbf e_1=" + vectorTex(e1Vector) + "\\qquad C\\mathbf e_2=" + vectorTex(e2Vector) + "\\]";
         const cCoefficient = round(C[1][0]);
-        el.labReading.innerHTML = `<strong>${result.text}</strong>（\\(\\det C=\\det A\\det B=${detA}\\times${detB}=${result.det}\\)）。${result.note}。<br>又 \\(y'=${formatNumber(C[1][0])}x${C[1][1] >= 0 ? "+" : ""}${formatNumber(C[1][1])}y\\)，其中 \\(x\\) 的係數 \\(c=${formatNumber(cCoefficient)}\\)：${cCoefficient > 0 ? "原本的 x 方向往上走" : cCoefficient < 0 ? "原本的 x 方向往下走" : "剛好沒有上下分量，需再看對角線"}。`;
-        setTypeset(el.labMatrices); setTypeset(el.labRoute); setTypeset(el.labReading);
+        el.labReading.innerHTML = "<strong>" + result.text + "</strong>（\\(\\det C=\\det A\\det B=" +
+          texNumber(detA) + "\\times" + texNumber(detB) + "=" + texNumber(result.det) +
+          "\\)）。" + result.note + "。<br>又 \\(y'=" + linearFormTex(C[1]) +
+          "\\)，其中 \\(x\\) 的係數 \\(c=" + texNumber(cCoefficient) + "\\)：" +
+          (cCoefficient > 0 ? "原本的 x 方向往上走" : cCoefficient < 0 ? "原本的 x 方向往下走" : "剛好沒有上下分量，需再看對角線") + "。";
+        setTypeset(el.labMatrices); setTypeset(el.labRoute); setTypeset(el.labBasis); setTypeset(el.labReading);
         renderSvg(A, B, point);
       }
       [el.aType, el.aAngle, el.bType, el.bAngle, el.pointX, el.pointY].forEach((control) => control.addEventListener("input", updateLab));
@@ -566,12 +620,12 @@
           { prompt: "\\(A=\\begin{bmatrix}0&-1\\\\1&0\\end{bmatrix}\\)，在 \\(y'=cx+dy\\) 中，\\(c\\) 是多少？它表示什麼？", options: ["c=1，x 方向往上轉", "c=-1，x 方向往下轉", "c=0，沒有上下分量"], answer: 0, hint: "直接讀第二列：y'=x。", solution: "答對：c=1，(1,0) 會到 (0,1)，所以 x 方向向上。配合 det=1，為逆時針旋轉。" }
         ],
         advanced: [
-          { prompt: "\\(R_{90^\\circ}M_0\\) 中，哪一個先做？", options: ["先 R90°，再 M0", "先 M0，再 R90°", "兩個可交換，順序不重要"], answer: 1, hint: "請把它寫成 R90°(M0 v)：離 v 最近者先做。", solution: "答對：先 M0，再 R90°；矩陣乘法由右往左作用。" },
-          { prompt: "點 \\((2,1)\\) 經 \\(R_{90^\\circ}M_0\\) 後，結果為何？", options: ["(1,2)", "(-1,-2)", "(-2,1)"], answer: 0, hint: "先關於 x 軸鏡射：(2,1)→(2,-1)，再逆時針轉 90°。", solution: "答對：(2,1)→(2,-1)→(1,2)。" }
+          { prompt: "\\(R_{90^\\circ}M_0\\) 中，哪一個先做？", options: ["先 \\(R_{90^\\circ}\\)，再 \\(M_0\\)", "先 \\(M_0\\)，再 \\(R_{90^\\circ}\\)", "兩個可交換，順序不重要"], answer: 1, hint: "請把它寫成 \\(R_{90^\\circ}(M_0\\boldsymbol v)\\)：離 \\(\\boldsymbol v\\) 最近者先做。", solution: "答對：先 \\(M_0\\)，再 \\(R_{90^\\circ}\\)；矩陣乘法由右往左作用。" },
+          { prompt: "點 \\((2,1)\\) 經 \\(R_{90^\\circ}M_0\\) 後，結果為何？", options: ["\\((1,2)\\)", "\\((-1,-2)\\)", "\\((-2,1)\\)"], answer: 0, hint: "先關於 \\(x\\) 軸鏡射：\\((2,1)\\to(2,-1)\\)，再逆時針轉 \\(90^\\circ\\)。", solution: "答對：\\((2,1)\\to(2,-1)\\to(1,2)\\)。" }
         ],
         challenge: [
-          { prompt: "依本頁記號，\\(M_{30^\\circ}M_{110^\\circ}\\) 化簡為何？", options: ["R140°", "R-80°", "M-80°"], answer: 1, hint: "兩次鏡射變旋轉，並用 Mθ1Mθ2=Rθ1-θ2。", solution: "答對：M30°M110°=R(30°-110°)=R-80°。" },
-          { prompt: "一串複合變換含 3 次鏡射與 2 次旋轉，最後必為？", options: ["旋轉，因為共有 5 次變換", "鏡射，因為 det=(-1)^3", "無法判斷，因為角度未知"], answer: 1, hint: "只追 det：旋轉貢獻 +1，鏡射貢獻 -1。", solution: "答對：det=(+1)^2(-1)^3=-1，所以最後是鏡射。" }
+          { prompt: "依本頁記號，\\(M_{30^\\circ}M_{110^\\circ}\\) 化簡為何？", options: ["\\(R_{140^\\circ}\\)", "\\(R_{-80^\\circ}\\)", "\\(M_{-80^\\circ}\\)"], answer: 1, hint: "兩次鏡射變旋轉，並用 \\(M_{\\theta_1}M_{\\theta_2}=R_{\\theta_1-\\theta_2}\\)。", solution: "答對：\\(M_{30^\\circ}M_{110^\\circ}=R_{30^\\circ-110^\\circ}=R_{-80^\\circ}\\)。" },
+          { prompt: "一串複合變換含 \\(3\\) 次鏡射與 \\(2\\) 次旋轉，最後必為？", options: ["旋轉，因為共有 \\(5\\) 次變換", "鏡射，因為 \\(\\det C=(-1)^3\\)", "無法判斷，因為角度未知"], answer: 1, hint: "只追 \\(\\det\\)：旋轉貢獻 \\(+1\\)，鏡射貢獻 \\(-1\\)。", solution: "答對：\\(\\det C=(+1)^2(-1)^3=-1\\)，所以最後是鏡射。" }
         ]
       };
       let quizMode = "basic", quizIndex = 0, quizChoice = null;

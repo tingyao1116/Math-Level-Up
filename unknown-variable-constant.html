@@ -3,325 +3,1090 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>未知數、變數、常數分辨教學頁</title>
+  <title>未知數、變數、常數與參數｜互動教學</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <style>
     :root {
-      --bg-a: #eefaf2;
-      --bg-b: #f2f7ff;
-      --card: #ffffff;
-      --line: #d7e2ec;
-      --text: #12263a;
-      --sub: #46617a;
-      --brand: #0f766e;
-      --brand-deep: #115e59;
-      --ok-bg: #ecfdf3;
-      --ok-line: #9ae6b4;
-      --warn-bg: #fff8e7;
-      --warn-line: #f8d38b;
+      --ink: #143044;
+      --sub: #537084;
+      --paper: #ffffff;
+      --mist: #edf7f4;
+      --line: #d8e4e8;
+      --teal: #08756f;
+      --teal-soft: #d9f3ed;
+      --orange: #d65d17;
+      --orange-soft: #fff0df;
+      --blue: #2563a8;
+      --blue-soft: #e6f1ff;
+      --gold: #996300;
+      --gold-soft: #fff5d8;
+      --red: #a93434;
+      --red-soft: #fff0f0;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
+      min-width: 320px;
+      color: var(--ink);
       font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-      color: var(--text);
-      background: linear-gradient(145deg, var(--bg-a), var(--bg-b));
-      min-height: 100vh;
+      background:
+        radial-gradient(circle at 4% 3%, rgba(36, 139, 124, 0.18), transparent 25rem),
+        radial-gradient(circle at 98% 16%, rgba(243, 181, 74, 0.16), transparent 22rem),
+        linear-gradient(135deg, #eaf6f3 0%, #f6f9fb 55%, #fffaf0 100%);
       padding: 24px;
     }
-    .wrap {
-      max-width: 1080px;
+
+    .page {
+      width: min(1120px, 100%);
       margin: 0 auto;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 14px 34px rgba(18, 38, 58, 0.08);
     }
-    h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 38px); }
-    .lead { margin: 0 0 18px; color: var(--sub); line-height: 1.8; }
-    .sec { margin-top: 20px; }
-    .sec h2 { margin: 0 0 10px; font-size: 24px; }
-    .box {
+
+    .hero,
+    .section-card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(190, 211, 215, 0.9);
+      box-shadow: 0 18px 45px rgba(27, 72, 88, 0.09);
+    }
+
+    .hero {
+      overflow: hidden;
+      border-radius: 24px;
+      padding: clamp(22px, 4vw, 44px);
+      position: relative;
+    }
+
+    .hero::after {
+      content: "? = ?";
+      position: absolute;
+      right: clamp(16px, 4vw, 48px);
+      bottom: -18px;
+      color: rgba(8, 117, 111, 0.08);
+      font: 800 clamp(72px, 13vw, 160px)/1 Georgia, serif;
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin: 0 0 10px;
+      color: var(--teal);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 12px;
+      font-family: "Noto Serif TC", "PMingLiU", serif;
+      font-size: clamp(32px, 5vw, 50px);
+      letter-spacing: 0.03em;
+    }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin-bottom: 22px;
+      color: var(--sub);
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .memory-line {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      color: #17495a;
+      font-weight: 800;
+    }
+
+    .memory-line span {
+      border-radius: 999px;
+      padding: 6px 11px;
+      background: #f0f7f7;
+      border: 1px solid #d6e6e5;
+    }
+
+    .memory-line b { color: var(--teal); }
+
+    .section-card {
+      margin-top: 18px;
+      border-radius: 18px;
+      padding: clamp(18px, 3vw, 28px);
+    }
+
+    .section-heading {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .section-no {
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--teal);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    h2 { margin: 0; font-size: clamp(23px, 3vw, 29px); }
+    h3 { font-size: 19px; }
+    .section-intro { margin: 6px 0 0; color: var(--sub); line-height: 1.8; }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .role-card {
+      min-height: 174px;
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--card-color);
+      border-radius: 14px;
+      padding: 15px;
+      background: linear-gradient(165deg, var(--card-soft), #fff 68%);
+    }
+
+    .role-card h3 { margin: 0 0 7px; color: var(--card-color); }
+    .role-card p { margin: 0; line-height: 1.75; color: #35546b; }
+    .unknown { --card-color: var(--orange); --card-soft: var(--orange-soft); }
+    .variable { --card-color: var(--teal); --card-soft: var(--teal-soft); }
+    .constant { --card-color: var(--blue); --card-soft: var(--blue-soft); }
+    .parameter { --card-color: var(--gold); --card-soft: var(--gold-soft); }
+
+    .decision-flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .step {
+      position: relative;
+      padding: 15px 15px 15px 53px;
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 14px;
-      background: #fff;
+      background: #fbfdfd;
+      line-height: 1.75;
     }
-    .note {
-      margin-top: 10px;
-      border-radius: 12px;
-      border: 1px solid var(--warn-line);
-      background: var(--warn-bg);
-      padding: 10px 12px;
-      line-height: 1.7;
-      color: #7d5b18;
+
+    .step-no {
+      position: absolute;
+      left: 15px;
+      top: 15px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #d9f0ec;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 800;
     }
-    table { width: 100%; border-collapse: collapse; }
-    th, td {
-      border: 1px solid var(--line);
-      padding: 10px;
-      text-align: left;
-      vertical-align: top;
-      line-height: 1.7;
+
+    .step b { display: block; margin-bottom: 3px; }
+    .step p { margin: 0; color: var(--sub); }
+
+    .teacher-note {
+      margin-top: 14px;
+      padding: 13px 15px;
+      border-left: 4px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      background: #fff9e9;
+      color: #6d5316;
+      line-height: 1.8;
     }
-    th { background: #f8fbff; }
-    code {
-      background: #f1f5f9;
-      padding: 1px 6px;
-      border-radius: 6px;
-      font-family: "Consolas", "Courier New", monospace;
+
+    .scenario-tabs,
+    .answer-row,
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip {
-      border: 1px solid var(--line);
-      background: #f8fbff;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-weight: 700;
-      color: #1f3e59;
+
+    button {
+      font: inherit;
       cursor: pointer;
     }
-    .chip.active {
-      background: #c8f2ee;
-      border-color: #76d9cf;
-      color: #0b4f49;
+
+    .tab, .answer-btn, .action-btn {
+      border: 1px solid #bdd8d5;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: #fff;
+      color: #1b5f5a;
+      font-weight: 800;
     }
-    .question {
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 12px;
+
+    .tab:hover, .answer-btn:hover, .action-btn:hover { background: #f0faf8; }
+    .tab.active {
+      border-color: var(--teal);
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .scenario-panel {
+      margin-top: 13px;
+      display: grid;
+      grid-template-columns: minmax(240px, 0.85fr) minmax(290px, 1.15fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .formula-stage {
+      display: grid;
+      place-items: center;
+      min-height: 170px;
+      padding: 22px;
+      border: 1px dashed #94c7c0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #eefbf8, #fbfffe);
+      overflow-x: auto;
+      font-size: clamp(19px, 2.5vw, 26px);
+    }
+
+    .scenario-text {
       border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px;
       background: #fbfdff;
     }
-    .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .btn {
-      border: 1px solid var(--brand);
-      background: var(--brand);
-      color: #fff;
-      border-radius: 10px;
-      padding: 7px 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn.secondary {
-      background: #fff;
-      color: var(--brand-deep);
-      border-color: #86ccc6;
-    }
-    .btn:hover { filter: brightness(0.97); }
-    .result {
-      margin-top: 10px;
-      border-radius: 12px;
-      padding: 10px 12px;
-      border: 1px solid var(--ok-line);
-      background: var(--ok-bg);
-      color: #125f37;
-      line-height: 1.7;
-      display: none;
-    }
-    .result.bad {
-      border-color: #f1a7a7;
-      background: #fff1f1;
-      color: #8c2a2a;
-    }
-    .levels {
+
+    .scenario-text h3 { margin-bottom: 7px; }
+    .scenario-text p { margin-bottom: 10px; color: var(--sub); line-height: 1.8; }
+    .role-list { margin: 0; padding-left: 1.25em; line-height: 1.85; }
+
+    .live-grid {
       display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
     }
-    .lv { border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-    .lv h3 { margin: 0 0 8px; }
-    .lv p { margin: 0; line-height: 1.8; color: var(--sub); }
-    .small { margin-top: 8px; color: var(--sub); font-size: 14px; }
+
+    .live-card {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 17px;
+      background: #fcfefe;
+    }
+
+    .live-card h3 { margin-bottom: 7px; }
+    .live-card p { color: var(--sub); line-height: 1.75; }
+    .formula-line {
+      min-height: 45px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #f0f7f7;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 13px 0 4px;
+      font-weight: 800;
+    }
+
+    input[type="range"] { width: 100%; accent-color: var(--teal); }
+
+    .value-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .value-chip {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      background: #fff;
+    }
+
+    .value-chip b { display: block; margin-bottom: 2px; font-size: 13px; }
+    .value-chip span { font-size: 20px; font-weight: 800; }
+    .value-chip.variable-chip b { color: var(--teal); }
+    .value-chip.constant-chip b { color: var(--blue); }
+
+    .graph-wrap {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    canvas { display: block; width: 100%; height: 250px; }
+    .graph-caption { margin: 8px 0 0; color: var(--sub); font-size: 14px; line-height: 1.65; }
+
+    .mistake-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mistake {
+      border: 1px solid #f0cccc;
+      border-radius: 13px;
+      padding: 13px;
+      background: var(--red-soft);
+      color: #803535;
+      line-height: 1.8;
+    }
+
+    .mistake b { display: block; color: var(--red); }
+
+    .equals-intro {
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid #b9dcd7;
+      background: linear-gradient(100deg, #edf9f6, #fbfffe);
+      color: #275b5c;
+      line-height: 1.85;
+    }
+
+    .equals-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .equals-card {
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--eq-color);
+      border-radius: 14px;
+      padding: 15px;
+      background: linear-gradient(110deg, var(--eq-soft), #fff 74%);
+    }
+
+    .equals-card h3 { margin: 0 0 6px; color: var(--eq-color); }
+    .equals-card p { margin: 0 0 9px; color: #38566a; line-height: 1.75; }
+    .equals-card .eq-question { margin: 0; color: #31546a; font-size: 14px; font-weight: 800; }
+    .eq-specific { --eq-color: var(--orange); --eq-soft: var(--orange-soft); }
+    .eq-correspondence { --eq-color: var(--teal); --eq-soft: var(--teal-soft); }
+    .eq-identity { --eq-color: var(--blue); --eq-soft: var(--blue-soft); }
+    .eq-definition { --eq-color: var(--gold); --eq-soft: var(--gold-soft); }
+
+    .equals-compare {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .compare-card {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #fcfefe;
+      text-align: center;
+    }
+
+    .compare-card h3 { margin: 0 0 8px; font-size: 17px; }
+    .compare-card p { margin: 9px 0 0; color: var(--sub); line-height: 1.7; text-align: left; }
+    .formula-mini { min-height: 48px; overflow-x: auto; }
+
+    .equals-practice {
+      margin-top: 14px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfdff;
+    }
+
+    .equals-practice h3 { margin-bottom: 8px; }
+    .equals-practice ol { margin: 0; padding-left: 1.35em; line-height: 2.1; }
+    .equals-practice details { margin-top: 10px; }
+
+    .quiz-layout {
+      display: grid;
+      grid-template-columns: 1fr 0.9fr;
+      gap: 16px;
+    }
+
+    .quiz-card, .answer-key {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 16px;
+      background: #fbfdff;
+    }
+
+    .quiz-card h3, .answer-key h3 { margin-bottom: 10px; }
+    .quiz-question { min-height: 88px; line-height: 1.85; }
+    .answer-row { margin: 12px 0; }
+    .answer-btn.correct-choice { border-color: var(--teal); }
+    .answer-btn:disabled { cursor: default; opacity: 0.58; }
+    .answer-btn.selected-right { color: #fff; border-color: var(--teal); background: var(--teal); opacity: 1; }
+    .answer-btn.selected-wrong { color: #fff; border-color: var(--red); background: var(--red); opacity: 1; }
+    .action-btn.primary { border-color: var(--teal); background: var(--teal); color: #fff; }
+    .feedback {
+      display: none;
+      margin-top: 10px;
+      border-radius: 10px;
+      padding: 11px 12px;
+      border: 1px solid #9fd8bb;
+      background: #ecfbf2;
+      color: #1e6a45;
+      line-height: 1.75;
+    }
+    .feedback.wrong { border-color: #efb5b5; background: #fff1f1; color: #8d3535; }
+
+    details {
+      border: 1px solid #eadbb2;
+      border-radius: 12px;
+      padding: 11px 13px;
+      background: #fffbef;
+      line-height: 1.8;
+    }
+
+    summary { cursor: pointer; color: #786019; font-weight: 800; }
+    details p { margin: 10px 0 0; color: #735e23; }
+    .score { margin: 12px 0 0; color: var(--sub); font-size: 14px; }
+
+    .lesson-plan {
+      margin: 0;
+      padding-left: 1.3em;
+      color: var(--sub);
+      line-height: 2;
+    }
+
     .back {
       display: inline-block;
-      margin-top: 18px;
+      margin: 20px 4px 0;
+      color: var(--teal);
+      font-weight: 800;
       text-decoration: none;
-      color: var(--brand-deep);
-      font-weight: 700;
+    }
+
+    .back:hover { text-decoration: underline; }
+
+    @media (max-width: 820px) {
+      .role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .decision-flow { grid-template-columns: 1fr; }
+      .scenario-panel, .live-grid, .quiz-layout { grid-template-columns: 1fr; }
+      .equals-compare { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 12px; }
+      .hero, .section-card { border-radius: 16px; }
+      .role-grid, .mistake-grid, .equals-grid { grid-template-columns: 1fr; }
+      .value-board { grid-template-columns: 1fr; }
+      .tab, .answer-btn, .action-btn { flex: 1 1 130px; }
+      canvas { height: 220px; }
     }
   </style>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 </head>
 <body>
-  <main class="wrap">
-    <h1>未知數、變數、常數 分辨教學頁</h1>
-    <p class="lead">先抓住一句話：<b>未知數是「現在要解」</b>，<b>變數是「可以改變」</b>，<b>常數是「固定不變」</b>。同一個字母在不同情境，身分可能會改變。</p>
-
-    <section class="sec">
-      <h2>1. 快速對照表（上課可先投影）</h2>
-      <div class="box">
-        <table>
-          <thead>
-            <tr>
-              <th>名稱</th>
-              <th>重點判斷</th>
-              <th>教學用說法</th>
-              <th>例子</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>未知數</td>
-              <td>題目要你「解出它」</td>
-              <td>目前不知道值，要算出來</td>
-              <td><code>3x-4=8</code> 的 <code>x</code></td>
-            </tr>
-            <tr>
-              <td>變數</td>
-              <td>會隨輸入或條件改變</td>
-              <td>像滑桿，代不同數值會跟著變</td>
-              <td><code>y=2x+1</code> 的 <code>x,y</code></td>
-            </tr>
-            <tr>
-              <td>常數</td>
-              <td>固定值，不會跟題目變動</td>
-              <td>當下規則中的固定角色</td>
-              <td><code>y=2x+1</code> 的 <code>2,1</code></td>
-            </tr>
-            <tr>
-              <td>參數（延伸）</td>
-              <td>在「同一題」固定，但不同題可改</td>
-              <td>控制規則外型的旋鈕</td>
-              <td><code>y=ax+b</code> 的 <code>a,b</code></td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="note">常見混淆：在 <code>y=ax+b</code> 裡，<code>a,b</code> 對某一條直線是固定值（當下像常數）；但若換另一條直線，它們又能改變（在模型中像參數）。</div>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">高一先修｜代數語言的第一步</p>
+      <h1>未知數、變數、常數：先看角色，再替它命名</h1>
+      <p class="lead">字母不會永遠只有一種身分。要判斷它是未知數、變數或常數，關鍵不是「它長得像什麼」，而是「題目現在要它做什麼」。這一頁用方程式、函數、面積與圖形，帶學生把角色看清楚。</p>
+      <div class="memory-line" aria-label="一句記憶口訣">
+        <span><b>要解出誰</b>：未知數</span>
+        <span><b>會跟著改變</b>：變數</span>
+        <span><b>固定不動</b>：常數</span>
       </div>
-    </section>
+    </header>
 
-    <section class="sec">
-      <h2>2. 按鈕判斷練習（老師課堂互動 / 學生自測）</h2>
-      <div class="box">
-        <div class="chips" id="modeChips">
-          <button class="chip active" data-mode="basic">基礎</button>
-          <button class="chip" data-mode="advanced">進階</button>
-          <button class="chip" data-mode="challenge">挑戰</button>
+    <section class="section-card">
+      <div class="section-heading">
+        <div class="section-no">1</div>
+        <div>
+          <h2>先建立四個角色</h2>
+          <p class="section-intro">前三個是必學概念；「參數」放在延伸區，幫學生銜接一次函數與日後的函數模型。</p>
         </div>
-        <div class="question" id="questionText"></div>
-        <div class="btns">
-          <button class="btn secondary" data-answer="unknown">未知數</button>
-          <button class="btn secondary" data-answer="variable">變數</button>
-          <button class="btn secondary" data-answer="constant">常數</button>
-          <button class="btn secondary" data-answer="parameter">參數</button>
-        </div>
-        <div class="btns">
-          <button class="btn" id="nextBtn">下一題</button>
-        </div>
-        <div class="result" id="resultBox"></div>
-        <p class="small" id="scoreText">目前成績：0 / 0</p>
       </div>
-    </section>
-
-    <section class="sec">
-      <h2>3. 教學重點：最常犯錯</h2>
-      <div class="box">
-        <p>1. 看到字母就說是未知數：錯。要看題目是否「要求解它」。</p>
-        <p>2. 把係數都當變數：錯。像 <code>2x+1</code> 的 <code>2,1</code> 是固定常數。</p>
-        <p>3. 把參數和變數混在一起：<code>y=ax+b</code> 裡，<code>x,y</code> 是變數；<code>a,b</code> 常扮演參數。</p>
-        <p>4. 忽略情境轉換：同一字母在不同題目可能換身分，必須先看題目角色。</p>
-      </div>
-    </section>
-
-    <section class="sec">
-      <h2>4. 可直接出題的分層練習</h2>
-      <div class="levels">
-        <article class="lv">
-          <h3>基礎</h3>
-          <p>1. 在 <code>x+7=12</code> 中，<code>x</code> 是什麼？<br>2. 在 <code>y=3x-2</code> 中，<code>3,-2</code> 是什麼？</p>
+      <div class="role-grid">
+        <article class="role-card unknown">
+          <h3>未知數</h3>
+          <p>題目要你<strong>解出它的值</strong>。例如在 \(3x-4=8\) 中，要找的是 \(x\)。</p>
         </article>
-        <article class="lv">
-          <h3>進階</h3>
-          <p>1. 在 <code>A=lw</code> 中，若 <code>l=8</code> 已固定，<code>w</code> 是什麼？<br>2. 在 <code>y=ax+1</code> 中，<code>a</code> 與 <code>x</code> 的角色差在哪裡？</p>
+        <article class="role-card variable">
+          <h3>變數</h3>
+          <p>可以代入不同的值而改變。\(y=2x+1\) 中，\(x\) 改變，\(y\) 也跟著改變。</p>
         </article>
-        <article class="lv">
-          <h3>挑戰</h3>
-          <p>1. 比較 <code>x^2-1=0</code> 與 <code>y=x^2-1</code> 中 <code>x</code> 角色是否相同。<br>2. 說明為何同一字母在不同題型會變成不同身分。</p>
+        <article class="role-card constant">
+          <h3>常數</h3>
+          <p>在目前的規則中固定不變。\(y=2x+1\) 的 \(2\) 和 \(1\) 都是常數。</p>
+        </article>
+        <article class="role-card parameter">
+          <h3>參數（延伸）</h3>
+          <p>對同一條規則先固定，但能選不同值製造不同規則。\(y=ax+b\) 的 \(a,b\) 是參數。</p>
         </article>
       </div>
     </section>
 
-    <a class="back" href="./index.html">返回教學首頁</a>
+    <section class="section-card">
+      <div class="section-heading">
+        <div class="section-no">2</div>
+        <div>
+          <h2>三秒判斷法</h2>
+          <p class="section-intro">每次看一個字母前，先問這三句；學生就不會只因為「看見字母」便一律回答未知數。</p>
+        </div>
+      </div>
+      <div class="decision-flow">
+        <article class="step">
+          <span class="step-no">1</span>
+          <b>題目要我求出它嗎？</b>
+          <p>是的話，優先稱為<strong>未知數</strong>。例如 \(x^2-9=0\) 要解 \(x\)。</p>
+        </article>
+        <article class="step">
+          <span class="step-no">2</span>
+          <b>它可以取不同值嗎？</b>
+          <p>若可自由代入並讓結果改變，通常是<strong>變數</strong>。例如 \(f(x)=\sqrt{x+1}\) 中的 \(x\)。</p>
+        </article>
+        <article class="step">
+          <span class="step-no">3</span>
+          <b>在這個規則裡它固定嗎？</b>
+          <p>固定的數字是<strong>常數</strong>；固定但可以換設定來改變規則的字母，常稱<strong>參數</strong>。</p>
+        </article>
+      </div>
+      <div class="teacher-note"><strong>老師可直接說：</strong>「字母不是身分證。先看它在這一題的工作，才知道它叫未知數、變數，還是參數。」</div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-heading">
+        <div class="section-no">3</div>
+        <div>
+          <h2>同一個字母，換題目就可能換角色</h2>
+          <p class="section-intro">點選不同情境，先讀題目目的，再看字母的身分。這是最容易混淆、也最值得停下來討論的地方。</p>
+        </div>
+      </div>
+      <div class="scenario-tabs" id="scenarioTabs">
+        <button class="tab active" data-scenario="equation">方程式</button>
+        <button class="tab" data-scenario="function">函數</button>
+        <button class="tab" data-scenario="area">面積</button>
+        <button class="tab" data-scenario="family">直線族</button>
+      </div>
+      <div class="scenario-panel">
+        <div class="formula-stage" id="scenarioFormula" aria-live="polite"></div>
+        <div class="scenario-text">
+          <h3 id="scenarioTitle"></h3>
+          <p id="scenarioDescription"></p>
+          <ul class="role-list" id="scenarioRoles"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-heading">
+        <div class="section-no">4</div>
+        <div>
+          <h2>等號不只是在說「算出答案」</h2>
+          <p class="section-intro">所有等號的共同核心是：左右兩邊代表相同的數值。但它們的語氣不同：有的是找讓它成立的值，有的是描述對應關係，有的是說兩種寫法本來一樣，有的是替規則命名。</p>
+        </div>
+      </div>
+      <div class="equals-intro"><strong>先問一句：</strong>「這個等號是在哪些情況下成立？又是在做什麼工作？」只要先回答這句，就能分辨四種常見的相等。</div>
+      <div class="equals-grid">
+        <article class="equals-card eq-specific">
+          <h3>特定相等</h3>
+          <p>只有在<strong>某些特定值</strong>下，左右兩邊才相等。最常見於解方程式。</p>
+          <div class="formula-mini">\(x+3=10\Rightarrow x=7\)</div>
+          <p class="eq-question">判斷口訣：題目是不是要我「解出哪個值」？</p>
+        </article>
+        <article class="equals-card eq-correspondence">
+          <h3>對應相等</h3>
+          <p>每給一個輸入，就有一個對應輸出。最常見於函數關係。</p>
+          <div class="formula-mini">\(y=2x+1\)</div>
+          <p class="eq-question">判斷口訣：一個量改變時，另一個量是否跟著改變？</p>
+        </article>
+        <article class="equals-card eq-identity">
+          <h3>恆等</h3>
+          <p>不管變數代入什麼值，左右兩邊都成立；它們是<strong>同一個式子的不同寫法</strong>。</p>
+          <div class="formula-mini">\((x-1)(x+1)=x^2-1\)</div>
+          <p class="eq-question">判斷口訣：是否每一個可代入值都成立？</p>
+        </article>
+        <article class="equals-card eq-definition">
+          <h3>定義相等</h3>
+          <p>用等號替一個新符號或新名稱指定規則；左邊是名稱，右邊是內容。</p>
+          <div class="formula-mini">\(f(x)=2x+1\)</div>
+          <p class="eq-question">判斷口訣：左邊是不是正在替一個新對象命名？</p>
+        </article>
+      </div>
+
+      <div class="equals-compare">
+        <article class="compare-card">
+          <h3>只在少數值成立</h3>
+          <div class="formula-mini">\(x^2-1=0\)</div>
+          <p>只有 \(x=1\) 或 \(x=-1\) 成立，所以是<strong>特定相等</strong>，不是恆等。</p>
+        </article>
+        <article class="compare-card">
+          <h3>每個值都成立</h3>
+          <div class="formula-mini">\(x^2-1=(x-1)(x+1)\)</div>
+          <p>左、右兩邊展開後相同，所以對所有 \(x\) 都成立，是<strong>恆等</strong>。</p>
+        </article>
+        <article class="compare-card">
+          <h3>同樣寫成等號，工作不同</h3>
+          <div class="formula-mini">\(f(x)=x^2+1\)</div>
+          <p>若重點是「把規則命名為 \(f\)」，就是<strong>定義相等</strong>；若重點是 \(x\) 和 \(y\) 的輸入輸出，則是在談對應相等。</p>
+        </article>
+      </div>
+
+      <div class="teacher-note"><strong>延伸提醒：指定相等。</strong>若題目寫「令 \(x=3\)」或「設 \(a=5\)」，是先給後面討論的條件，不是由方程式解出來的結果。這類可稱為指定相等。</div>
+
+      <div class="equals-practice">
+        <h3>等號語氣快篩：先自己判斷，再打開答案</h3>
+        <ol>
+          <li>\(x-5=12\)</li>
+          <li>\(y=2x+3\)，現在是在描述 \(x\) 與 \(y\) 的關係。</li>
+          <li>\((a+b)^2=a^2+2ab+b^2\)</li>
+          <li>\(a_n=3n-2\)，現在是在給數列規則。</li>
+        </ol>
+        <details>
+          <summary>查看答案與理由</summary>
+          <p>第 1 題是特定相等，因為要解出 \(x\)。第 2 題是對應相等，因為 \(y\) 隨 \(x\) 對應改變。第 3 題是恆等，因為所有 \(a,b\) 代入都成立。第 4 題是定義相等，因為它定義第 \(n\) 項 \(a_n\) 的規則。</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-heading">
+        <div class="section-no">5</div>
+        <div>
+          <h2>用滑桿看見「會變」與「固定」</h2>
+          <p class="section-intro">符號的角色不只用背的。親手改數值後，學生能直接看到哪些量在改、哪些量沒動。</p>
+        </div>
+      </div>
+      <div class="live-grid">
+        <article class="live-card">
+          <h3>活動 A：變數像輸入鈕</h3>
+          <p>在 \(y=2x+1\) 中拖曳 \(x\)。觀察 \(x\) 與 \(y\) 都會變，但 \(2\)、\(1\) 始終固定。</p>
+          <div class="formula-line" id="variableFormula"></div>
+          <label class="control-label" for="xSlider"><span>調整 \(x\)</span><span id="xReadout"></span></label>
+          <input id="xSlider" type="range" min="-5" max="5" step="1" value="2">
+          <div class="value-board">
+            <div class="value-chip variable-chip"><b>變數 \(x\)</b><span id="xValue"></span></div>
+            <div class="value-chip variable-chip"><b>變數 \(y\)</b><span id="yValue"></span></div>
+            <div class="value-chip constant-chip"><b>常數</b><span>\(2,1\)</span></div>
+          </div>
+        </article>
+
+        <article class="live-card">
+          <h3>活動 B：參數像調整規則的旋鈕</h3>
+          <p>改變 \(a,b\)，你會得到不同的直線；但對當前選定的一條線而言，\(a,b\) 是固定設定，\(x,y\) 才是在線上移動的變數。</p>
+          <div class="formula-line" id="parameterFormula"></div>
+          <label class="control-label" for="aSlider"><span>斜率 \(a\)</span><span id="aReadout"></span></label>
+          <input id="aSlider" type="range" min="-3" max="3" step="0.5" value="1">
+          <label class="control-label" for="bSlider"><span>截距 \(b\)</span><span id="bReadout"></span></label>
+          <input id="bSlider" type="range" min="-4" max="4" step="1" value="0">
+          <div class="graph-wrap"><canvas id="lineCanvas" aria-label="一次函數直線圖"></canvas></div>
+          <p class="graph-caption">青色直線是 \(y=ax+b\)。拖動 \(a\) 看斜率，拖動 \(b\) 看整條線上下平移。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-heading">
+        <div class="section-no">6</div>
+        <div>
+          <h2>看到複雜式子也不要慌</h2>
+          <p class="section-intro">平方、下標、根號、分數只是在描述運算，不會自動決定一個字母的身分。仍然回到「題目要它做什麼」。</p>
+        </div>
+      </div>
+      <div class="scenario-panel">
+        <div class="formula-stage">
+          \[
+            \frac{x^2-1}{\sqrt{x+1}}=2
+          \]
+        </div>
+        <div class="scenario-text">
+          <h3>例題：含平方、根號與分數</h3>
+          <p>若題目問「解此方程式」，那麼 \(x\) 是<strong>未知數</strong>；\(2\)、\(1\) 是固定的<strong>常數</strong>。式子變複雜，不影響基本判斷。</p>
+          <p>再看數列 \(a_n=\frac{3n-2}{n+1}\)：\(n\) 用來表示第幾項，是變數；下標 \(n\) 不是另一個新字母，而是說明 \(a\) 的第 \(n\) 項。</p>
+        </div>
+      </div>
+      <div class="mistake-grid" style="margin-top: 14px;">
+        <article class="mistake"><b>錯誤 1：看到字母就叫未知數</b>在 \(y=2x+1\) 中，若不是要求解 \(x\)，\(x\) 更適合稱為變數。</article>
+        <article class="mistake"><b>錯誤 2：把 \(a,b\) 一律叫常數</b>在一條固定直線中可以這樣看；比較 \(y=ax+b\) 的整族直線時，\(a,b\) 更精確的名稱是參數。</article>
+        <article class="mistake"><b>錯誤 3：以為 \(\pi\) 是變數</b>\(A=\pi r^2\) 中，\(\pi\) 是固定數值，是常數；半徑 \(r\) 才會隨圓大小改變。</article>
+        <article class="mistake"><b>錯誤 4：忽略題目給的條件</b>若已知 \(l=8\)，在 \(A=lw\) 中，\(l\) 對此題已固定；但 \(w\)、\(A\) 仍可改變。</article>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-heading">
+        <div class="section-no">7</div>
+        <div>
+          <h2>分層自我檢查</h2>
+          <p class="section-intro">先選程度，再作答。答題後會顯示理由；老師可讓全班先舉牌或口頭判斷，再按答案。</p>
+        </div>
+      </div>
+      <div class="scenario-tabs" id="levelTabs">
+        <button class="tab active" data-level="basic">基礎：一眼辨認</button>
+        <button class="tab" data-level="advanced">進階：讀懂情境</button>
+        <button class="tab" data-level="challenge">挑戰：角色轉換</button>
+      </div>
+      <div class="quiz-layout" style="margin-top: 14px;">
+        <div class="quiz-card">
+          <h3 id="quizLevelTitle"></h3>
+          <div class="quiz-question" id="quizQuestion"></div>
+          <div class="answer-row" id="answerRow">
+            <button class="answer-btn" data-answer="unknown">未知數</button>
+            <button class="answer-btn" data-answer="variable">變數</button>
+            <button class="answer-btn" data-answer="constant">常數</button>
+            <button class="answer-btn" data-answer="parameter">參數</button>
+          </div>
+          <div class="action-row">
+            <button class="action-btn primary" id="nextQuestion">換一題</button>
+            <button class="action-btn" id="hintButton">顯示判斷線索</button>
+          </div>
+          <div class="feedback" id="feedback"></div>
+          <p class="score" id="scoreText">本層成績：0 / 0</p>
+        </div>
+        <aside class="answer-key">
+          <h3>作答前的小提醒</h3>
+          <ol class="lesson-plan">
+            <li>先圈出題目正在問的字母或數字。</li>
+            <li>問自己：題目要解它，還是讓它改變？</li>
+            <li>若它是控制一整族規則的設定，再考慮「參數」。</li>
+          </ol>
+          <details style="margin-top: 13px;">
+            <summary>老師備課用：建議的 8 分鐘節奏</summary>
+            <p>先用第 1 區的口訣 1 分鐘，再用第 3 區兩個情境做對照 2 分鐘；接著用第 4 區比較特定相等與恆等 2 分鐘；讓學生操作第 5 區滑桿 2 分鐘；最後以第 7 區的基礎、進階各一題做出口檢核。</p>
+          </details>
+        </aside>
+      </div>
+    </section>
+
+    <a class="back" href="./index.html">返回數學小遊戲教學首頁</a>
   </main>
 
   <script>
+    const renderOptions = {
+      delimiters: [
+        { left: "\\[", right: "\\]", display: true },
+        { left: "$$", right: "$$", display: true },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false
+    };
+
+    function renderTeX(element) {
+      if (window.renderMathInElement && element) {
+        renderMathInElement(element, renderOptions);
+      }
+    }
+
+    const scenarios = {
+      equation: {
+        formula: "\\[3x-4=8\\]",
+        title: "情境一：解方程式",
+        description: "這題的任務是求出哪一個數字代入後能讓等號成立。",
+        roles: ["\(x\)：未知數，因為題目要解出它。", "\(3,-4,8\)：常數，都是題目已給定的固定數值。"]
+      },
+      function: {
+        formula: "\\[y=2x+1\\]",
+        title: "情境二：描述函數關係",
+        description: "這題不是先問你把 \(x\) 解出來；而是觀察輸入與輸出怎麼一起改變。",
+        roles: ["\(x\)：自變數，可以代入不同數值。", "\(y\)：應變數，會隨 \(x\) 改變。", "\(2,1\)：常數，在這條規則中不變。"]
+      },
+      area: {
+        formula: "\\[A=lw,\\quad l=8\\]",
+        title: "情境三：帶有已知條件的面積",
+        description: "長 \(l\) 已經指定為 8；改變寬 \(w\)，面積 \(A\) 就會跟著改變。",
+        roles: ["\(l\)：在本題條件下是固定的已知量。", "\(w,A\)：變數，寬改變，面積也改變。", "\(8\)：常數，是題目給定的固定數值。"]
+      },
+      family: {
+        formula: "\\[y=ax+b\\]",
+        title: "情境四：一整族直線",
+        description: "選不同的 \(a,b\)，會製造不同的直線；選好一條後，\(a,b\) 暫時固定。",
+        roles: ["\(x,y\)：變數，表示線上的座標關係。", "\(a,b\)：參數，用來控制斜率與截距。", "若固定 \(a=2,b=1\)，這一條線中的 \(2,1\) 可視為常數。"]
+      }
+    };
+
     const questionSets = {
       basic: [
-        { text: "在 3x-4=8 中，請判斷 x 的身分。", target: "unknown", note: "這題目要求你解出 x，所以 x 是未知數。" },
-        { text: "在 y=2x+1 中，請判斷 2 的身分。", target: "constant", note: "2 是固定係數，不隨 x 的代入改變。" },
-        { text: "在 y=2x+1 中，請判斷 x 的身分。", target: "variable", note: "x 可以代不同值而改變，是變數。" }
+        {
+          question: "在 \\(x+7=12\\) 中，題目要解出 \\(x\\)。請判斷 \\(x\\) 的身分。",
+          answer: "unknown",
+          hint: "先看題目的任務：它要你求出 \\(x\\) 的值。",
+          reason: "\\(x\\) 是未知數，因為要解出哪個數代入後等號成立。"
+        },
+        {
+          question: "在 \\(y=3x-2\\) 中，請判斷 \\(-2\\) 的身分。",
+          answer: "constant",
+          hint: "\\(-2\\) 不會因為 \\(x\\) 的代入而改變。",
+          reason: "\\(-2\\) 是常數項，是這條規則固定的一部分。"
+        },
+        {
+          question: "在 \\(A=\\pi r^2\\) 中，圓的半徑改變時，請判斷 \\(r\\) 的身分。",
+          answer: "variable",
+          hint: "想像不同大小的圓，半徑會不會改變？",
+          reason: "\\(r\\) 是變數；圓變大或變小時，\\(r\\) 會改變。"
+        }
       ],
       advanced: [
-        { text: "在 y=ax+1 中，針對固定的一條直線，a 最適合稱為？", target: "parameter", note: "a 控制直線斜率，對同一條線固定，但可換題改變。" },
-        { text: "在 A=lw 中，若 l=8 已固定，w 的身分是？", target: "variable", note: "w 仍可改變，A 會跟著變。" },
-        { text: "在 x^2-1=0 中，x 的身分是？", target: "unknown", note: "此題核心任務是解出 x 的值。" }
+        {
+          question: "在 \\(A=lw\\) 且 \\(l=8\\) 的情況下，請判斷 \\(w\\) 的身分。",
+          answer: "variable",
+          hint: "長固定成 8，但寬可以取不同值。",
+          reason: "\\(w\\) 是變數；寬改變時，面積 \\(A\\) 也會改變。"
+        },
+        {
+          question: "比較不同直線 \\(y=ax+b\\) 時，請判斷 \\(a\\) 的身分。",
+          answer: "parameter",
+          hint: "改變 \\(a\\) 會得到不同斜率、不同的直線。",
+          reason: "\\(a\\) 是參數，它決定每一條直線的斜率。"
+        },
+        {
+          question: "在 \\(f(x)=\\sqrt{x+1}\\) 中，請判斷 \\(x\\) 的身分。",
+          answer: "variable",
+          hint: "這裡 \\(x\\) 是函數的輸入，可以代入符合條件的不同值。",
+          reason: "\\(x\\) 是變數；同時要記得根號內需滿足 \\(x+1\\ge 0\\)。"
+        }
       ],
       challenge: [
-        { text: "在 y=ax+b 的函數模型中，x 最適合稱為？", target: "variable", note: "x 是輸入，會變動，y 也跟著變。" },
-        { text: "在 y=3x-5 中，-5 最適合稱為？", target: "constant", note: "-5 是固定常數項。" },
-        { text: "在比較不同直線族 y=ax+b 時，a 與 b 最適合稱為？", target: "parameter", note: "a、b 用來描述不同直線，扮演參數。" }
+        {
+          question: "在 \\(x^2-1=0\\) 中，請判斷 \\(x\\) 的身分。",
+          answer: "unknown",
+          hint: "這是方程式，目標是找出使等號成立的 \\(x\\)。",
+          reason: "\\(x\\) 是未知數；解得 \\(x=1\\) 或 \\(x=-1\\)。"
+        },
+        {
+          question: "在數列 \\(a_n=\\dfrac{3n-2}{n+1}\\) 中，\\(n\\) 用來表示第幾項。請判斷 \\(n\\) 的身分。",
+          answer: "variable",
+          hint: "把 \\(n\\) 想成第 1 項、第 2 項、第 3 項……的索引。",
+          reason: "\\(n\\) 是變數，會隨著項數改變；下標只是在標記第 \\(n\\) 項。"
+        },
+        {
+          question: "固定一條直線為 \\(y=2x-3\\)。在這一條已固定的直線中，\\(2\\) 與 \\(-3\\) 最適合稱為什麼？",
+          answer: "constant",
+          hint: "直線已經指定，這兩個數在此規則中不會再改。",
+          reason: "\\(2\\) 與 \\(-3\\) 是常數；但若研究 \\(y=ax+b\\) 的直線族，對應位置的 \\(a,b\\) 可稱為參數。"
+        }
       ]
     };
 
-    const labels = {
+    const labelMap = {
       unknown: "未知數",
       variable: "變數",
       constant: "常數",
       parameter: "參數"
     };
 
-    let mode = "basic";
-    let current = null;
-    let total = 0;
-    let correct = 0;
+    let currentScenario = "equation";
+    let currentLevel = "basic";
+    let currentQuestion = null;
+    let lastQuestionIndex = -1;
+    let quizAnswered = false;
+    let score = { correct: 0, total: 0 };
 
-    const modeChips = document.getElementById("modeChips");
-    const questionText = document.getElementById("questionText");
-    const resultBox = document.getElementById("resultBox");
-    const scoreText = document.getElementById("scoreText");
-    const nextBtn = document.getElementById("nextBtn");
-    const answerBtns = Array.from(document.querySelectorAll("[data-answer]"));
+    function updateScenario(key) {
+      const item = scenarios[key];
+      currentScenario = key;
+      const formula = document.getElementById("scenarioFormula");
+      formula.innerHTML = item.formula;
+      document.getElementById("scenarioTitle").textContent = item.title;
+      document.getElementById("scenarioDescription").innerHTML = item.description;
+      document.getElementById("scenarioRoles").innerHTML = item.roles.map((role) => `<li>${role}</li>`).join("");
+      renderTeX(formula);
+      renderTeX(document.getElementById("scenarioDescription"));
+      renderTeX(document.getElementById("scenarioRoles"));
+    }
 
-    function pickQuestion() {
-      const pool = questionSets[mode];
-      current = pool[Math.floor(Math.random() * pool.length)];
-      questionText.textContent = current.text;
-      resultBox.style.display = "none";
-      resultBox.classList.remove("bad");
+    function updateVariableDemo() {
+      const x = Number(document.getElementById("xSlider").value);
+      const y = 2 * x + 1;
+      document.getElementById("xReadout").textContent = `目前 x = ${x}`;
+      document.getElementById("xValue").textContent = x;
+      document.getElementById("yValue").textContent = y;
+      const formula = document.getElementById("variableFormula");
+      formula.innerHTML = `\\(y=2\\times(${x})+1=${y}\\)`;
+      renderTeX(formula);
+    }
+
+    function formatNumber(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(1);
+    }
+
+    function updateParameterDemo() {
+      const a = Number(document.getElementById("aSlider").value);
+      const b = Number(document.getElementById("bSlider").value);
+      document.getElementById("aReadout").textContent = `a = ${formatNumber(a)}`;
+      document.getElementById("bReadout").textContent = `b = ${formatNumber(b)}`;
+      const formula = document.getElementById("parameterFormula");
+      const bPart = b < 0 ? `-${Math.abs(b)}` : `+${b}`;
+      formula.innerHTML = `\\(y=${formatNumber(a)}x${bPart}\\)`;
+      renderTeX(formula);
+      drawLineGraph(a, b);
+    }
+
+    function drawLineGraph(a, b) {
+      const canvas = document.getElementById("lineCanvas");
+      const rect = canvas.getBoundingClientRect();
+      const cssWidth = Math.max(300, Math.round(rect.width));
+      const cssHeight = Math.max(220, Math.round(rect.height));
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = cssWidth * ratio;
+      canvas.height = cssHeight * ratio;
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+      const xMin = -5;
+      const xMax = 5;
+      const yMin = -6;
+      const yMax = 6;
+      const mapX = (x) => ((x - xMin) / (xMax - xMin)) * cssWidth;
+      const mapY = (y) => cssHeight - ((y - yMin) / (yMax - yMin)) * cssHeight;
+
+      ctx.lineWidth = 1;
+      for (let x = xMin; x <= xMax; x += 1) {
+        ctx.strokeStyle = x === 0 ? "#72918d" : "#e5eeee";
+        ctx.beginPath();
+        ctx.moveTo(mapX(x), 0);
+        ctx.lineTo(mapX(x), cssHeight);
+        ctx.stroke();
+      }
+      for (let y = yMin; y <= yMax; y += 1) {
+        ctx.strokeStyle = y === 0 ? "#72918d" : "#e5eeee";
+        ctx.beginPath();
+        ctx.moveTo(0, mapY(y));
+        ctx.lineTo(cssWidth, mapY(y));
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#55706e";
+      ctx.font = "12px Noto Sans TC, Microsoft JhengHei, sans-serif";
+      ctx.fillText("x", cssWidth - 15, mapY(0) - 7);
+      ctx.fillText("y", mapX(0) + 7, 14);
+
+      ctx.strokeStyle = "#08756f";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let x = xMin; x <= xMax; x += 0.05) {
+        const y = a * x + b;
+        const px = mapX(x);
+        const py = mapY(y);
+        if (x === xMin) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      const pointX = 1;
+      const pointY = a * pointX + b;
+      if (pointY >= yMin && pointY <= yMax) {
+        ctx.fillStyle = "#d65d17";
+        ctx.beginPath();
+        ctx.arc(mapX(pointX), mapY(pointY), 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function chooseQuestion() {
+      const questions = questionSets[currentLevel];
+      let index = Math.floor(Math.random() * questions.length);
+      if (questions.length > 1 && index === lastQuestionIndex) {
+        index = (index + 1) % questions.length;
+      }
+      lastQuestionIndex = index;
+      currentQuestion = questions[index];
+      quizAnswered = false;
+      document.getElementById("quizLevelTitle").textContent = currentLevel === "basic" ? "基礎：一眼辨認" : currentLevel === "advanced" ? "進階：讀懂情境" : "挑戰：角色轉換";
+      const question = document.getElementById("quizQuestion");
+      question.innerHTML = currentQuestion.question;
+      renderTeX(question);
+      const feedback = document.getElementById("feedback");
+      feedback.style.display = "none";
+      feedback.classList.remove("wrong");
+      document.querySelectorAll(".answer-btn").forEach((button) => {
+        button.disabled = false;
+        button.classList.remove("selected-right", "selected-wrong", "correct-choice");
+      });
     }
 
     function updateScore() {
-      scoreText.textContent = `目前成績：${correct} / ${total}`;
+      document.getElementById("scoreText").textContent = `本層成績：${score.correct} / ${score.total}`;
     }
 
-    modeChips.addEventListener("click", (e) => {
-      const chip = e.target.closest(".chip");
-      if (!chip) return;
-      mode = chip.dataset.mode;
-      Array.from(modeChips.children).forEach((c) => c.classList.remove("active"));
-      chip.classList.add("active");
-      pickQuestion();
-    });
-
-    answerBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        if (!current) return;
-        total += 1;
-        const user = btn.dataset.answer;
-        const ok = user === current.target;
-        if (ok) correct += 1;
-        resultBox.style.display = "block";
-        resultBox.classList.toggle("bad", !ok);
-        resultBox.innerHTML = ok
-          ? `答對了。<br>${current.note}`
-          : `這題先別急，正確是「${labels[current.target]}」。<br>${current.note}`;
-        updateScore();
+    function answerQuestion(choice, button) {
+      if (quizAnswered || !currentQuestion) return;
+      quizAnswered = true;
+      score.total += 1;
+      const isCorrect = choice === currentQuestion.answer;
+      if (isCorrect) score.correct += 1;
+      document.querySelectorAll(".answer-btn").forEach((item) => {
+        item.disabled = true;
+        if (item.dataset.answer === currentQuestion.answer) item.classList.add("correct-choice");
       });
-    });
+      button.classList.add(isCorrect ? "selected-right" : "selected-wrong");
+      const feedback = document.getElementById("feedback");
+      feedback.innerHTML = isCorrect
+        ? `<strong>答對了。</strong>${currentQuestion.reason}`
+        : `<strong>再看一次題目的任務。</strong> 正確答案是「${labelMap[currentQuestion.answer]}」。${currentQuestion.reason}`;
+      feedback.classList.toggle("wrong", !isCorrect);
+      feedback.style.display = "block";
+      renderTeX(feedback);
+      updateScore();
+    }
 
-    nextBtn.addEventListener("click", pickQuestion);
-    pickQuestion();
-    updateScore();
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("#scenarioTabs .tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll("#scenarioTabs .tab").forEach((item) => item.classList.remove("active"));
+          tab.classList.add("active");
+          updateScenario(tab.dataset.scenario);
+        });
+      });
+
+      document.querySelectorAll("#levelTabs .tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          currentLevel = tab.dataset.level;
+          score = { correct: 0, total: 0 };
+          lastQuestionIndex = -1;
+          document.querySelectorAll("#levelTabs .tab").forEach((item) => item.classList.remove("active"));
+          tab.classList.add("active");
+          updateScore();
+          chooseQuestion();
+        });
+      });
+
+      document.getElementById("xSlider").addEventListener("input", updateVariableDemo);
+      document.getElementById("aSlider").addEventListener("input", updateParameterDemo);
+      document.getElementById("bSlider").addEventListener("input", updateParameterDemo);
+      document.getElementById("nextQuestion").addEventListener("click", chooseQuestion);
+      document.getElementById("hintButton").addEventListener("click", () => {
+        if (!currentQuestion) return;
+        const feedback = document.getElementById("feedback");
+        feedback.classList.remove("wrong");
+        feedback.innerHTML = `<strong>判斷線索：</strong>${currentQuestion.hint}`;
+        feedback.style.display = "block";
+        renderTeX(feedback);
+      });
+      document.querySelectorAll(".answer-btn").forEach((button) => {
+        button.addEventListener("click", () => answerQuestion(button.dataset.answer, button));
+      });
+      window.addEventListener("resize", updateParameterDemo);
+
+      updateScenario(currentScenario);
+      updateVariableDemo();
+      updateParameterDemo();
+      chooseQuestion();
+      updateScore();
+      renderTeX(document.body);
+    });
   </script>
 </body>
 </html>

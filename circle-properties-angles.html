@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>圓的重要性質與角度｜弧度、切線、割線、圓周角</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #17233a;
+      --muted: #526278;
+      --paper: #f5f8fc;
+      --card: #fff;
+      --line: #d7e1eb;
+      --blue: #1668a8;
+      --blue-pale: #e9f5ff;
+      --teal: #087e78;
+      --teal-pale: #e7faf6;
+      --orange: #ae5a00;
+      --orange-pale: #fff2df;
+      --red: #b33c50;
+      --red-pale: #fff0f3;
+      --purple: #7143a9;
+      --purple-pale: #f5effe;
+      --gold: #855d00;
+      --gold-pale: #fff7de;
+      --shadow: 0 13px 32px rgba(27, 54, 85, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 1%, #dff3ff 0, transparent 31rem),
+        radial-gradient(circle at 98% 10%, #fff0cf 0, transparent 25rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.78;
+    }
+    .wrap { width: min(1140px, calc(100% - 32px)); margin: 0 auto; padding: 23px 0 60px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      margin: 17px 0 30px;
+      padding: clamp(27px, 5vw, 55px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(135deg, #153b69 0%, #176faa 54%, #0d8b93 100%);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow, .tag, .pill, .step-no {
+      display: inline-block;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .eyebrow { padding: 3px 10px; color: #dbf4ff; background: rgba(255,255,255,.16); }
+    .hero h1 { margin: 9px 0 8px; font-size: clamp(2rem, 5vw, 3.45rem); line-height: 1.2; }
+    .lead { max-width: 805px; margin: 0; color: #ecf8ff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .nav a { padding: 7px 13px; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; color: #fff; font-weight: 850; text-decoration: none; }
+    .nav a:hover { background: rgba(255,255,255,.16); }
+
+    section { scroll-margin-top: 18px; }
+    .section { margin-top: 39px; }
+    .section-head { margin-bottom: 14px; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.18rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.2rem; line-height: 1.45; }
+    h4 { margin: 0 0 5px; font-size: 1.02rem; }
+    p { margin: 6px 0 0; }
+    .section-head p, .card p, .muted { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid > * { min-width: 0; }
+    .card {
+      padding: clamp(18px, 3vw, 26px);
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: var(--card);
+      box-shadow: 0 6px 21px rgba(33, 59, 89, .045);
+    }
+    .tag { padding: 3px 10px; color: var(--blue); background: var(--blue-pale); }
+    .tag.teal { color: var(--teal); background: var(--teal-pale); }
+    .tag.orange { color: var(--orange); background: var(--orange-pale); }
+    .tag.red { color: var(--red); background: var(--red-pale); }
+    .tag.purple { color: var(--purple); background: var(--purple-pale); }
+    .tag.gold { color: var(--gold); background: var(--gold-pale); }
+    .formula {
+      margin: 14px 0;
+      padding: 13px;
+      border-radius: 13px;
+      color: #0e395c;
+      background: #f0f8fe;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: clamp(1.09rem, 2.7vw, 1.45rem);
+      font-weight: 700;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .formula.teal { color: #075d58; background: #edfcf9; }
+    .formula.orange { color: #844600; background: #fff7eb; }
+    .formula.purple { color: #543182; background: #f8f3ff; }
+    .callout, .mistake, .teacher-note, .success-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      background: var(--blue-pale);
+    }
+    .mistake { border-color: var(--red); background: var(--red-pale); }
+    .teacher-note { border-color: var(--gold); background: var(--gold-pale); }
+    .success-note { border-color: var(--teal); background: var(--teal-pale); }
+    .rule-list { margin: 10px 0 0; padding-left: 1.26em; }
+    .rule-list li { margin: 5px 0; }
+    .pill { margin: 10px 6px 0 0; padding: 3px 10px; color: #204969; border: 1px solid #c9dfef; background: #f5fbff; }
+
+    .explore-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(282px, .8fr); gap: 17px; align-items: stretch; }
+    .diagram-card { padding: 14px; }
+    .diagram-card svg { display: block; width: 100%; min-height: 304px; height: auto; }
+    .diagram-caption { margin: 4px 4px 0; color: var(--muted); font-size: .92rem; text-align: center; }
+    .control-panel { display: grid; gap: 13px; align-content: start; }
+    .control-group { padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .control-label { display: block; margin-bottom: 7px; color: #31465e; font-weight: 900; }
+    input[type="range"] { width: 100%; accent-color: var(--blue); }
+    .readout { margin-top: 4px; color: #29495f; font-weight: 800; }
+    .button-row, .tabs, .unit-switch, .quiz-toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+    button {
+      min-height: 40px;
+      padding: 8px 13px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--blue);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 850;
+    }
+    button:hover { background: #105991; }
+    button.secondary { color: #204861; background: #e1f1fb; }
+    button.secondary:hover { background: #c9e5f5; }
+    button.choice-tab, button.unit-button, button.quiz-level { color: #37546b; border-color: #cbd9e5; background: #fff; }
+    button.choice-tab:hover, button.choice-tab.active, button.unit-button.active, button.quiz-level.active { color: #fff; border-color: var(--blue); background: var(--blue); }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #80c6ed; outline-offset: 2px; }
+    .observation { margin: 0; padding: 14px; border-radius: 13px; color: #2d4c62; background: #edf8fd; }
+    .observation strong { color: #104e7d; }
+
+    .shape-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(270px, .86fr); gap: 18px; align-items: center; }
+    #shapeSvg { display: block; width: 100%; max-width: 450px; margin: 0 auto; }
+    .shape-detail { min-height: 200px; padding: 18px; border: 1px solid #bfe0f0; border-radius: 15px; background: #f5fbff; }
+    .shape-detail p { color: #35576c; }
+    .shape-detail .formula { margin-bottom: 0; }
+
+    .two-diagrams { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; margin-top: 13px; }
+    .small-diagram { padding: 11px; border: 1px solid var(--line); border-radius: 13px; background: #fcfdff; }
+    .small-diagram svg { display: block; width: 100%; height: auto; }
+    .small-diagram p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; text-align: center; }
+    .calculation { padding: 14px; border: 1px dashed #91b6ce; border-radius: 13px; color: #1e4b66; background: #f8fcff; }
+    .calculation strong { color: #0e5c88; }
+
+    .radian-flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .flow-step { padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
+    .step-no { min-width: 30px; padding: 2px 8px; color: #fff; background: var(--purple); text-align: center; }
+    .flow-arrow { color: var(--purple); font-size: 1.25rem; font-weight: 900; }
+    .radian-table { width: 100%; border-collapse: collapse; margin-top: 13px; font-size: .96rem; }
+    .radian-table th, .radian-table td { padding: 8px; border: 1px solid var(--line); text-align: center; }
+    .radian-table th { color: #21455f; background: #edf7fc; }
+
+    .angle-layout { display: grid; grid-template-columns: minmax(0, .95fr) minmax(290px, 1.05fr); gap: 17px; align-items: center; }
+    #angleSvg { display: block; width: 100%; min-height: 326px; height: auto; border: 1px solid var(--line); border-radius: 16px; background: #fbfdff; }
+    /* SVG <g> 不會可靠地套用 HTML 的 hidden 屬性；明確隱藏未選取的圖層。 */
+    #angleSvg [data-angle-figure][hidden] { display: none; }
+    .angle-workbench { padding: 18px; border: 1px solid #c4dcec; border-radius: 16px; background: #f6fbff; }
+    .angle-title { margin: 14px 0 2px; color: #173f5c; font-size: 1.3rem; }
+    .angle-rule { color: #3d5d73; }
+    .result-box { margin-top: 13px; padding: 13px; border-radius: 12px; color: #11466e; background: #e7f5ff; font-size: 1.09rem; font-weight: 800; }
+    .angle-hint { margin-top: 10px; color: #43667f; font-size: .92rem; }
+    .angle-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 17px; }
+    .angle-summary article { padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+    .angle-summary h3 { color: #184f78; font-size: 1rem; }
+    .angle-summary p { color: var(--muted); font-size: .91rem; }
+
+    .relation-layout { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(290px, .98fr); gap: 17px; align-items: center; }
+    #relationSvg { display: block; width: 100%; min-height: 292px; height: auto; border: 1px solid var(--line); border-radius: 16px; background: #fbfdff; }
+    .relation-workbench { padding: 18px; border: 1px solid #c4dcec; border-radius: 16px; background: #f6fbff; }
+    .relation-title { margin: 14px 0 2px; color: #173f5c; font-size: 1.3rem; }
+    .relation-condition { margin: 12px 0 0; padding: 12px; border-radius: 12px; color: #164a72; background: #e7f5ff; font-weight: 800; }
+    .relation-count { margin-top: 10px; color: #0d675f; font-weight: 850; }
+    .relation-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 17px; }
+    .relation-summary article { padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+    .relation-summary h3 { margin-bottom: 5px; color: #184f78; font-size: 1rem; }
+    .relation-summary p { color: var(--muted); font-size: .91rem; }
+    .extension-layout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .extension-layout .card { box-shadow: none; }
+    .extension-diagram { margin-top: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 13px; background: #fcfdff; }
+    .extension-diagram svg { display: block; width: 100%; height: auto; }
+    .formula-stack { display: grid; gap: 9px; margin-top: 13px; }
+    .formula-stack .formula { margin: 0; font-size: clamp(1rem, 2.4vw, 1.2rem); }
+    .quad-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .quad-layout .card { box-shadow: none; }
+
+    .worked { display: grid; gap: 10px; }
+    .worked .line { padding: 11px 13px; border-radius: 11px; background: #f8fbfd; color: #38566b; }
+    .worked .line strong { color: #0b6690; }
+    details { border: 1px solid var(--line); border-radius: 13px; background: #fff; padding: 0 14px; }
+    summary { padding: 12px 0; cursor: pointer; color: #214a67; font-weight: 850; }
+    details > div { padding: 0 0 13px; color: var(--muted); }
+
+    .quiz-card { border: 1px solid #b9d6e8; background: #f6fbfe; }
+    .quiz-toolbar { align-items: center; margin: 12px 0; }
+    .score { padding: 5px 10px; border: 1px solid #a5ded5; border-radius: 999px; color: #08645e; background: #e8faf5; font-size: .9rem; font-weight: 850; }
+    .quiz-question { margin: 15px 0; color: #173a56; font-size: clamp(1.2rem, 3vw, 1.65rem); font-weight: 850; line-height: 1.55; }
+    .quiz-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .quiz-option { min-height: 49px; color: #263f53; border-color: #c8d7e1; background: #fff; }
+    .quiz-option:hover:not(:disabled) { color: #0f5f83; border-color: #56a4cc; background: #eaf8ff; }
+    .quiz-option:disabled { cursor: default; }
+    .quiz-option.is-wrong { color: #96283f; border-color: #ee9aab; background: #fff0f2; }
+    .quiz-option.is-correct { color: #096653; border-color: #79d2ae; background: #e4f9ed; }
+    .quiz-feedback { display: none; margin-top: 12px; padding: 11px 13px; border-radius: 11px; }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.wrong { color: #8e321f; background: #fff4e8; border: 1px solid #facd91; }
+    .quiz-feedback.correct { color: #086142; background: #e5f9ed; border: 1px solid #9bdbb7; }
+    .footer { margin-top: 36px; color: #617188; font-size: .9rem; text-align: center; }
+
+    .arc { fill: none; stroke: #1769aa; stroke-width: 5; stroke-linecap: round; }
+    .circle { fill: #eaf7ff; stroke: #196a9f; stroke-width: 3; }
+    .radius { stroke: #1769aa; stroke-width: 3.5; }
+    .chord { stroke: #b85e00; stroke-width: 4; }
+    .tangent { stroke: #087e78; stroke-width: 4; }
+    .secant { stroke: #7143a9; stroke-width: 4; }
+    .guide { stroke: #7892a7; stroke-width: 2; stroke-dasharray: 6 6; }
+    .right-mark { fill: none; stroke: #566f84; stroke-width: 2; }
+    .point { fill: #173a56; }
+    .point-label { fill: #173a56; font-size: 16px; font-weight: 850; }
+    .svg-label { fill: #34566e; font-size: 15px; font-weight: 800; }
+    .arc-label { fill: #0d6795; font-size: 14px; font-weight: 850; }
+
+    @media (max-width: 850px) {
+      .explore-layout, .shape-layout, .angle-layout, .relation-layout { grid-template-columns: 1fr; }
+      .radian-flow { grid-template-columns: 1fr; }
+      .angle-summary, .relation-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .extension-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 22px, 1140px); padding-top: 12px; }
+      .hero { border-radius: 20px; }
+      .grid, .two-diagrams { grid-template-columns: 1fr; }
+      .quiz-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .angle-summary, .relation-summary, .quad-layout { grid-template-columns: 1fr; }
+      .radian-table { font-size: .84rem; }
+      .radian-table th, .radian-table td { padding: 6px 3px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html#j3">← 回到教學首頁・國三</a>
+
+    <section class="hero">
+      <span class="eyebrow">國三幾何｜圓</span>
+      <h1>圓的重要性質與角度</h1>
+      <p class="lead">先把圓看成「到圓心距離都相等的點」，再用弧長與弧度讀懂角度。這樣切線、割線與五種圓周角公式，就不是五條互不相干的口訣。</p>
+      <nav class="nav" aria-label="頁內導覽">
+        <a href="#radius">圓心與半徑</a>
+        <a href="#tangent-secant">切線與割線</a>
+        <a href="#circle-extensions">兩圓與圓的冪</a>
+        <a href="#radian">先讀弧度</a>
+        <a href="#angles">五種角</a>
+        <a href="#practice">分級練習</a>
+      </nav>
+    </section>
+
+    <section class="section" id="radius">
+      <div class="section-head">
+        <h2>一、圓的第一句話：圓周上的點到圓心等距離</h2>
+        <p>不是「看起來圓圓的」就叫圓；能判斷一個點是否在圓上，靠的是它到圓心的距離。</p>
+      </div>
+      <div class="explore-layout">
+        <div class="card diagram-card">
+          <svg id="radiusSvg" viewBox="0 0 470 330" role="img" aria-label="圓心 O 到圓周上 A、B、P 三點的距離相等">
+            <circle class="circle" cx="235" cy="165" r="118"></circle>
+            <line class="radius" x1="235" y1="165" x2="353" y2="165"></line>
+            <line class="radius" x1="235" y1="165" x2="176" y2="63"></line>
+            <line id="movingRadius" class="radius" x1="235" y1="165" x2="145" y2="241"></line>
+            <circle class="point" cx="235" cy="165" r="5"></circle>
+            <circle class="point" cx="353" cy="165" r="5"></circle>
+            <circle class="point" cx="176" cy="63" r="5"></circle>
+            <circle id="movingPoint" class="point" cx="145" cy="241" r="5"></circle>
+            <text class="point-label" x="244" y="183">O</text>
+            <text class="point-label" x="363" y="160">A</text>
+            <text class="point-label" x="163" y="55">B</text>
+            <text id="movingPointLabel" class="point-label" x="130" y="256">P</text>
+            <text class="svg-label" x="289" y="153">OA = r</text>
+            <text class="svg-label" x="184" y="103">OB = r</text>
+            <text id="movingRadiusText" class="svg-label" x="159" y="213">OP = r</text>
+          </svg>
+          <p class="diagram-caption">拖動角度後，P 雖然換了位置，OP 始終和 OA、OB 一樣長。</p>
+        </div>
+        <div class="control-panel">
+          <div class="control-group">
+            <span class="tag">最重要的一句話</span>
+            <div class="formula">若 A、B、P 在圓 O 上，則 \(OA=OB=OP=r\)</div>
+            <p class="muted">所有圓周上的點，都和圓心保持同一個距離 \(r\)。反過來說：距離圓心剛好是 \(r\) 的點，也就在這個圓上。</p>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="radiusAngle">把 P 移到圓周上的哪個方向？</label>
+            <input id="radiusAngle" type="range" min="0" max="360" value="140" aria-describedby="radiusReadout">
+            <div class="readout" id="radiusReadout">\(\angle AOP=140^\circ\)，但 \(OP=r\)</div>
+          </div>
+          <p class="observation"><strong>上課可問：</strong>如果把 P 往外拉一點，OP 變成 \(1.1r\)，P 還在圓上嗎？不在；它落在圓外。往內推成 \(0.8r\)，則在圓內。</p>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="card">
+          <span class="tag teal">基本名詞</span>
+          <h3>半徑、弦、直徑、弧</h3>
+          <ul class="rule-list">
+            <li><strong>半徑</strong>：圓心連到圓周的線段，長度是 \(r\)。</li>
+            <li><strong>弦</strong>：兩端都在圓周上的線段；直徑是通過圓心的弦，也是最長弦。</li>
+            <li><strong>弧</strong>：圓周上兩點之間的曲線；談角時要說清楚是哪一段弧。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="tag red">常見錯誤</span>
+          <h3>不要把「弦」當成「弧」</h3>
+          <p>弦是直的線段 \(\overline{AB}\)，弧是彎的 \(\overset{\frown}{AB}\)。圓周角公式讀的是<strong>弧</strong>，不是弦長；半徑相等，並不表示每一條弦都相等。</p>
+          <div class="mistake"><strong>快判：</strong>只有通過圓心的弦才叫直徑，長度為 \(2r\)。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="shapes">
+      <div class="section-head">
+        <h2>二、扇形與弓形：先分清「被什麼邊圍住」</h2>
+        <p>兩者都有一段弧；不同在於另一部分的邊是兩條半徑，還是一條弦。</p>
+      </div>
+      <div class="card">
+        <div class="shape-layout">
+          <div>
+            <svg id="shapeSvg" viewBox="0 0 450 300" role="img" aria-label="圓的半徑、弦、扇形與弓形示意圖">
+              <circle class="circle" cx="220" cy="150" r="110"></circle>
+              <path id="sectorFill" fill="#bde7f7" opacity=".76" d="M220 150 L220 40 A110 110 0 0 1 315 205 Z"></path>
+              <path id="segmentFill" fill="#ffe0ae" opacity="0" d="M220 40 A110 110 0 0 1 315 205 L220 150 Z"></path>
+              <line id="shapeRadius1" class="radius" x1="220" y1="150" x2="220" y2="40"></line>
+              <line id="shapeRadius2" class="radius" x1="220" y1="150" x2="315" y2="205"></line>
+              <line id="shapeChord" class="chord" x1="220" y1="40" x2="315" y2="205"></line>
+              <path id="shapeArc" class="arc" d="M220 40 A110 110 0 0 1 315 205"></path>
+              <circle class="point" cx="220" cy="150" r="5"></circle>
+              <circle class="point" cx="220" cy="40" r="5"></circle>
+              <circle class="point" cx="315" cy="205" r="5"></circle>
+              <text class="point-label" x="228" y="168">O</text>
+              <text class="point-label" x="208" y="31">A</text>
+              <text class="point-label" x="324" y="213">B</text>
+              <text id="shapeSvgText" class="svg-label" x="81" y="78">兩條半徑 OA、OB</text>
+            </svg>
+          </div>
+          <div>
+            <div class="tabs" aria-label="圓的名詞切換">
+              <button class="choice-tab active" type="button" data-shape="sector">扇形</button>
+              <button class="choice-tab" type="button" data-shape="segment">弓形</button>
+              <button class="choice-tab" type="button" data-shape="chord">弦與弧</button>
+            </div>
+            <div class="shape-detail" id="shapeDetail">
+              <span class="tag teal">扇形</span>
+              <h3 style="margin-top:10px;">兩條半徑 + 一段弧圍成</h3>
+              <p>這塊淡藍色區域由 \(OA\)、\(OB\) 和弧 \(\overset{\frown}{AB}\) 圍成，叫扇形 \(AOB\)。</p>
+              <div class="formula teal">弧長 \(s=r\theta\)，扇形面積 \(=\frac{1}{2}r^2\theta\)<br><small>（\(\theta\) 必須用弧度）</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="card">
+          <span class="tag orange">弓形的面積想法</span>
+          <h3>弓形 = 扇形 − 三角形</h3>
+          <p>若題目要算弓形面積，通常先算同一圓心角的扇形面積，再減掉 \(\triangle AOB\) 面積。弓形不是把弦和兩條半徑圍起來的區域。</p>
+          <div class="formula orange">弓形面積 = 扇形面積 − \(\triangle AOB\) 面積</div>
+        </article>
+        <article class="card">
+          <span class="tag gold">例題</span>
+          <h3>半徑 6，圓心角 \(120^\circ\)</h3>
+          <div class="worked">
+            <div class="line"><strong>弧長：</strong>\(\frac{120}{360}\times2\pi\times6=4\pi\)。</div>
+            <div class="line"><strong>扇形面積：</strong>\(\frac{120}{360}\times\pi\times6^2=12\pi\)。</div>
+            <div class="line"><strong>用弧度核對：</strong>\(120^\circ=\frac{2\pi}{3}\)，所以 \(s=6\times\frac{2\pi}{3}=4\pi\)。</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="tangent-secant">
+      <div class="section-head">
+        <h2>三、切線段與割線：看清楚哪一段是「外段」、哪一段是「全長」</h2>
+        <p>從圓外同一點出發，切線帶來直角三角形；割線帶來乘積關係。兩者可以接在同一個「圓外點的冪」觀念上。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag teal">切線段長</span>
+          <h3>切線 ⟂ 切點半徑，兩條切線段等長</h3>
+          <div class="two-diagrams">
+            <div class="small-diagram">
+              <svg id="tangentSvg" viewBox="0 0 360 260" role="img" aria-label="圓外點 P 對圓作兩條切線，PA 與 PB 相等">
+                <circle class="circle" cx="232" cy="130" r="70"></circle>
+                <line id="tangentLineA" class="tangent" x1="120" y1="130" x2="190" y2="73"></line>
+                <line id="tangentLineB" class="tangent" x1="120" y1="130" x2="190" y2="187"></line>
+                <line id="tangentRadiusA" class="radius" x1="232" y1="130" x2="190" y2="73"></line>
+                <line id="tangentRadiusB" class="radius" x1="232" y1="130" x2="190" y2="187"></line>
+                <line id="tangentOP" class="guide" x1="120" y1="130" x2="232" y2="130"></line>
+                <path id="rightMarkA" class="right-mark" d="M193 85 L202 78 L209 87"></path>
+                <circle class="point" cx="232" cy="130" r="4"></circle><circle id="tangentP" class="point" cx="120" cy="130" r="4"></circle>
+                <circle id="tangentA" class="point" cx="190" cy="73" r="4"></circle><circle id="tangentB" class="point" cx="190" cy="187" r="4"></circle>
+                <text class="point-label" x="239" y="149">O</text><text class="point-label" x="108" y="149">P</text>
+                <text id="tangentALabel" class="point-label" x="178" y="67">A</text><text id="tangentBLabel" class="point-label" x="178" y="207">B</text>
+                <text id="tangentLengthLabel" class="svg-label" x="124" y="101">PA = PB</text>
+              </svg>
+              <p>從同一外點 P 引兩條切線：\(PA=PB\)。</p>
+            </div>
+            <div class="small-diagram">
+              <svg viewBox="0 0 360 260" role="img" aria-label="圓外點的切線與割線關係">
+                <circle class="circle" cx="240" cy="130" r="73"></circle>
+                <line class="secant" x1="48" y1="148" x2="324" y2="103"></line>
+                <line class="tangent" x1="48" y1="148" x2="201" y2="69"></line>
+                <circle class="point" cx="48" cy="148" r="4"></circle><circle class="point" cx="173" cy="128" r="4"></circle><circle class="point" cx="311" cy="106" r="4"></circle><circle class="point" cx="201" cy="69" r="4"></circle>
+                <text class="point-label" x="35" y="169">P</text><text class="point-label" x="161" y="150">A</text><text class="point-label" x="315" y="100">B</text><text class="point-label" x="202" y="60">T</text>
+                <text class="svg-label" x="86" y="191">PA：外段</text><text class="svg-label" x="208" y="183">PB：全長</text>
+              </svg>
+              <p>割線的 \(PB\) 是從 P 到遠交點 B 的<strong>全長</strong>。</p>
+            </div>
+          </div>
+          <div class="calculation" style="margin-top:14px;">
+            若 \(OP=d\)、半徑 \(r\)，在直角 \(\triangle OAP\) 中：<br>
+            <strong>\(PA=\sqrt{d^2-r^2}\)</strong>，且 \(PA=PB\)（兩條切線段）。
+          </div>
+          <div class="control-group" style="margin-top:14px;">
+            <label class="control-label" for="tangentDistance">固定 \(r=5\)，調整 \(OP=d\)：</label>
+            <input id="tangentDistance" type="range" min="6" max="13" value="9" step="1">
+            <div class="readout" id="tangentReadout">\(OP=9\)，所以 \(PA=PB=\sqrt{9^2-5^2}=\sqrt{56}\)。</div>
+          </div>
+        </article>
+        <article class="card">
+          <span class="tag purple">割線乘積</span>
+          <h3>外段 × 全長 = 切線段長的平方</h3>
+          <div class="formula purple">\(PT^2=PA\cdot PB\)</div>
+          <p>其中 P 在圓外，A 是近交點、B 是遠交點。\(PA\) 是外段，\(PB\) 是從 P 到 B 的<strong>整段割線長</strong>；圓內段 \(AB=PB-PA\)。</p>
+          <div class="control-group" style="margin-top:14px;">
+            <label class="control-label" for="secantExternal">設 \(PT=12\)，改變外段 \(PA\)：</label>
+            <input id="secantExternal" type="range" min="2" max="8" value="4" step="1">
+            <div class="readout" id="secantReadout">\(PA=4\)，\(PB=\frac{12^2}{4}=36\)，圓內段 \(AB=36-4=32\)。</div>
+          </div>
+          <div class="teacher-note"><strong>學生最容易錯：</strong>把 \(PA\cdot AB\) 寫成 \(PT^2\)。不對；乘的是「外段 × 全長」，所以第二個長度一定要從 P 量到遠交點 B。</div>
+          <details style="margin-top:14px;">
+            <summary>兩條割線都從 P 出發時怎麼寫？</summary>
+            <div>若一條割線交圓於 A、B，另一條交圓於 C、D（A、C 靠近 P），則 \(PA\cdot PB=PC\cdot PD\)。仍然是「外段 × 全長」對「外段 × 全長」。</div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="circle-extensions">
+      <div class="section-head">
+        <h2>四、兩圓的位置、圓的冪與四邊形</h2>
+        <p>把兩個圓先化成「圓心距 (d=O_1O_2)」與兩個半徑 (r_1,r_2)，再判斷位置；遇到弦、割線與切線，則回到乘積不變的圓的冪。</p>
+      </div>
+
+      <div class="card">
+        <div class="relation-layout">
+          <svg id="relationSvg" viewBox="0 0 460 290" role="img" aria-label="兩圓位置關係示意圖">
+            <line class="guide" x1="135" y1="150" x2="325" y2="150"></line>
+            <circle class="circle" cx="135" cy="150" r="58"></circle>
+            <circle class="circle" cx="325" cy="150" r="42"></circle>
+            <circle class="point" cx="135" cy="150" r="4"></circle><circle class="point" cx="325" cy="150" r="4"></circle>
+            <text class="point-label" x="120" y="172">O₁</text><text class="point-label" x="311" y="172">O₂</text>
+            <text class="svg-label" x="212" y="142">d = O₁O₂</text>
+          </svg>
+          <div class="relation-workbench">
+            <div class="tabs" aria-label="兩圓位置關係">
+              <button class="choice-tab active" type="button" data-relation="separate">外離</button>
+              <button class="choice-tab" type="button" data-relation="externalTangent">外切</button>
+              <button class="choice-tab" type="button" data-relation="intersect">交於兩點</button>
+              <button class="choice-tab" type="button" data-relation="internalTangent">內切</button>
+              <button class="choice-tab" type="button" data-relation="contained">內離</button>
+              <button class="choice-tab" type="button" data-relation="concentric">同心圓</button>
+            </div>
+            <h3 class="relation-title" id="relationTitle">外離：兩圓沒有交點</h3>
+            <p class="muted" id="relationExplanation">兩個圓彼此分開，圓心距比兩個半徑和還長。</p>
+            <div class="relation-condition" id="relationCondition">
+              條件：\(d>r_1+r_2\)
+            </div>
+            <p class="relation-count" id="relationCount">公切線數：4 條</p>
+          </div>
+        </div>
+        <div class="relation-summary">
+          <article><h3>外離</h3><p>\(d>r_1+r_2\)<br>公切線 4 條</p></article>
+          <article><h3>外切</h3><p>\(d=r_1+r_2\)<br>公切線 3 條</p></article>
+          <article><h3>交於兩點</h3><p>\(\lvert r_1-r_2\rvert<d<r_1+r_2\)<br>公切線 2 條</p></article>
+          <article><h3>內切</h3><p>\(d=\lvert r_1-r_2\rvert\)<br>公切線 1 條</p></article>
+          <article><h3>內離</h3><p>\(0<d<\lvert r_1-r_2\rvert\)<br>公切線 0 條</p></article>
+          <article><h3>同心圓</h3><p>\(d=0\) 且 \(r_1\ne r_2\)<br>公切線 0 條</p></article>
+        </div>
+        <div class="teacher-note"><strong>判讀順序：</strong>先比較 (d) 和 (r_1+r_2)，再比較 (d) 和 \(\lvert r_1-r_2\rvert\)。不要只憑圖形「看起來碰到」就判外切或內切。</div>
+      </div>
+
+      <div class="extension-layout" style="margin-top:16px;">
+        <article class="card">
+          <span class="tag teal">弦與圓心</span>
+          <h3>垂直平分弦，反過來也成立</h3>
+          <div class="extension-diagram">
+            <svg viewBox="0 0 360 250" role="img" aria-label="圓心到弦的垂線會平分弦">
+              <circle class="circle" cx="170" cy="125" r="88"></circle>
+              <line class="chord" x1="230" y1="61" x2="230" y2="189"></line>
+              <line class="radius" x1="170" y1="125" x2="230" y2="125"></line>
+              <path class="right-mark" d="M218 125 L218 113 L230 113"></path>
+              <circle class="point" cx="170" cy="125" r="4"></circle><circle class="point" cx="230" cy="61" r="4"></circle><circle class="point" cx="230" cy="189" r="4"></circle><circle class="point" cx="230" cy="125" r="4"></circle>
+              <text class="point-label" x="157" y="147">O</text><text class="point-label" x="238" y="58">A</text><text class="point-label" x="238" y="205">B</text><text class="point-label" x="238" y="145">M</text>
+              <text class="svg-label" x="180" y="111">OM</text>
+            </svg>
+          </div>
+          <div class="formula-stack">
+            <div class="formula teal">\(OM\perp\overline{AB}\Rightarrow AM=MB\)</div>
+            <div class="formula teal">\(AM=MB\Rightarrow OM\perp\overline{AB}\)</div>
+          </div>
+          <p>這是把「圓心、弦的中點、垂直」連起來的雙向性質；求弦長常會接成直角三角形。</p>
+        </article>
+
+        <article class="card">
+          <span class="tag purple">公切線長</span>
+          <h3>外公切線看半徑差；內公切線看半徑和</h3>
+          <div class="extension-diagram">
+            <svg viewBox="0 0 360 250" role="img" aria-label="兩圓公切線長與圓心距的直角三角形">
+              <circle class="circle" cx="112" cy="145" r="61"></circle><circle class="circle" cx="276" cy="145" r="35"></circle>
+              <line class="guide" x1="112" y1="145" x2="276" y2="145"></line>
+              <line class="tangent" x1="121.7" y1="84.8" x2="281.5" y2="110.5"></line>
+              <line class="radius" x1="112" y1="145" x2="121.7" y2="84.8"></line><line class="radius" x1="276" y1="145" x2="281.5" y2="110.5"></line>
+              <circle class="point" cx="112" cy="145" r="4"></circle><circle class="point" cx="276" cy="145" r="4"></circle>
+              <text class="point-label" x="92" y="166">O₁</text><text class="point-label" x="265" y="166">O₂</text>
+              <text class="svg-label" x="176" y="136">d</text><text class="svg-label" x="176" y="82">L外</text>
+            </svg>
+          </div>
+          <div class="formula-stack">
+            <div class="formula purple">\(L_{\text{外}}=\sqrt{d^2-(r_1-r_2)^2}\)</div>
+            <div class="formula purple">\(L_{\text{內}}=\sqrt{d^2-(r_1+r_2)^2}\)</div>
+          </div>
+          <p>有內公切線的前提是 \(d>r_1+r_2\)。看到「同側」的切線用半徑差；兩圓之間交叉的切線用半徑和。</p>
+        </article>
+
+        <article class="card">
+          <span class="tag orange">圓的冪</span>
+          <h3>同一點出發，乘積固定</h3>
+          <div class="extension-diagram">
+            <svg viewBox="0 0 360 250" role="img" aria-label="圓內兩弦相交的乘積關係">
+              <circle class="circle" cx="170" cy="125" r="85"></circle>
+              <line class="chord" x1="85" y1="125" x2="255" y2="125"></line>
+              <line class="chord" x1="170" y1="40" x2="170" y2="210"></line>
+              <circle class="point" cx="170" cy="125" r="4"></circle><circle class="point" cx="85" cy="125" r="4"></circle><circle class="point" cx="255" cy="125" r="4"></circle><circle class="point" cx="170" cy="40" r="4"></circle><circle class="point" cx="170" cy="210" r="4"></circle>
+              <text class="point-label" x="178" y="120">P</text><text class="point-label" x="70" y="145">A</text><text class="point-label" x="261" y="145">B</text><text class="point-label" x="178" y="36">C</text><text class="point-label" x="178" y="227">D</text>
+            </svg>
+          </div>
+          <div class="formula-stack">
+            <div class="formula orange">圓內：\(PA\cdot PB=PC\cdot PD\)</div>
+            <div class="formula orange">圓外：\(PA\cdot PB=PC\cdot PD\)</div>
+            <div class="formula orange">切割線：\(PT^2=PA\cdot PB\)</div>
+          </div>
+          <p>圓外時的 \(PB,PD\) 都是從 P 到遠交點的<strong>全長</strong>；這正是前面「外段 × 全長」的來源。</p>
+        </article>
+      </div>
+
+      <div class="quad-layout" style="margin-top:16px;">
+        <article class="card">
+          <span class="tag gold">圓外切四邊形</span>
+          <h3>四邊形內切圓：對邊和相等</h3>
+          <div class="extension-diagram">
+            <svg viewBox="0 0 400 250" role="img" aria-label="有內切圓的四邊形">
+              <path d="M138.7 117.7 L218.3 71.7 L275.9 171.5 L168.7 200.1 Z" fill="#effbdc" stroke="#314a60" stroke-width="3"></path>
+              <circle cx="200" cy="140" r="50" fill="#fff" stroke="#b18b00" stroke-width="3"></circle>
+              <text class="point-label" x="123" y="115">A</text><text class="point-label" x="220" y="64">B</text><text class="point-label" x="281" y="178">C</text><text class="point-label" x="154" y="216">D</text>
+            </svg>
+          </div>
+          <div class="formula gold">\(AB+CD=BC+DA\)</div>
+          <p>四條邊都和同一個內切圓相切時，從同一頂點引出的兩段切線等長，最後得到對邊和相等。</p>
+        </article>
+        <article class="card">
+          <span class="tag red">圓內接四邊形</span>
+          <h3>四邊形外接圓：對角互補</h3>
+          <div class="extension-diagram">
+            <svg viewBox="0 0 400 250" role="img" aria-label="有外接圓的四邊形">
+              <circle class="circle" cx="200" cy="135" r="85"></circle>
+              <path d="M120.1 105.9 L207.4 50.3 L283.7 120.2 L214.8 218.7 Z" fill="#fff0cf" opacity=".75" stroke="#314a60" stroke-width="3"></path>
+              <text class="point-label" x="106" y="102">A</text><text class="point-label" x="211" y="44">B</text><text class="point-label" x="290" y="117">C</text><text class="point-label" x="220" y="235">D</text>
+            </svg>
+          </div>
+          <div class="formula" style="color:#8f263d; background:#fff0f3;">\(\angle A+\angle C=180^\circ\)，\(\angle B+\angle D=180^\circ\)</div>
+          <p>對角各是兩段互補弧所對的圓周角，因此相加為平角。判斷時要先確認四個頂點都在同一個圓上。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="radian">
+      <div class="section-head">
+        <h2>五、先讀弧度：弧長 ÷ 半徑，就是圓心角</h2>
+        <p>接下來五種角都要讀弧。用弧度時，圓心角和弧的關係最乾淨：不必每次再乘 \(\frac{180}{\pi}\)。</p>
+      </div>
+      <div class="card">
+        <div class="radian-flow">
+          <article class="flow-step">
+            <span class="step-no">1</span>
+            <h3 style="margin-top:10px;">一弧度是什麼？</h3>
+            <p>在半徑 \(r\) 的圓上，截得一段弧長也剛好是 \(r\)，這個圓心角就定為 <strong>1 弧度</strong>。</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-no">2</span>
+            <h3 style="margin-top:10px;">角度怎麼來？</h3>
+            <p>弧長是 \(s\) 時，裡面裝了幾個「半徑長」，圓心角就有幾弧度：\(\theta=\frac{s}{r}\)。</p>
+          </article>
+          <article class="flow-step">
+            <span class="step-no">3</span>
+            <h3 style="margin-top:10px;">一圈為什麼是 \(2\pi\)？</h3>
+            <p>整個圓周長 \(2\pi r\)，除以 \(r\)，得到 \(2\pi\) 弧度，正好對應 \(360^\circ\)。</p>
+          </article>
+        </div>
+        <div class="formula purple">\(\theta=\frac{s}{r}\)，\quad s=r\theta，\quad \text{扇形面積}=\frac{1}{2}r^2\theta\)</div>
+        <div class="grid">
+          <article class="card" style="box-shadow:none;">
+            <h3>常用對照表</h3>
+            <table class="radian-table">
+              <thead><tr><th>角度</th><th>弧度</th><th>所對弧占全圓</th></tr></thead>
+              <tbody>
+                <tr><td>\(30^\circ\)</td><td>\(\frac{\pi}{6}\)</td><td>\(\frac{1}{12}\)</td></tr>
+                <tr><td>\(45^\circ\)</td><td>\(\frac{\pi}{4}\)</td><td>\(\frac{1}{8}\)</td></tr>
+                <tr><td>\(60^\circ\)</td><td>\(\frac{\pi}{3}\)</td><td>\(\frac{1}{6}\)</td></tr>
+                <tr><td>\(90^\circ\)</td><td>\(\frac{\pi}{2}\)</td><td>\(\frac{1}{4}\)</td></tr>
+                <tr><td>\(180^\circ\)</td><td>\(\pi\)</td><td>\(\frac{1}{2}\)</td></tr>
+              </tbody>
+            </table>
+          </article>
+          <article class="card" style="box-shadow:none;">
+            <span class="tag gold">一個連結兩種單位的例子</span>
+            <h3 style="margin-top:10px;">半徑 9，弧長 \(6\pi\)</h3>
+            <div class="worked">
+              <div class="line"><strong>直接用弧度：</strong>\(\theta=\frac{s}{r}=\frac{6\pi}{9}=\frac{2\pi}{3}\)。</div>
+              <div class="line"><strong>換回度數：</strong>\(\frac{2\pi}{3}=120^\circ\)。</div>
+              <div class="line"><strong>讀圖意義：</strong>這段弧是全圓 \(\frac{1}{3}\)，所以角也應是 \(\frac{1}{3}\times360^\circ=120^\circ\)。</div>
+            </div>
+          </article>
+        </div>
+        <div class="mistake"><strong>單位警報：</strong>\(s=r\theta\) 與 \(\frac{1}{2}r^2\theta\) 裡的 \(\theta\) 必須是<strong>弧度</strong>。若題目給 \(120^\circ\)，先換成 \(\frac{2\pi}{3}\)，或改用 \(\frac{120}{360}\) 的比例法；不能直接把 120 代進去。</div>
+      </div>
+    </section>
+
+    <section class="section" id="angles">
+      <div class="section-head">
+        <h2>六、圓上的角：先找角的頂點，再讀對到的弧</h2>
+        <p>最穩定的流程是：<strong>① 看頂點在哪裡　② 圈出兩邊截到的弧　③ 選擇「整弧、半和、半差」</strong>。</p>
+      </div>
+      <div class="card">
+        <div class="angle-layout">
+          <svg id="angleSvg" viewBox="0 0 440 330" role="img" aria-label="圓心角、圓周角、圓內角、圓外角、弦切角示意圖">
+            <g data-angle-figure="central">
+              <circle class="circle" cx="220" cy="165" r="110"></circle>
+              <path fill="#cdeeff" d="M220 165 L220 55 A110 110 0 0 1 330 165 Z"></path>
+              <line class="radius" x1="220" y1="165" x2="220" y2="55"></line><line class="radius" x1="220" y1="165" x2="330" y2="165"></line>
+              <path class="arc" d="M220 55 A110 110 0 0 1 330 165"></path>
+              <circle class="point" cx="220" cy="165" r="5"></circle><circle class="point" cx="220" cy="55" r="5"></circle><circle class="point" cx="330" cy="165" r="5"></circle>
+              <text class="point-label" x="229" y="185">O</text><text class="point-label" x="208" y="45">A</text><text class="point-label" x="338" y="160">B</text>
+              <text class="arc-label" x="267" y="72">所對弧 AB</text><text class="svg-label" x="242" y="145">θ</text>
+            </g>
+            <g data-angle-figure="inscribed" hidden>
+              <circle class="circle" cx="220" cy="165" r="110"></circle>
+              <line class="chord" x1="142.2" y1="87.2" x2="297.8" y2="87.2"></line><line class="chord" x1="142.2" y1="87.2" x2="220" y2="275"></line><line class="chord" x1="220" y1="275" x2="297.8" y2="87.2"></line>
+              <path class="arc" d="M142.2 87.2 A110 110 0 0 1 297.8 87.2"></path>
+              <circle class="point" cx="142.2" cy="87.2" r="5"></circle><circle class="point" cx="297.8" cy="87.2" r="5"></circle><circle class="point" cx="220" cy="275" r="5"></circle>
+              <text class="point-label" x="126" y="82">A</text><text class="point-label" x="304" y="82">B</text><text class="point-label" x="228" y="293">C</text>
+              <text class="arc-label" x="181" y="53">不含頂點 C 的弧 AB</text><text class="svg-label" x="229" y="249">θ</text>
+            </g>
+            <g data-angle-figure="interior" hidden>
+              <circle class="circle" cx="220" cy="165" r="110"></circle>
+              <line class="chord" x1="116.6" y1="202.6" x2="319.7" y2="118.5"></line><line class="chord" x1="142.2" y1="87.2" x2="315.3" y2="220"></line>
+              <path class="arc" d="M116.6 202.6 A110 110 0 0 1 142.2 87.2"></path><path class="arc" d="M319.7 118.5 A110 110 0 0 1 315.3 220"></path>
+              <circle class="point" cx="116.6" cy="202.6" r="5"></circle><circle class="point" cx="319.7" cy="118.5" r="5"></circle><circle class="point" cx="142.2" cy="87.2" r="5"></circle><circle class="point" cx="315.3" cy="220" r="5"></circle><circle class="point" cx="230.9" cy="155.3" r="5"></circle>
+              <text class="point-label" x="101" y="200">A</text><text class="point-label" x="326" y="114">B</text><text class="point-label" x="127" y="80">C</text><text class="point-label" x="322" y="237">D</text><text class="point-label" x="239" y="150">E</text>
+              <text class="arc-label" x="62" y="153">弧 AC</text><text class="arc-label" x="323" y="173">弧 BD</text>
+            </g>
+            <g data-angle-figure="exterior" hidden>
+              <circle class="circle" cx="260" cy="165" r="100"></circle>
+              <line class="secant" x1="60" y1="165" x2="340" y2="105"></line><line class="secant" x1="60" y1="165" x2="340" y2="225"></line>
+              <path class="arc" d="M340 105 A100 100 0 0 1 340 225"></path><path class="arc" d="M162.4 143 A100 100 0 0 1 162.4 187"></path>
+              <circle class="point" cx="60" cy="165" r="5"></circle><circle class="point" cx="162.4" cy="143" r="5"></circle><circle class="point" cx="340" cy="105" r="5"></circle><circle class="point" cx="162.4" cy="187" r="5"></circle><circle class="point" cx="340" cy="225" r="5"></circle>
+              <text class="point-label" x="44" y="188">P</text><text class="point-label" x="147" y="137">A</text><text class="point-label" x="346" y="100">B</text><text class="point-label" x="147" y="207">C</text><text class="point-label" x="346" y="241">D</text>
+              <text class="arc-label" x="318" y="67">遠弧 BD</text><text class="arc-label" x="75" y="158">近弧 AC</text><text class="svg-label" x="91" y="161">θ</text>
+            </g>
+            <g data-angle-figure="tangentChord" hidden>
+              <circle class="circle" cx="220" cy="165" r="108"></circle>
+              <line class="tangent" x1="112" y1="35" x2="112" y2="295"></line><line class="chord" x1="112" y1="165" x2="284.8" y2="78.6"></line>
+              <path class="arc" d="M112 165 A108 108 0 0 1 284.8 78.6"></path>
+              <circle class="point" cx="112" cy="165" r="5"></circle><circle class="point" cx="284.8" cy="78.6" r="5"></circle>
+              <text class="point-label" x="94" y="158">A</text><text class="point-label" x="292" y="74">B</text><text class="svg-label" x="128" y="143">θ</text><text class="arc-label" x="185" y="53">所對弧 AB</text>
+            </g>
+          </svg>
+          <div class="angle-workbench">
+            <div class="tabs" aria-label="五種圓上的角">
+              <button class="choice-tab active" data-angle="central" type="button">圓心角</button>
+              <button class="choice-tab" data-angle="inscribed" type="button">圓周角</button>
+              <button class="choice-tab" data-angle="interior" type="button">圓內角</button>
+              <button class="choice-tab" data-angle="exterior" type="button">圓外角</button>
+              <button class="choice-tab" data-angle="tangentChord" type="button">弦切角</button>
+            </div>
+            <div class="unit-switch" style="margin-top:12px;" aria-label="公式顯示單位">
+              <button class="unit-button active" data-unit="degree" type="button">用度數讀弧</button>
+              <button class="unit-button" data-unit="radian" type="button">用弧度讀弧</button>
+            </div>
+            <h3 class="angle-title" id="angleTitle">圓心角：頂點在圓心</h3>
+            <p class="angle-rule" id="angleRule">角度 = 所對弧的度數。</p>
+            <div class="result-box" id="angleResult">例：弧 AB = 120°，所以 ∠AOB = 120°。</div>
+            <p class="angle-hint" id="angleHint">弧度版：若弧長為 s、半徑為 r，則 ∠AOB = s/r。</p>
+          </div>
+        </div>
+        <div class="angle-summary">
+          <article><h3>圓心角</h3><p>頂點在圓心：<br>整段所對弧。</p></article>
+          <article><h3>圓周角</h3><p>頂點在圓周：<br>所對弧的一半。</p></article>
+          <article><h3>圓內角</h3><p>兩弦在圓內交：<br>兩弧和的一半。</p></article>
+          <article><h3>圓外角</h3><p>兩割線或切割在圓外：<br>遠弧減近弧的一半。</p></article>
+          <article><h3>弦切角</h3><p>切線與弦在切點：<br>所對弧的一半。</p></article>
+        </div>
+        <div class="teacher-note"><strong>一個先後順序：</strong>不要先喊「一半」。先把角的兩邊延伸到圓上，找出它真正對到的弧；再判斷頂點在圓心、圓上、圓內或圓外。圓內是「半和」，圓外才是「半差」。</div>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="card">
+          <span class="tag gold">代表例題</span>
+          <h3>兩弦在圓內 E 相交</h3>
+          <p>若 \(m\overset{\frown}{AC}=130^\circ\)、\(m\overset{\frown}{BD}=70^\circ\)，求 \(\angle AEB\)。</p>
+          <div class="worked" style="margin-top:12px;">
+            <div class="line"><strong>先定位：</strong>頂點 E 在圓內，這是圓內角。</div>
+            <div class="line"><strong>讀兩段弧：</strong>角和它的對頂角各對一段弧 AC、BD。</div>
+            <div class="line"><strong>半和：</strong>\(\angle AEB=\frac{1}{2}(130^\circ+70^\circ)=100^\circ\)。</div>
+          </div>
+        </article>
+        <article class="card">
+          <span class="tag red">易混淆點</span>
+          <h3>圓周角與弦切角都「一半」，但圖不同</h3>
+          <p>圓周角的兩邊都是弦；弦切角的一邊是切線、另一邊是弦。兩者都是所對弧的一半，所以同弧所對的圓周角，會等於該弦切角。</p>
+          <div class="mistake"><strong>圓外角的陷阱：</strong>一定是「大弧（遠弧）− 小弧（近弧）」再除以 2；若先除再相減，數值一樣，但容易把哪一段是遠弧讀錯。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="practice">
+      <div class="section-head">
+        <h2>七、三層自我檢查</h2>
+        <p>答錯時不會跳走；先看提示，再改選同一題，讓「找弧 → 選規則」變成可以修正的習慣。</p>
+      </div>
+      <div class="card quiz-card">
+        <div class="quiz-toolbar">
+          <span class="tag teal">選一個難度</span>
+          <button class="quiz-level active" type="button" data-level="basic">基礎：讀弧與半徑</button>
+          <button class="quiz-level" type="button" data-level="advanced">進階：切線與圓內角</button>
+          <button class="quiz-level" type="button" data-level="challenge">挑戰：弧度與圓外角</button>
+          <span class="score" id="quizScore">本層完成 0 / 2 題</span>
+        </div>
+        <div class="quiz-question" id="quizQuestion">半徑為 7，某弧長為 \(\frac{7\pi}{3}\)。它所對的圓心角是多少弧度？</div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-feedback" id="quizFeedback" aria-live="polite"></div>
+        <div class="button-row" style="margin-top:12px;">
+          <button class="secondary" type="button" id="nextQuiz">下一題</button>
+          <button class="secondary" type="button" id="resetQuiz">重做本層</button>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <article class="card">
+          <span class="tag">考前 30 秒流程</span>
+          <ol class="rule-list">
+            <li>標出圓心、切點、圓外點與交點。</li>
+            <li>遇到角，先看<strong>頂點的位置</strong>。</li>
+            <li>遇到弧長，先想 \(\theta=\frac{s}{r}\)；有弧度才可直接用 \(s=r\theta\)。</li>
+            <li>遇到割線，寫「外段 × 全長」，再代數字。</li>
+          </ol>
+        </article>
+        <article class="card">
+          <span class="tag orange">老師可收尾的提問</span>
+          <ol class="rule-list">
+            <li>同一段弧所對的圓心角與圓周角，誰大？為什麼是兩倍關係？</li>
+            <li>為何圓內角用加法，圓外角用減法？畫出兩段弧會發現什麼？</li>
+            <li>\(\theta=2\) 弧度和 \(\theta=2^\circ\) 哪個大？能否用「弧長是幾個半徑」說明？</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">圓的題目先讀「距離」、再讀「弧」、最後才選公式。圖形一旦讀對，計算就會簡單很多。</p>
+  </main>
+
+  <script>
+    (() => {
+      const byId = (id) => document.getElementById(id);
+      const toFixedSmart = (value) => Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+
+      const radiusAngle = byId('radiusAngle');
+      const radiusReadout = byId('radiusReadout');
+      const movingRadius = byId('movingRadius');
+      const movingPoint = byId('movingPoint');
+      const movingPointLabel = byId('movingPointLabel');
+      const movingRadiusText = byId('movingRadiusText');
+      function updateRadiusPoint() {
+        const degree = Number(radiusAngle.value);
+        const radian = degree * Math.PI / 180;
+        const x = 235 + 118 * Math.cos(radian);
+        const y = 165 - 118 * Math.sin(radian);
+        movingRadius.setAttribute('x2', x);
+        movingRadius.setAttribute('y2', y);
+        movingPoint.setAttribute('cx', x);
+        movingPoint.setAttribute('cy', y);
+        movingPointLabel.setAttribute('x', x + (x >= 235 ? 9 : -19));
+        movingPointLabel.setAttribute('y', y + (y >= 165 ? 18 : -9));
+        movingRadiusText.setAttribute('x', (235 + x) / 2 - 25);
+        movingRadiusText.setAttribute('y', (165 + y) / 2 + (y > 165 ? 17 : -8));
+        radiusReadout.innerHTML = `\\(\\angle AOP=${degree}^\\circ\\)，但 \\(OP=r\\)`;
+        typeset(radiusReadout);
+      }
+      radiusAngle.addEventListener('input', updateRadiusPoint);
+      updateRadiusPoint();
+
+      const shapeDetail = byId('shapeDetail');
+      const sectorFill = byId('sectorFill');
+      const segmentFill = byId('segmentFill');
+      const shapeRadius1 = byId('shapeRadius1');
+      const shapeRadius2 = byId('shapeRadius2');
+      const shapeChord = byId('shapeChord');
+      const shapeSvgText = byId('shapeSvgText');
+      const shapeContent = {
+        sector: {
+          tag: '扇形', title: '兩條半徑 + 一段弧圍成',
+          text: '這塊淡藍色區域由 \\(OA\\)、\\(OB\\) 和弧 \\(\\overset{\\frown}{AB}\\) 圍成，叫扇形 \\(AOB\\)。',
+          formula: '弧長 \\(s=r\\theta\\)，扇形面積 \\(=\\frac{1}{2}r^2\\theta\\)<br><small>（\\(\\theta\\) 必須用弧度）</small>',
+          color: 'teal', sector: '.76', segment: '0', radii: '1', chord: '1', svgText: '兩條半徑 OA、OB'
+        },
+        segment: {
+          tag: '弓形', title: '一條弦 + 一段弧圍成',
+          text: '這塊橘色區域由弦 \\(\\overline{AB}\\) 和弧 \\(\\overset{\\frown}{AB}\\) 圍成，叫弓形。它通常不是扇形；要算面積時，可用扇形減去 \\(\\triangle AOB\\)。',
+          formula: '\\(A_{\\text{弓形}}=A_{\\text{扇形}}-A_{\\triangle AOB}\\)',
+          color: 'orange', sector: '0', segment: '.86', radii: '.22', chord: '1', svgText: '一條弦 AB 與一段弧'
+        },
+        chord: {
+          tag: '弦與弧', title: '一條直、一條彎，不能混用',
+          text: '\\(\\overline{AB}\\) 是直線段，叫弦；從 A 沿圓周到 B 的彎曲部分，才叫弧 \\(\\overset{\\frown}{AB}\\)。圓周角與弦切角的公式都讀「弧的度數」。',
+          formula: '\\(\\overline{AB}\\) 是弦；\\(\\overset{\\frown}{AB}\\) 是弧',
+          color: 'purple', sector: '0', segment: '0', radii: '.22', chord: '1', svgText: '直的是弦；彎的是弧'
+        }
+      };
+      function typeset(element) {
+        if (window.MathJax?.typesetPromise) {
+          window.MathJax.typesetClear?.([element]);
+          window.MathJax.typesetPromise([element]).catch(() => {});
+        }
+      }
+      document.querySelectorAll('[data-shape]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const data = shapeContent[button.dataset.shape];
+          document.querySelectorAll('[data-shape]').forEach((item) => item.classList.toggle('active', item === button));
+          sectorFill.setAttribute('opacity', data.sector);
+          segmentFill.setAttribute('opacity', data.segment);
+          shapeRadius1.setAttribute('opacity', data.radii);
+          shapeRadius2.setAttribute('opacity', data.radii);
+          shapeChord.setAttribute('opacity', data.chord);
+          shapeSvgText.textContent = data.svgText;
+          shapeDetail.innerHTML = `<span class="tag ${data.color}">${data.tag}</span><h3 style="margin-top:10px;">${data.title}</h3><p>${data.text}</p><div class="formula ${data.color}">${data.formula}</div>`;
+          typeset(shapeDetail);
+        });
+      });
+
+      const tangentDistance = byId('tangentDistance');
+      const tangentReadout = byId('tangentReadout');
+      const tangentLineA = byId('tangentLineA');
+      const tangentLineB = byId('tangentLineB');
+      const tangentRadiusA = byId('tangentRadiusA');
+      const tangentRadiusB = byId('tangentRadiusB');
+      const tangentOP = byId('tangentOP');
+      const tangentP = byId('tangentP');
+      const tangentA = byId('tangentA');
+      const tangentB = byId('tangentB');
+      const tangentALabel = byId('tangentALabel');
+      const tangentBLabel = byId('tangentBLabel');
+      const tangentLengthLabel = byId('tangentLengthLabel');
+      const rightMarkA = byId('rightMarkA');
+      function setLine(line, x1, y1, x2, y2) {
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1); line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+      }
+      function setPoint(point, x, y) { point.setAttribute('cx', x); point.setAttribute('cy', y); }
+      function updateTangent() {
+        const r = 5;
+        const d = Number(tangentDistance.value);
+        const scale = 14;
+        const o = { x: 232, y: 130 };
+        const p = { x: o.x - d * scale, y: o.y };
+        const tx = o.x - (r * r / d) * scale;
+        const tyOffset = (r * Math.sqrt(d * d - r * r) / d) * scale;
+        const a = { x: tx, y: o.y - tyOffset };
+        const b = { x: tx, y: o.y + tyOffset };
+        setLine(tangentLineA, p.x, p.y, a.x, a.y); setLine(tangentLineB, p.x, p.y, b.x, b.y);
+        setLine(tangentRadiusA, o.x, o.y, a.x, a.y); setLine(tangentRadiusB, o.x, o.y, b.x, b.y); setLine(tangentOP, p.x, p.y, o.x, o.y);
+        setPoint(tangentP, p.x, p.y); setPoint(tangentA, a.x, a.y); setPoint(tangentB, b.x, b.y);
+        tangentALabel.setAttribute('x', a.x - 12); tangentALabel.setAttribute('y', a.y - 7);
+        tangentBLabel.setAttribute('x', b.x - 12); tangentBLabel.setAttribute('y', b.y + 20);
+        tangentLengthLabel.setAttribute('x', p.x + 12); tangentLengthLabel.setAttribute('y', p.y - 25);
+        const mark = `M${a.x + 3} ${a.y + 12} L${a.x + 13} ${a.y + 10} L${a.x + 11} ${a.y + 20}`;
+        rightMarkA.setAttribute('d', mark);
+        tangentReadout.innerHTML = `\\(OP=${d}\\)，所以 \\(PA=PB=\\sqrt{${d}^2-5^2}=\\sqrt{${d * d - 25}}\\)。`;
+        typeset(tangentReadout);
+      }
+      tangentDistance.addEventListener('input', updateTangent);
+      updateTangent();
+
+      const secantExternal = byId('secantExternal');
+      const secantReadout = byId('secantReadout');
+      function updateSecant() {
+        const pa = Number(secantExternal.value);
+        const pt = 12;
+        const pb = pt * pt / pa;
+        const ab = pb - pa;
+        secantReadout.innerHTML = `\\(PA=${pa}\\)，\\(PB=\\frac{12^2}{${pa}}=${toFixedSmart(pb)}\\)，圓內段 \\(AB=${toFixedSmart(pb)}-${pa}=${toFixedSmart(ab)}\\)。`;
+        typeset(secantReadout);
+      }
+      secantExternal.addEventListener('input', updateSecant);
+      updateSecant();
+
+      const relationSvg = byId('relationSvg');
+      const relationTitle = byId('relationTitle');
+      const relationExplanation = byId('relationExplanation');
+      const relationCondition = byId('relationCondition');
+      const relationCount = byId('relationCount');
+      const circleRelationData = {
+        separate: {
+          title: '外離：兩圓沒有交點',
+          explanation: '圓心距比兩個半徑和還長，所以兩圓完全分開。',
+          condition: '條件：\\(d>r_1+r_2\\)', count: '公切線數：4 條',
+          svg: '<line class="guide" x1="135" y1="150" x2="325" y2="150"></line><circle class="circle" cx="135" cy="150" r="58"></circle><circle class="circle" cx="325" cy="150" r="42"></circle><circle class="point" cx="135" cy="150" r="4"></circle><circle class="point" cx="325" cy="150" r="4"></circle><text class="point-label" x="120" y="172">O₁</text><text class="point-label" x="311" y="172">O₂</text><text class="svg-label" x="212" y="142">d = O₁O₂</text>'
+        },
+        externalTangent: {
+          title: '外切：只有一個公共點',
+          explanation: '兩個圓從外面碰到；兩圓心與切點會在同一直線上。',
+          condition: '條件：\\(d=r_1+r_2\\)', count: '公切線數：3 條',
+          svg: '<line class="guide" x1="150" y1="150" x2="330" y2="150"></line><circle class="circle" cx="150" cy="150" r="70"></circle><circle class="circle" cx="330" cy="150" r="110"></circle><circle class="point" cx="150" cy="150" r="4"></circle><circle class="point" cx="330" cy="150" r="4"></circle><circle class="point" cx="220" cy="150" r="5"></circle><text class="point-label" x="135" y="172">O₁</text><text class="point-label" x="316" y="172">O₂</text><text class="point-label" x="214" y="143">T</text>'
+        },
+        intersect: {
+          title: '交於兩點：形成共同弦',
+          explanation: '圓心距介於半徑和與半徑差之間，兩圓交出兩個公共點。',
+          condition: '條件：\\(\\lvert r_1-r_2\\rvert\\lt d\\lt r_1+r_2\\)', count: '公切線數：2 條',
+          svg: '<line class="guide" x1="160" y1="150" x2="300" y2="150"></line><circle class="circle" cx="160" cy="150" r="80"></circle><circle class="circle" cx="300" cy="150" r="90"></circle><line class="chord" x1="223.9" y1="101.9" x2="223.9" y2="198.1"></line><circle class="point" cx="160" cy="150" r="4"></circle><circle class="point" cx="300" cy="150" r="4"></circle><circle class="point" cx="223.9" cy="101.9" r="4"></circle><circle class="point" cx="223.9" cy="198.1" r="4"></circle><text class="point-label" x="145" y="172">O₁</text><text class="point-label" x="286" y="172">O₂</text><text class="point-label" x="230" y="98">A</text><text class="point-label" x="230" y="215">B</text>'
+        },
+        internalTangent: {
+          title: '內切：小圓在大圓內，且只有一個公共點',
+          explanation: '小圓在大圓內部並剛好相碰；切點在兩圓心的連線上。',
+          condition: '條件：\\(d=\\lvert r_1-r_2\\rvert\\)', count: '公切線數：1 條',
+          svg: '<line class="guide" x1="190" y1="150" x2="250" y2="150"></line><circle class="circle" cx="190" cy="150" r="105"></circle><circle class="circle" cx="250" cy="150" r="45"></circle><circle class="point" cx="190" cy="150" r="4"></circle><circle class="point" cx="250" cy="150" r="4"></circle><circle class="point" cx="295" cy="150" r="5"></circle><text class="point-label" x="174" y="172">O₁</text><text class="point-label" x="236" y="172">O₂</text><text class="point-label" x="300" y="143">T</text>'
+        },
+        contained: {
+          title: '內離：小圓完全在大圓內',
+          explanation: '小圓在大圓內部，兩圓沒有接觸也沒有交點。',
+          condition: '條件：\\(0\\lt d\\lt\\lvert r_1-r_2\\rvert\\)', count: '公切線數：0 條',
+          svg: '<line class="guide" x1="200" y1="150" x2="250" y2="150"></line><circle class="circle" cx="200" cy="150" r="105"></circle><circle class="circle" cx="250" cy="150" r="40"></circle><circle class="point" cx="200" cy="150" r="4"></circle><circle class="point" cx="250" cy="150" r="4"></circle><text class="point-label" x="184" y="172">O₁</text><text class="point-label" x="236" y="172">O₂</text>'
+        },
+        concentric: {
+          title: '同心圓：圓心重合',
+          explanation: '兩個圓有同一個圓心，但半徑不同，因此沒有交點。',
+          condition: '條件：\\(d=0\\)，且 \\(r_1\\ne r_2\\)', count: '公切線數：0 條',
+          svg: '<circle class="circle" cx="220" cy="150" r="105"></circle><circle class="circle" cx="220" cy="150" r="45"></circle><circle class="point" cx="220" cy="150" r="4"></circle><text class="point-label" x="228" y="170">O₁ = O₂</text><line class="radius" x1="220" y1="150" x2="325" y2="150"></line><line class="radius" x1="220" y1="150" x2="265" y2="150"></line><text class="svg-label" x="275" y="142">r₁</text><text class="svg-label" x="238" y="142">r₂</text>'
+        }
+      };
+      function updateCircleRelation(key) {
+        const data = circleRelationData[key];
+        relationSvg.innerHTML = data.svg;
+        relationTitle.textContent = data.title;
+        relationExplanation.textContent = data.explanation;
+        relationCondition.innerHTML = data.condition;
+        relationCount.textContent = data.count;
+        typeset(relationCondition);
+      }
+      document.querySelectorAll('[data-relation]').forEach((button) => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('[data-relation]').forEach((item) => item.classList.toggle('active', item === button));
+          updateCircleRelation(button.dataset.relation);
+        });
+      });
+      updateCircleRelation('separate');
+
+      const angleCases = {
+        central: {
+          title: '圓心角：頂點在圓心',
+          rule: '公式：\\(m\\angle AOB=m\\overset{\\frown}{AB}\\)。',
+          degreeResult: '例：\\(m\\overset{\\frown}{AB}=120^\\circ\\)，所以 \\(\\angle AOB=120^\\circ\\)。',
+          radianResult: '例：\\(s=6\\pi\\)、\\(r=9\\)，所以 \\(\\angle AOB=\\frac{s}{r}=\\frac{2\\pi}{3}\\)。',
+          degreeHint: '先讀出所對弧的度數。',
+          radianHint: '圓心角最直接：\\(\\theta=\\frac{s}{r}\\)。'
+        },
+        inscribed: {
+          title: '圓周角：頂點在圓周上',
+          rule: '公式：\\(\\angle ACB=\\frac{1}{2}m\\overset{\\frown}{AB}\\)。',
+          degreeResult: '例：不含頂點 C 的 \\(m\\overset{\\frown}{AB}=240^\\circ\\)，所以 \\(\\angle ACB=\\frac{1}{2}\\times240^\\circ=120^\\circ\\)。',
+          radianResult: '例：所對弧 AB 的圓心角為 \\(\\frac{4\\pi}{3}\\)，所以 \\(\\angle ACB=\\frac{1}{2}\\times\\frac{4\\pi}{3}=\\frac{2\\pi}{3}\\)。',
+          degreeHint: '所對弧必須是不含頂點 C 的那一段。',
+          radianHint: '弧度版也是一半；先把所對弧換成它的圓心角。'
+        },
+        interior: {
+          title: '圓內角：兩弦在圓內相交',
+          rule: '公式：\\(\\angle AEB=\\frac{1}{2}\\left(m\\overset{\\frown}{AC}+m\\overset{\\frown}{BD}\\right)\\)。',
+          degreeResult: '例：\\(m\\overset{\\frown}{AC}=140^\\circ\\)、\\(m\\overset{\\frown}{BD}=80^\\circ\\)，所以 \\(\\angle AEB=\\frac{1}{2}(140^\\circ+80^\\circ)=110^\\circ\\)。',
+          radianResult: '例：兩弧的圓心角為 \\(\\frac{7\\pi}{9}\\)、\\(\\frac{4\\pi}{9}\\)，所以 \\(\\angle AEB=\\frac{1}{2}\\left(\\frac{7\\pi}{9}+\\frac{4\\pi}{9}\\right)=\\frac{11\\pi}{18}\\)。',
+          degreeHint: '看角及其對頂角各截到哪一段弧，因此是「半和」。',
+          radianHint: '兩段弧各自換成圓心角後，再取和的一半。'
+        },
+        exterior: {
+          title: '圓外角：兩條割線在圓外相交',
+          rule: '公式：\\(\\angle P=\\frac{1}{2}\\left(m\\overset{\\frown}{BD}-m\\overset{\\frown}{AC}\\right)\\)。',
+          degreeResult: '例：遠弧 \\(m\\overset{\\frown}{BD}=210^\\circ\\)、近弧 \\(m\\overset{\\frown}{AC}=70^\\circ\\)，所以 \\(\\angle P=\\frac{1}{2}(210^\\circ-70^\\circ)=70^\\circ\\)。',
+          radianResult: '例：遠弧、近弧的圓心角為 \\(\\frac{7\\pi}{6}\\)、\\(\\frac{\\pi}{3}\\)，所以 \\(\\angle P=\\frac{1}{2}\\left(\\frac{7\\pi}{6}-\\frac{\\pi}{3}\\right)=\\frac{5\\pi}{12}\\)。',
+          degreeHint: '先確認哪一段是遠弧，再作差。',
+          radianHint: '從外點看過去，遠弧減近弧後再除以 \(2\)。'
+        },
+        tangentChord: {
+          title: '弦切角：一條切線與一條弦',
+          rule: '公式：\\(\\angle(\\ell,\\overline{AB})=\\frac{1}{2}m\\overset{\\frown}{AB}\\)。',
+          degreeResult: '例：\\(m\\overset{\\frown}{AB}=140^\\circ\\)，所以弦切角 \\(=\\frac{1}{2}\\times140^\\circ=70^\\circ\\)。',
+          radianResult: '例：所對弧 AB 的圓心角為 \\(\\frac{7\\pi}{9}\\)，所以弦切角 \\(=\\frac{1}{2}\\times\\frac{7\\pi}{9}=\\frac{7\\pi}{18}\\)。',
+          degreeHint: '它和圓周角一樣是「半弧」。',
+          radianHint: '差別只在頂點的一邊是切線 \\(\\ell\\)。'
+        }
+      };
+      let activeAngle = 'central';
+      let activeUnit = 'degree';
+      const angleTitle = byId('angleTitle');
+      const angleRule = byId('angleRule');
+      const angleResult = byId('angleResult');
+      const angleHint = byId('angleHint');
+      function updateAngleWorkbench() {
+        const data = angleCases[activeAngle];
+        document.querySelectorAll('[data-angle-figure]').forEach((figure) => {
+          const isActive = figure.dataset.angleFigure === activeAngle;
+          figure.toggleAttribute('hidden', !isActive);
+          figure.style.display = isActive ? 'inline' : 'none';
+        });
+        angleTitle.textContent = data.title;
+        angleRule.innerHTML = data.rule;
+        angleResult.innerHTML = activeUnit === 'degree' ? data.degreeResult : data.radianResult;
+        angleHint.innerHTML = `提示：${activeUnit === 'degree' ? data.degreeHint : data.radianHint}`;
+        typeset(angleRule);
+        typeset(angleResult);
+        typeset(angleHint);
+      }
+      document.querySelectorAll('[data-angle]').forEach((button) => {
+        button.addEventListener('click', () => {
+          activeAngle = button.dataset.angle;
+          document.querySelectorAll('[data-angle]').forEach((item) => item.classList.toggle('active', item === button));
+          updateAngleWorkbench();
+        });
+      });
+      document.querySelectorAll('[data-unit]').forEach((button) => {
+        button.addEventListener('click', () => {
+          activeUnit = button.dataset.unit;
+          document.querySelectorAll('[data-unit]').forEach((item) => item.classList.toggle('active', item === button));
+          updateAngleWorkbench();
+        });
+      });
+      updateAngleWorkbench();
+
+      const quizBank = {
+        basic: [
+          { q: '半徑為 7，某弧長為 \\(\\frac{7\\pi}{3}\\)。它所對的圓心角是多少弧度？', options: ['\\(\\frac{\\pi}{6}\\)', '\\(\\frac{\\pi}{3}\\)', '\\(\\frac{2\\pi}{3}\\)', '\\(\\frac{7\\pi}{3}\\)'], answer: 1, hint: '圓心角（弧度）公式：\\(\\theta=\\frac{s}{r}\\)。', explain: '\\(\\theta=\\frac{s}{r}=\\frac{\\frac{7\\pi}{3}}{7}=\\frac{\\pi}{3}\\)。' },
+          { q: '弧 AB 的度數為 \\(154^\\circ\\)，C 在圓周上，\\(\\angle ACB\\) 對到弧 AB。\\(\\angle ACB\\) 是多少？', options: ['\\(67^\\circ\\)', '\\(77^\\circ\\)', '\\(154^\\circ\\)', '\\(308^\\circ\\)'], answer: 1, hint: '頂點在圓周上，是圓周角。', explain: '圓周角為所對弧的一半，所以 \\(\\angle ACB=\\frac{154^\\circ}{2}=77^\\circ\\)。' }
+        ],
+        advanced: [
+          { q: '從圓外點 P 作切線 PT 與割線 PAB。若 \\(PT=10\\)、\\(PA=4\\)，則整段割線 \\(PB\\) 多長？', options: ['6', '14', '25', '40'], answer: 2, hint: '切線平方 = 外段 × 全長。', explain: '\\(PT^2=PA\\cdot PB\\)，所以 \\(100=4PB\\)，得 \\(PB=25\\)。' },
+          { q: '兩弦在圓內交於 E，所對兩弧分別為 \\(150^\\circ\\) 與 \\(90^\\circ\\)。其中一個圓內角是多少？', options: ['\\(30^\\circ\\)', '\\(60^\\circ\\)', '\\(120^\\circ\\)', '\\(240^\\circ\\)'], answer: 2, hint: '圓內角公式：\\(\\frac{1}{2}(\\alpha+\\beta)\\)。', explain: '\\(\\frac{1}{2}(150^\\circ+90^\\circ)=120^\\circ\\)。' }
+        ],
+        challenge: [
+          { q: '圓外角所對的遠弧、近弧圓心角分別為 \\(\\frac{7\\pi}{6}\\)、\\(\\frac{\\pi}{3}\\)。圓外角是多少？', options: ['\\(\\frac{5\\pi}{6}\\)', '\\(\\frac{5\\pi}{12}\\)', '\\(\\frac{\\pi}{4}\\)', '\\(\\frac{3\\pi}{4}\\)'], answer: 1, hint: '圓外角公式：\\(\\frac{1}{2}(\\alpha-\\beta)\\)。', explain: '\\(\\frac{1}{2}(\\frac{7\\pi}{6}-\\frac{\\pi}{3})=\\frac{1}{2}\\cdot\\frac{5\\pi}{6}=\\frac{5\\pi}{12}\\)。' },
+          { q: '半徑為 6 的圓，扇形圓心角為 \\(\\frac{2\\pi}{3}\\)。扇形面積為何？', options: ['\\(6\\pi\\)', '\\(12\\pi\\)', '\\(18\\pi\\)', '\\(36\\pi\\)'], answer: 1, hint: '弧度公式：\\(A=\\frac{1}{2}r^2\\theta\\)。', explain: '\\(\\frac{1}{2}\\times6^2\\times\\frac{2\\pi}{3}=12\\pi\\)。' }
+        ]
+      };
+      const quizQuestion = byId('quizQuestion');
+      const quizOptions = byId('quizOptions');
+      const quizFeedback = byId('quizFeedback');
+      const quizScore = byId('quizScore');
+      let quizLevel = 'basic';
+      let quizIndex = 0;
+      let correctSet = new Set();
+      let questionLocked = false;
+      function renderQuiz() {
+        const item = quizBank[quizLevel][quizIndex];
+        questionLocked = false;
+        quizQuestion.innerHTML = item.q;
+        quizOptions.innerHTML = '';
+        quizFeedback.className = 'quiz-feedback';
+        quizFeedback.textContent = '';
+        item.options.forEach((option, index) => {
+          const button = document.createElement('button');
+          button.type = 'button'; button.className = 'quiz-option'; button.innerHTML = option;
+          button.addEventListener('click', () => answerQuiz(button, index));
+          quizOptions.appendChild(button);
+        });
+        quizScore.textContent = `本層完成 ${correctSet.size} / ${quizBank[quizLevel].length} 題`;
+        typeset(quizQuestion); typeset(quizOptions);
+      }
+      function answerQuiz(button, index) {
+        if (questionLocked) return;
+        const item = quizBank[quizLevel][quizIndex];
+        if (index === item.answer) {
+          questionLocked = true;
+          button.classList.add('is-correct');
+          quizOptions.querySelectorAll('button').forEach((itemButton) => { itemButton.disabled = true; });
+          correctSet.add(quizIndex);
+          quizFeedback.className = 'quiz-feedback show correct';
+          quizFeedback.innerHTML = `<strong>答對了。</strong>${item.explain}`;
+          quizScore.textContent = `本層完成 ${correctSet.size} / ${quizBank[quizLevel].length} 題`;
+          typeset(quizFeedback);
+        } else {
+          button.classList.add('is-wrong');
+          button.disabled = true;
+          quizFeedback.className = 'quiz-feedback show wrong';
+          quizFeedback.innerHTML = `<strong>先別換題，還可以再試。</strong>${item.hint}`;
+          typeset(quizFeedback);
+        }
+      }
+      document.querySelectorAll('[data-level]').forEach((button) => {
+        button.addEventListener('click', () => {
+          quizLevel = button.dataset.level;
+          quizIndex = 0;
+          correctSet = new Set();
+          document.querySelectorAll('[data-level]').forEach((item) => item.classList.toggle('active', item === button));
+          renderQuiz();
+        });
+      });
+      byId('nextQuiz').addEventListener('click', () => {
+        quizIndex = (quizIndex + 1) % quizBank[quizLevel].length;
+        renderQuiz();
+      });
+      byId('resetQuiz').addEventListener('click', () => { quizIndex = 0; correctSet = new Set(); renderQuiz(); });
+      renderQuiz();
+    })();
+  </script>
+</body>
+</html>

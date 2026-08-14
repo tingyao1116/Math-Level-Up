@@ -194,7 +194,7 @@
         <a href="#translation">方程式怎麼變成平面</a>
         <a href="#classification">先用重合、平行分類</a>
         <a href="#three-key-types">沒有平行也沒有重合的三型</a>
-        <a href="#determinants">Δ 與解的關係</a>
+        <a href="#determinants">\(\Delta\) 與解的關係</a>
         <a href="#examples">三個代表例題</a>
         <a href="#self-check">自我檢查</a>
       </nav>
@@ -285,7 +285,7 @@
             <header><h3>① 三平面交於一點</h3></header>
             <figure class="plane-figure" aria-label="三維座標中，水平的 xy 平面與兩個直立的 xz、yz 平面交於原點；三條兩兩交線為 x 軸、y 軸、z 軸">
               <svg viewBox="0 0 330 210" role="img">
-                <!-- E₃ 是水平 xy 平面；E₁、E₂ 是互相垂直的直立座標平面。 -->
+                <!-- The horizontal coordinate plane is paired with two perpendicular vertical coordinate planes. -->
                 <polygon class="plane-fill-c" points="165,78 304,124 165,170 26,124"/>
                 <polygon class="plane-fill-a" points="75,8 255,68 255,184 75,124"/>
                 <polygon class="plane-fill-b" points="255,8 75,68 75,184 255,124"/>
@@ -294,16 +294,16 @@
                 <path class="solid" d="M289 83 L41 165"/>
                 <path class="solid" d="M165 12 L165 197"/>
                 <circle class="point" cx="165" cy="124" r="6"/>
-                <text class="svg-label" x="213" y="111">E₁（xz）</text>
-                <text class="svg-label" x="80" y="111">E₂（yz）</text>
-                <text class="svg-label" x="193" y="159">E₃（xy）</text>
-                <text class="svg-small" x="174" y="118">O=P</text>
-                <text class="svg-small" x="276" y="175">x=L₁₃</text>
-                <text class="svg-small" x="31" y="175">y=L₂₃</text>
-                <text class="svg-small" x="174" y="27">z=L₁₂</text>
+                <text class="svg-label" x="213" y="111">平面 A</text>
+                <text class="svg-label" x="80" y="111">平面 B</text>
+                <text class="svg-label" x="193" y="159">平面 C</text>
+                <text class="svg-small" x="174" y="118">共同點</text>
+                <text class="svg-small" x="276" y="175">x 軸</text>
+                <text class="svg-small" x="31" y="175">y 軸</text>
+                <text class="svg-small" x="174" y="27">z 軸</text>
               </svg>
             </figure>
-            <p>把它直接看成三維座標：\(E_1:y=0\) 是直立的 \(xz\) 平面，\(E_2:x=0\) 是直立的 \(yz\) 平面，\(E_3:z=0\) 是水平的 \(xy\) 平面。三條兩兩交線就是 \(x\)、\(y\)、\(z\) 軸，全部交於原點 \(O\)。</p>
+            <p>圖中平面 A、B、C 分別對應 \(E_1:y=0\)、\(E_2:x=0\)、\(E_3:z=0\)。其中 \(E_1\) 是直立的 \(xz\) 平面，\(E_2\) 是直立的 \(yz\) 平面，\(E_3\) 是水平的 \(xy\) 平面；三條兩兩交線就是 \(x\)、\(y\)、\(z\) 軸，全部交於原點 \(O\)。</p>
             <div class="key-formula"><strong>代數訊號：</strong>\(\Delta\ne0\)，因此有唯一解 \((x,y,z)\)。</div>
             <button class="key-action active" type="button" data-key="point">查看此型判別</button>
           </article>
@@ -316,7 +316,7 @@
                 <polygon class="plane-fill-b" points="165,21 285,79 285,183 165,199"/>
                 <polygon class="plane-fill-c" points="165,21 231,46 231,150 165,199"/>
                 <path class="solid" d="M165 17 L165 202"/>
-                <text class="svg-label" x="55" y="111">E₁</text><text class="svg-label" x="262" y="111">E₂</text><text class="svg-label" x="204" y="62">E₃</text>
+                <text class="svg-label" x="55" y="111">平面 A</text><text class="svg-label" x="234" y="111">平面 B</text><text class="svg-label" x="194" y="62">平面 C</text>
                 <text class="svg-small" x="172" y="37">L：x=y=0</text>
                 <rect x="222" y="151" width="87" height="43" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
                 <text class="svg-small" x="237" y="164">俯視圖</text>
@@ -325,7 +325,7 @@
                 <text class="svg-small" x="267" y="178">O</text>
               </svg>
             </figure>
-            <p>可用 \(E_1:x=0\)、\(E_2:y=0\)、\(E_3:x+y=0\) 作模型。三個不同的平面都含 \(z\) 軸，所以三條兩兩交線完全重疊。</p>
+            <p>圖中平面 A、B、C 分別對應 \(E_1:x=0\)、\(E_2:y=0\)、\(E_3:x+y=0\)。三個不同的平面都含 \(z\) 軸，所以三條兩兩交線完全重疊。</p>
             <div class="key-formula"><strong>代數訊號：</strong>\(\Delta=0\)，且增廣矩陣不增加秩；解在線上，故有無限多組。</div>
             <button class="key-action" type="button" data-key="line">查看此型判別</button>
           </article>
@@ -340,11 +340,11 @@
                 <path class="solid" d="M165 42 L165 186"/>
                 <path class="solid" d="M66 88 L66 207"/>
                 <path class="solid" d="M264 88 L264 207"/>
-                <text class="svg-label" x="79" y="142">E₁</text><text class="svg-label" x="238" y="142">E₂</text><text class="svg-label" x="151" y="113">E₃</text>
-                <text class="svg-small" x="171" y="63">L₁₂</text><text class="svg-small" x="25" y="82">L₁₃</text><text class="svg-small" x="271" y="82">L₂₃</text>
+                <text class="svg-label" x="79" y="142">平面 A</text><text class="svg-label" x="210" y="142">平面 B</text><text class="svg-label" x="143" y="113">平面 C</text>
+                <text class="svg-small" x="171" y="63">交線 1</text><text class="svg-small" x="18" y="82">交線 2</text><text class="svg-small" x="258" y="82">交線 3</text>
               </svg>
             </figure>
-            <p>可用 \(E_1:x=0\)、\(E_2:y=0\)、\(E_3:x+y=1\) 作模型。三條兩兩交線都是直立線，彼此平行而且不同，因此沒有共同點。</p>
+            <p>圖中平面 A、B、C 分別對應 \(E_1:x=0\)、\(E_2:y=0\)、\(E_3:x+y=1\)。三條兩兩交線分別為 \((0,0,z)\)、\((0,1,z)\)、\((1,0,z)\)，都是直立線，彼此平行而且不同，因此沒有共同點。</p>
             <div class="key-formula"><strong>代數訊號：</strong>\(\Delta=0\)，但增廣矩陣的秩較大；三式互相矛盾，故無解。</div>
             <button class="key-action" type="button" data-key="none">查看此型判別</button>
           </article>
@@ -408,7 +408,7 @@
           <article class="example">
             <h3>例 1｜共點：唯一解</h3>
             <div class="eq">\(x+y+z=1\)<br>\(x-y+z=2\)<br>\(x+y-z=3\)</div>
-            <p>\(\Delta=4\ne0\)，所以三平面共點。聯立可得 \(\left(\frac52,-\frac12,-1\right)\)。</p>
+            <p>\(\Delta=4\ne0\)，所以三平面共點。聯立可得 \(\left(\frac{5}{2},-\frac{1}{2},-1\right)\)。</p>
           </article>
           <article class="example">
             <h3>例 2｜共線：無限多解</h3>

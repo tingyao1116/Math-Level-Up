@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國二數列與級數：用平均看懂等差公式</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root{--paper:#fff;--page:#f4f7ff;--ink:#172554;--sub:#53657e;--line:#d9e2ef;--blue:#2857c5;--blue-soft:#eef4ff;--teal:#0f766e;--teal-soft:#f0fdfa;--orange:#b45309;--orange-soft:#fff7ed;--purple:#6d28d9;--purple-soft:#f5f3ff;--red:#9f1239;--red-soft:#fff1f2}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.75;background:linear-gradient(145deg,#eaf2ff 0,var(--page) 44%,#effdfa 100%)}
+    .wrap{max-width:1100px;margin:auto;padding:26px 18px 46px}.hero,.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 28px rgba(25,52,94,.08)}.hero{padding:clamp(22px,4vw,36px)}
+    h1,h2,h3{color:#142c56;line-height:1.35}h1{margin:0 0 8px;font-size:clamp(30px,5vw,44px)}h2{margin:0 0 10px;font-size:clamp(25px,3.8vw,31px)}h3{margin:0 0 8px;font-size:20px}p{margin:0 0 10px}.lead,.section-lead,.small{color:var(--sub)}.lead{max-width:790px;font-size:17px}
+    .tags,.nav,.actions{display:flex;flex-wrap:wrap;gap:8px}.tag,.label,.chip{display:inline-block;padding:3px 10px;border:1px solid #bfdbfe;border-radius:999px;background:var(--blue-soft);color:#1e40af;font-size:14px;font-weight:800}.teal{color:#115e59!important;border-color:#99f6e4!important;background:var(--teal-soft)!important}.orange{color:#9a3412!important;border-color:#fed7aa!important;background:var(--orange-soft)!important}.purple{color:#5b21b6!important;border-color:#ddd6fe!important;background:var(--purple-soft)!important}
+    .nav{margin-top:19px}.nav a{padding:7px 11px;color:#1e40af;border:1px solid var(--line);border-radius:10px;background:#f8fbff;text-decoration:none;font-weight:800;font-size:14px}.nav a:hover{background:var(--blue-soft)}.section{margin-top:27px}.card{padding:18px}.grid{display:grid;gap:14px}.grid>*{min-width:0}.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .formula,.equation,.term-list{font-family:Cambria,"Times New Roman",serif}.formula{font-size:1.08em}.equation{margin:10px 0;padding:10px 12px;overflow-x:auto;border:1px solid #cbd9ec;border-radius:11px;background:#f8fbff;white-space:nowrap;text-align:center;font-size:21px}.callout{margin-top:12px;padding:11px 13px;border:1px solid #bfdbfe;border-radius:12px;background:var(--blue-soft)}.callout.warn{color:#7c2d12;border-color:#fed7aa;background:var(--orange-soft)}.callout.red{color:#881337;border-color:#fecdd3;background:var(--red-soft)}
+    mjx-container{margin:0!important}.equation mjx-container{font-size:112%!important}.grid>*{min-width:0}.concept{border-top:5px solid var(--blue)}.concept.series{border-top-color:var(--orange)}.compare,.named{width:100%;border-collapse:collapse;margin-top:11px}.compare th,.compare td,.named th,.named td{padding:10px;border:1px solid var(--line);text-align:left;vertical-align:top}.compare th,.named th{background:#f8fbff}.compare td:first-child,.named td:first-child{font-weight:800;white-space:nowrap}.scroll{overflow-x:auto}.not{color:#9a3412}
+    .mean{border-top:5px solid var(--teal)}.mean-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:17px}.control-stack{display:grid;gap:12px}.control{display:grid;grid-template-columns:112px minmax(0,1fr) 52px;gap:8px;align-items:center}.control label{font-weight:800}input[type="range"]{width:100%;accent-color:var(--teal)}.value{padding:2px 6px;border-radius:8px;background:#ecfdf5;color:#115e59;text-align:center;font-family:Cambria,"Times New Roman",serif;font-weight:800}.pairs{display:grid;gap:8px;margin-top:11px}.pair{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px;align-items:center}.term,.sum{padding:5px 7px;border-radius:9px;text-align:center;font-family:Cambria,"Times New Roman",serif;font-size:18px;font-weight:800}.term{background:#ecfdf5;color:#115e59}.sum{border:1px dashed #5eead4;background:#fff;color:#0f766e}.bridge{display:grid;gap:9px;margin-top:13px}.bridge>div{padding:9px 11px;border-left:4px solid var(--teal);border-radius:0 10px 10px 0;background:#f0fdfa}
+    .tool{border-top:5px solid var(--blue)}.tool.gp{border-top-color:var(--purple)}.tool-head{display:flex;gap:10px;align-items:baseline;justify-content:space-between}.tool-head h3{margin:0}.term-list{margin-top:13px;padding:10px 12px;overflow-x:auto;border-radius:11px;background:#f8fbff;color:#1e3a8a;white-space:nowrap;font-size:19px}.formula-box{margin-top:10px;padding:10px 12px;border:1px solid #bfdbfe;border-radius:11px;background:var(--blue-soft)}.gp .formula-box{border-color:#ddd6fe;background:var(--purple-soft)}select{width:100%;padding:7px 8px;color:var(--ink);border:1px solid #cbd9ec;border-radius:9px;background:#fff;font:inherit;font-weight:700}
+    .steps{margin:0;padding-left:24px}.steps li{margin:8px 0;padding-bottom:8px;border-bottom:1px dashed #d5ddeb}.steps li:last-child{padding-bottom:0;border-bottom:0}.worked{border-left:5px solid var(--blue)}.worked.average{border-left-color:var(--teal)}.worked.challenge{border-left-color:var(--purple)}.worked.gp-work{border-left-color:var(--orange)}.answer{margin-top:10px;padding:10px 12px;border-radius:10px;background:#ecfdf5;color:#115e59;font-weight:800}
+    .mistakes{display:grid;gap:11px;grid-template-columns:repeat(3,minmax(0,1fr))}.mistake{padding:13px;border:1px solid #fecdd3;border-radius:12px;background:var(--red-soft)}.mistake h3{margin:0 0 5px;color:#9f1239;font-size:18px}.mistake p{margin:0;color:#881337}.quiz{border-top:5px solid var(--orange)}.level-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}.level,.button,.choice{appearance:none;font:inherit;font-weight:800;cursor:pointer}.level{padding:7px 12px;color:#9a3412;border:1px solid #fed7aa;border-radius:10px;background:#fff7ed}.level[aria-selected="true"]{color:#fff;border-color:#b45309;background:#b45309}.quiz-head{display:flex;gap:10px;justify-content:space-between;align-items:baseline}.quiz-head h3{margin:0}.count{color:var(--sub);font-size:14px;font-weight:800}.question{margin:11px 0;padding:12px;border-radius:11px;background:#fffaf5;font-size:18px;font-weight:800}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.choice{min-height:48px;padding:9px 10px;color:#334155;border:1px solid var(--line);border-radius:10px;background:#fff;text-align:left}.choice:hover,.choice.selected{color:#1e40af;border-color:#93c5fd;background:var(--blue-soft)}.choice.correct{color:#115e59;border-color:#5eead4;background:#ecfdf5}.choice.incorrect{color:#9f1239;border-color:#fda4af;background:var(--red-soft)}.actions{align-items:center;margin-top:13px}.button{padding:8px 13px;color:#fff;border:1px solid var(--blue);border-radius:10px;background:var(--blue)}.button.next{border-color:var(--teal);background:var(--teal)}.feedback{flex:1 1 260px;min-height:28px;margin:0;color:var(--sub);font-weight:700}.feedback.good{color:#047857}.feedback.bad{color:#be123c}.back{display:inline-block;margin-top:25px;color:#1e40af;font-weight:800;text-decoration:none}:focus-visible{outline:3px solid #38bdf8;outline-offset:3px}
+    @media(max-width:760px){.wrap{padding:16px 12px 34px}.hero,.card{border-radius:14px;padding:17px}.two,.mean-grid,.mistakes{grid-template-columns:1fr}.control{grid-template-columns:94px minmax(0,1fr) 46px}.options{grid-template-columns:1fr}}@media(max-width:420px){.pair{grid-template-columns:1fr auto 1fr}.pair .sum{grid-column:1/-1}.pair .equals{display:none}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="tags"><span class="tag teal">國二・數列與級數</span><span class="tag">先看規律，再記公式</span><span class="tag orange">級數的關鍵：平均</span></div>
+      <h1>數列與級數：用「平均」看懂等差公式</h1>
+      <p class="lead">數列是在排隊的數；級數是把排好的數加起來。先用首尾配對看出「平均 × 個數」，再把它整理成等差、等比數列的公式。所有公式都用 TeX 顯示；老師可投影操作，學生可以自學與自我檢查。</p>
+      <nav class="nav" aria-label="本頁段落"><a href="#distinguish">數列和級數</a><a href="#average">為什麼用平均</a><a href="#formulas">公式實驗室</a><a href="#examples">代表例題</a><a href="#practice">分層練習</a></nav>
+    </header>
+
+    <section class="section" id="distinguish">
+      <h2>1. 先分清楚：數列不是級數</h2><p class="section-lead">先問自己：題目要你找「第幾個數」？還是要你把「前幾個數加起來」？這一步一分清，公式就不容易拿錯。</p>
+      <div class="grid two">
+        <article class="card concept"><span class="label">數列 sequence</span><h3>一個一個排好，關心第 (n) 項</h3><div class="equation">\(2,5,8,11,\ldots\)</div><p>這是一串數。第 (4) 項是 (11)，記作 (displaystyle a_4=11)。</p><div class="callout"><strong>看到的訊號：</strong>「第 (20) 項」、「通項」、「下一項」──通常是在問<strong>數列</strong>。</div></article>
+        <article class="card concept series"><span class="label orange">級數 series</span><h3>把前面幾項相加，關心總和</h3><div class="equation orange">\(2+5+8+11+\cdots\)</div><p>同一串數，加號連起來才叫級數。前 (4) 項和記作 (displaystyle S_4=2+5+8+11=26)。</p><div class="callout warn"><strong>看到的訊號：</strong>「總共」、「前 (n) 項和」、「加到第 (n) 項」──通常是在問<strong>級數</strong>。</div></article>
+      </div>
+      <article class="card" style="margin-top:14px"><h3>兩種最重要的規律</h3><div class="scroll"><table class="compare"><thead><tr><th>種類</th><th>看相鄰兩項</th><th>第 (n) 項</th><th>前 (n) 項和</th></tr></thead><tbody><tr><td>等差數列</td><td>每次<strong>加同一個數</strong> (d)<br>(3,7,11,15,ldots)</td><td>(displaystyle a_n=a_1+(n-1)d)</td><td>(displaystyle S_n=n\times\text{平均}=\frac{n(a_1+a_n)}{2})</td></tr><tr><td>等比數列</td><td>每次<strong>乘同一個數</strong> (r)<br>(3,6,12,24,ldots)</td><td>(displaystyle b_n=b_1r^{n-1})</td><td>(displaystyle S_n=\frac{b_1(r^n-1)}{r-1})，(r\ne1)</td></tr></tbody></table></div><div class="callout red"><strong>最常見的判斷錯誤：</strong>(2,4,8,16) 的差是 (2,4,8)，不固定，所以它<strong>不是等差</strong>；但每次都乘 (2)，所以它是等比。</div></article>
+    </section>
+
+    <section class="section" id="famous">
+      <h2>2. 常見「有名字」的數列：先練眼力</h2><p class="section-lead">不是每一串有規律的數都是等差或等比。先把差、比與「前兩種以外的規律」看出來。</p>
+      <article class="card"><div class="scroll"><table class="named"><thead><tr><th>數列</th><th>前幾項</th><th>你應該觀察什麼</th><th>分類</th></tr></thead><tbody><tr><td>自然數列</td><td>(1,2,3,4,ldots)</td><td>每次加 (1)</td><td>等差，(d=1)</td></tr><tr><td>奇數數列</td><td>(1,3,5,7,ldots)</td><td>每次加 (2)；前 (n) 個奇數的和是 (n^2)</td><td>等差，(d=2)</td></tr><tr><td>(2) 的冪次</td><td>(1,2,4,8,16,ldots)</td><td>每次乘 (2)</td><td>等比，(r=2)</td></tr><tr><td>三角數</td><td>(1,3,6,10,15,ldots)</td><td>差是 (2,3,4,5,ldots)</td><td class="not">不是等差，也不是等比</td></tr><tr><td>平方數</td><td>(1,4,9,16,25,ldots)</td><td>差是 (3,5,7,9,ldots)，連到奇數數列</td><td class="not">不是等差，也不是等比</td></tr><tr><td>費波那契數列</td><td>(1,1,2,3,5,8,13,ldots)</td><td>後一項 = 前兩項相加</td><td class="not">不是等差，也不是等比</td></tr></tbody></table></div><div class="callout teal"><strong>數形直覺：</strong>(displaystyle 1+3+5+\cdots+(2n-1)=n^2)。把一圈圈的 L 形點點補到正方形裡，就能看見「每多一層奇數點，正方形邊長多 (1)」。</div></article>
+    </section>
+
+    <section class="section" id="average">
+      <h2>3. 等差級數最重要的想法：平均 × 個數</h2><p class="section-lead">公式不是憑空出現。等差數列的首尾、第二項與倒數第二項，配起來都一樣大；因此總和可以先看成「每一項平均多少」，再乘上項數。</p>
+      <article class="card mean"><div class="mean-grid"><div><span class="label teal">拖拉看看：首尾配對</span><h3>改變首項、末項與項數</h3><div class="control-stack" aria-label="等差級數平均互動設定"><div class="control"><label for="mean-first">首項 (a_1)</label><input id="mean-first" type="range" min="-10" max="20" value="3"><output class="value" id="mean-first-value">3</output></div><div class="control"><label for="mean-last">末項 (a_n)</label><input id="mean-last" type="range" min="0" max="50" value="23"><output class="value" id="mean-last-value">23</output></div><div class="control"><label for="mean-count">項數 (n)</label><input id="mean-count" type="range" min="2" max="16" value="11"><output class="value" id="mean-count-value">11</output></div></div><div class="bridge" id="mean-bridge" aria-live="polite"></div></div><div><span class="label teal">每一對的和都相同</span><div class="pairs" id="pair-board" aria-label="首尾配對示範"></div><div class="callout teal"><strong>所以：</strong>一整串的平均數就是 (displaystyle \frac{\text{首項}+\text{末項}}{2})，不需要真的把每一項都加完。</div></div></div></article>
+      <article class="card" style="margin-top:14px"><span class="label orange">高斯的 (1) 到 (100)</span><h3>首尾配對：每一對都是 (101)</h3><div class="grid two"><div class="equation">\(1+2+\cdots+99+100\)</div><ol class="steps"><li>平均數：(displaystyle \frac{1+100}{2}=50.5)。</li><li>共有 (100) 個數，所以總和是 (100\times50.5)。</li><li>也可想成 (50) 對，每對 (101)。</li></ol></div><div class="equation teal">\(1+2+\cdots+100=\frac{100(1+100)}{2}=5050\)</div><div class="callout">只要是等差數列，這個「首尾平均」就能直接使用；首項不必是 (1)，公差也不必是正數。</div></div></article>
+    </section>
+
+    <section class="section" id="formulas">
+      <h2>4. 公式實驗室：先讓規律跑一次</h2><p class="section-lead">兩個工具都把結果拆成「第 (n) 項」和「前 (n) 項和」。等差的和會優先用平均呈現，這正是最穩的解題路線。</p>
+      <div class="grid two">
+        <article class="card tool"><div class="tool-head"><h3>等差數列與等差級數</h3><span class="chip">每次加 (d)</span></div><div class="control-stack"><div class="control"><label for="ap-first">首項 (a_1)</label><input id="ap-first" type="range" min="-8" max="20" value="4"><output class="value" id="ap-first-value">4</output></div><div class="control"><label for="ap-diff">公差 (d)</label><input id="ap-diff" type="range" min="-8" max="10" value="3"><output class="value" id="ap-diff-value">3</output></div><div class="control"><label for="ap-count">第 (n) 項／項數</label><input id="ap-count" type="range" min="2" max="20" value="10"><output class="value" id="ap-count-value">10</output></div></div><div class="term-list" id="ap-terms"></div><div class="formula-box" id="ap-formula" aria-live="polite"></div></article>
+        <article class="card tool gp"><div class="tool-head"><h3>等比數列與等比級數</h3><span class="chip purple">每次乘 (r)</span></div><div class="control-stack"><div class="control"><label for="gp-first">首項 (b_1)</label><input id="gp-first" type="range" min="1" max="6" value="3"><output class="value" id="gp-first-value">3</output></div><div class="control"><label for="gp-ratio">公比 (r)</label><select id="gp-ratio" aria-label="選擇公比"><option value="-2">−2</option><option value="-1">−1</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select><output class="value" id="gp-ratio-value">2</output></div><div class="control"><label for="gp-count">第 (n) 項／項數</label><input id="gp-count" type="range" min="2" max="10" value="6"><output class="value" id="gp-count-value">6</output></div></div><div class="term-list" id="gp-terms"></div><div class="formula-box" id="gp-formula" aria-live="polite"></div></article>
+      </div><div class="callout warn"><strong>不能混用的地方：</strong>等差的 (displaystyle S_n) 是「平均 × 項數」；等比的每一項通常不會以首尾平均，因此要用等比級數公式，或依題目做倍增的推理。</div>
+    </section>
+
+    <section class="section" id="examples">
+      <h2>5. 可直接上課的代表例題</h2><p class="section-lead">每一題先標示「該找什麼」，再把解法拆成可抄在筆記上的步驟。後兩題需要看出中間項或從前 (n) 項和倒推，難度更高。</p>
+      <div class="grid two">
+        <article class="card worked"><span class="label">基礎・第 (n) 項</span><h3>每天多讀 (3) 頁</h3><p>小芸第一天讀 (8) 頁，以後每天都比前一天多讀 (3) 頁。第 (15) 天讀幾頁？</p><ol class="steps"><li>每天多 (3) 頁：(displaystyle a_1=8, d=3)。</li><li>第 (15) 項比首項多走 (14) 次，不是 (15) 次。</li><li>(displaystyle a_{15}=8+(15-1)\times3=50)。</li></ol><div class="answer">答案：第 (15) 天讀 (50) 頁。</div></article>
+        <article class="card worked average"><span class="label teal">基礎・平均求和</span><h3>階梯座位一共有幾個？</h3><p>第一排有 (18) 個座位，以後每排多 (2) 個，共有 (20) 排。總座位數是多少？</p><ol class="steps"><li>末項：(displaystyle a_{20}=18+19\times2=56)。</li><li>平均座位數：(displaystyle \frac{18+56}{2}=37)。</li><li>總數：(displaystyle S_{20}=20\times37=740)。</li></ol><div class="answer">答案：共有 (740) 個座位。</div></article>
+        <article class="card worked challenge"><span class="label purple">挑戰・不必知道首項和公差</span><h3>已知第 (4) 項與第 (14) 項，直接求 (S_{17})</h3><p>等差數列中，(displaystyle a_4+a_{14}=42)。求 (displaystyle S_{17})。</p><ol class="steps"><li>第 (4) 項與第 (14) 項的中間是第 (9) 項。</li><li>離中間一樣遠的兩項，平均就是中間項：(displaystyle a_9=\frac{42}{2}=21)。</li><li>(17) 項的正中央也是第 (9) 項，所以整串平均就是 (21)。</li></ol><div class="equation">\(S_{17}=17a_9=17\times21=357\)</div><div class="answer">答案：(357)。重點是找中間項，不是硬設 (a_1,d)。</div></article>
+        <article class="card worked gp-work"><span class="label orange">進階・等比級數</span><h3>影印紙每次加倍</h3><p>第一輪印 (3) 張，之後每輪都變成前一輪的 (2) 倍。前 (7) 輪總共印幾張？</p><ol class="steps"><li>數列是 (3,6,12,24,\ldots)，所以 (displaystyle b_1=3, r=2)。</li><li>(displaystyle S_7=\frac{3(2^7-1)}{2-1})。</li><li>(displaystyle =3\times127=381)。</li></ol><div class="answer">答案：前 (7) 輪共印 (381) 張。</div></article>
+        <article class="card worked challenge"><span class="label purple">高難度・由 (S_n) 倒推 (a_n)</span><h3>已知前 (n) 項和，不要直接把 (n) 當項數</h3><p>某數列滿足 (displaystyle S_n=3n^2+2n)。求 (displaystyle a_{10})。</p><ol class="steps"><li>第 (10) 項是「前 (10) 項和」減掉「前 (9) 項和」。</li><li>(displaystyle S_{10}=3(10)^2+2(10)=320)。</li><li>(displaystyle S_9=3(9)^2+2(9)=261)。</li></ol><div class="equation">\(a_{10}=S_{10}-S_9=320-261=59\)</div><div class="answer">答案：(59)。這是級數和數列之間的重要反向連結。</div></article>
+        <article class="card worked gp-work"><span class="label orange">高難度・根號找公比</span><h3>先解出 (r)，再算總和</h3><p>等比數列滿足 (displaystyle b_1=2, b_3=18)，且 (displaystyle r&gt;0)。求公比 (r) 與 (displaystyle S_4)。</p><ol class="steps"><li>(displaystyle b_3=b_1r^2)，所以 (displaystyle 2r^2=18)。</li><li>(displaystyle r^2=9)，又因為 (r&gt;0)，所以 (displaystyle r=\sqrt{9}=3)。</li><li>(displaystyle S_4=2+6+18+54=80)。</li></ol><div class="answer">答案：(displaystyle r=3, S_4=80)。根號要記得先看題目的正負條件。</div></article>
+      </div>
+    </section>
+
+    <section class="section" id="mistakes"><h2>6. 三個最常犯的錯</h2><div class="mistakes"><article class="mistake"><h3>把 (n-1) 寫成 (n)</h3><p>從第 (1) 項走到第 (n) 項，只跨了 (n-1) 個間隔。<br>(displaystyle a_n=a_1+(n-1)d)。</p></article><article class="mistake"><h3>有加號卻只求 (a_n)</h3><p>題目問「總共」要找 (displaystyle S_n)；先分清楚數列和級數。</p></article><article class="mistake"><h3>看到規律就當等差</h3><p>先列相鄰的差；差固定才是等差。差不固定時，再檢查比是否固定。</p></article></div></section>
+
+    <section class="section" id="practice"><h2>7. 分層自我檢查</h2><p class="section-lead">新增「高難度」推理題。答錯時會保留題目與你的選項，讓你先重看提示再作答；答對後才會進下一題。</p><article class="card quiz"><div class="level-tabs" role="tablist" aria-label="練習難度"><button class="level" type="button" role="tab" aria-selected="true" data-level="basic">基礎</button><button class="level" type="button" role="tab" aria-selected="false" data-level="advanced">進階</button><button class="level" type="button" role="tab" aria-selected="false" data-level="challenge">挑戰</button><button class="level" type="button" role="tab" aria-selected="false" data-level="hard">高難度</button></div><div class="quiz-head"><h3 id="quiz-title">基礎：先辨認差、比與公式</h3><span class="count" id="quiz-count"></span></div><div class="question" id="quiz-question"></div><div class="options" id="quiz-options" aria-label="選擇答案"></div><div class="actions"><button class="button" id="check" type="button">檢查答案</button><button class="button next" id="next" type="button" hidden>下一題</button><p class="feedback" id="feedback" aria-live="polite"></p></div></article></section>
+    <a class="back" href="./index.html#j2">← 返回教學首頁（國二）</a>
+  </main>
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const fmt = (n) => new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 3 }).format(Number(n.toFixed ? n.toFixed(3) : n));
+      const math = (tex) => `\\(${tex}\\)`;
+      const typeset = (element) => { if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([element]).catch(() => {}); };
+      const set = (input, output) => { $(output).textContent = $(input).value; };
+      const normalizeStaticMath = (root) => {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+        textNodes.forEach((node) => {
+          const source = node.nodeValue;
+          let output = '', position = 0;
+          while (position < source.length) {
+            if (source.startsWith('\\(', position)) {
+              const close = source.indexOf('\\)', position + 2);
+              if (close !== -1) {
+                output += source.slice(position, close + 2);
+                position = close + 2;
+                continue;
+              }
+            }
+            if (source[position] === '(') {
+              let depth = 1, cursor = position + 1;
+              while (cursor < source.length && depth > 0) {
+                if (source[cursor] === '(') depth += 1;
+                if (source[cursor] === ')') depth -= 1;
+                cursor += 1;
+              }
+              if (depth === 0) {
+                let tex = source.slice(position + 1, cursor - 1);
+                if (tex.startsWith('displaystyle ')) tex = '\\displaystyle ' + tex.slice('displaystyle '.length);
+                output += '\\(' + tex + '\\)';
+                position = cursor;
+                continue;
+              }
+            }
+            output += source[position];
+            position += 1;
+          }
+          node.nodeValue = output;
+        });
+      };
+      normalizeStaticMath(document.querySelector('main'));
+
+      function mean() {
+        const first = +$('mean-first').value, last = +$('mean-last').value, n = +$('mean-count').value;
+        const d = (last - first) / (n - 1), average = (first + last) / 2, sum = n * average;
+        set('mean-first', 'mean-first-value'); set('mean-last', 'mean-last-value'); set('mean-count', 'mean-count-value');
+        const terms = Array.from({ length: n }, (_, i) => first + d * i), pairs = [];
+        for (let i = 0; i < Math.floor(n / 2); i += 1) pairs.push(`<div class="pair"><span class="term">${math(fmt(terms[i]))}</span><span>＋</span><span class="term">${math(fmt(terms[n - 1 - i]))}</span><span class="equals">＝</span><span class="sum">${math(fmt(first + last))}</span></div>`);
+        if (n % 2) pairs.push(`<div class="pair"><span class="term">中間項</span><span>＝</span><span class="term">${math(fmt(terms[Math.floor(n / 2)]))}</span><span class="equals">＝</span><span class="sum">平均</span></div>`);
+        $('pair-board').innerHTML = pairs.join('');
+        $('mean-bridge').innerHTML = `<div><strong>每項的平均：</strong>${math(`\\frac{${fmt(first)}+${fmt(last)}}{2}=${fmt(average)}`)}</div><div><strong>共有 ${n} 項：</strong>${math(`S_{${n}}=\\text{平均}\\times\\text{項數}=${fmt(average)}\\times${n}=${fmt(sum)}`)}</div><div class="small">這組數的公差是 ${math(fmt(d))}。即使公差出現小數，首尾平均的想法仍然成立。</div>`;
+        typeset($('pair-board')); typeset($('mean-bridge'));
+      }
+
+      function ap() {
+        const first = +$('ap-first').value, d = +$('ap-diff').value, n = +$('ap-count').value;
+        const last = first + (n - 1) * d, sum = n * (first + last) / 2;
+        set('ap-first', 'ap-first-value'); set('ap-diff', 'ap-diff-value'); set('ap-count', 'ap-count-value');
+        const terms = Array.from({ length: Math.min(n, 12) }, (_, i) => first + d * i);
+        $('ap-terms').innerHTML = n > 12 ? `${terms.map((value) => math(fmt(value))).join('，')}，${math('\\ldots')}，${math(fmt(last))}` : terms.map((value) => math(fmt(value))).join('，');
+        $('ap-formula').innerHTML = `<strong>第 ${n} 項：</strong>${math(`a_{${n}}=${fmt(first)}+(${n}-1)\\times(${fmt(d)})=${fmt(last)}`)}<br><strong>前 ${n} 項和：</strong>${math(`S_{${n}}=\\frac{${n}(${fmt(first)}+${fmt(last)})}{2}=${fmt(sum)}`)}`;
+        typeset($('ap-terms')); typeset($('ap-formula'));
+      }
+
+      function gp() {
+        const first = +$('gp-first').value, r = +$('gp-ratio').value, n = +$('gp-count').value;
+        const terms = Array.from({ length: n }, (_, i) => first * r ** i), last = terms[n - 1], sum = terms.reduce((total, value) => total + value, 0);
+        set('gp-first', 'gp-first-value'); $('gp-ratio-value').textContent = r; set('gp-count', 'gp-count-value');
+        $('gp-terms').innerHTML = terms.map((value) => math(fmt(value))).join('，');
+        const sumLine = r === 1 ? `${math(`S_{${n}}=${n}\\times${fmt(first)}=${fmt(sum)}`)}（公比是 (1)，所有項都相同）` : math(`S_{${n}}=\\frac{${fmt(first)}\\left((${fmt(r)})^{${n}}-1\\right)}{${fmt(r)}-1}=${fmt(sum)}`);
+        $('gp-formula').innerHTML = `<strong>第 ${n} 項：</strong>${math(`b_{${n}}=${fmt(first)}\\left(${fmt(r)}\\right)^{${n - 1}}=${fmt(last)}`)}<br><strong>前 ${n} 項和：</strong>${sumLine}`;
+        typeset($('gp-terms')); typeset($('gp-formula'));
+      }
+
+      ['mean-first', 'mean-last', 'mean-count'].forEach((id) => $(id).addEventListener('input', mean));
+      ['ap-first', 'ap-diff', 'ap-count'].forEach((id) => $(id).addEventListener('input', ap));
+      ['gp-first', 'gp-count'].forEach((id) => $(id).addEventListener('input', gp)); $('gp-ratio').addEventListener('change', gp);
+      mean(); ap(); gp();
+
+      const banks = {
+        basic: [
+          ['等差數列 \(7,10,13,\ldots\) 的公差 \(d\) 是多少？', ['\(3\)', '\(7\)', '\(10\)', '\(13\)'], 0, '相鄰兩項相減：\(10-7=3\)，\(13-10=3\)。'],
+          ['等差數列首項為 \(2\)、公差為 \(5\)，第 \(8\) 項是多少？', ['\(32\)', '\(37\)', '\(42\)', '\(47\)'], 1, '\(a_8=2+(8-1)\times5=37\)；記得是 \(8-1\) 個間隔。'],
+          ['\(1+2+3+\cdots+20\) 的值是多少？', ['\(200\)', '\(210\)', '\(220\)', '\(400\)'], 1, '平均是 \(\frac{1+20}{2}=10.5\)，共有 \(20\) 項，所以是 \(210\)。'],
+          ['\(1,4,9,16,\ldots\) 屬於哪一類？', ['等差數列', '等比數列', '既不是等差也不是等比', '費波那契數列'], 2, '相鄰差為 \(3,5,7,\ldots\)，相鄰比也不固定。']
+        ],
+        advanced: [
+          ['等差數列中 \(a_3=11\)、\(a_8=31\)，首項 \(a_1\) 是多少？', ['\(-1\)', '\(3\)', '\(7\)', '\(11\)'], 1, '從第 \(3\) 項到第 \(8\) 項跨 \(5\) 格，\(d=4\)；\(a_1=11-2\times4=3\)。'],
+          ['\(2+5+8+\cdots+44\) 的和是多少？', ['\(322\)', '\(345\)', '\(368\)', '\(690\)'], 1, '\(44=2+(n-1)\times3\)，得 \(n=15\)；\(S_{15}=\frac{15(2+44)}{2}=345\)。'],
+          ['等比數列 \(3,6,12,\ldots\) 的前 \(7\) 項和是多少？', ['\(189\)', '\(255\)', '\(381\)', '\(384\)'], 2, '\(S_7=\frac{3(2^7-1)}{2-1}=381\)。'],
+          ['等差數列 \(a_1=5,d=-2\)，\(a_{12}\) 是多少？', ['\(-17\)', '\(-19\)', '\(−7\)', '\(27\)'], 0, '\(a_{12}=5+(12-1)(-2)=-17\)。']
+        ],
+        challenge: [
+          ['等差數列 \(a_4+a_{14}=42\)，則 \(S_{17}\) 是多少？', ['\(294\)', '\(336\)', '\(357\)', '\(714\)'], 2, '\(a_4\) 與 \(a_{14}\) 的平均是 \(a_9\)，所以 \(a_9=21\)；\(S_{17}=17\times21=357\)。'],
+          ['等比數列 \(2,6,18,\ldots\) 的前 \(6\) 項和是多少？', ['\(364\)', '\(486\)', '\(728\)', '\(1456\)'], 2, '公比 \(r=3\)，\(S_6=\frac{2(3^6-1)}{3-1}=728\)。'],
+          ['等差數列 \(a_3+a_7+a_{11}=63\)，求 \(S_{13}\)。', ['\(189\)', '\(231\)', '\(273\)', '\(819\)'], 2, '三項的平均是 \(a_7=21\)；\(13\) 項的中間項也是 \(a_7\)，所以 \(S_{13}=13\times21=273\)。'],
+          ['若 \(S_n=3n^2+2n\)，則 \(a_{10}\) 是多少？', ['\(41\)', '\(53\)', '\(59\)', '\(320\)'], 2, '\(a_{10}=S_{10}-S_9=320-261=59\)。'],
+          ['等差數列中 \(a_8+a_{18}=50\)，求 \(S_{25}\)。', ['\(500\)', '\(575\)', '\(625\)', '\(1250\)'], 2, '\(a_8\) 與 \(a_{18}\) 的中間是 \(a_{13}\)，所以 \(a_{13}=25\)；\(S_{25}=25\times25=625\)。']
+        ],
+        hard: [
+          ['等差數列滿足 \(a_2+a_5+a_8+\cdots+a_{29}=156\)。求 \(S_{30}\)。', ['\(390\)', '\(432\)', '\(468\)', '\(480\)'], 2, '這 \(10\) 項的平均是 \(\frac{156}{10}=15.6\)，正好也是 \(a_{15.5}\)，即前 \(30\) 項的平均；\(S_{30}=30\times15.6=468\)。'],
+          ['等比數列中 \(b_3=12,b_6=96\)，且 \(r&gt;0\)。首項 \(b_1\) 是多少？', ['\(2\)', '\(3\)', '\(4\)', '\(6\)'], 1, '\(\frac{b_6}{b_3}=r^3=\frac{96}{12}=8\)，所以 \(r=2\)，再得 \(b_1=12\div2^2=3\)。'],
+          ['等比數列滿足 \(b_1=2,b_3=18,r&gt;0\)。公比 \(r\) 是多少？', ['\(\sqrt{3}\)', '\(2\)', '\(3\)', '\(9\)'], 2, '\(2r^2=18\Rightarrow r^2=9\Rightarrow r=\sqrt9=3\)。'],
+          ['\(8+4+2+1+\frac12\) 的和是多少？', ['\(\frac{15}{2}\)', '\(\frac{31}{2}\)', '\(16\)', '\(\frac{63}{2}\)'], 1, '直接相加得 \(15.5=\frac{31}{2}\)；這也是公比 \(\frac12\) 的等比級數。'],
+          ['\(1+2+2^2+\cdots+2^{n-1}=255\)，則 \(n\) 是多少？', ['\(7\)', '\(8\)', '\(9\)', '\(255\)'], 1, '\(S_n=2^n-1=255\)，故 \(2^n=256=2^8\)，所以 \(n=8\)。'],
+          ['等差數列中 \(a_7+a_{25}=40\)，求 \(S_{31}\)。', ['\(400\)', '\(560\)', '\(620\)', '\(1240\)'], 2, '\(a_7\) 與 \(a_{25}\) 的中間是 \(a_{16}\)，故 \(a_{16}=20\)；\(31\) 項的平均也是 \(a_{16}\)，所以 \(S_{31}=31\times20=620\)。']
+        ]
+      };
+      const titles = { basic: '基礎：先辨認差、比與公式', advanced: '進階：把第 \(n\) 項和總和接起來', challenge: '挑戰：看見中間項，少算很多步', hard: '高難度：對稱、分式與反推' };
+      let level = 'basic', index = 0, selected = null, solved = false;
+      const tabs = [...document.querySelectorAll('.level')], question = $('quiz-question'), options = $('quiz-options'), feedback = $('feedback'), check = $('check'), next = $('next');
+      function render() {
+        const current = banks[level][index]; selected = null; solved = false;
+        $('quiz-title').innerHTML = titles[level]; $('quiz-count').textContent = `第 ${index + 1} / ${banks[level].length} 題`; question.innerHTML = current[0]; options.innerHTML = '';
+        current[1].forEach((text, optionIndex) => { const button = document.createElement('button'); button.type = 'button'; button.className = 'choice'; button.innerHTML = `${String.fromCharCode(65 + optionIndex)}. ${text}`; button.onclick = () => { if (solved) return; selected = optionIndex; [...options.children].forEach((choice, childIndex) => choice.classList.toggle('selected', childIndex === selected)); feedback.className = 'feedback'; feedback.textContent = ''; }; options.append(button); });
+        feedback.className = 'feedback'; feedback.textContent = ''; check.hidden = false; next.hidden = true; typeset($('quiz-title')); typeset(question); typeset(options);
+      }
+      check.onclick = () => { const current = banks[level][index], choices = [...options.children]; if (selected === null) { feedback.className = 'feedback bad'; feedback.textContent = '請先選一個答案，再檢查。'; return; } if (selected === current[2]) { solved = true; choices[current[2]].classList.add('correct'); feedback.className = 'feedback good'; feedback.innerHTML = `答對了！${current[3]}`; check.hidden = true; next.hidden = false; } else { choices[selected].classList.add('incorrect'); feedback.className = 'feedback bad'; feedback.innerHTML = `再想一次：${current[3]}`; } typeset(feedback); };
+      next.onclick = () => { index = (index + 1) % banks[level].length; render(); };
+      tabs.forEach((tab) => { tab.onclick = () => { level = tab.dataset.level; index = 0; tabs.forEach((other) => other.setAttribute('aria-selected', String(other === tab))); render(); }; });
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>函數最大最小值｜條件、選法、例題</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       --bg: #f5f8fb;
@@ -86,7 +93,9 @@
     }
     .condition-card { background: #fbfdff; }
     .card p:last-child, .condition-card p:last-child, .example p:last-child, .check p:last-child { margin-bottom: 0; }
-    .math { font-family: Cambria, "Times New Roman", serif; font-size: 1.08em; color: #172033; white-space: nowrap; }
+    mjx-container { color: #172033; }
+    .formula mjx-container { color: #134e4a; }
+    .formula mjx-container[display="true"] { margin: .35em 0 !important; }
     .formula {
       margin: 10px 0;
       padding: 10px 12px;
@@ -174,7 +183,7 @@
       .rule-table { font-size: 14px; }
       .rule-table th, .rule-table td { padding: 8px; }
       .rule-table td:first-child { width: auto; }
-      .math { white-space: normal; }
+      mjx-container { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
     }
   </style>
 </head>
@@ -195,25 +204,25 @@
         <article class="condition-card">
           <span class="tag">式子的條件</span>
           <h3>分母、根號、對數</h3>
-          <p>分母 <span class="math">g(x) ≠ 0</span>；根號 <span class="math">g(x) ≥ 0</span>；對數 <span class="math">log<sub>a</sub>g(x)</span> 的真數必須 <span class="math">g(x) &gt; 0</span>。</p>
+          <p>分母 \(g(x)\ne 0\)；根號 \(g(x)\ge 0\)；對數 \(\log_{a}g(x)\) 的真數必須 \(g(x)>0\)。</p>
         </article>
         <article class="condition-card">
           <span class="tag green">指數與對數</span>
           <h3>換元時把範圍一起換</h3>
-          <p><span class="math">t=a<sup>x</sup></span> 時，必有 <span class="math">t&gt;0</span>；不能取 0 或負數。<span class="math">t=log<sub>a</sub>x</span> 時，先有 <span class="math">x&gt;0</span>，而 t 可取所有實數。</p>
+          <p>\(t=a^x\) 時，必有 \(t>0\)；不能取 \(0\) 或負數。\(t=\log_a x\) 時，先有 \(x>0\)，而 \(t\) 可取所有實數。</p>
         </article>
         <article class="condition-card">
           <span class="tag purple">三角函數</span>
           <h3>角度區間會改答案</h3>
-          <p>任意 θ：<span class="math">sinθ, cosθ∈[−1,1]</span>。若 θ 是銳角，兩者都在 <span class="math">[0,1]</span>；若 <span class="math">0°≤θ≤180°</span>，則 <span class="math">sinθ∈[0,1]</span>。</p>
+          <p>任意 \(\theta\)：\(\sin\theta,\cos\theta\in[-1,1]\)。若 \(\theta\) 是銳角，兩者都在 \([0,1]\)；若 \(0^\circ\le\theta\le180^\circ\)，則 \(\sin\theta\in[0,1]\)。</p>
         </article>
         <article class="condition-card">
           <span class="tag orange">倒數與正負</span>
           <h3>先判 x 的正、負</h3>
-          <p><span class="math">x&gt;0 ⇒ x+1/x≥2</span>；<span class="math">x&lt;0 ⇒ x+1/x≤−2</span>。看到倒數和時，<strong>正負條件比公式更先寫</strong>。</p>
+          <p>\(x>0\Rightarrow x+\frac{1}{x}\ge2\)；\(x<0\Rightarrow x+\frac{1}{x}\le-2\)。看到倒數和時，<strong>正負條件比公式更先寫</strong>。</p>
         </article>
       </div>
-      <div class="notice"><strong>補一個常被漏掉的題設：</strong>若題目說 <span class="math">x∈[a,b]</span>、<span class="math">x∈ℤ</span>、<span class="math">x∈ℕ</span> 或 θ 是銳角，這些不是附註，而是最值題的核心條件。</div>
+      <div class="notice"><strong>補一個常被漏掉的題設：</strong>若題目說 \(x\in[a,b]\)、\(x\in\mathbb{Z}\)、\(x\in\mathbb{N}\) 或 \(\theta\) 是銳角，這些不是附註，而是最值題的核心條件。</div>
     </section>
 
     <section class="section" id="integer">
@@ -221,19 +230,19 @@
       <p>實數範圍中，配方、不等式或微分找到的最佳點，未必是整數。此時不是方法失效，而是要把候選點改成<strong>附近可取的整數</strong>。</p>
       <div class="two">
         <article class="example">
-          <h3>例：<span class="math">n∈ℤ</span>，求 <span class="math">(n−1/2)²</span> 的最小值</h3>
+          <h3>例：\(n\in\mathbb{Z}\)，求 \(\left(n-\frac{1}{2}\right)^2\) 的最小值</h3>
           <ol class="steps">
-            <li>若 n 是實數，平方在 <span class="math">n=1/2</span> 時可為 0。</li>
-            <li>但 <span class="math">1/2∉ℤ</span>，所以要看離 <span class="math">1/2</span> 最近的整數：0 與 1。</li>
-            <li><span class="math">(0−1/2)²=(1−1/2)²=1/4</span>。</li>
+            <li>若 \(n\) 是實數，平方在 \(n=\frac{1}{2}\) 時可為 \(0\)。</li>
+            <li>但 \(\frac{1}{2}\notin\mathbb{Z}\)，所以要看離 \(\frac{1}{2}\) 最近的整數：\(0\) 與 \(1\)。</li>
+            <li>\(\left(0-\frac{1}{2}\right)^2=\left(1-\frac{1}{2}\right)^2=\frac{1}{4}\)。</li>
           </ol>
-          <p class="answer"><strong>答案：</strong>最小值為 <span class="math">1/4</span>，在 <span class="math">n=0,1</span> 時取得。</p>
+          <p class="answer"><strong>答案：</strong>最小值為 \(\frac{1}{4}\)，在 \(n=0,1\) 時取得。</p>
         </article>
         <article class="card">
           <span class="tag orange">整數題檢查口訣</span>
           <h3>先求「實數理想點」，再檢查可取性</h3>
-          <p>若理想點本身是整數，直接完成；若不是，通常比較最靠近它的兩個整數。若題目還有 <span class="math">n&gt;0</span>、偶數、倍數等限制，就只在符合限制的候選值中比較。</p>
-          <div class="formula"><span class="math">x+9/x</span> 的算幾等號在 <span class="math">x=3</span>。若題目改成「x 為正整數」，答案仍可取；若等號要求 <span class="math">x=√2</span>，就必須另比鄰近整數。</div>
+          <p>若理想點本身是整數，直接完成；若不是，通常比較最靠近它的兩個整數。若題目還有 \(n>0\)、偶數、倍數等限制，就只在符合限制的候選值中比較。</p>
+          <div class="formula">\(x+\frac{9}{x}\) 的算幾等號在 \(x=3\)。若題目改成「\(x\) 為正整數」，答案仍可取；若等號要求 \(x=\sqrt{2}\)，就必須另比鄰近整數。</div>
         </article>
       </div>
     </section>
@@ -252,10 +261,10 @@
           <tr><td>二次式</td><td>配方法</td><td>頂點是否在允許範圍內</td></tr>
           <tr><td>正數的和、積、倒數</td><td>算幾不等式</td><td>兩項是否真的非負；等號能否成立</td></tr>
           <tr><td>平方和固定、線性式最值</td><td>柯西不等式</td><td>等號的比例條件</td></tr>
-          <tr><td>分式函數的值域</td><td>令 <span class="math">y=f(x)</span>，判別式 <span class="math">Δ≥0</span></td><td>二次式退化成一次式的情況</td></tr>
-          <tr><td><span class="math">A sinθ+B cosθ</span></td><td>三角疊合</td><td>θ 是否有指定區間</td></tr>
-          <tr><td>含 <span class="math">sin²θ</span>、<span class="math">cos²θ</span></td><td>設 <span class="math">t</span> 後配方</td><td><span class="math">t∈[−1,1]</span> 不可漏</td></tr>
-          <tr><td>指數或對數藏在二次式中</td><td>換元後配方</td><td><span class="math">a<sup>x</sup>&gt;0</span>、真數 &gt; 0</td></tr>
+          <tr><td>分式函數的值域</td><td>令 \(y=f(x)\)，判別式 \(\Delta\ge0\)</td><td>二次式退化成一次式的情況</td></tr>
+          <tr><td>\(A\sin\theta+B\cos\theta\)</td><td>三角疊合</td><td>\(\theta\) 是否有指定區間</td></tr>
+          <tr><td>含 \(\sin^2\theta\)、\(\cos^2\theta\)</td><td>設 \(t\) 後配方</td><td>\(t\in[-1,1]\) 不可漏</td></tr>
+          <tr><td>指數或對數藏在二次式中</td><td>換元後配方</td><td>\(a^x>0\)、真數 \(>0\)</td></tr>
           <tr><td>沒有漂亮結構、又有指定區間</td><td>微分</td><td>臨界點、不可微點、端點全比較</td></tr>
         </tbody>
       </table>
@@ -279,92 +288,92 @@
       <article class="method" id="complete-square">
         <div class="method-header"><div class="method-number">1</div><div><h2>配方法</h2><p>把二次式改寫成「平方項＋常數」。平方項的非負性，直接給出最大或最小值。</p></div></div>
         <div class="three">
-          <div class="method-step"><span class="tag">何時用</span><h4>二次式最明顯</h4><p>看見 <span class="math">ax²+bx+c</span>，或換元後變成二次式。</p></div>
-          <div class="method-step"><span class="tag green">核心</span><h4>平方 ≥ 0</h4><p><span class="math">a&gt;0</span> 時有最小值；<span class="math">a&lt;0</span> 時有最大值。</p></div>
+          <div class="method-step"><span class="tag">何時用</span><h4>二次式最明顯</h4><p>看見 \(ax^2+bx+c\)，或換元後變成二次式。</p></div>
+          <div class="method-step"><span class="tag green">核心</span><h4>平方 \(\ge0\)</h4><p>\(a>0\) 時有最小值；\(a<0\) 時有最大值。</p></div>
           <div class="method-step"><span class="tag orange">必檢查</span><h4>頂點可取嗎？</h4><p>若有區間、角度或整數條件，頂點未必能用。</p></div>
         </div>
         <div class="example">
-          <h3>例題：求 <span class="math">f(x)=2x²−8x+5</span> 的最小值</h3>
-          <ol class="steps"><li><span class="math">f(x)=2(x−2)²−3</span>。</li><li>因 <span class="math">2(x−2)²≥0</span>，所以 <span class="math">f(x)≥−3</span>。</li><li>等號在 <span class="math">x=2</span> 時成立。</li></ol>
-          <p class="answer"><strong>答案：</strong>最小值為 <span class="math">−3</span>，在 <span class="math">x=2</span> 時取得。</p>
+          <h3>例題：求 \(f(x)=2x^2-8x+5\) 的最小值</h3>
+          <ol class="steps"><li>\(f(x)=2(x-2)^2-3\)。</li><li>因 \(2(x-2)^2\ge0\)，所以 \(f(x)\ge-3\)。</li><li>等號在 \(x=2\) 時成立。</li></ol>
+          <p class="answer"><strong>答案：</strong>最小值為 \(-3\)，在 \(x=2\) 時取得。</p>
         </div>
       </article>
 
       <article class="method" id="am-gm">
         <div class="method-header"><div class="method-number">2</div><div><h2>算術－幾何平均不等式</h2><p>把題目拆成非負的兩項或多項；「兩項一樣大」往往就是最好的平衡點。</p></div></div>
-        <div class="formula"><strong>兩項公式：</strong><span class="math">a+b≥2√(ab)</span>（<span class="math">a,b≥0</span>），等號當且僅當 <span class="math">a=b</span>。</div>
+        <div class="formula"><strong>兩項公式：</strong>\(a+b\ge2\sqrt{ab}\)（\(a,b\ge0\)），等號當且僅當 \(a=b\)。</div>
         <div class="example">
-          <h3>例題：<span class="math">x&gt;0</span>，求 <span class="math">2x+8/x</span> 的最小值</h3>
-          <ol class="steps"><li>因 <span class="math">x&gt;0</span>，所以 <span class="math">2x</span> 與 <span class="math">8/x</span> 都是正數。</li><li><span class="math">2x+8/x≥2√[(2x)(8/x)]=8</span>。</li><li>等號條件 <span class="math">2x=8/x</span>，得 <span class="math">x=2</span>。</li></ol>
-          <p class="answer"><strong>答案：</strong>最小值為 8，在 <span class="math">x=2</span> 時取得。</p>
+          <h3>例題：\(x>0\)，求 \(2x+\frac{8}{x}\) 的最小值</h3>
+          <ol class="steps"><li>因 \(x>0\)，所以 \(2x\) 與 \(\frac{8}{x}\) 都是正數。</li><li>\(2x+\frac{8}{x}\ge2\sqrt{(2x)\left(\frac{8}{x}\right)}=8\)。</li><li>等號條件 \(2x=\frac{8}{x}\)，得 \(x=2\)。</li></ol>
+          <p class="answer"><strong>答案：</strong>最小值為 \(8\)，在 \(x=2\) 時取得。</p>
         </div>
-        <div class="mistake"><strong>最常錯：</strong>沒有確認正數條件就套公式。若 <span class="math">x&lt;0</span>，倒數和的方向會改變，不能直接寫「≥」。</div>
+        <div class="mistake"><strong>最常錯：</strong>沒有確認正數條件就套公式。若 \(x<0\)，倒數和的方向會改變，不能直接寫「\(\ge\)」。</div>
       </article>
 
       <article class="method" id="cauchy">
         <div class="method-header"><div class="method-number">3</div><div><h2>柯西不等式</h2><p>平方和固定、要求線性組合的最大值時，把它看成兩個向量的內積；最長不會超過長度相乘。</p></div></div>
-        <div class="formula"><span class="math">(a²+b²)(x²+y²)≥(ax+by)²</span></div>
+        <div class="formula">\[(a^2+b^2)(x^2+y^2)\ge(ax+by)^2\]</div>
         <div class="example">
-          <h3>例題：若 <span class="math">x²+y²=1</span>，求 <span class="math">3x+4y</span> 的最大值</h3>
-          <ol class="steps"><li><span class="math">(3²+4²)(x²+y²)≥(3x+4y)²</span>。</li><li>所以 <span class="math">25≥(3x+4y)²</span>，即 <span class="math">3x+4y≤5</span>。</li><li>等號時兩組數成比例；取 <span class="math">(x,y)=(3/5,4/5)</span> 可達成。</li></ol>
-          <p class="answer"><strong>答案：</strong>最大值為 5。</p>
+          <h3>例題：若 \(x^2+y^2=1\)，求 \(3x+4y\) 的最大值</h3>
+          <ol class="steps"><li>\((3^2+4^2)(x^2+y^2)\ge(3x+4y)^2\)。</li><li>所以 \(25\ge(3x+4y)^2\)，即 \(3x+4y\le5\)。</li><li>等號時兩組數成比例；取 \((x,y)=\left(\frac{3}{5},\frac{4}{5}\right)\) 可達成。</li></ol>
+          <p class="answer"><strong>答案：</strong>最大值為 \(5\)。</p>
         </div>
       </article>
 
       <article class="method" id="discriminant">
-        <div class="method-header"><div class="method-number">4</div><div><h2>判別式 <span class="math">Δ≥0</span>：反過來問「y 能不能取？」</h2><p>求值域而不易直接配方時，固定一個 y，把 <span class="math">y=f(x)</span> 改寫成 x 的方程式。y 合法，等價於該方程式有實數解。</p></div></div>
+        <div class="method-header"><div class="method-number">4</div><div><h2>判別式 \(\Delta\ge0\)：反過來問「\(y\) 能不能取？」</h2><p>求值域而不易直接配方時，固定一個 \(y\)，把 \(y=f(x)\) 改寫成 \(x\) 的方程式。\(y\) 合法，等價於該方程式有實數解。</p></div></div>
         <div class="example">
-          <h3>例題：求 <span class="math">y=x/(x²+1)</span> 的值域</h3>
-          <ol class="steps"><li><span class="math">yx²−x+y=0</span>。</li><li>對 x 有實數解，需 <span class="math">Δ=1−4y²≥0</span>。</li><li>故 <span class="math">−1/2≤y≤1/2</span>。</li></ol>
-          <p class="answer"><strong>答案：</strong>值域為 <span class="math">[−1/2,1/2]</span>。端點 <span class="math">Δ=0</span>，表示剛好有一個實數解，因此可取到。</p>
+          <h3>例題：求 \(y=\frac{x}{x^2+1}\) 的值域</h3>
+          <ol class="steps"><li>\(yx^2-x+y=0\)。</li><li>對 \(x\) 有實數解，需 \(\Delta=1-4y^2\ge0\)。</li><li>故 \(-\frac{1}{2}\le y\le\frac{1}{2}\)。</li></ol>
+          <p class="answer"><strong>答案：</strong>值域為 \(\left[-\frac{1}{2},\frac{1}{2}\right]\)。端點 \(\Delta=0\)，表示剛好有一個實數解，因此可取到。</p>
         </div>
-        <div class="mistake"><strong>必檢查：</strong>若 y 讓二次項係數變成 0，方程式會退化成一次式；不要因為它不再是二次式就把該 y 漏掉。</div>
+        <div class="mistake"><strong>必檢查：</strong>若 \(y\) 讓二次項係數變成 \(0\)，方程式會退化成一次式；不要因為它不再是二次式就把該 \(y\) 漏掉。</div>
       </article>
 
       <article class="method" id="trig-combine">
-        <div class="method-header"><div class="method-number">5</div><div><h2>三角疊合</h2><p>把 <span class="math">A sinθ+B cosθ</span> 合成一個振幅為 <span class="math">√(A²+B²)</span> 的三角函數；振幅就是最大絕對值。</p></div></div>
-        <div class="formula"><span class="math">A sinθ+B cosθ=R sin(θ+φ)</span>，其中 <span class="math">R=√(A²+B²)</span>。</div>
+        <div class="method-header"><div class="method-number">5</div><div><h2>三角疊合</h2><p>把 \(A\sin\theta+B\cos\theta\) 合成一個振幅為 \(\sqrt{A^2+B^2}\) 的三角函數；振幅就是最大絕對值。</p></div></div>
+        <div class="formula">\[A\sin\theta+B\cos\theta=R\sin(\theta+\varphi),\qquad R=\sqrt{A^2+B^2}\]</div>
         <div class="example">
-          <h3>例題：求 <span class="math">√3 sinθ+cosθ</span> 的最大、最小值（θ 為任意實數）</h3>
-          <ol class="steps"><li><span class="math">R=√[(√3)²+1²]=2</span>。</li><li><span class="math">√3 sinθ+cosθ=2sin(θ+30°)</span>。</li><li>因 <span class="math">−1≤sin(θ+30°)≤1</span>，所以 <span class="math">−2≤√3 sinθ+cosθ≤2</span>。</li></ol>
-          <p class="answer"><strong>答案：</strong>最大值 2，最小值 −2。</p>
+          <h3>例題：求 \(\sqrt{3}\sin\theta+\cos\theta\) 的最大、最小值（\(\theta\) 為任意實數）</h3>
+          <ol class="steps"><li>\(R=\sqrt{(\sqrt{3})^2+1^2}=2\)。</li><li>\(\sqrt{3}\sin\theta+\cos\theta=2\sin(\theta+30^\circ)\)。</li><li>因 \(-1\le\sin(\theta+30^\circ)\le1\)，所以 \(-2\le\sqrt{3}\sin\theta+\cos\theta\le2\)。</li></ol>
+          <p class="answer"><strong>答案：</strong>最大值 \(2\)，最小值 \(-2\)。</p>
         </div>
-        <div class="mistake"><strong>必檢查：</strong>若 θ 有指定區間，<span class="math">sin(θ+φ)</span> 未必能走到 ±1；此時還要在指定角度內比較。</div>
+        <div class="mistake"><strong>必檢查：</strong>若 \(\theta\) 有指定區間，\(\sin(\theta+\varphi)\) 未必能走到 \(\pm1\)；此時還要在指定角度內比較。</div>
       </article>
 
       <article class="method" id="trig-square">
-        <div class="method-header"><div class="method-number">6</div><div><h2>三角配方＋範圍</h2><p>含 <span class="math">sin²θ</span> 或 <span class="math">cos²θ</span> 時，設 <span class="math">t=sinθ</span> 或 <span class="math">t=cosθ</span>；但 t 的範圍固定是 <span class="math">[−1,1]</span>。</p></div></div>
+        <div class="method-header"><div class="method-number">6</div><div><h2>三角配方＋範圍</h2><p>含 \(\sin^2\theta\) 或 \(\cos^2\theta\) 時，設 \(t=\sin\theta\) 或 \(t=\cos\theta\)；但 \(t\) 的範圍固定是 \([-1,1]\)。</p></div></div>
         <div class="example">
-          <h3>例題：求 <span class="math">sin²θ−4sinθ+1</span> 的最大、最小值</h3>
-          <ol class="steps"><li>設 <span class="math">t=sinθ</span>，所以 <span class="math">−1≤t≤1</span>。</li><li><span class="math">t²−4t+1=(t−2)²−3</span>。</li><li>在 <span class="math">t∈[−1,1]</span> 中，<span class="math">t−2∈[−3,−1]</span>，故 <span class="math">(t−2)²∈[1,9]</span>。</li></ol>
-          <p class="answer"><strong>答案：</strong><span class="math">−2≤sin²θ−4sinθ+1≤6</span>；最小值 −2，最大值 6。</p>
+          <h3>例題：求 \(\sin^2\theta-4\sin\theta+1\) 的最大、最小值</h3>
+          <ol class="steps"><li>設 \(t=\sin\theta\)，所以 \(-1\le t\le1\)。</li><li>\(t^2-4t+1=(t-2)^2-3\)。</li><li>在 \(t\in[-1,1]\) 中，\(t-2\in[-3,-1]\)，故 \((t-2)^2\in[1,9]\)。</li></ol>
+          <p class="answer"><strong>答案：</strong>\(-2\le\sin^2\theta-4\sin\theta+1\le6\)；最小值 \(-2\)，最大值 \(6\)。</p>
         </div>
-        <div class="mistake"><strong>最常錯：</strong>把頂點 <span class="math">t=2</span> 直接代入，得到 −3。可是 <span class="math">sinθ</span> 不可能等於 2；必須回到 <span class="math">t∈[−1,1]</span>。</div>
+        <div class="mistake"><strong>最常錯：</strong>把頂點 \(t=2\) 直接代入，得到 \(-3\)。可是 \(\sin\theta\) 不可能等於 \(2\)；必須回到 \(t\in[-1,1]\)。</div>
       </article>
 
       <article class="method" id="exp-log">
         <div class="method-header"><div class="method-number">7</div><div><h2>指數、對數換元後配方</h2><p>先把「看起來複雜」的指數或對數設成一個新變數，再用二次式的方法；關鍵是新變數的天然範圍。</p></div></div>
         <div class="two">
           <article class="example">
-            <h3>指數例：<span class="math">4<sup>x</sup>−6·2<sup>x</sup>+5</span></h3>
-            <ol class="steps"><li>設 <span class="math">t=2<sup>x</sup>&gt;0</span>，則 <span class="math">4<sup>x</sup>=t²</span>。</li><li><span class="math">t²−6t+5=(t−3)²−4</span>。</li><li><span class="math">t=3&gt;0</span> 可取。</li></ol>
-            <p class="answer"><strong>最小值：</strong>−4。</p>
+            <h3>指數例：\(4^x-6\cdot2^x+5\)</h3>
+            <ol class="steps"><li>設 \(t=2^x>0\)，則 \(4^x=t^2\)。</li><li>\(t^2-6t+5=(t-3)^2-4\)。</li><li>\(t=3>0\) 可取。</li></ol>
+            <p class="answer"><strong>最小值：</strong>\(-4\)。</p>
           </article>
           <article class="example">
-            <h3>對數例：<span class="math">(log<sub>2</sub>x)²−4log<sub>2</sub>x+1</span></h3>
-            <ol class="steps"><li>先寫 <span class="math">x&gt;0</span>；設 <span class="math">t=log<sub>2</sub>x</span>，則 <span class="math">t∈ℝ</span>。</li><li><span class="math">t²−4t+1=(t−2)²−3</span>。</li><li><span class="math">t=2</span> 對應 <span class="math">x=4</span>。</li></ol>
-            <p class="answer"><strong>最小值：</strong>−3。</p>
+            <h3>對數例：\((\log_2 x)^2-4\log_2 x+1\)</h3>
+            <ol class="steps"><li>先寫 \(x>0\)；設 \(t=\log_2 x\)，則 \(t\in\mathbb{R}\)。</li><li>\(t^2-4t+1=(t-2)^2-3\)。</li><li>\(t=2\) 對應 \(x=4\)。</li></ol>
+            <p class="answer"><strong>最小值：</strong>\(-3\)。</p>
           </article>
         </div>
       </article>
 
       <article class="method" id="calculus">
         <div class="method-header"><div class="method-number">8</div><div><h2>微分求極值</h2><p>當沒有漂亮的結構，或題目在指定區間中求全域最值時，微分是穩定的通法。</p></div></div>
-        <div class="formula"><strong>閉區間 [a,b] 的固定流程：</strong>臨界點 <span class="math">f′(x)=0</span> ＋ f′ 不存在但 f 有定義的點 ＋ 兩個端點，全部代回比較。</div>
+        <div class="formula"><strong>閉區間 \([a,b]\) 的固定流程：</strong>臨界點 \(f'(x)=0\) ＋ \(f'\) 不存在但 \(f\) 有定義的點 ＋ 兩個端點，全部代回比較。</div>
         <div class="example">
-          <h3>例題：求 <span class="math">f(x)=x³−3x</span> 在 <span class="math">[−2,3]</span> 的最大、最小值</h3>
-          <ol class="steps"><li><span class="math">f′(x)=3(x−1)(x+1)</span>，臨界點是 <span class="math">x=−1,1</span>。</li><li>候選點：<span class="math">−2,−1,1,3</span>。</li><li><span class="math">f(−2)=−2</span>，<span class="math">f(−1)=2</span>，<span class="math">f(1)=−2</span>，<span class="math">f(3)=18</span>。</li></ol>
-          <p class="answer"><strong>答案：</strong>最大值 18（<span class="math">x=3</span>）；最小值 −2（<span class="math">x=−2</span> 或 1）。</p>
+          <h3>例題：求 \(f(x)=x^3-3x\) 在 \([-2,3]\) 的最大、最小值</h3>
+          <ol class="steps"><li>\(f'(x)=3(x-1)(x+1)\)，臨界點是 \(x=-1,1\)。</li><li>候選點：\(-2,-1,1,3\)。</li><li>\(f(-2)=-2\)，\(f(-1)=2\)，\(f(1)=-2\)，\(f(3)=18\)。</li></ol>
+          <p class="answer"><strong>答案：</strong>最大值 \(18\)（\(x=3\)）；最小值 \(-2\)（\(x=-2\) 或 \(1\)）。</p>
         </div>
       </article>
     </section>

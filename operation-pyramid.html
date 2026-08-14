@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>高一先修：加減乘除次方金字塔</title>
+  <title>國中先修：加減乘除次方金字塔</title>
   <style>
     :root {
       --bg-a: #eef6ff;
@@ -57,27 +57,75 @@
       background: #fff;
     }
     .title { margin: 0 0 10px; font-size: 22px; }
+    .pyramid-stage {
+      --layer-height: clamp(78px, 19vw, 100px);
+      position: relative;
+      width: min(860px, 100%);
+      min-height: calc(var(--layer-height) * 3);
+      margin: 12px auto 14px;
+      padding: 0 145px;
+    }
     .pyramid {
-      display: grid;
-      gap: 8px;
-      justify-items: center;
-      margin: 10px 0 4px;
+      position: relative;
+      width: min(520px, 100%);
+      height: calc(var(--layer-height) * 3);
+      margin: 0 auto;
     }
     .layer {
-      clip-path: polygon(50% 0, 100% 100%, 0 100%);
-      height: 110px;
-      width: min(520px, 96%);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      height: var(--layer-height);
       display: flex;
-      align-items: end;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      padding-bottom: 14px;
       text-align: center;
       font-weight: 700;
       line-height: 1.5;
+      filter: drop-shadow(0 1px 0 rgba(30, 41, 59, 0.36));
     }
-    .pow { width: min(240px, 52%); background: var(--pow); color: var(--pow-deep); }
-    .mul { width: min(360px, 74%); background: var(--mul); color: var(--mul-deep); }
-    .add { width: min(500px, 96%); background: var(--plus); color: var(--plus-deep); }
+    .pow {
+      top: 0;
+      width: 33.333%;
+      padding-top: 36px;
+      background: var(--pow);
+      color: var(--pow-deep);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+    .mul {
+      top: var(--layer-height);
+      width: 66.667%;
+      background: var(--mul);
+      color: var(--mul-deep);
+      clip-path: polygon(25% 0, 75% 0, 100% 100%, 0 100%);
+    }
+    .add {
+      top: calc(var(--layer-height) * 2);
+      width: 100%;
+      background: var(--plus);
+      color: var(--plus-deep);
+      clip-path: polygon(16.667% 0, 83.333% 0, 100% 100%, 0 100%);
+    }
+    .layer .mjx-container { margin: 0 !important; }
+    .pyramid-key {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      width: 140px;
+      color: #334155;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .pyramid-key .arrow {
+      color: #64748b;
+      font-size: 24px;
+      line-height: 1;
+    }
+    .key-pow { top: calc(var(--layer-height) * 0.46); right: 0; color: var(--pow-deep); }
+    .key-mul { top: calc(var(--layer-height) * 1.4); left: 0; color: var(--mul-deep); }
+    .key-add { top: calc(var(--layer-height) * 2.35); right: 0; color: var(--plus-deep); }
     .note { margin: 0; color: var(--sub); line-height: 1.8; }
     .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
     .topic-btn {
@@ -151,25 +199,60 @@
       color: #0f766e;
       font-weight: 700;
     }
-    @media (max-width: 620px) {
-      .layer { height: 96px; padding-bottom: 10px; font-size: 15px; }
+    @media (max-width: 700px) {
+      .pyramid-stage {
+        min-height: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 7px 10px;
+      }
+      .pyramid { flex: 0 0 100%; }
+      .pyramid-key {
+        position: static;
+        width: auto;
+        padding: 5px 9px;
+        border: 1px solid currentColor;
+        border-radius: 999px;
+        font-size: 14px;
+      }
+      .pyramid-key .arrow { display: none; }
+      .layer { font-size: 14px; }
     }
   </style>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
   <main class="wrap">
     <header class="head">
-      <h1>高一先修：加減乘除次方金字塔</h1>
+      <h1>國中先修：加減乘除次方金字塔</h1>
       <p class="lead">用金字塔先建立「哪一層先算」的直覺，再用例題與按鈕切換補上規則、錯誤提醒與分層練習。老師可直接投影講解，學生也可自己按步驟練習。</p>
     </header>
 
     <section class="main">
       <article class="card">
         <h2 class="title">1. 運算金字塔（先觀念）</h2>
-        <div class="pyramid" aria-label="加減乘除次方金字塔">
-          <div class="layer pow">上層：次方與根號<br>先算最濃縮的重複乘法</div>
-          <div class="layer mul">中層：乘除法<br>處理倍數、平均、分組</div>
-          <div class="layer add">底層：加減法<br>最後做合併與比較</div>
+        <div class="pyramid-stage">
+          <div class="pyramid" aria-label="加減乘除次方金字塔">
+            <div class="layer pow">\(a^n,\ \sqrt[n]{a}\)</div>
+            <div class="layer mul">\(a \times b,\ a \div b\)</div>
+            <div class="layer add">\(a+b,\ a-b\)</div>
+          </div>
+          <div class="pyramid-key key-pow">上層：次方與根號 <span class="arrow" aria-hidden="true">←</span></div>
+          <div class="pyramid-key key-mul"><span class="arrow" aria-hidden="true">→</span> 中層：乘除法</div>
+          <div class="pyramid-key key-add">底層：加減法 <span class="arrow" aria-hidden="true">←</span></div>
         </div>
         <p class="note">課堂提示：先看符號層級，再下手計算。不是「從左到右一路算到底」，而是「高層先、同層再由左到右」。</p>
       </article>
@@ -200,20 +283,20 @@
             <tbody>
               <tr>
                 <td>先加後乘</td>
-                <td>2 + 3 × 4 = 20</td>
-                <td>先算乘法：3 × 4 = 12，最後 2 + 12 = 14</td>
+                <td>\(2+3 \times 4=20\)</td>
+                <td>先算乘法：\(3 \times 4=12\)，最後 \(2+12=14\)</td>
                 <td>先看金字塔高度，不要被左到右騙走。</td>
               </tr>
               <tr>
                 <td>分母亂拆</td>
-                <td>(a + b) / c = a + b/c</td>
-                <td>(a + b) 要視為整體，若要拆須同除 c：a/c + b/c</td>
+                <td>\(\frac{a+b}{c}=a+\frac{b}{c}\)</td>
+                <td>\(a+b\) 要視為整體；若要拆，須同除 \(c\)：\(\frac{a}{c}+\frac{b}{c}\)</td>
                 <td>分母要同時照顧括號內每一項。</td>
               </tr>
               <tr>
                 <td>平方誤拆</td>
-                <td>(a + b)^2 = a^2 + b^2</td>
-                <td>(a + b)^2 = a^2 + 2ab + b^2</td>
+                <td>\((a+b)^2=a^2+b^2\)</td>
+                <td>\((a+b)^2=a^2+2ab+b^2\)</td>
                 <td>括號平方不是各自平方後直接相加。</td>
               </tr>
             </tbody>
@@ -226,21 +309,21 @@
         <div class="exercise-grid">
           <section class="exercise">
             <h4>基礎</h4>
-            <p>1) 3 + 5 × 2 = ?</p>
+            <p>1) \(3+5 \times 2=\ ?\)</p>
             <input id="q1" placeholder="輸入答案">
             <button class="check-btn" data-q="q1" data-a="13">檢查</button>
             <div id="r1" class="result"></div>
           </section>
           <section class="exercise">
             <h4>進階</h4>
-            <p>2) (2 + 1) × 3^2 = ?</p>
+            <p>2) \((2+1) \times 3^2=\ ?\)</p>
             <input id="q2" placeholder="輸入答案">
             <button class="check-btn" data-q="q2" data-a="27">檢查</button>
             <div id="r2" class="result"></div>
           </section>
           <section class="exercise">
             <h4>挑戰</h4>
-            <p>3) 2 + 3 × (4^2 - 5) = ?</p>
+            <p>3) \(2+3 \times (4^2-5)=\ ?\)</p>
             <input id="q3" placeholder="輸入答案">
             <button class="check-btn" data-q="q3" data-a="35">檢查</button>
             <div id="r3" class="result"></div>
@@ -261,7 +344,7 @@
           <ul>
             <li>生活直覺：先算每盒幾顆（乘法），最後再算總共幾顆（加法）。</li>
             <li>同層規則：只有加減時，才由左到右計算。</li>
-            <li>例題：18 - 6 + 2 = 12 + 2 = 14。</li>
+            <li>例題：\\(18-6+2=12+2=14\\)。</li>
           </ul>`
       },
       mul: {
@@ -269,9 +352,9 @@
         html: `
           <p>乘除法比加減更高層，常用在「重複相加的壓縮」或「平均分配」。</p>
           <ul>
-            <li>生活直覺：4 盒每盒 6 顆，先算 4 × 6。</li>
+            <li>生活直覺：4 盒每盒 6 顆，先算 \\(4 \\times 6\\)。</li>
             <li>同層規則：乘除同層，照左到右。</li>
-            <li>例題：24 ÷ 3 × 2 = 8 × 2 = 16。</li>
+            <li>例題：\\(24 \\div 3 \\times 2=8 \\times 2=16\\)。</li>
           </ul>`
       },
       pow: {
@@ -279,9 +362,10 @@
         html: `
           <p>次方代表重複乘法，根號是次方的反向概念，所以優先度最高。</p>
           <ul>
-            <li>生活直覺：3^2 是 3 乘 3，不是 3 乘 2。</li>
+            <li>生活直覺：\\(3^2\\) 是 \\(3 \\times 3\\)，不是 \\(3 \\times 2\\)。</li>
+            <li>符號辨識：\\(a^n\\) 的 \\(n\\) 是次方；\\(a_n\\) 的 \\(n\\) 是下標，兩者意義不同。</li>
             <li>銜接觀念：先算次方，再把結果帶回乘除加減。</li>
-            <li>例題：2 + 3^2 = 2 + 9 = 11。</li>
+            <li>例題：\\(2+3^2=2+9=11\\)，而 \\(\\sqrt{49}=7\\)。</li>
           </ul>`
       },
       order: {
@@ -289,8 +373,8 @@
         html: `
           <p>真正的流程是「看層級」而不是「只看位置」。括號把內容暫時變成最高優先。</p>
           <ul>
-            <li>示例：2 + 3 × 4^2 = 2 + 3 × 16 = 2 + 48 = 50。</li>
-            <li>若有括號：(2 + 3) × 4^2 = 5 × 16 = 80。</li>
+            <li>示例：\\(2+3 \\times 4^2=2+3 \\times 16=2+48=50\\)。</li>
+            <li>若有括號：\\((2+3) \\times 4^2=5 \\times 16=80\\)。</li>
             <li>最常犯錯：把 2 + 3 先算掉，忘記乘法層級更高。</li>
           </ul>`
       }
@@ -303,6 +387,10 @@
       const item = topicData[key];
       panel.innerHTML = `<h3>${item.title}</h3>${item.html}`;
       buttons.forEach((btn) => btn.classList.toggle("active", btn.dataset.topic === key));
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetClear([panel]);
+        window.MathJax.typesetPromise([panel]);
+      }
     }
 
     buttons.forEach((btn) => {

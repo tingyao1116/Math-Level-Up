@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>國二圖形比例與公式地圖</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]], processEscapes: true },
+      chtml: { displayAlign: "center" }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root { --ink:#16283a; --muted:#53687b; --paper:#f5f9fc; --card:#fff; --line:#d7e4ec; --blue:#126ea8; --blue-pale:#eaf6ff; --teal:#087b70; --teal-pale:#e5f8f4; --gold:#985900; --gold-pale:#fff4d9; --purple:#684c9f; --purple-pale:#f1ecff; --red:#a43b45; --red-pale:#fff0f1; --shadow:0 15px 38px rgba(25,53,84,.08); }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:radial-gradient(circle at 5% 0%,#dcf4ff 0,transparent 29rem),radial-gradient(circle at 97% 12%,#fff0c9 0,transparent 25rem),var(--paper); font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; line-height:1.78; }
+    .wrap { width:min(1160px,calc(100% - 32px)); margin:0 auto; padding:24px 0 60px; }
+    .back { color:var(--blue); font-weight:850; text-decoration:none; } .back:hover { text-decoration:underline; }
+    .hero { margin:18px 0 31px; padding:clamp(26px,5vw,52px); border-radius:29px; color:#fff; background:linear-gradient(128deg,#173a65 0%,#176ca6 57%,#11817e 100%); box-shadow:var(--shadow); }
+    .eyebrow,.tag,.level { display:inline-block; padding:3px 10px; border-radius:999px; font-size:.86rem; font-weight:850; letter-spacing:.02em; } .eyebrow { color:#dff8ff; background:rgba(255,255,255,.15); }
+    .hero h1 { margin:9px 0 8px; font-size:clamp(2rem,5.2vw,3.55rem); line-height:1.2; } .lead { max-width:860px; margin:0; color:#eafaff; font-size:1.08rem; }
+    .nav { display:flex; flex-wrap:wrap; gap:9px; margin-top:23px; } .nav a { padding:7px 13px; border:1px solid rgba(255,255,255,.48); border-radius:999px; color:#fff; font-weight:850; text-decoration:none; } .nav a:hover { background:rgba(255,255,255,.14); }
+    section { scroll-margin-top:16px; } .section { margin-top:42px; } .section-head { margin-bottom:15px; } h2 { margin:0; font-size:clamp(1.55rem,3vw,2.18rem); line-height:1.35; } h3 { margin:0 0 8px; font-size:1.18rem; line-height:1.48; } h4 { margin:0 0 5px; } p { margin:7px 0 0; } .section-head p,.card>p { color:var(--muted); }
+    .card { padding:clamp(18px,3vw,26px); border:1px solid var(--line); border-radius:19px; background:var(--card); box-shadow:0 6px 20px rgba(32,62,90,.045); } .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; } .three-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; } .four-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .tag { color:var(--blue); background:var(--blue-pale); } .tag.teal { color:var(--teal); background:var(--teal-pale); } .tag.gold { color:var(--gold); background:var(--gold-pale); } .tag.purple { color:var(--purple); background:var(--purple-pale); } .level.basic { color:#07685f; background:var(--teal-pale); } .level.advance { color:#915604; background:var(--gold-pale); } .level.challenge { color:#65449c; background:var(--purple-pale); }
+    .formula { margin:14px 0; padding:13px 15px; border-radius:13px; color:#123751; background:#f1f8fc; overflow-x:auto; } .formula mjx-container { margin:0 !important; } .formula.compact { font-size:.95rem; } .math-line { color:#153d59; font-weight:750; }
+    .note,.teacher-note,.error-note,.success-note { margin-top:14px; padding:12px 14px; border-left:4px solid var(--blue); border-radius:0 12px 12px 0; background:var(--blue-pale); } .teacher-note { border-color:var(--gold); background:var(--gold-pale); } .error-note { border-color:var(--red); background:var(--red-pale); } .success-note { border-color:var(--teal); background:var(--teal-pale); }
+    .roadmap { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; } .roadmap-step { position:relative; min-height:128px; padding:45px 13px 13px; border:1px solid var(--line); border-radius:15px; background:#fbfdff; } .roadmap-step b { position:absolute; top:12px; left:13px; display:grid; place-items:center; width:25px; height:25px; border-radius:50%; color:#fff; background:var(--blue); font-family:Cambria,serif; } .roadmap-step:nth-child(2) b,.roadmap-step:nth-child(5) b { background:var(--teal); } .roadmap-step:nth-child(3) b,.roadmap-step:nth-child(6) b { background:var(--purple); } .roadmap-step:nth-child(4) b { background:var(--gold); } .roadmap-step p { margin:3px 0 0; color:var(--muted); font-size:.9rem; line-height:1.55; }
+    .rule { padding:15px; border:1px solid var(--line); border-radius:15px; background:#fbfdff; } .rule:nth-child(1) { border-top:4px solid var(--blue); } .rule:nth-child(2) { border-top:4px solid var(--teal); } .rule:nth-child(3) { border-top:4px solid var(--gold); } .rule:nth-child(4) { border-top:4px solid var(--purple); } .rule p { color:var(--muted); font-size:.92rem; }
+    .two-col { display:grid; grid-template-columns:minmax(305px,.95fr) minmax(300px,1.05fr); gap:18px; align-items:center; } .diagram-frame { padding:10px; border:1px solid #c8e0e9; border-radius:17px; background:linear-gradient(135deg,#fff,#eef9fc); } svg { display:block; width:100%; height:auto; overflow:visible; } .diagram-frame svg { min-height:270px; }
+    .diagram .edge { fill:none; stroke:#254961; stroke-width:3; stroke-linejoin:round; } .diagram .guide { fill:none; stroke:#90a8b7; stroke-width:2; stroke-dasharray:7 5; } .diagram .blue { fill:none; stroke:#1c82bb; stroke-width:4.6; stroke-linecap:round; } .diagram .teal { fill:none; stroke:#0d907c; stroke-width:4.6; stroke-linecap:round; } .diagram .gold { fill:none; stroke:#af6b00; stroke-width:4.6; stroke-linecap:round; } .diagram .point { fill:#fff; stroke:#294b63; stroke-width:2.3; } .diagram .middle { fill:#fff9de; stroke:#b46a00; stroke-width:2.5; } .diagram text { fill:#173249; font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; font-size:16px; font-weight:850; paint-order:stroke; stroke:#fff; stroke-width:4px; stroke-linejoin:round; } .diagram .small { font-size:13px; }
+    .comparison { width:100%; border-collapse:collapse; overflow:hidden; border:1px solid var(--line); border-radius:14px; } .comparison th,.comparison td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; } .comparison tr:last-child td { border-bottom:0; } .comparison th { color:#17415e; background:#edf7fd; font-weight:850; } .comparison td:first-child { color:#21445e; font-weight:850; }
+    .lesson-list { display:grid; gap:10px; } .lesson-item { position:relative; padding:12px 14px 12px 54px; border:1px solid var(--line); border-radius:13px; background:#fbfdff; } .lesson-item b { position:absolute; top:13px; left:14px; display:grid; place-items:center; width:28px; height:28px; border-radius:50%; color:#fff; background:var(--blue); } .lesson-item:nth-child(2) b { background:var(--teal); } .lesson-item:nth-child(3) b { background:var(--gold); } .lesson-item:nth-child(4) b { background:var(--purple); } .lesson-item p { color:var(--muted); font-size:.93rem; }
+    .calculator { margin-top:16px; } .input-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:11px; margin-top:14px; } label { display:block; color:#304a61; font-size:.95rem; font-weight:850; } input[type="number"] { width:100%; min-height:42px; margin-top:5px; padding:7px 10px; border:1px solid #aec0ce; border-radius:10px; color:var(--ink); background:#fff; font:inherit; } .button-row { display:flex; flex-wrap:wrap; gap:9px; margin-top:13px; } button { min-height:42px; padding:8px 13px; border:1px solid transparent; border-radius:10px; color:#fff; background:var(--blue); cursor:pointer; font:inherit; font-weight:850; } button:hover { background:#105989; } button.alt { color:#31536b; border-color:#c9dbe5; background:#ecf5f9; } button.alt:hover { background:#dcecf3; } button:focus,input:focus,a:focus,summary:focus { outline:3px solid #80cae8; outline-offset:2px; } .result { min-height:88px; margin-top:14px; padding:13px; border:1px solid #bfe1d9; border-radius:13px; color:#075e57; background:var(--teal-pale); overflow-x:auto; } .result mjx-container { margin:.25em 0 !important; }
+    details { margin-top:12px; border:1px solid var(--line); border-radius:11px; background:#fbfdff; } summary { padding:9px 11px; color:var(--blue); cursor:pointer; font-weight:850; } details>div,details>p { padding:0 12px 12px; color:#3c5368; } .footer { margin:35px 0 0; color:var(--muted); text-align:center; }
+    @media (max-width:980px) { .roadmap { grid-template-columns:repeat(3,minmax(0,1fr)); } .four-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:720px) { .wrap { width:min(100% - 22px,1160px); padding-top:15px; } .grid,.two-col,.input-grid { grid-template-columns:1fr; } .three-grid { grid-template-columns:1fr; } .hero { border-radius:22px; } .comparison { display:block; overflow-x:auto; } }
+    @media (max-width:470px) { .roadmap,.four-grid { grid-template-columns:1fr; } .diagram-frame svg { min-height:225px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回到數學教學小遊戲</a>
+    <header class="hero">
+      <span class="eyebrow">國二幾何・從圖形條件走到公式</span>
+      <h1>圖形比例與公式地圖</h1>
+      <p class="lead">這一頁不是把公式排成清單，而是依照解題流程整理：先用面積辨認比例，再處理中點與四邊形，接著進入梯形，最後才用相似、角平分線與特殊比例型找長度。</p>
+      <nav class="nav" aria-label="頁面段落"><a href="#path">學習順序</a><a href="#area">面積與四邊形</a><a href="#midpoints">中點連線</a><a href="#trapezoid">梯形</a><a href="#similarity">相似與比例線</a></nav>
+    </header>
+
+    <section id="path" class="section" aria-labelledby="path-title">
+      <div class="section-head"><span class="tag gold">先決定上課順序</span><h2 id="path-title">從「看得見的面積」走到「要證明的比例」</h2><p>前四站是國二主線；第 5、6 站適合在學生已能畫輔助線、辨認相似三角形後再帶入。</p></div>
+      <div class="roadmap">
+        <article class="roadmap-step"><b>1</b><h3>面積比</h3><p>等底看高、等高看底；相似時才平方。</p></article>
+        <article class="roadmap-step"><b>2</b><h3>平行四邊形</h3><p>先用平行線與面積，建立四邊形直覺。</p></article>
+        <article class="roadmap-step"><b>3</b><h3>中點連線</h3><p>三角形先做，再推到任意四邊形。</p></article>
+        <article class="roadmap-step"><b>4</b><h3>梯形</h3><p>中線、面積、截線等差，再到對角線面積。</p></article>
+        <article class="roadmap-step"><b>5</b><h3>母子相似</h3><p>直角三角形高作下去，三個三角形相似。</p></article>
+        <article class="roadmap-step"><b>6</b><h3>比例線型</h3><p>角平分線、平行線連續型與量冠型。</p></article>
+      </div>
+      <div class="teacher-note"><strong>備課提醒：</strong>每換一站，先請學生說「圖上哪個條件沒有變」。能說出等高、平行、直角或相似，公式才不會變成死背。</div>
+    </section>
+
+    <section id="area" class="section" aria-labelledby="area-title">
+      <div class="section-head"><span class="tag">第 1 站・面積是比例的起點</span><h2 id="area-title">先把四個面積關係讀熟</h2><p>三角形面積的本質是 \(\dfrac12\times\text{底}\times\text{高}\)。只要指出哪個量相同，就能知道要比底、高，還是比夾邊的乘積。</p></div>
+      <div class="four-grid">
+        <article class="rule"><h3>等底</h3><p>底邊相同，高決定面積大小。</p><div class="formula compact">\[\frac{S_1}{S_2}=\frac{h_1}{h_2}\]</div></article>
+        <article class="rule"><h3>等高</h3><p>高相同，底邊決定面積大小。</p><div class="formula compact">\[\frac{S_1}{S_2}=\frac{b_1}{b_2}\]</div></article>
+        <article class="rule"><h3>夾角相等</h3><p>共用 \(\sin\theta\)，留下兩夾邊的乘積。</p><div class="formula compact">\[\frac{S_1}{S_2}=\frac{a_1b_1}{a_2b_2}\]</div></article>
+        <article class="rule"><h3>兩圖相似</h3><p>邊長比為 \(k\)，面積比要平方。</p><div class="formula compact">\[\frac{S_1}{S_2}=k^2\]</div></article>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card"><span class="tag teal">平行四邊形面積一半</span><h3>頂點在另一條平行邊上，就形成一半面積</h3><p>在平行四邊形 \(ABCD\) 中，若 \(E\) 在 \(AD\) 上，則 \(\triangle BCE\) 和平行四邊形共用底 \(BC\)，高則剛好相同。</p><div class="formula">\[ [\triangle BCE]=\frac12[ABCD] \]</div><div class="note"><strong>判讀口訣：</strong>「三角形的底」就是平行四邊形的一條底，第三點又在另一條平行線上，立刻想到一半。</div></article>
+        <article class="card"><span class="tag purple">平行四邊形中點 \(M\)</span><h3>上、下、左、右四塊面積的平衡</h3><p>\(M\) 是平行四邊形內任意一點，連接 \(M\) 到四個頂點。上、下兩塊面積和，等於左、右兩塊面積和；兩組合起來都剛好是整個平行四邊形的一半。</p><div class="formula">\[S_{\text{上}}+S_{\text{下}}=S_{\text{左}}+S_{\text{右}}=\frac12[ABCD]\]</div><div class="error-note"><strong>易錯：</strong>這裡的 \(M\) 不必是兩對角線交點；只要 \(M\) 在平行四邊形內部，關係都成立。</div></article>
+      </div>
+      <article class="card" style="margin-top:16px"><div class="two-col">
+        <div class="diagram-frame"><svg class="diagram" viewBox="0 0 540 315" role="img" aria-label="矩形中任意一點到四頂點距離的平方和關係">
+          <rect x="80" y="45" width="360" height="215" fill="#fafdff" stroke="#254961" stroke-width="3"></rect><circle class="point" cx="250" cy="142" r="6"></circle><line class="blue" x1="80" y1="45" x2="250" y2="142"></line><line class="teal" x1="440" y1="45" x2="250" y2="142"></line><line class="teal" x1="80" y1="260" x2="250" y2="142"></line><line class="blue" x1="440" y1="260" x2="250" y2="142"></line><text x="63" y="37">A</text><text x="444" y="37">D</text><text x="63" y="284">B</text><text x="444" y="284">C</text><text x="259" y="137">P</text><text x="150" y="85">a</text><text x="343" y="88">d</text><text x="154" y="217">b</text><text x="342" y="216">c</text><path d="M83 58 L95 58 L95 46" fill="none" stroke="#b44" stroke-width="2"></path><path d="M425 46 L425 58 L437 58" fill="none" stroke="#b44" stroke-width="2"></path><path d="M83 247 L95 247 L95 259" fill="none" stroke="#b44" stroke-width="2"></path><path d="M425 259 L425 247 L437 247" fill="none" stroke="#b44" stroke-width="2"></path>
+        </svg></div>
+        <div><span class="tag gold">矩形中 \(P\)</span><h3>兩組對角頂點距離的平方和相等</h3><p>令 \(PA=a\)、\(PB=b\)、\(PC=c\)、\(PD=d\)。這是座標、畢氏定理與矩形直角性質的綜合結果。</p><div class="formula">\[PA^2+PC^2=PB^2+PD^2\] \[a^2+c^2=b^2+d^2\]</div><div class="note"><strong>用法：</strong>題目給三條從 \(P\) 到頂點的距離時，第四條常可直接由平方和求出。</div></div>
+      </div></article>
+    </section>
+
+    <section id="midpoints" class="section" aria-labelledby="midpoint-title">
+      <div class="section-head"><span class="tag teal">第 2 站・中點連線先看平行，再看一半</span><h2 id="midpoint-title">由三角形推到任意四邊形</h2><p>中點連線是把「一個大圖」縮成「半長、平行、相似小圖」的標準入口；先把三角形版本學穩，再處理四邊形的升級版。</p></div>
+      <div class="grid">
+        <article class="card"><div class="diagram-frame"><svg class="diagram" viewBox="0 0 460 290" role="img" aria-label="三角形兩邊中點連線示意圖"><polygon points="230,35 55,245 405,245" fill="#fff9c9" stroke="#254961" stroke-width="3"></polygon><line class="teal" x1="143" y1="140" x2="318" y2="140"></line><circle class="middle" cx="143" cy="140" r="5"></circle><circle class="middle" cx="318" cy="140" r="5"></circle><text x="224" y="27">A</text><text x="39" y="263">B</text><text x="409" y="263">C</text><text x="128" y="132">D</text><text x="322" y="132">E</text><text x="190" y="128" class="small">DE</text><text x="196" y="273" class="small">BC</text></svg></div><span class="tag">三角形中點連線</span><h3>兩腰中點相連：平行且一半</h3><p>若 \(D,E\) 分別為 \(AB,AC\) 的中點，則小三角形和大三角形相似，邊長比為 \(1:2\)。</p><div class="formula">\[DE\parallel BC,\qquad DE=\frac12BC\] \[\frac{[\triangle ADE]}{[\triangle ABC]}=\left(\frac12\right)^2=\frac14\]</div></article>
+        <article class="card"><span class="tag purple">邊長比 vs. 面積比</span><h3>只要相似，面積一定是邊長的平方比</h3><p>若兩個相似圖形的對應邊長比為 \(m:n\)，周長跟著一階變化，面積則是二階變化。</p><div class="formula">\[\text{邊長比}=m:n\] \[\text{面積比}=m^2:n^2\]</div><div class="teacher-note"><strong>教法：</strong>先問「長和寬各放大幾倍？」學生回答兩個方向都放大後，再帶出平方；不要只說「相似要平方」。</div></article>
+      </div>
+      <article class="card" style="margin-top:16px"><span class="tag gold">四邊形中點連線・華里農定理</span><h3>四個邊中點依序連起來，一定得到平行四邊形</h3><p>在任意四邊形 \(ABCD\) 中，令 \(E,F,G,H\) 分別為 \(AB,BC,CD,DA\) 的中點。\(EFGH\) 是平行四邊形，且它的兩組邊分別平行於原四邊形的兩條對角線。</p><div class="formula">\[EF\parallel AC,\quad FG\parallel BD\] \[EF=\frac12AC,\quad FG=\frac12BD\]</div><table class="comparison"><thead><tr><th>原四邊形的對角線條件</th><th>中點連線四邊形 \(EFGH\)</th><th>截圖中的常見例子</th></tr></thead><tbody><tr><td>沒有額外條件</td><td>平行四邊形</td><td>任意四邊形</td></tr><tr><td>\(AC=BD\)</td><td>菱形</td><td>矩形、等腰梯形</td></tr><tr><td>\(AC\perp BD\)</td><td>矩形</td><td>菱形、箏形</td></tr><tr><td>\(AC=BD\) 且 \(AC\perp BD\)</td><td>正方形</td><td>正方形</td></tr></tbody></table><div class="error-note"><strong>易錯：</strong>「任意四邊形」的中點連線不是任意形狀，而是一定為平行四邊形；要變成矩形或菱形，才額外看原圖的兩條對角線。</div></article>
+    </section>
+
+    <section id="trapezoid" class="section" aria-labelledby="trapezoid-title">
+      <div class="section-head"><span class="tag gold">第 3 站・梯形集中整理</span><h2 id="trapezoid-title">先用底與高，再處理截線與對角線</h2><p>統一令上底為 \(a\)、下底為 \(b\)，且 \(b&gt;a\)，高為 \(h\)，中線為 \(m\)。固定記號後，公式才不會因上下底顛倒而寫錯。</p></div>
+      <div class="grid">
+        <article class="card"><span class="tag teal">面積與中線</span><h3>把梯形看成「平均底 × 高」</h3><div class="formula">\[m=\frac{a+b}{2}\] \[S=\frac{(a+b)h}{2}=mh\]</div><p>中線長就是兩底平均，因此面積也可以直接用「中線乘高」。</p><div class="note"><strong>檢查：</strong>\(m\) 必須介於 \(a\) 與 \(b\) 之間；若算出比短底還短，通常是加減號用錯。</div></article>
+        <article class="card"><span class="tag purple">等腰梯形的高</span><h3>先把兩底差平均分到左右</h3><p>等腰梯形腰長為 \(c\)。從上底兩端向下作垂線後，每一側的水平長都為 \(\dfrac{b-a}{2}\)。</p><div class="formula">\[h=\sqrt{c^2-\left(\frac{b-a}{2}\right)^2}\]</div><div class="note"><strong>流程：</strong>先畫高 → 找右三角形 → 用畢氏定理。根號裡是「腰平方減水平短邊平方」。</div></article>
+      </div>
+      <article class="card" style="margin-top:16px"><div class="two-col">
+        <div class="diagram-frame"><svg class="diagram" viewBox="0 0 550 330" role="img" aria-label="梯形對角線交點分割面積比示意圖"><polygon points="65,270 490,270 400,55 165,55" fill="#fbfdff" stroke="#254961" stroke-width="3"></polygon><line class="guide" x1="65" y1="270" x2="400" y2="55"></line><line class="guide" x1="490" y1="270" x2="165" y2="55"></line><circle class="point" cx="280" cy="132" r="5"></circle><text x="45" y="294">A</text><text x="495" y="294">B</text><text x="403" y="45">C</text><text x="148" y="45">D</text><text x="289" y="128">O</text><text x="267" y="35">上底 a</text><text x="252" y="300">下底 b</text><text x="262" y="89" class="small">a²</text><text x="163" y="168" class="small">ab</text><text x="363" y="168" class="small">ab</text><text x="265" y="220" class="small">b²</text></svg></div>
+        <div><span class="tag">梯形對角線面積</span><h3>交點四周的面積比：平方、乘積、平方、乘積</h3><p>對角線交於 \(O\) 時，先用平行線找相似，得到兩條對角線的分段比；再用同高或同角面積比。</p><div class="formula">\[\frac{AO}{OC}=\frac{BO}{OD}=\frac{b}{a}\] \[[\triangle COD]:[\triangle AOD]:[\triangle AOB]:[\triangle BOC]=a^2:ab:b^2:ab\]</div><div class="teacher-note"><strong>先後順序：</strong>不要直接背四塊面積。先寫「底比 \(a:b\)」，再知道上、下是平方 \(a^2,b^2\)，兩側是乘積 \(ab\)。</div></div>
+      </div></article>
+      <article class="card" style="margin-top:16px"><span class="tag teal">梯形內的平行截線</span><h3>等距平行線的長度會排成等差數列</h3><p>從上底往下量，高度比例為 \(t\) 的截線長記為 \(\ell(t)\)。因為每往下相同高度，左右兩腰各增加相同的水平距離，所以截線長等差增加。</p><div class="formula">\[\ell(t)=a+t(b-a)\qquad (0\le t\le 1)\] \[a,\ a+d,\ a+2d,\ \ldots,\ b\quad\text{為等差數列}\]</div><div class="note"><strong>題目線索：</strong>看到梯形內有多條「平行底邊且等距」的線，不必每條都相似一次；直接把線長當成等差數列處理。</div></article>
+      <article class="card calculator" aria-labelledby="trapezoid-calculator-title"><span class="tag purple">帶數字驗算</span><h3 id="trapezoid-calculator-title">梯形中線、面積與對角線中點連線</h3><p>輸入長底 \(b\)、短底 \(a\)、高 \(h\)。對角線中點連線長為 \(\dfrac{b-a}{2}\)。</p><div class="input-grid"><label for="long-base">長底 \(b\)<input id="long-base" type="number" inputmode="decimal" min="0.1" step="0.1" value="14"></label><label for="short-base">短底 \(a\)<input id="short-base" type="number" inputmode="decimal" min="0.1" step="0.1" value="8"></label><label for="trap-height">高 \(h\)<input id="trap-height" type="number" inputmode="decimal" min="0.1" step="0.1" value="6"></label></div><div class="button-row"><button id="calculate-trapezoid" type="button">計算</button><button id="random-trapezoid" class="alt" type="button">換一組整數</button></div><div id="trapezoid-result" class="result" aria-live="polite"></div></article>
+    </section>
+
+    <section id="similarity" class="section" aria-labelledby="similarity-title">
+      <div class="section-head"><span class="tag purple">第 4 站・相似與進階比例線型</span><h2 id="similarity-title">真正要算長度時，先問：哪兩個三角形相似？</h2><p>以下三組是容易混淆、但很常出現的題型。共同原則不變：先標出相等角或平行線，確認對應順序後才寫比例。</p></div>
+      <div class="grid">
+        <article class="card"><div class="diagram-frame"><svg class="diagram" viewBox="0 0 470 285" role="img" aria-label="直角三角形斜邊高形成三個相似三角形"><polygon points="145,50 145,235 405,50" fill="#fbfdff" stroke="#254961" stroke-width="3"></polygon><line class="gold" x1="145" y1="50" x2="232" y2="173"></line><path d="M145 66 L160 66 L160 50" fill="none" stroke="#b44" stroke-width="2"></path><path d="M222 166 L229 176 L239 169" fill="none" stroke="#b44" stroke-width="2"></path><text x="130" y="45">A</text><text x="132" y="255">B</text><text x="409" y="48">C</text><text x="236" y="190">D</text><text x="126" y="145">a</text><text x="270" y="45">b</text><text x="180" y="210">x</text><text x="320" y="110">y</text><text x="191" y="113">h</text><text x="281" y="155">c</text></svg></div><span class="tag gold">母子相似・直角三角形中的直角三角形</span><h3>斜邊上的高把一個直角三角形切成三個相似三角形</h3><p>\(AD\perp BC\)，大三角形的兩股為 \(a,b\)，斜邊為 \(c\)，斜邊分段為 \(x,y\)。</p><div class="formula">\[a^2=cx,\qquad b^2=cy\] \[h^2=xy,\qquad h=\frac{ab}{c},\qquad c=x+y\]</div><div class="error-note"><strong>易錯：</strong>\(x\) 對應哪一股，要依圖的投影位置判斷；先圈出「股的投影」再代 \(a^2=cx\)。</div></article>
+        <article class="card"><span class="tag teal">內、外角平分線比例</span><h3>角平分線分到對邊的比，等於兩鄰邊比</h3><p>在 \(\triangle ABC\) 中，\(AD\) 是 \(\angle A\) 的內角平分線，\(D\) 在 \(BC\) 上；\(AE\) 是外角平分線，\(E\) 在 \(BC\) 的延長線上。</p><div class="formula">\[\frac{AB}{AC}=\frac{BD}{DC}\qquad\text{（內角平分線）}\] \[\frac{AB}{AC}=\left|\frac{BE}{EC}\right|\qquad\text{（外角平分線）}\]</div><p>若點 \(P\) 內分 \(AB\)，且 \(AP:PB=m:n\)，座標也可直接用內分公式。</p><div class="formula compact">\[P\left(\frac{nx_A+mx_B}{m+n},\ \frac{ny_A+my_B}{m+n}\right)\]</div><div class="note"><strong>先看位置：</strong>內角平分線交在邊上；外角平分線交在邊的延長線。兩者圖形不同，不能把點畫在同一位置。</div></article>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card"><span class="tag">連續型・平行線比例</span><h3>一組平行線，會同時給出「部分比」與「整體比」</h3><p>在 \(\triangle ABC\) 中，\(D\) 在 \(AB\) 上、\(E\) 在 \(AC\) 上，且 \(DE\parallel BC\)。先由相似 \(\triangle ADE\sim\triangle ABC\) 寫整體比，再視題意改成剩餘部分比。</p><div class="formula">\[\frac{AD}{AB}=\frac{AE}{AC}=\frac{DE}{BC}\] \[\frac{AD}{DB}=\frac{AE}{EC}\]</div><div class="teacher-note"><strong>連續型流程：</strong>先把同方向的線段排在同一欄，例如「左邊 \(AD,DB,AB\)」對「右邊 \(AE,EC,AC\)」；不要把部分和整體混在同一個比例式。</div></article>
+        <article class="card"><span class="tag purple">量冠型・進階題型卡</span><h3>只在題圖的平行、共線條件完整時使用</h3><p>截圖中的量冠型是指定圖形的整理，不是所有三角形都能直接套。先確認題圖的 \(AB,CD,EF\) 與 \(B,D,F\) 的位置完全相同，再代入。</p><div class="formula compact">\[\frac{1}{AB}+\frac{1}{EF}=\frac{1}{CD}\] \[\frac{FD}{FB}=\frac{CD}{AB},\qquad \frac{BD}{BF}=\frac{CD}{EF}\]</div><div class="error-note"><strong>使用界線：</strong>若題圖少了對應的平行線或共線關係，不能只因為名稱相同就套量冠型；回到相似三角形重新證明最安全。</div></article>
+      </div>
+      <article class="card" style="margin-top:16px"><span class="tag gold">考前 30 秒速查</span><div class="three-grid"><div><h3>看到「相似」</h3><p>邊長一階、面積二階。</p><div class="formula compact">\[\text{面積比}=\left(\text{邊長比}\right)^2\]</div></div><div><h3>看到「中點」</h3><p>先找平行，再找一半。</p><div class="formula compact">\[\text{中點連線}\parallel\text{第三邊}\]</div></div><div><h3>看到「直角」</h3><p>先判斷畢氏或母子相似。</p><div class="formula compact">\[a^2+b^2=c^2\]</div></div></div></article>
+    </section>
+    <p class="footer">公式以 TeX 排版；解題時仍請先寫出條件與對應關係，再代公式計算。</p>
+  </main>
+  <script>
+    (() => {
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      let typesetQueue = Promise.resolve();
+      const typesetMath = (nodes) => {
+        if (!window.MathJax || !window.MathJax.typesetPromise) return;
+        const targets = (Array.isArray(nodes) ? nodes : [nodes]).filter(Boolean);
+        if (!targets.length) return;
+        typesetQueue = typesetQueue.then(() => {
+          if (window.MathJax.typesetClear) window.MathJax.typesetClear(targets);
+          return window.MathJax.typesetPromise(targets);
+        }).catch(() => {});
+      };
+      const format = (value) => Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+      const calculateTrapezoid = () => {
+        const b = Number($('long-base').value), a = Number($('short-base').value), h = Number($('trap-height').value), output = $('trapezoid-result');
+        if (!(a > 0 && b > 0 && h > 0)) { output.innerHTML = '<strong>請輸入正數。</strong>兩底與高都必須大於 0。'; return; }
+        if (b <= a) { output.innerHTML = '<strong>請調整底邊順序。</strong>本頁約定長底 \\(b\\) 大於短底 \\(a\\)。'; typesetMath(output); return; }
+        const m = (a + b) / 2, diagonalMidline = (b - a) / 2, area = m * h;
+        output.innerHTML = `\\[m=\\frac{${format(a)}+${format(b)}}{2}=${format(m)},\\qquad RS=\\frac{${format(b)}-${format(a)}}{2}=${format(diagonalMidline)}\\] \\[S=mh=${format(m)}\\times${format(h)}=${format(area)}\\]`;
+        typesetMath(output);
+      };
+      const randomTrapezoid = () => {
+        const a = 4 + Math.floor(Math.random() * 9), b = a + 2 + Math.floor(Math.random() * 10), h = 3 + Math.floor(Math.random() * 8);
+        $('long-base').value = b; $('short-base').value = a; $('trap-height').value = h; calculateTrapezoid();
+      };
+      $('calculate-trapezoid').addEventListener('click', calculateTrapezoid);
+      $('random-trapezoid').addEventListener('click', randomTrapezoid);
+      calculateTrapezoid();
+      window.addEventListener('load', () => typesetMath(document.querySelectorAll('.formula, .result, .section-head, .card, label')));
+    })();
+  </script>
+</body>
+</html>

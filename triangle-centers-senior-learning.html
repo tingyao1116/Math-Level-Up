@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高中三角形四心｜座標、向量、內外分點</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #17233c;
+      --muted: #53627a;
+      --paper: #f7f8fd;
+      --card: #ffffff;
+      --line: #d9e1f0;
+      --blue: #285ea8;
+      --blue-pale: #edf4ff;
+      --purple: #7546a8;
+      --purple-pale: #f5efff;
+      --orange: #b66216;
+      --orange-pale: #fff3e7;
+      --green: #168067;
+      --green-pale: #e9f9f3;
+      --red: #bd4853;
+      --red-pale: #fff0f1;
+      --gold: #9a6900;
+      --gold-pale: #fff8e5;
+      --shadow: 0 15px 36px rgba(35, 52, 92, .10);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, #e4efff 0, transparent 29rem),
+        radial-gradient(circle at 96% 12%, #fff0db 0, transparent 24rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.75;
+    }
+
+    .wrap { width: min(1160px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 58px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      margin: 18px 0 30px;
+      padding: clamp(26px, 5vw, 52px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(135deg, #24385f, #285ea8 55%, #4a86b6);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow, .tag {
+      display: inline-block;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .eyebrow { padding: 3px 10px; color: #e1efff; background: rgba(255,255,255,.15); }
+    .hero h1 { margin: 9px 0 8px; font-size: clamp(2rem, 5vw, 3.35rem); line-height: 1.2; }
+    .lead { max-width: 850px; margin: 0; color: #eff7ff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
+    .nav a {
+      padding: 7px 13px;
+      border: 1px solid rgba(255,255,255,.5);
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .nav a:hover { background: rgba(255,255,255,.15); }
+    .nav .junior-link { color: #203d68; background: #fff8dd; border-color: #ffe79d; }
+    .nav .junior-link:hover { background: #fff0b8; }
+
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 38px; }
+    .section-head { margin-bottom: 14px; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.15rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.2rem; line-height: 1.45; }
+    .section-head p, .card p { margin: 5px 0 0; color: var(--muted); }
+    .grid, .formula-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid > *, .formula-grid > *, .bridge-layout > * { min-width: 0; }
+    .card {
+      min-width: 0;
+      overflow-x: hidden;
+      padding: clamp(18px, 3vw, 26px);
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: var(--card);
+      box-shadow: 0 6px 20px rgba(33, 59, 89, .045);
+    }
+    .tag { padding: 3px 10px; color: var(--blue); background: var(--blue-pale); }
+    .tag.purple { color: var(--purple); background: var(--purple-pale); }
+    .tag.orange { color: var(--orange); background: var(--orange-pale); }
+    .tag.green { color: var(--green); background: var(--green-pale); }
+    .tag.red { color: var(--red); background: var(--red-pale); }
+    .tag.gold { color: var(--gold); background: var(--gold-pale); }
+    .formula-block {
+      max-width: 100%;
+      overflow-x: auto;
+      margin: 13px 0;
+      padding: 10px 12px;
+      border: 1px solid #dbe7f3;
+      border-radius: 12px;
+      background: #f9fbfe;
+      text-align: center;
+    }
+    .formula-block mjx-container[display="true"] { margin: .25em 0 !important; }
+    .formula-block mjx-container { color: #173f68; }
+    .formula-card { position: relative; overflow: hidden; }
+    .formula-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; background: var(--blue); }
+    .formula-card.centroid::before { background: var(--green); }
+    .formula-card.incenter::before { background: var(--purple); }
+    .formula-card.excenter::before { background: var(--gold); }
+    .formula-card.circum::before { background: var(--orange); }
+    .formula-card.orthocenter::before { background: var(--red); }
+    .formula-card > * { margin-left: 4px; }
+    .rule-list { margin: 11px 0 0; padding-left: 1.25em; }
+    .rule-list li { margin: 5px 0; }
+    .tex-note { margin: 8px 0 0; color: var(--muted); font-size: .93rem; }
+    .note, .error-note, .teacher-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      background: var(--blue-pale);
+    }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .teacher-note { border-color: var(--gold); background: var(--gold-pale); }
+    .bridge-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr); gap: 17px; align-items: stretch; }
+    .diagram-card { padding: 14px; }
+    .diagram-card svg { display: block; width: 100%; height: auto; min-height: 270px; }
+    .diagram-caption { margin: 4px 4px 0; color: var(--muted); font-size: .92rem; text-align: center; }
+    .path-list { display: grid; gap: 10px; margin-top: 12px; }
+    .path-step { padding: 11px 12px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    .path-step strong { color: var(--blue); }
+    .notation-strip { margin: 0 0 16px; padding: 15px 17px; border: 1px solid #c9dbef; border-radius: 15px; background: linear-gradient(135deg, #fbfdff, #eff6ff); }
+    .mode-tools { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 15px; }
+    button {
+      min-height: 40px;
+      padding: 8px 13px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--blue);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 850;
+    }
+    button:hover { background: #1e4d90; }
+    button.mode-button { color: #31546e; background: #fff; border-color: #c7d6e7; }
+    button.mode-button:hover, button.mode-button.active { color: #fff; border-color: var(--blue); background: var(--blue); }
+    button:focus, input:focus, a:focus { outline: 3px solid #8dc1ed; outline-offset: 2px; }
+    .mode-hint { min-height: 65px; margin: 12px 0 0; padding: 13px; border-radius: 12px; color: #294b65; background: #eef6fc; font-weight: 750; }
+    .example-answer { margin-top: 12px; padding: 13px; border-radius: 12px; background: #f1f7fc; }
+    .example-answer ol { margin: 5px 0 0; padding-left: 1.35em; }
+    .example-answer li { max-width: 100%; margin: 5px 0; overflow-x: auto; }
+    .quiz-card { padding: clamp(19px, 4vw, 30px); }
+    .quiz-top { display: flex; align-items: end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .progress { color: #416073; font-weight: 850; }
+    .question { margin: 16px 0 12px; font-size: clamp(1.14rem, 2.8vw, 1.45rem); font-weight: 900; line-height: 1.55; }
+    .choice-list { display: grid; gap: 9px; }
+    .choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px 12px;
+      border: 1px solid #c9d8e5;
+      border-radius: 11px;
+      background: #fff;
+      cursor: pointer;
+      color: #31445a;
+      font-weight: 750;
+    }
+    .choice:hover { border-color: #7eb9db; background: #f5fbff; }
+    .choice input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--blue); }
+    .feedback { min-height: 31px; margin-top: 13px; padding: 8px 11px; border-radius: 9px; color: #315269; background: #e8f2f8; font-weight: 750; }
+    .feedback.good { color: #08634e; background: var(--green-pale); }
+    .feedback.bad { color: #962f2f; background: var(--red-pale); }
+    .footer { margin: 42px 0 0; color: var(--muted); text-align: center; }
+
+    .triangle-fill { fill: #f1f7ff; }
+    .triangle-edge { fill: none; stroke: #244263; stroke-width: 3; stroke-linejoin: round; }
+    .vertex { fill: #244263; }
+    .svg-label { fill: #193b5b; font-size: 18px; font-weight: 900; }
+    .side-label { fill: #586c80; font-size: 16px; font-weight: 800; }
+
+    @media (max-width: 840px) { .bridge-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 650px) {
+      .wrap { width: min(100% - 22px, 1160px); padding-top: 15px; }
+      .hero { border-radius: 21px; }
+      .grid, .formula-grid { grid-template-columns: 1fr; }
+      .diagram-card { padding: 6px; }
+      .diagram-card svg { min-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html#s1">← 回高中數學教學工具</a>
+
+    <section class="hero">
+      <span class="eyebrow">高中數學｜平面向量・解析幾何</span>
+      <h1>三角形四心：座標、向量與內外分點</h1>
+      <p class="lead">國中先用作圖線找出內心、外心、重心、垂心；高中則要看懂「誰是權重、誰和哪個頂點配對」。本頁把角平分線、分點公式、座標與向量串成一條解題路線，並補上旁心與外心、垂心的內積工具。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#bridge">國高銜接</a>
+        <a href="#coordinate">座標與分點</a>
+        <a href="#vectors">向量公式</a>
+        <a href="#circum-ortho">外心與垂心</a>
+        <a href="#examples">例題</a>
+        <a href="#check">自我檢查</a>
+        <a class="junior-link" href="./triangle-centers-learning.html">回國中版：作圖與特例</a>
+      </nav>
+    </section>
+
+    <section id="bridge" class="section">
+      <div class="section-head">
+        <h2>先守住國中定義，再進入高中計算</h2>
+        <p>公式不是憑空出現的。每一個加權平均都來自一條「已知比例」的線；先辨識作圖線，才知道該用哪一種權重。</p>
+      </div>
+      <div class="bridge-layout">
+        <article class="card diagram-card">
+          <svg viewBox="0 0 590 330" role="img" aria-labelledby="diagramTitle diagramDesc">
+            <title id="diagramTitle">三角形的頂點與對邊記號</title>
+            <desc id="diagramDesc">乾淨標示三角形的三個頂點 A、B、C，以及 a、b、c 分別是哪一條對邊。</desc>
+            <polygon class="triangle-fill" points="295,50 95,264 495,264"></polygon>
+            <path class="triangle-edge" d="M295 50 L95 264 L495 264 Z"></path>
+            <circle class="vertex" cx="295" cy="50" r="5.5"></circle>
+            <circle class="vertex" cx="95" cy="264" r="5.5"></circle>
+            <circle class="vertex" cx="495" cy="264" r="5.5"></circle>
+            <text class="svg-label" x="282" y="34">A</text>
+            <text class="svg-label" x="75" y="286">B</text>
+            <text class="svg-label" x="500" y="286">C</text>
+            <text class="side-label" x="270" y="300">a = BC</text>
+            <text class="side-label" x="112" y="145">c = AB</text>
+            <text class="side-label" x="423" y="145">b = CA</text>
+          </svg>
+          <p class="diagram-caption">這張圖只用來固定記號；四心的作圖線與位置，請回到國中版互動圖觀察。計算時固定 \(a=\overline{BC}\)、\(b=\overline{CA}\)、\(c=\overline{AB}\)。</p>
+        </article>
+        <article class="card">
+          <span class="tag gold">國中 → 高中解題地圖</span>
+          <h3>把「幾何語言」翻成「代數語言」</h3>
+          <div class="path-list">
+            <div class="path-step"><strong>1．看交點來源：</strong>中線交於 \(G\)，內角平分線交於 \(I\)，中垂線交於 \(O\)，高交於 \(H\)。</div>
+            <div class="path-step"><strong>2．固定邊長配對：</strong>\(a\) 永遠配 \(A\)，\(b\) 永遠配 \(B\)，\(c\) 永遠配 \(C\)，因為它們是相對的邊。</div>
+            <div class="path-step"><strong>3．找比例再加權：</strong>角平分線給內分比；外角平分線給外分比；中線給平均，因此分點座標自然出現。</div>
+            <div class="path-step"><strong>4．最後才代入：</strong>先標清點、邊與比。若題目只問位置，國中作圖性質通常比硬算更快。</div>
+          </div>
+          <div class="teacher-note"><strong>上課先問：</strong>為什麼內心座標中 \(A\) 前面的權重是 \(a\)，不是 \(b\) 或 \(c\)？讓學生先回答「因為 \(a\) 是 \(A\) 的對邊」，再進公式，記憶會穩很多。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="coordinate" class="section">
+      <div class="section-head">
+        <h2>座標與內外分點：四心公式的起點</h2>
+        <p>把點放到座標平面時，請先把同一個三角形的記號固定到底。以下一律設 \(A(x_1,y_1)\)、\(B(x_2,y_2)\)、\(C(x_3,y_3)\)。</p>
+      </div>
+      <div class="notation-strip">
+        對邊長的約定是 \(a=\overline{BC}\)、\(b=\overline{CA}\)、\(c=\overline{AB}\)。因此 \(a\) 對 \(A\)、\(b\) 對 \(B\)、\(c\) 對 \(C\)。這是內心、旁心座標不放錯權重的唯一關鍵。
+      </div>
+      <article class="card" style="margin-bottom:16px">
+        <span class="tag">先由座標算出邊長</span>
+        <h3>需要內心或旁心座標時，第一步先把 \(a,b,c\) 算清楚</h3>
+        <p>例如 \(a\) 是 \(B(x_2,y_2)\)、\(C(x_3,y_3)\) 的距離，所以：</p>
+        <div class="formula-block">\[a=\sqrt{\left(x_2-x_3\right)^2+\left(y_2-y_3\right)^2}\]</div>
+        <p class="tex-note">同理，將端點改成 \(C,A\) 可得 \(b\)，改成 \(A,B\) 可得 \(c\)。根號內是「橫向差的平方＋縱向差的平方」，不要少寫括號或平方。</p>
+      </article>
+      <div class="grid">
+        <article class="card">
+          <span class="tag purple">內角平分線 → 內分點</span>
+          <h3>先把邊比換成座標權重</h3>
+          <p>若 \(CD\) 平分 \(\angle C\)，且 \(D\) 在 \(\overline{AB}\) 上，角平分線定理給出：</p>
+          <div class="formula-block">\[\frac{\overline{AD}}{\overline{DB}}=\frac{\overline{CA}}{\overline{CB}}=\frac{b}{a}\]</div>
+          <p>內分公式是：</p>
+          <div class="formula-block">\[D=\left(\frac{a x_1+b x_2}{a+b},\ \frac{a y_1+b y_2}{a+b}\right)\]</div>
+          <p class="tex-note">檢查法：若 \(b\) 很大，\(D\) 應靠近 \(B\)，而上式中 \(B\) 的權重也確實較大。</p>
+        </article>
+        <article class="card">
+          <span class="tag orange">外角平分線 → 外分點</span>
+          <h3>同樣的比，符號改成相減</h3>
+          <p>若 \(CE\) 平分 \(\angle C\) 的外角，且 \(E\) 在 \(\overleftrightarrow{AB}\) 上，則：</p>
+          <div class="formula-block">\[\frac{\overline{EA}}{\overline{EB}}=\frac{\overline{CA}}{\overline{CB}}=\frac{b}{a}\]</div>
+          <div class="formula-block">\[E=\left(\frac{a x_1-b x_2}{a-b},\ \frac{a y_1-b y_2}{a-b}\right)\]</div>
+          <div class="error-note"><strong>常見錯誤：</strong>外分不是把內分公式的分母改成 \(a-b\) 就好；分子中也必須出現相減。若 \(a=b\)，外角平分線平行於 \(\overleftrightarrow{AB}\)，不會有有限的外分點。</div>
+        </article>
+        <article class="card">
+          <span class="tag green">重心座標</span>
+          <h3>三個頂點的等權平均</h3>
+          <p>三條中線交於重心 \(G\)。因為三個頂點的地位完全對稱，座標就是平均：</p>
+          <div class="formula-block">\[G=\left(\frac{x_1+x_2+x_3}{3},\ \frac{y_1+y_2+y_3}{3}\right)\]</div>
+          <p class="tex-note">這不是邊長加權；重心的三個頂點權重完全相同。</p>
+        </article>
+        <article class="card">
+          <span class="tag purple">內心座標</span>
+          <h3>用對邊長加權平均</h3>
+          <p>三條內角平分線交於內心 \(I\)，最常用的座標式為：</p>
+          <div class="formula-block">\[I=\left(\frac{a x_1+b x_2+c x_3}{a+b+c},\ \frac{a y_1+b y_2+c y_3}{a+b+c}\right)\]</div>
+          <p class="tex-note">請逐項對照：\(a\) 配 \(A(x_1,y_1)\)、\(b\) 配 \(B(x_2,y_2)\)、\(c\) 配 \(C(x_3,y_3)\)。</p>
+        </article>
+      </div>
+      <article class="card" style="margin-top:16px">
+        <span class="tag">點選解題焦點</span>
+        <h3>先選工具，避免公式大混戰</h3>
+        <div class="mode-tools" aria-label="選擇四心座標解題焦點">
+          <button class="mode-button active" type="button" data-mode="centroid">重心：平均</button>
+          <button class="mode-button" type="button" data-mode="incenter">內心：對邊長權重</button>
+          <button class="mode-button" type="button" data-mode="division">分點：先寫比例</button>
+          <button class="mode-button" type="button" data-mode="excenter">旁心：一個權重為負</button>
+        </div>
+        <p id="modeHint" class="mode-hint" aria-live="polite">重心題先找三個頂點，直接做 x、y 的平均；不需要先算邊長。</p>
+      </article>
+    </section>
+
+    <section id="vectors" class="section">
+      <div class="section-head">
+        <h2>向量公式：從中點與角平分線推出四心</h2>
+        <p>取任意原點 \(P\)；這個 \(P\) 只是向量的起點，不是外心 \(O\)。這樣能避開兩個字母都叫「O」的混亂。</p>
+      </div>
+      <div class="formula-grid">
+        <article class="card formula-card centroid">
+          <span class="tag green">重心 \(G\)</span>
+          <h3>中線先給出 \(2:1\)</h3>
+          <p>設 \(M\) 是 \(\overline{BC}\) 的中點，則：</p>
+          <div class="formula-block">\[\overrightarrow{AM}=\frac{1}{2}\left(\overrightarrow{AB}+\overrightarrow{AC}\right)\]</div>
+          <div class="formula-block">\[\overrightarrow{AG}=\frac{2}{3}\overrightarrow{AM}=\frac{1}{3}\left(\overrightarrow{AB}+\overrightarrow{AC}\right)\]</div>
+          <div class="formula-block">\[\overrightarrow{PG}=\frac{1}{3}\left(\overrightarrow{PA}+\overrightarrow{PB}+\overrightarrow{PC}\right)\]</div>
+          <div class="formula-block">\[\overrightarrow{GA}+\overrightarrow{GB}+\overrightarrow{GC}=\vec{0}\]</div>
+        </article>
+        <article class="card formula-card incenter">
+          <span class="tag purple">內心 \(I\)</span>
+          <h3>從 \(A\) 的角平分線開始</h3>
+          <p>令 \(AD\) 是 \(\angle A\) 的內角平分線，\(D\) 在 \(\overline{BC}\) 上：</p>
+          <div class="formula-block">\[\overrightarrow{AD}=\frac{b\overrightarrow{AB}+c\overrightarrow{AC}}{b+c}\]</div>
+          <div class="formula-block">\[\overrightarrow{AI}=\frac{b\overrightarrow{AB}+c\overrightarrow{AC}}{a+b+c}\]</div>
+          <div class="formula-block">\[\overrightarrow{PI}=\frac{a\overrightarrow{PA}+b\overrightarrow{PB}+c\overrightarrow{PC}}{a+b+c}\]</div>
+          <div class="formula-block">\[a\overrightarrow{IA}+b\overrightarrow{IB}+c\overrightarrow{IC}=\vec{0}\]</div>
+        </article>
+        <article class="card formula-card excenter">
+          <span class="tag gold">旁心 \(I_A\)（進階補充）</span>
+          <h3>外角平分線會帶來負權重</h3>
+          <p>\(I_A\) 是 \(A\) 對應的旁心，也就是 \(B,C\) 的外角平分線與 \(A\) 的內角平分線交點：</p>
+          <div class="formula-block">\[\overrightarrow{PI_A}=\frac{-a\overrightarrow{PA}+b\overrightarrow{PB}+c\overrightarrow{PC}}{-a+b+c}\]</div>
+          <div class="formula-block">\[-a\overrightarrow{I_AA}+b\overrightarrow{I_AB}+c\overrightarrow{I_AC}=\vec{0}\]</div>
+          <p class="tex-note">其餘兩個旁心只要輪流把 \(b\) 或 \(c\) 前的符號改成負號。旁心是三個旁切圓圓心的總稱，不是把內心移到外面而已。</p>
+        </article>
+        <article class="card formula-card incenter">
+          <span class="tag purple">三個旁心的座標</span>
+          <h3>負號配的是對應頂點</h3>
+          <p>若只需要座標，可直接從前面的向量式讀出：</p>
+          <div class="formula-block">\[I_A=\left(\frac{-a x_1+b x_2+c x_3}{-a+b+c},\ \frac{-a y_1+b y_2+c y_3}{-a+b+c}\right)\]</div>
+          <div class="formula-block">\[I_B=\left(\frac{a x_1-b x_2+c x_3}{a-b+c},\ \frac{a y_1-b y_2+c y_3}{a-b+c}\right)\]</div>
+          <div class="formula-block">\[I_C=\left(\frac{a x_1+b x_2-c x_3}{a+b-c},\ \frac{a y_1+b y_2-c y_3}{a+b-c}\right)\]</div>
+        </article>
+      </div>
+      <div class="error-note"><strong>最常犯的錯：</strong>把 \(I_A\) 寫成「\(A\) 的座標前放負號」卻忘記邊長也要配對。正確說法是：\(I_A\) 的負權重是 \(a\)，而 \(a\) 正好是 \(A\) 的對邊。</div>
+    </section>
+
+    <section id="circum-ortho" class="section">
+      <div class="section-head">
+        <h2>外心與垂心：用內積把垂直翻成式子</h2>
+        <p>外心與垂心未必適合直接硬背座標。高中題常先把「等距」或「垂直」改寫成內積，再結合邊長的平方。</p>
+      </div>
+      <div class="formula-grid">
+        <article class="card formula-card circum">
+          <span class="tag orange">外心 \(O\)</span>
+          <h3>三頂點等距，差平方變內積</h3>
+          <p>由 \(OA=OB=OC\)，可得到三組等價且實用的式子：</p>
+          <div class="formula-block">\[\overrightarrow{AB}\cdot\overrightarrow{AO}=\frac{1}{2}\left|\overrightarrow{AB}\right|^2=\frac{1}{2}c^2\]</div>
+          <div class="formula-block">\[\overrightarrow{AC}\cdot\overrightarrow{AO}=\frac{1}{2}\left|\overrightarrow{AC}\right|^2=\frac{1}{2}b^2\]</div>
+          <div class="formula-block">\[\overrightarrow{BC}\cdot\overrightarrow{BO}=\frac{1}{2}\left|\overrightarrow{BC}\right|^2=\frac{1}{2}a^2\]</div>
+          <p class="tex-note">本質是把 \(OA^2=OB^2\) 展開後消去共同項，所以中垂線的幾何條件被改寫成內積。</p>
+        </article>
+        <article class="card formula-card orthocenter">
+          <span class="tag red">垂心 \(H\)</span>
+          <h3>高線垂直，內積提供相同值</h3>
+          <p>由 \(BH\perp AC\)、\(CH\perp AB\)，再配合餘弦定理，可得：</p>
+          <div class="formula-block">\[\overrightarrow{AB}\cdot\overrightarrow{AC}=\overrightarrow{AB}\cdot\overrightarrow{AH}=\overrightarrow{AC}\cdot\overrightarrow{AH}=\frac{1}{2}\left(b^2+c^2-a^2\right)\]</div>
+          <div class="formula-block">\[\overrightarrow{BA}\cdot\overrightarrow{BC}=\overrightarrow{BA}\cdot\overrightarrow{BH}=\overrightarrow{BC}\cdot\overrightarrow{BH}=\frac{1}{2}\left(a^2+c^2-b^2\right)\]</div>
+          <div class="formula-block">\[\overrightarrow{CA}\cdot\overrightarrow{CB}=\overrightarrow{CA}\cdot\overrightarrow{CH}=\overrightarrow{CB}\cdot\overrightarrow{CH}=\frac{1}{2}\left(a^2+b^2-c^2\right)\]</div>
+        </article>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <span class="tag orange">外心的定位</span>
+          <h3>先判三角形種類，少算很多</h3>
+          <ul class="rule-list">
+            <li>銳角三角形：\(O\) 在三角形內部。</li>
+            <li>直角三角形：\(O\) 是斜邊中點；若斜邊為 \(c\)，則 \(R=\frac{c}{2}\)。</li>
+            <li>鈍角三角形：\(O\) 在三角形外部。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="tag red">垂心的定位</span>
+          <h3>高是在對邊所在直線上作垂線</h3>
+          <ul class="rule-list">
+            <li>銳角三角形：\(H\) 在三角形內部。</li>
+            <li>直角三角形：\(H\) 就是直角頂點。</li>
+            <li>鈍角三角形：兩條高需要延長，\(H\) 在三角形外部。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="examples" class="section">
+      <div class="section-head">
+        <h2>可直接上課的例題：由辨識到計算</h2>
+        <p>每題都先列出「用哪個心、已知什麼比例、權重如何對應」，再把數字代進去。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag green">基礎｜重心座標</span>
+          <h3>三個座標直接平均</h3>
+          <p>\(\triangle ABC\) 的三頂點是 \(A(1,2)\)、\(B(4,5)\)、\(C(-2,2)\)。求重心 \(G\)。</p>
+          <div class="example-answer">
+            <strong>解題步驟</strong>
+            <ol>
+              <li>題目問重心，因此三個頂點的權重相同。</li>
+              <li>分別平均 \(x\)、\(y\) 座標：</li>
+              <li>\[G=\left(\frac{1+4+(-2)}{3},\ \frac{2+5+2}{3}\right)=(1,3)\]</li>
+            </ol>
+          </div>
+        </article>
+        <article class="card">
+          <span class="tag purple">進階｜內心座標</span>
+          <h3>直角三角形中的對邊權重</h3>
+          <p>令 \(A(0,0)\)、\(B(4,0)\)、\(C(0,3)\)。求內心 \(I\)。</p>
+          <div class="example-answer">
+            <strong>解題步驟</strong>
+            <ol>
+              <li>先對應邊長：\(a=\overline{BC}=5\)、\(b=\overline{CA}=3\)、\(c=\overline{AB}=4\)。</li>
+              <li>\(a\)、\(b\)、\(c\) 分別配 \(A\)、\(B\)、\(C\)。</li>
+              <li>\[I=\left(\frac{5\cdot0+3\cdot4+4\cdot0}{12},\ \frac{5\cdot0+3\cdot0+4\cdot3}{12}\right)=(1,1)\]</li>
+            </ol>
+          </div>
+        </article>
+        <article class="card">
+          <span class="tag orange">進階｜內分點</span>
+          <h3>比值要交叉放入權重</h3>
+          <p>\(A(1,-1)\)、\(B(5,3)\)，點 \(D\) 在 \(\overline{AB}\) 上且 \(\overline{AD}:\overline{DB}=3:2\)。求 \(D\)。</p>
+          <div class="example-answer">
+            <strong>解題步驟</strong>
+            <ol>
+              <li>\(D\) 比較靠近 \(B\)，所以 \(B\) 的座標前應放較大的 \(3\)。</li>
+              <li>\[D=\left(\frac{2\cdot1+3\cdot5}{3+2},\ \frac{2\cdot(-1)+3\cdot3}{3+2}\right)\]</li>
+              <li>\[D=\left(\frac{17}{5},\ \frac{7}{5}\right)\]</li>
+            </ol>
+          </div>
+        </article>
+        <article class="card">
+          <span class="tag red">挑戰｜垂心內積</span>
+          <h3>先找出零內積</h3>
+          <p>若 \(H\) 是 \(\triangle ABC\) 的垂心，且已知 \(\overrightarrow{AB}\cdot\overrightarrow{AC}=12\)，求 \(\overrightarrow{AB}\cdot\overrightarrow{AH}\)。</p>
+          <div class="example-answer">
+            <strong>解題步驟</strong>
+            <ol>
+              <li>\(CH\perp AB\)，所以 \(\overrightarrow{CH}\cdot\overrightarrow{AB}=0\)。</li>
+              <li>\(\overrightarrow{AH}=\overrightarrow{AC}+\overrightarrow{CH}\)。</li>
+              <li>\[\overrightarrow{AB}\cdot\overrightarrow{AH}=\overrightarrow{AB}\cdot\overrightarrow{AC}+\overrightarrow{AB}\cdot\overrightarrow{CH}=12+0=12\]</li>
+            </ol>
+          </div>
+        </article>
+      </div>
+      <div class="teacher-note"><strong>課堂節奏建議：</strong>先投影內心座標例題，但故意把 \(a,b,c\) 的配對遮住，請學生用圖回答各邊的對頂點；確認配對後再露出公式。這比直接背權重更能抓到錯誤。</div>
+    </section>
+
+    <section id="check" class="section">
+      <div class="section-head">
+        <h2>自我檢查：選錯也能重試</h2>
+        <p>每一題都先說出「這題在問哪一個心」與「哪個條件提供比例或垂直」，再選答案。</p>
+      </div>
+      <article class="card quiz-card">
+        <div class="quiz-top">
+          <span class="tag">三題高中重點</span>
+          <span id="quizProgress" class="progress">第 1 題／共 3 題</span>
+        </div>
+        <div id="quizQuestion" class="question"></div>
+        <div id="quizChoices" class="choice-list"></div>
+        <div class="mode-tools">
+          <button id="checkQuiz" type="button">檢查答案</button>
+          <button id="nextQuiz" class="mode-button" type="button">下一題</button>
+        </div>
+        <div id="quizFeedback" class="feedback" aria-live="polite">選一個答案後按「檢查答案」。</div>
+      </article>
+    </section>
+
+    <p class="footer">學習順序建議：國中作圖與特例 → 邊長標記 → 內外分點 → 重心與內心座標 → 向量式 → 外心、垂心內積。</p>
+  </main>
+
+  <script>
+    (function() {
+      var modeHints = {
+        centroid: "重心題先找三個頂點，直接做 x、y 的平均；不需要先算邊長。",
+        incenter: "內心題先寫 a 配 A、b 配 B、c 配 C；算出三邊長後才代入加權平均。",
+        division: "分點題先把比例寫成左段比右段，再讓每個端點乘上對面的那一段，避免權重放反。",
+        excenter: "旁心題先確認是 I_A、I_B 還是 I_C；哪一個頂點對應的邊長，哪一項就是負權重。"
+      };
+      var modeButtons = document.querySelectorAll(".mode-button[data-mode]");
+      var modeHint = document.getElementById("modeHint");
+
+      modeButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+          modeButtons.forEach(function(item) { item.classList.remove("active"); });
+          button.classList.add("active");
+          modeHint.textContent = modeHints[button.dataset.mode];
+        });
+      });
+
+      var questions = [
+        {
+          prompt: "在內心座標公式中，a 應配哪一個頂點的座標？",
+          choices: ["A，因為 a = BC 是 A 的對邊", "B，因為 a 在 b 前面", "C，因為 a = BC", "任何一點都可以"],
+          answer: 0,
+          explanation: "記住小寫邊長與大寫頂點相對：a = BC，所以 a 配 A。"
+        },
+        {
+          prompt: "若 D 將 AB 內分為 AD:DB = 3:2，D 的座標組合中 A、B 的權重應是？",
+          choices: ["A 乘 3，B 乘 2", "A 乘 2，B 乘 3", "A、B 都乘 1", "A 乘負 2，B 乘 3"],
+          answer: 1,
+          explanation: "內分點靠近 B，因此 B 的權重較大；通則是每個端點乘上對面的那一段。"
+        },
+        {
+          prompt: "H 是垂心，為什麼 AB 與 AH 的內積等於 AB 與 AC 的內積？",
+          choices: ["因為 AH = AC", "因為 CH 垂直 AB，所以 AB 與 CH 的內積是 0", "因為 AB 垂直 AC", "因為 H 一定在三角形內"],
+          answer: 1,
+          explanation: "AH = AC + CH；與 AB 內積後，AB 與 CH 的內積因垂直而為 0。"
+        }
+      ];
+      var questionIndex = 0;
+      var quizQuestion = document.getElementById("quizQuestion");
+      var quizChoices = document.getElementById("quizChoices");
+      var quizProgress = document.getElementById("quizProgress");
+      var quizFeedback = document.getElementById("quizFeedback");
+
+      function renderQuestion() {
+        var question = questions[questionIndex];
+        quizProgress.textContent = "第 " + (questionIndex + 1) + " 題／共 " + questions.length + " 題";
+        quizQuestion.textContent = question.prompt;
+        quizChoices.innerHTML = question.choices.map(function(choice, index) {
+          return '<label class="choice"><input type="radio" name="senior-center-quiz" value="' + index + '"><span>' + choice + "</span></label>";
+        }).join("");
+        quizFeedback.className = "feedback";
+        quizFeedback.textContent = "選一個答案後按「檢查答案」。";
+      }
+
+      document.getElementById("checkQuiz").addEventListener("click", function() {
+        var selected = document.querySelector('input[name="senior-center-quiz"]:checked');
+        var question = questions[questionIndex];
+        if (!selected) {
+          quizFeedback.className = "feedback bad";
+          quizFeedback.textContent = "先選一個答案，再檢查。";
+          return;
+        }
+        if (Number(selected.value) === question.answer) {
+          quizFeedback.className = "feedback good";
+          quizFeedback.textContent = "答對了！" + question.explanation;
+        } else {
+          quizFeedback.className = "feedback bad";
+          quizFeedback.textContent = "再想一次：" + question.explanation + " 題目仍保留，可以重新選答。";
+        }
+      });
+
+      document.getElementById("nextQuiz").addEventListener("click", function() {
+        questionIndex = (questionIndex + 1) % questions.length;
+        renderQuestion();
+      });
+
+      renderQuestion();
+    })();
+  </script>
+</body>
+</html>

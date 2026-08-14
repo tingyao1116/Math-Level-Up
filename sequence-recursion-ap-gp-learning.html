@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高中數列：遞迴、等差等比與和公式</title>
+  <style>
+    :root {
+      --ink: #102a43;
+      --muted: #52677e;
+      --paper: #ffffff;
+      --page: #f5f9ff;
+      --line: #d5e0ee;
+      --navy: #1d4f91;
+      --blue: #2f6fd0;
+      --blue-soft: #edf5ff;
+      --teal: #087b70;
+      --teal-soft: #edfffa;
+      --orange: #b65d13;
+      --orange-soft: #fff5e9;
+      --purple: #6d43b5;
+      --purple-soft: #f5f0ff;
+      --red: #a13b32;
+      --red-soft: #fff1ef;
+      --shadow: 0 12px 30px rgba(25, 67, 112, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+      background:
+        radial-gradient(circle at 4% 2%, #e1f5ff 0, transparent 26rem),
+        radial-gradient(circle at 96% 8%, #e9fff7 0, transparent 24rem),
+        var(--page);
+    }
+
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 24px 18px 52px; }
+    .hero, .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+    .hero { padding: clamp(22px, 4vw, 38px); }
+    h1, h2, h3 { color: #102f59; line-height: 1.35; }
+    h1 { margin: 0 0 8px; font-size: clamp(30px, 5vw, 46px); letter-spacing: .01em; }
+    h2 { margin: 0 0 9px; font-size: clamp(25px, 3.6vw, 32px); }
+    h3 { margin: 0 0 7px; font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .lead { max-width: 810px; color: var(--muted); font-size: 17px; }
+    .eyebrow, .tag, .level {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .eyebrow { margin-bottom: 9px; color: #164985; background: var(--blue-soft); border: 1px solid #b8d7fb; }
+    .tag { color: #0d625c; background: var(--teal-soft); border: 1px solid #a9e9da; }
+    .tag.orange { color: #91450d; background: var(--orange-soft); border-color: #ffd5ad; }
+    .tag.purple { color: #5d358f; background: var(--purple-soft); border-color: #d9c8fb; }
+    .tag-row, .nav, .model-switch, .formula-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .nav { margin-top: 19px; }
+    .nav a {
+      color: #164985;
+      text-decoration: none;
+      font-weight: 800;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .nav a:hover { border-color: #8cb9ee; background: var(--blue-soft); }
+    .section { margin-top: 28px; }
+    .section-lead { color: var(--muted); max-width: 850px; }
+    .card { padding: 19px; }
+    .grid { display: grid; gap: 14px; }
+    .grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .formula {
+      color: #102f59;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: 1.12em;
+      white-space: nowrap;
+    }
+    .equation {
+      margin: 11px 0;
+      padding: 10px 13px;
+      overflow-x: auto;
+      color: #123764;
+      border: 1px solid #c8dcef;
+      border-radius: 12px;
+      background: #f8fbff;
+      text-align: center;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: clamp(18px, 2.6vw, 23px);
+      white-space: nowrap;
+    }
+    .equation.teal { color: #075c55; border-color: #a6dfd3; background: var(--teal-soft); }
+    .equation.orange { color: #924408; border-color: #ffd4aa; background: var(--orange-soft); }
+    .equation.purple { color: #5b3490; border-color: #dac8f8; background: var(--purple-soft); }
+    .callout {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid #bed8f5;
+      border-radius: 13px;
+      background: var(--blue-soft);
+    }
+    .callout strong { color: #164985; }
+    .callout.warn { border-color: #ffd3ad; background: var(--orange-soft); }
+    .callout.warn strong { color: #91450d; }
+    .callout.success { border-color: #a9e9da; background: var(--teal-soft); }
+    .callout.success strong { color: #0d625c; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 13px;
+    }
+    .flow-step { position: relative; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: #fbfdff; }
+    .flow-step strong { display: block; color: #1a4e87; margin-bottom: 3px; }
+    .flow-step:not(:last-child)::after {
+      position: absolute; content: "→"; right: -18px; top: 50%; transform: translateY(-50%);
+      z-index: 1; color: #719bd0; font-size: 23px; font-weight: 900;
+    }
+    .term-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 104px;
+      padding: 12px 4px 8px;
+      overflow-x: auto;
+    }
+    .term {
+      flex: 0 0 82px;
+      min-height: 76px;
+      padding: 9px 7px;
+      border: 1px solid #bdd7f4;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fff, var(--blue-soft));
+      text-align: center;
+    }
+    .term .position { display: block; color: #58718e; font-size: 13px; font-weight: 700; }
+    .term .value { display: block; color: #1d4f91; font-family: Cambria, "Times New Roman", serif; font-size: 25px; font-weight: 800; }
+    .term-arrow { flex: 0 0 auto; color: #427bc3; font-size: 23px; font-weight: 900; }
+    .rule-badge {
+      display: inline-block; padding: 2px 7px; border-radius: 7px;
+      color: #0d625c; background: var(--teal-soft); font-size: 12px; font-weight: 800;
+    }
+    .model-choice, .btn, .answer-option {
+      appearance: none;
+      font: inherit;
+      cursor: pointer;
+      border-radius: 10px;
+      font-weight: 800;
+    }
+    .model-choice {
+      color: #38516e; background: #fff; border: 1px solid var(--line); padding: 8px 11px;
+    }
+    .model-choice:hover, .model-choice.is-active { color: #fff; background: var(--navy); border-color: var(--navy); }
+    .control-panel { margin-top: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .controls { display: grid; grid-template-columns: 1fr 1fr .8fr; gap: 10px; }
+    label { display: grid; gap: 4px; color: #38516e; font-size: 14px; font-weight: 800; }
+    input {
+      width: 100%; padding: 8px 10px; color: var(--ink); background: #fff;
+      border: 1px solid #aec4dd; border-radius: 9px; font: inherit;
+    }
+    input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #78b5f5; outline-offset: 2px; }
+    .live-summary { margin: 11px 0 0; color: #38516e; }
+    .live-summary strong { color: #164985; }
+    .formula-board { margin-top: 14px; padding: 14px; border-left: 5px solid var(--navy); border-radius: 12px; background: #f8fbff; }
+    .formula-board.teal { border-left-color: var(--teal); background: var(--teal-soft); }
+    .formula-board p { color: var(--muted); }
+    .compare-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .compare-table th, .compare-table td { padding: 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .compare-table th { color: #294866; background: #f7faff; }
+    .compare-table th:nth-child(2) { color: #085f57; background: var(--teal-soft); }
+    .compare-table td:first-child { font-weight: 800; background: #fbfdff; }
+    .sum-card { border-top: 5px solid var(--blue); }
+    .sum-card.square { border-top-color: var(--orange); }
+    .sum-card.cube { border-top-color: var(--purple); }
+    .sum-card p { color: var(--muted); }
+    .sum-visual { display: flex; align-items: flex-end; gap: 4px; height: 84px; margin: 12px 0 4px; padding: 8px; border-radius: 11px; background: #f8fbff; }
+    .sum-visual span { display: block; flex: 1 1 0; min-width: 8px; border-radius: 4px 4px 0 0; background: #77a9e6; }
+    .sum-card.square .sum-visual span { background: #f3a961; }
+    .sum-card.cube .sum-visual span { background: #ad8add; }
+    .sum-visual span:nth-child(1) { height: 14%; }
+    .sum-visual span:nth-child(2) { height: 28%; }
+    .sum-visual span:nth-child(3) { height: 45%; }
+    .sum-visual span:nth-child(4) { height: 66%; }
+    .sum-visual span:nth-child(5) { height: 90%; }
+    .sum-note { min-height: 49px; font-size: 14px; }
+    .sum-lab { display: grid; grid-template-columns: minmax(160px, .38fr) 1fr; gap: 14px; align-items: start; margin-top: 14px; }
+    .lab-result { padding: 13px; border: 1px solid #bed8f5; border-radius: 13px; background: var(--blue-soft); }
+    .lab-result p { margin: 0 0 4px; color: #38516e; }
+    .lab-result strong { color: #164985; font-family: Cambria, "Times New Roman", serif; font-size: 20px; }
+    .solution { border-left: 5px solid var(--blue); }
+    .solution.teal { border-left-color: var(--teal); }
+    .solution.purple { border-left-color: var(--purple); }
+    .solution .steps { margin: 8px 0 0; padding-left: 25px; }
+    .solution .steps li { padding: 7px 0; border-bottom: 1px dashed #d7e1ee; }
+    .solution .steps li:last-child { border-bottom: 0; }
+    .mistake-list { margin: 0; padding: 0; list-style: none; }
+    .mistake-list li { margin-top: 9px; padding: 10px 12px 10px 42px; position: relative; border: 1px solid #ffd8d1; border-radius: 12px; background: var(--red-soft); }
+    .mistake-list li::before { position: absolute; content: "!"; left: 13px; top: 10px; width: 20px; height: 20px; border-radius: 50%; color: #fff; background: var(--red); text-align: center; line-height: 20px; font-weight: 900; }
+    .practice-grid { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+    .level { margin-bottom: 7px; color: #164985; background: var(--blue-soft); border: 1px solid #bdd7f4; }
+    .level.advanced { color: #0d625c; background: var(--teal-soft); border-color: #a9e9da; }
+    .level.challenge { color: #5b3490; background: var(--purple-soft); border-color: #dac8f8; }
+    .answer-option { display: block; width: 100%; margin-top: 8px; padding: 9px 11px; color: #294866; background: #fff; border: 1px solid var(--line); text-align: left; }
+    .answer-option:hover:not(:disabled) { border-color: #72a8e5; background: var(--blue-soft); }
+    .answer-option.is-wrong { color: #9e332a; border-color: #eea59c; background: var(--red-soft); }
+    .answer-option.is-correct { color: #075b54; border-color: #6fcebd; background: var(--teal-soft); }
+    .answer-option:disabled { cursor: default; }
+    .quiz-feedback { min-height: 28px; margin: 10px 0 0; color: #38516e; font-weight: 700; }
+    .btn { padding: 9px 13px; color: #fff; background: var(--navy); border: 1px solid var(--navy); }
+    .btn:hover { background: #143d72; }
+    .btn.secondary { color: #164985; background: #fff; border-color: #9fc0e7; }
+    .btn.secondary:hover { background: var(--blue-soft); }
+    .teacher-grid { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
+    .teacher-grid > div { padding: 11px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    .teacher-grid strong { color: #164985; }
+    .back { display: inline-block; margin-top: 25px; color: #164985; font-weight: 800; text-decoration: none; }
+    .small { color: var(--muted); font-size: 14px; }
+    @media (max-width: 760px) {
+      .wrap { padding: 14px 10px 36px; }
+      .hero, .card { border-radius: 15px; padding: 16px; }
+      .two, .three, .practice-grid, .sum-lab, .teacher-grid { grid-template-columns: minmax(0, 1fr); }
+      .controls { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      .flow-step:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -20px; transform: translateX(-50%); }
+      .compare-table { min-width: 620px; }
+      .table-scroll { overflow-x: auto; }
+      .equation { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="eyebrow">高中數學｜數列的規律、位置與總和</div>
+      <h1>數列：從遞迴走到等差、等比與和公式</h1>
+      <p class="lead">先看「下一項怎麼來」，再把規律改寫成「第 <span class="formula">n</span> 項在哪裡」。最後才使用前 <span class="formula">n</span> 項和與 <span class="formula">1、2、3</span> 次和公式。這樣公式不再是一串要硬背的符號。</p>
+      <div class="tag-row" aria-label="本頁重點">
+        <span class="tag">遞迴式＋初始值</span>
+        <span class="tag">等差數列與等比數列</span>
+        <span class="tag orange">前 n 項和</span>
+        <span class="tag purple">Σk、Σk²、Σk³</span>
+      </div>
+      <nav class="nav" aria-label="頁面章節">
+        <a href="#start">先分清兩種問法</a>
+        <a href="#explorer">遞迴規律觀察器</a>
+        <a href="#apgp">等差、等比公式</a>
+        <a href="#power-sums">一次二次三次和</a>
+        <a href="#practice">自我檢查</a>
+      </nav>
+    </header>
+
+    <section class="section" id="start">
+      <h2>0. 數列有兩個問題：下一項？第幾項？</h2>
+      <p class="section-lead">數列像依序站在位置 <span class="formula">1, 2, 3, …</span> 的數。遞迴式描述「從前一項走到下一項的動作」；通項公式則直接告訴你「第 <span class="formula">n</span> 個位置的值」。</p>
+      <div class="flow" aria-label="從遞迴到通項再到總和的流程">
+        <div class="flow-step"><strong>① 起點</strong>先知道 <span class="formula">a₁</span> 是多少。</div>
+        <div class="flow-step"><strong>② 下一項規則</strong>例如每次加 3，或每次乘 2。</div>
+        <div class="flow-step"><strong>③ 位置與總和</strong>推得 <span class="formula">aₙ</span>，再算 <span class="formula">Sₙ</span>。</div>
+      </div>
+      <div class="callout warn"><strong>最重要的提醒：</strong><span class="formula">aₙ₊₁ = aₙ + 3</span> 只有「走法」，還沒有起點。<strong>一定還要給 <span class="formula">a₁</span></strong>，才會是唯一的一個數列。例如 <span class="formula">a₁ = 2</span> 與 <span class="formula">a₁ = 100</span> 都能每次加 3，但它們是不同數列。</div>
+    </section>
+
+    <section class="section" id="explorer">
+      <h2>1. 遞迴規律觀察器：先把數列「走」出來</h2>
+      <p class="section-lead">切換兩種動作，調整起點和規則。觀察每一支箭頭旁的動作，再對照下方的第 <span class="formula">n</span> 項與前 <span class="formula">n</span> 項和。</p>
+      <article class="card">
+        <div class="model-switch" role="group" aria-label="選擇數列規律">
+          <button class="model-choice is-active" type="button" data-model="arithmetic">每次加同一個數（等差）</button>
+          <button class="model-choice" type="button" data-model="geometric">每次乘同一個數（等比）</button>
+        </div>
+        <div class="control-panel">
+          <div class="controls">
+            <label>第一項 a₁
+              <input id="firstTerm" type="number" inputmode="decimal" value="4" aria-describedby="explorerMessage">
+            </label>
+            <label id="ruleLabel">公差 d（每次加多少）
+              <input id="ruleValue" type="number" inputmode="decimal" value="3" aria-describedby="explorerMessage">
+            </label>
+            <label>顯示前幾項（2～12）
+              <input id="termCount" type="number" min="2" max="12" step="1" value="6" aria-describedby="explorerMessage">
+            </label>
+          </div>
+          <p id="explorerMessage" class="live-summary" aria-live="polite"></p>
+        </div>
+        <div id="termRow" class="term-row" aria-label="數列項目視覺化"></div>
+        <div id="recurrenceEquation" class="equation teal" aria-live="polite"></div>
+        <div class="grid two">
+          <div id="nthBoard" class="formula-board"></div>
+          <div id="sumBoard" class="formula-board teal"></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="apgp">
+      <h2>2. 等差、等比：同樣是數列，改變的量不同</h2>
+      <p class="section-lead">先辨認「相鄰兩項之差」是否固定；若不是，再檢查「相鄰兩項之比」是否固定。比值要注意分母不能是 0。</p>
+      <div class="table-scroll">
+        <table class="compare-table">
+          <thead>
+            <tr><th>比較</th><th>等差數列 AP</th><th>等比數列 GP</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>遞迴式</td><td><span class="formula">aₙ₊₁ = aₙ + d</span></td><td><span class="formula">aₙ₊₁ = r aₙ</span></td></tr>
+            <tr><td>固定的規律</td><td>公差 <span class="formula">d = aₙ₊₁ − aₙ</span></td><td>公比 <span class="formula">r = aₙ₊₁ / aₙ</span>（<span class="formula">aₙ ≠ 0</span>）</td></tr>
+            <tr><td>通項</td><td><span class="formula">aₙ = a₁ + (n−1)d</span></td><td><span class="formula">aₙ = a₁rⁿ⁻¹</span></td></tr>
+            <tr><td>前 n 項和</td><td><span class="formula">Sₙ = n(a₁+aₙ)/2</span><br><span class="small">也可寫成 n[2a₁+(n−1)d]/2</span></td><td><span class="formula">Sₙ = a₁(rⁿ−1)/(r−1)</span>，<span class="formula">r ≠ 1</span><br><span class="small">若 r = 1，則 Sₙ = na₁。</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid two" style="margin-top:14px;">
+        <article class="card solution">
+          <span class="tag">代表例題｜等差</span>
+          <h3>由遞迴式求第 10 項與前 10 項和</h3>
+          <p>已知 <span class="formula">a₁=5，aₙ₊₁=aₙ+3</span>，求 <span class="formula">a₁₀</span> 與 <span class="formula">S₁₀</span>。</p>
+          <ol class="steps">
+            <li>每次加 3，所以這是等差數列，<span class="formula">d=3</span>。</li>
+            <li><span class="formula">a₁₀=5+(10−1)×3=32</span>。</li>
+            <li><span class="formula">S₁₀=10(5+32)/2=185</span>。</li>
+          </ol>
+          <div class="callout"><strong>想法：</strong>先用通項找到最後一項，再用「項數 × 首尾平均」求和。</div>
+        </article>
+        <article class="card solution teal">
+          <span class="tag">代表例題｜等比</span>
+          <h3>由遞迴式求第 8 項與前 8 項和</h3>
+          <p>已知 <span class="formula">b₁=3，bₙ₊₁=2bₙ</span>，求 <span class="formula">b₈</span> 與 <span class="formula">T₈</span>。</p>
+          <ol class="steps">
+            <li>每次乘 2，所以是等比數列，<span class="formula">r=2</span>。</li>
+            <li><span class="formula">b₈=3×2⁷=384</span>。</li>
+            <li><span class="formula">T₈=3(2⁸−1)/(2−1)=765</span>。</li>
+          </ol>
+          <div class="callout success"><strong>想法：</strong>第 8 項從第 1 項走了 7 次，所以指數是 <span class="formula">8−1</span>，不是 8。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="power-sums">
+      <h2>3. 一次、二次、三次和：把前 n 個整數加起來</h2>
+      <p class="section-lead">這三條不是「任意數列」都能直接套的公式，而是專門計算 <span class="formula">1</span> 到 <span class="formula">n</span> 的整數次方和。看到 <span class="formula">Σ</span> 時，先讀清楚每一項是 <span class="formula">k</span>、<span class="formula">k²</span> 還是 <span class="formula">k³</span>。</p>
+      <div class="grid three" style="margin-top:14px;">
+        <article class="card sum-card">
+          <span class="tag">一次和</span>
+          <h3>Σk</h3>
+          <div class="equation">1+2+⋯+n = n(n+1)/2</div>
+          <div class="sum-visual" aria-label="長度逐漸增加的條帶"><span></span><span></span><span></span><span></span><span></span></div>
+          <p class="sum-note">把兩份階梯倒過來拼成長方形，面積是 <span class="formula">n(n+1)</span>，所以一份是它的一半。</p>
+        </article>
+        <article class="card sum-card square">
+          <span class="tag orange">二次和</span>
+          <h3>Σk²</h3>
+          <div class="equation orange">1²+2²+⋯+n² = n(n+1)(2n+1)/6</div>
+          <div class="sum-visual" aria-label="平方數累加的成長圖示"><span></span><span></span><span></span><span></span><span></span></div>
+          <p class="sum-note">分母是 6；先因式分解或約分，再代入，計算比較穩。</p>
+        </article>
+        <article class="card sum-card cube">
+          <span class="tag purple">三次和</span>
+          <h3>Σk³</h3>
+          <div class="equation purple">1³+2³+⋯+n³ = [n(n+1)/2]²</div>
+          <div class="sum-visual" aria-label="立方數累加的成長圖示"><span></span><span></span><span></span><span></span><span></span></div>
+          <p class="sum-note">很好記：<strong>三次和 = 一次和的平方</strong>。</p>
+        </article>
+      </div>
+      <article class="card" style="margin-top:14px;">
+        <h3>代入驗算小實驗</h3>
+        <p class="small">輸入 <span class="formula">n</span>，同時看三種和。可先用小的 <span class="formula">n</span> 手算，再用公式核對。</p>
+        <div class="sum-lab">
+          <label>輸入正整數 n（1～200）
+            <input id="sumN" type="number" min="1" max="200" step="1" value="5" aria-describedby="sumMessage">
+          </label>
+          <div id="sumResults" class="lab-result" aria-live="polite"></div>
+        </div>
+        <p id="sumMessage" class="small" aria-live="polite"></p>
+      </article>
+      <div class="grid two" style="margin-top:14px;">
+        <article class="card solution">
+          <span class="tag orange">例題｜讀清楚平方在哪裡</span>
+          <h3>求 1²+2²+⋯+10²</h3>
+          <ol class="steps">
+            <li>每一項都有平方，選二次和，不是一次和。</li>
+            <li><span class="formula">10×11×21 / 6</span>。</li>
+            <li>先約分：<span class="formula">10×11×21 / 6 = 5×11×7 = 385</span>。</li>
+          </ol>
+        </article>
+        <article class="card solution purple">
+          <span class="tag purple">例題｜把一次和再平方</span>
+          <h3>求 1³+2³+⋯+4³</h3>
+          <ol class="steps">
+            <li>先算一次和：<span class="formula">1+2+3+4=4×5/2=10</span>。</li>
+            <li>三次和就是一次和的平方。</li>
+            <li><span class="formula">1³+2³+3³+4³=10²=100</span>。</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="mistakes">
+      <h2>4. 學生最常卡住的地方</h2>
+      <article class="card">
+        <ul class="mistake-list">
+          <li><strong>把第 n 項的指數寫成 n：</strong>等比從 <span class="formula">a₁</span> 走到 <span class="formula">aₙ</span>，只走了 <span class="formula">n−1</span> 步，所以是 <span class="formula">a₁rⁿ⁻¹</span>。</li>
+          <li><strong>沒有先判斷是等差還是等比：</strong>看「差固定」或「比固定」，不能因為數字變大就直接當等比。</li>
+          <li><strong>把 Sₙ 當成第 n 項：</strong><span class="formula">aₙ</span> 是一個位置上的數；<span class="formula">Sₙ</span> 是從第 1 項加到第 n 項的總和。</li>
+          <li><strong>看到 Σ 就直接套一次和：</strong>Σk²、Σk³ 的每一項不同，公式也不同。</li>
+          <li><strong>等比和公式忘了 r=1 的情況：</strong>此時分母 <span class="formula">r−1</span> 是 0，應改用 <span class="formula">Sₙ=na₁</span>。</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section" id="practice">
+      <h2>5. 自我檢查：先選，再看理由</h2>
+      <p class="section-lead">答錯時只會鎖住那個選項，請利用剩下的選項重新判斷；答對後才會顯示下一題。</p>
+      <div class="practice-grid">
+        <article class="card">
+          <span id="quizLevel" class="level">基礎</span>
+          <h3 id="quizQuestion">題目載入中</h3>
+          <div id="quizOptions"></div>
+          <p id="quizFeedback" class="quiz-feedback" aria-live="polite"></p>
+          <button id="nextQuiz" class="btn" type="button" hidden>下一題</button>
+        </article>
+        <aside class="card">
+          <span class="tag">三層練習路線</span>
+          <h3>下課前可以這樣安排</h3>
+          <p><span class="level">基礎</span> 由遞迴看出公差或公比，求第 <span class="formula">n</span> 項。</p>
+          <p><span class="level advanced">進階</span> 由兩項反推 <span class="formula">a₁,d,r</span>，再求前 <span class="formula">n</span> 項和。</p>
+          <p><span class="level challenge">挑戰</span> 把 <span class="formula">Σk、Σk²、Σk³</span> 結合因式分解、數學歸納法或多項式題目。</p>
+          <div class="callout success"><strong>自我檢查口訣：</strong>「有起點、看差比、數步數、分清項和。」</div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="teacher-use">
+      <h2>教師使用建議：一節課的節奏</h2>
+      <article class="card">
+        <p>可先讓學生操作規律觀察器：固定 <span class="formula">a₁</span>，只改 <span class="formula">d</span> 或 <span class="formula">r</span>。學生看到「每次加」與「每次乘」的成長差異後，再整理通項與和公式，會比直接抄公式更有意義。</p>
+        <div class="teacher-grid">
+          <div><strong>前 8 分鐘｜觀察</strong><br>從 4、7、10、13 問：每一步做了什麼？</div>
+          <div><strong>中間 25 分鐘｜轉譯</strong><br>遞迴式 → 通項 → 前 n 項和，穿插兩個代表例題。</div>
+          <div><strong>最後 12 分鐘｜辨識</strong><br>用自我檢查與 Σ 題，要求學生說出「為何選這條公式」。</div>
+        </div>
+      </article>
+    </section>
+
+    <a class="back" href="./index.html">← 回到數學小遊戲與教學頁首頁</a>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const defaults = {
+        arithmetic: { first: 4, rule: 3 },
+        geometric: { first: 3, rule: 2 }
+      };
+      const modelInfo = {
+        arithmetic: {
+          label: "等差數列",
+          ruleName: "公差 d（每次加多少）",
+          shortRule: "每次加",
+          recurrence: (rule) => `aₙ₊₁ = aₙ + ${formatNumber(rule)}`,
+          nth: (first, rule) => `aₙ = ${formatNumber(first)} + (n−1)×${formatNumber(rule)}`,
+          sum: (first, rule) => `Sₙ = n[2×${formatNumber(first)} + (n−1)×${formatNumber(rule)}] / 2`,
+          sequence: (first, rule, index) => first + index * rule,
+          total: (first, rule, count) => count * (2 * first + (count - 1) * rule) / 2,
+          summary: (rule) => `相鄰兩項的差固定為 ${formatNumber(rule)}。`
+        },
+        geometric: {
+          label: "等比數列",
+          ruleName: "公比 r（每次乘多少）",
+          shortRule: "每次乘",
+          recurrence: (rule) => `aₙ₊₁ = ${formatNumber(rule)}aₙ`,
+          nth: (first, rule) => `aₙ = ${formatNumber(first)}×(${formatNumber(rule)})ⁿ⁻¹`,
+          sum: (first, rule) => rule === 1 ? `Sₙ = n×${formatNumber(first)}（因為 r = 1）` : `Sₙ = ${formatNumber(first)}×[(${formatNumber(rule)})ⁿ−1] / (${formatNumber(rule)}−1)`,
+          sequence: (first, rule, index) => first * (rule ** index),
+          total: (first, rule, count) => rule === 1 ? count * first : first * ((rule ** count) - 1) / (rule - 1),
+          summary: (rule) => `相鄰兩項的比固定為 ${formatNumber(rule)}。`
+        }
+      };
+      const elements = {
+        first: document.getElementById("firstTerm"),
+        rule: document.getElementById("ruleValue"),
+        count: document.getElementById("termCount"),
+        ruleLabel: document.getElementById("ruleLabel"),
+        message: document.getElementById("explorerMessage"),
+        termRow: document.getElementById("termRow"),
+        recurrence: document.getElementById("recurrenceEquation"),
+        nthBoard: document.getElementById("nthBoard"),
+        sumBoard: document.getElementById("sumBoard"),
+        sumN: document.getElementById("sumN"),
+        sumResults: document.getElementById("sumResults"),
+        sumMessage: document.getElementById("sumMessage"),
+        quizLevel: document.getElementById("quizLevel"),
+        quizQuestion: document.getElementById("quizQuestion"),
+        quizOptions: document.getElementById("quizOptions"),
+        quizFeedback: document.getElementById("quizFeedback"),
+        nextQuiz: document.getElementById("nextQuiz")
+      };
+      const state = { model: "arithmetic", quizIndex: 0, quizLocked: false };
+      const quizzes = [
+        {
+          level: "基礎", className: "",
+          question: "已知 a₁ = 7，aₙ₊₁ = aₙ − 4，這是哪一種數列？公差是多少？",
+          options: [
+            ["等差數列，d = −4", true, "相鄰兩項都減 4，差固定為 −4。"],
+            ["等比數列，r = −4", false, "遞迴式是減 4，不是乘 −4；請分清楚加減與乘除。"],
+            ["等差數列，d = 4", false, "這裡每一步是減 4，所以公差帶負號。"]
+          ]
+        },
+        {
+          level: "進階", className: "advanced",
+          question: "等比數列 b₁ = 5，公比 r = 3。b₄ 等於多少？",
+          options: [
+            ["5×3³ = 135", true, "從第 1 項走到第 4 項共乘了 3 次，所以是 5×3^(4−1)。"],
+            ["5×3⁴ = 405", false, "第 4 項不是乘 4 次；請數從第 1 項到第 4 項的箭頭數。"],
+            ["5+3×4 = 17", false, "這是把等比誤當成等差；等比要重複乘公比。"]
+          ]
+        },
+        {
+          level: "進階", className: "advanced",
+          question: "等差數列首項為 2，公差為 3。前 5 項和 S₅ 是多少？",
+          options: [
+            ["40", true, "前五項是 2、5、8、11、14；首尾平均為 8，乘 5 得 40。"],
+            ["17", false, "17 是把首項和公差直接相加，還沒有算出五項的總和。"],
+            ["70", false, "可先寫出第 5 項為 14，再用 S₅ = 5(2+14)/2 檢查。"]
+          ]
+        },
+        {
+          level: "挑戰", className: "challenge",
+          question: "要算 1³+2³+⋯+6³，最精簡的正確寫法是哪一個？",
+          options: [
+            ["[6×7/2]²", true, "三次和等於一次和的平方，因此先算 6×7/2，再整體平方。"],
+            ["6×7×13/6", false, "這是二次和的結構，對應的是 1²+2²+⋯+6²。"],
+            ["6×7/2", false, "這只有一次和，還沒有平方。"]
+          ]
+        }
+      ];
+
+      function formatNumber(value) {
+        if (!Number.isFinite(value)) return "無法計算";
+        if (Math.abs(value) < 1e-10) return "0";
+        const rounded = Math.round(value * 1e8) / 1e8;
+        return Number.isInteger(rounded) ? String(rounded) : String(rounded);
+      }
+
+      function numberFrom(input) {
+        const value = Number(input.value);
+        return Number.isFinite(value) ? value : null;
+      }
+
+      function buildFormulaBoard(container, title, equation, note) {
+        container.replaceChildren();
+        const heading = document.createElement("strong");
+        heading.textContent = title;
+        const formula = document.createElement("div");
+        formula.className = "equation";
+        formula.textContent = equation;
+        const description = document.createElement("p");
+        description.className = "small";
+        description.textContent = note;
+        container.append(heading, formula, description);
+      }
+
+      function renderTerms(first, rule, count, info) {
+        elements.termRow.replaceChildren();
+        for (let index = 0; index < count; index += 1) {
+          const term = document.createElement("div");
+          term.className = "term";
+          const position = document.createElement("span");
+          position.className = "position";
+          position.textContent = `第 ${index + 1} 項`;
+          const value = document.createElement("span");
+          value.className = "value";
+          value.textContent = formatNumber(info.sequence(first, rule, index));
+          term.append(position, value);
+          elements.termRow.append(term);
+          if (index < count - 1) {
+            const arrow = document.createElement("span");
+            arrow.className = "term-arrow";
+            arrow.textContent = "→";
+            const badge = document.createElement("span");
+            badge.className = "rule-badge";
+            badge.textContent = `${info.shortRule} ${formatNumber(rule)}`;
+            arrow.append(badge);
+            elements.termRow.append(arrow);
+          }
+        }
+      }
+
+      function updateExplorer() {
+        const first = numberFrom(elements.first);
+        const rule = numberFrom(elements.rule);
+        const count = Number(elements.count.value);
+        const info = modelInfo[state.model];
+        if (first === null || rule === null || !Number.isInteger(count) || count < 2 || count > 12) {
+          elements.message.textContent = "請輸入有效數字；顯示項數須為 2 到 12 的整數。";
+          elements.message.style.color = "#a13b32";
+          return;
+        }
+        const last = info.sequence(first, rule, count - 1);
+        const total = info.total(first, rule, count);
+        if (!Number.isFinite(last) || !Number.isFinite(total) || Math.abs(last) > 1e12 || Math.abs(total) > 1e13) {
+          elements.message.textContent = "這組數值成長太快，請調小起點、公差或公比後再觀察。";
+          elements.message.style.color = "#a13b32";
+          return;
+        }
+        elements.message.textContent = `${info.label}：${info.summary(rule)} 第 ${count} 項是 ${formatNumber(last)}，前 ${count} 項和是 ${formatNumber(total)}。`;
+        elements.message.style.color = "";
+        elements.recurrence.textContent = `遞迴式：${info.recurrence(rule)}，且 a₁ = ${formatNumber(first)}`;
+        renderTerms(first, rule, count, info);
+        buildFormulaBoard(elements.nthBoard, "直接找第 n 項（通項）", info.nth(first, rule), "位置 n 告訴你：從第一項往前走了 n−1 步。");
+        buildFormulaBoard(elements.sumBoard, "把前 n 項加起來", info.sum(first, rule), `目前前 ${count} 項和 = ${formatNumber(total)}。`);
+      }
+
+      function setModel(model) {
+        state.model = model;
+        const preset = defaults[model];
+        elements.first.value = preset.first;
+        elements.rule.value = preset.rule;
+        elements.ruleLabel.firstChild.textContent = modelInfo[model].ruleName;
+        document.querySelectorAll(".model-choice").forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.model === model);
+        });
+        updateExplorer();
+      }
+
+      function sumTo(n, power) {
+        let total = 0;
+        for (let k = 1; k <= n; k += 1) total += k ** power;
+        return total;
+      }
+
+      function updateSumLab() {
+        const n = Number(elements.sumN.value);
+        if (!Number.isInteger(n) || n < 1 || n > 200) {
+          elements.sumResults.replaceChildren();
+          elements.sumMessage.textContent = "請輸入 1 到 200 的正整數。";
+          elements.sumMessage.style.color = "#a13b32";
+          return;
+        }
+        const first = n * (n + 1) / 2;
+        const second = n * (n + 1) * (2 * n + 1) / 6;
+        const third = first ** 2;
+        elements.sumResults.replaceChildren();
+        const rows = [
+          [`1+2+⋯+${n}`, first, sumTo(n, 1)],
+          [`1²+2²+⋯+${n}²`, second, sumTo(n, 2)],
+          [`1³+2³+⋯+${n}³`, third, sumTo(n, 3)]
+        ];
+        rows.forEach(([label, formulaValue, directValue]) => {
+          const row = document.createElement("p");
+          const labelNode = document.createElement("span");
+          labelNode.textContent = `${label} = `;
+          const result = document.createElement("strong");
+          result.textContent = formatNumber(formulaValue);
+          row.append(labelNode, result);
+          elements.sumResults.append(row);
+          if (formulaValue !== directValue) elements.sumMessage.textContent = "驗算出現差異，請重新輸入。";
+        });
+        elements.sumMessage.textContent = `已用逐項相加驗算 n = ${n}；三種公式都相符。`;
+        elements.sumMessage.style.color = "";
+      }
+
+      function renderQuiz() {
+        const quiz = quizzes[state.quizIndex];
+        state.quizLocked = false;
+        elements.quizLevel.textContent = quiz.level;
+        elements.quizLevel.className = `level ${quiz.className}`.trim();
+        elements.quizQuestion.textContent = quiz.question;
+        elements.quizOptions.replaceChildren();
+        elements.quizFeedback.textContent = "先判斷規律或每一項的次方，再作答。";
+        elements.nextQuiz.hidden = true;
+        quiz.options.forEach(([text, isCorrect, feedback], index) => {
+          const option = document.createElement("button");
+          option.type = "button";
+          option.className = "answer-option";
+          option.textContent = `${String.fromCharCode(65 + index)}. ${text}`;
+          option.addEventListener("click", () => answerQuiz(option, isCorrect, feedback));
+          elements.quizOptions.append(option);
+        });
+      }
+
+      function answerQuiz(button, isCorrect, feedback) {
+        if (state.quizLocked || button.disabled) return;
+        if (isCorrect) {
+          state.quizLocked = true;
+          button.classList.add("is-correct");
+          elements.quizFeedback.textContent = `答對了。${feedback}`;
+          elements.quizOptions.querySelectorAll("button").forEach((option) => { option.disabled = true; });
+          elements.nextQuiz.hidden = false;
+        } else {
+          button.disabled = true;
+          button.classList.add("is-wrong");
+          elements.quizFeedback.textContent = `再想一次：${feedback}`;
+        }
+      }
+
+      document.querySelectorAll(".model-choice").forEach((button) => {
+        button.addEventListener("click", () => setModel(button.dataset.model));
+      });
+      [elements.first, elements.rule, elements.count].forEach((input) => input.addEventListener("input", updateExplorer));
+      elements.sumN.addEventListener("input", updateSumLab);
+      elements.nextQuiz.addEventListener("click", () => {
+        state.quizIndex = (state.quizIndex + 1) % quizzes.length;
+        renderQuiz();
+      });
+
+      updateExplorer();
+      updateSumLab();
+      renderQuiz();
+    })();
+  </script>
+</body>
+</html>

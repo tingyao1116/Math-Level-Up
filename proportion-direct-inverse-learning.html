@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>比例、比例分配、正比與反比｜國三數學</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #17324d;
+      --muted: #52687d;
+      --paper: #ffffff;
+      --page: #f4f8fc;
+      --line: #d8e3ee;
+      --navy: #1d4e89;
+      --blue: #2571bc;
+      --blue-soft: #eaf4ff;
+      --teal: #08796e;
+      --teal-soft: #e9fbf7;
+      --gold: #a85d08;
+      --gold-soft: #fff5e8;
+      --red: #a63731;
+      --red-soft: #fff0ee;
+      --purple: #7446a8;
+      --purple-soft: #f4efff;
+      --shadow: 0 14px 34px rgba(25, 61, 98, .09);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 3% 0%, #dff4ff 0, transparent 30rem),
+        radial-gradient(circle at 97% 8%, #e9fff7 0, transparent 25rem),
+        var(--page);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 24px 18px 56px; }
+    .hero, .card, .section { background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .hero { border-radius: 22px; padding: clamp(24px, 5vw, 46px); overflow: hidden; position: relative; }
+    .hero::after {
+      content: "a:b = c:d";
+      position: absolute;
+      right: -8px;
+      top: 18px;
+      color: rgba(37, 113, 188, .08);
+      font-family: Georgia, serif;
+      font-size: clamp(42px, 9vw, 104px);
+      font-weight: 700;
+      transform: rotate(-8deg);
+      pointer-events: none;
+    }
+    h1, h2, h3 { color: var(--ink); line-height: 1.35; }
+    h1 { position: relative; margin: 5px 0 12px; max-width: 850px; font-size: clamp(30px, 5vw, 47px); z-index: 1; }
+    h2 { margin: 0; font-size: clamp(23px, 3vw, 31px); }
+    h3 { margin: 0 0 8px; font-size: 19px; }
+    p { margin: 0; color: var(--muted); }
+    .lead { position: relative; max-width: 800px; font-size: 17px; z-index: 1; }
+    .eyebrow, .tag, .level {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .03em;
+      color: var(--teal);
+      background: var(--teal-soft);
+      border: 1px solid #9ce4d8;
+      border-radius: 999px;
+      padding: 2px 10px;
+    }
+    .hero-nav { position: relative; display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; z-index: 1; }
+    .hero-nav a, .back-link {
+      color: #15578d;
+      background: #fff;
+      border: 1px solid #b9d8ef;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .hero-nav a:hover, .back-link:hover { color: #fff; background: var(--navy); border-color: var(--navy); }
+    .section { margin-top: 18px; border-radius: 20px; padding: clamp(19px, 3vw, 30px); }
+    .section-head { margin-bottom: 16px; }
+    .section-head p { margin-top: 7px; max-width: 850px; }
+    .grid { display: grid; gap: 14px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid > *, .visual-grid > *, .practice-grid > *, .teacher-flow > * { min-width: 0; }
+    .card { border-radius: 15px; padding: 18px; }
+    .card.soft-blue { background: var(--blue-soft); border-color: #c3ddf6; }
+    .card.soft-teal { background: var(--teal-soft); border-color: #bfece3; }
+    .card.soft-gold { background: var(--gold-soft); border-color: #f0d6ad; }
+    .card.soft-purple { background: var(--purple-soft); border-color: #ded1f3; }
+    .formula-box { color: #17416d; background: #fff; border: 1px solid #c9ddef; border-radius: 12px; padding: 12px; margin-top: 11px; overflow-x: auto; }
+    .formula-box .mjx-container[display="true"] { margin: .28em 0 !important; }
+    .step-number { display: inline-grid; place-items: center; width: 28px; height: 28px; margin-right: 7px; color: #fff; background: var(--blue); border-radius: 50%; font-weight: 800; }
+    .steps { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+    .steps li { color: var(--muted); }
+    .warning, .tip, .teacher-note, .success-note {
+      margin-top: 12px;
+      border-radius: 11px;
+      padding: 10px 12px;
+      font-size: 15px;
+    }
+    .warning { color: #7e2723; background: var(--red-soft); border-left: 4px solid var(--red); }
+    .tip { color: #6d4506; background: var(--gold-soft); border-left: 4px solid var(--gold); }
+    .teacher-note { color: #24567c; background: var(--blue-soft); border-left: 4px solid var(--blue); }
+    .success-note { color: #126158; background: var(--teal-soft); border-left: 4px solid var(--teal); }
+    .ratio-frame { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; text-align: center; margin-top: 13px; }
+    .ratio-side { border: 1px solid #c7dcec; border-radius: 12px; padding: 11px; background: #fff; }
+    .ratio-side strong { display: block; color: #1d4e89; font-size: 18px; }
+    .ratio-side span { color: var(--muted); font-size: 14px; }
+    .ratio-equals { color: var(--teal); font-size: 30px; font-weight: 900; }
+    .mini-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 15px; }
+    .mini-table th, .mini-table td { border: 1px solid #d4e1ec; padding: 9px; text-align: center; }
+    .mini-table th { color: #17416d; background: #eff7ff; }
+    .mini-table td:first-child { color: #17416d; font-weight: 800; text-align: left; background: #f8fbff; }
+    .lab { border: 1px solid #bdd4e8; border-radius: 15px; padding: 16px; background: linear-gradient(135deg, #f7fcff, #effbf8); }
+    .lab h3 { color: #174c7d; }
+    .form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+    label { display: grid; gap: 4px; color: #31516c; font-size: 14px; font-weight: 800; }
+    input {
+      width: 100%; min-width: 0; color: var(--ink); background: #fff; border: 1px solid #a8c7df;
+      border-radius: 9px; padding: 8px 9px; font: inherit;
+    }
+    input:focus, button:focus-visible, a:focus-visible { outline: 3px solid #51a9e0; outline-offset: 2px; }
+    .lab-result { min-height: 88px; margin-top: 13px; color: #17416d; background: #fff; border: 1px dashed #94bdd9; border-radius: 11px; padding: 11px; }
+    .allocation-bar { display: flex; min-height: 48px; overflow: hidden; border: 1px solid #9ec9d8; border-radius: 12px; margin: 14px 0 6px; background: #fff; }
+    .allocation-piece { display: grid; place-items: center; min-width: 0; padding: 7px; color: #073c52; font-size: 14px; font-weight: 800; }
+    .allocation-piece:first-child { background: #aee8f3; }
+    .allocation-piece:last-child { background: #c8efd9; }
+    .model-switch { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; }
+    button { font: inherit; }
+    .choice, .answer {
+      color: #1a4f7d; background: #fff; border: 1px solid #9fc5e1; border-radius: 9px; padding: 8px 12px; font-weight: 800; cursor: pointer;
+    }
+    .choice.active { color: #fff; background: var(--navy); border-color: var(--navy); }
+    .choice:hover:not(.active), .answer:hover:not(:disabled) { background: #eef8ff; }
+    .model-note { margin-top: 11px; color: #24516d; font-size: 15px; }
+    .visual-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+    .graph-card { border: 1px solid #cbddea; border-radius: 14px; padding: 12px; background: #fff; }
+    .graph-card h3 { color: #1d4e89; }
+    .graph-card svg { display: block; width: 100%; height: auto; margin-top: 7px; }
+    .graph-card text { fill: #47637d; font-family: "Noto Sans TC", sans-serif; font-size: 12px; }
+    .legend { margin-top: 6px; color: var(--muted); font-size: 14px; }
+    .practice-grid { display: grid; gap: 13px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .level.basic { color: #125b8a; background: #e7f4ff; border-color: #b9ddf5; }
+    .level.advanced { color: #86510b; background: #fff4e3; border-color: #f2d6aa; }
+    .level.challenge { color: #65368e; background: #f2ebff; border-color: #d9c4f2; }
+    .question { margin-top: 9px; min-height: 66px; color: #36546c; font-size: 15px; }
+    .answer-list { display: grid; gap: 7px; margin-top: 12px; }
+    .answer { width: 100%; text-align: left; color: #385870; font-size: 14px; font-weight: 700; }
+    .answer.is-wrong { color: #852d27; background: var(--red-soft); border-color: #e7aaa5; text-decoration: line-through; cursor: not-allowed; }
+    .answer.is-correct { color: #075f56; background: var(--teal-soft); border-color: #7cd5c6; }
+    .answer:disabled { cursor: not-allowed; }
+    .feedback { min-height: 48px; margin-top: 10px; color: #315b77; font-size: 14px; }
+    .teacher-flow { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .teacher-flow div { padding: 12px; border: 1px solid #c7dced; border-radius: 12px; background: #f8fbff; }
+    .teacher-flow strong { display: block; color: #1a4e7e; margin-bottom: 4px; }
+    .back-row { margin-top: 20px; text-align: center; }
+    .back-link { display: inline-block; }
+    @media (max-width: 850px) {
+      .grid.two, .grid.three, .practice-grid, .teacher-flow { grid-template-columns: 1fr; }
+      .visual-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      body { font-size: 16px; }
+      .wrap { padding: 12px 10px 38px; }
+      .hero, .section { border-radius: 15px; }
+      .hero { padding: 23px 18px; }
+      .section { padding: 18px 14px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .ratio-frame { grid-template-columns: 1fr; }
+      .ratio-equals { line-height: .8; transform: rotate(90deg); }
+      .mini-table { min-width: 570px; }
+      .table-scroll { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">國三・比例與函數的起點</span>
+      <h1>比例、比例分配、正比與反比</h1>
+      <p class="lead">先把「誰是基準」讀清楚，再用比例式求未知數；接著把比化成實際份數，最後辨認兩個量是一起放大，還是彼此牽制。這一頁的公式都以 TeX 顯示，適合投影講解，也可讓學生逐段自學。</p>
+      <nav class="hero-nav" aria-label="本頁段落">
+        <a href="#ratio">比例怎麼讀</a>
+        <a href="#share">比例分配</a>
+        <a href="#direct-inverse">正比與反比</a>
+        <a href="#practice">分層自我檢查</a>
+      </nav>
+    </section>
+
+    <section class="section" id="ratio">
+      <div class="section-head">
+        <span class="tag">第 1 步・後項是基準</span>
+        <h2>看到 (a:b)，先說「(a) 是 (b) 的幾倍」</h2>
+        <p>比 (a:b) 的比值是 (dfrac{a}{b})。因此第二個量 (b) 是比較的基準：把 (b) 看成 (1) 份，第一個量就是 (dfrac{a}{b}) 份。</p>
+      </div>
+      <div class="grid two">
+        <article class="card soft-blue">
+          <h3><span class="step-number">1</span>把比翻成除法</h3>
+          <div class="formula-box">
+            \[
+              a:b=\frac{a}{b}:1\qquad(b\ne0)
+            \]
+          </div>
+          <p>所以若 (a:b=3:5)，不是「(a) 有 (3)」，而是「以 (b) 為基準，(a) 是 (\dfrac35) 倍」。</p>
+          <div class="formula-box">
+            \[
+              a:b=3:5\quad\Longrightarrow\quad a=\frac35b
+            \]
+          </div>
+          <div class="tip"><strong>語言翻譯：</strong>「甲：乙＝(3:5)」要讀成「甲是乙的 (\dfrac35) 倍」；後項乙才是這句話的基準。</div>
+        </article>
+        <article class="card soft-teal">
+          <h3><span class="step-number">2</span>比例式用「內內＝外外」</h3>
+          <p>兩個比的比值相同，就能組成比例式。分母不能是 (0)。</p>
+          <div class="ratio-frame" aria-label="比例式的內項與外項">
+            <div class="ratio-side"><strong>外項 (a,d)</strong><span>在比例式兩端</span></div>
+            <div class="ratio-equals">=</div>
+            <div class="ratio-side"><strong>內項 (b,c)</strong><span>在比例式中間</span></div>
+          </div>
+          <div class="formula-box">
+            \[
+              a:b=c:d
+              \quad\Longleftrightarrow\quad
+              \frac{a}{b}=\frac{c}{d}
+              \quad\Longrightarrow\quad
+              \underbrace{bc}_{\text{內內}}=\underbrace{ad}_{\text{外外}}
+            \]
+          </div>
+          <div class="warning"><strong>最常錯：</strong>交叉相乘是 (bc=ad)，不是 (ac=bd)。先圈出「中間兩項」與「最外兩項」，就不容易乘錯。</div>
+        </article>
+      </div>
+      <article class="card" style="margin-top:14px">
+        <h3>例題：用比例式找未知數</h3>
+        <div class="grid two">
+          <div>
+            <p>已知 (x:18=7:6)，求 (x)。</p>
+            <ol class="steps">
+              <li><span class="step-number">1</span>先改寫：(\dfrac{x}{18}=\dfrac76)。</li>
+              <li><span class="step-number">2</span>內內＝外外：(6x=18\times7)。</li>
+              <li><span class="step-number">3</span>所以 (x=21)。</li>
+            </ol>
+          </div>
+          <div class="formula-box">
+            \[
+              \frac{x}{18}=\frac76
+              \quad\Longrightarrow\quad
+              6x=18\times7
+              \quad\Longrightarrow\quad
+              x=21
+            \]
+            <p>檢查：(21:18=7:6)，兩邊同除以 (3) 後確實相同。</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="share">
+      <div class="section-head">
+        <span class="tag">第 2 步・比例分配</span>
+        <h2>先算「一份」，再分給每一項</h2>
+        <p>比例分配不是直接拿總量乘前項或後項；要先確認總共有幾份。若兩量的比是 (m:n)，就可令它們分別是 (mq,nq)。</p>
+      </div>
+      <div class="grid two">
+        <article class="card soft-gold">
+          <h3>總量已知時的固定流程</h3>
+          <div class="formula-box">
+            \[
+              A:B=m:n,\qquad A+B=T
+            \]
+            \[
+              A=mq,\ B=nq\quad\Longrightarrow\quad (m+n)q=T
+            \]
+            \[
+              A=\frac{m}{m+n}T,\qquad B=\frac{n}{m+n}T
+            \]
+          </div>
+          <ol class="steps">
+            <li><span class="step-number">1</span>比的前、後項相加：(m+n) 是總份數。</li>
+            <li><span class="step-number">2</span>用 (T\div(m+n)) 求每一份是多少。</li>
+            <li><span class="step-number">3</span>各自乘回需要的份數。</li>
+          </ol>
+          <div class="warning"><strong>最常錯：</strong>把 (18:6) 當成 (18\) 份和 (6) 份的實際重量。它只告訴我們相對份數；總量出現後才能定出每一份。</div>
+        </article>
+        <article class="card">
+          <h3>例題：(18	ext{K}) 金項鍊</h3>
+          <p>純金：其他金屬＝(18:6)，總重 (120) 公克。求純金重量。</p>
+          <div class="formula-box">
+            \[
+              18+6=24\quad\text{（共 (24) 份）}
+            \]
+            \[
+              \text{每份}=\frac{120}{24}=5\text{（公克）}
+            \]
+            \[
+              \text{純金}=18\times5=90\text{（公克）}
+            \]
+          </div>
+          <div class="success-note"><strong>生活直覺：</strong>金的「(18	ext{K})」不是 (18) 公克，而是每 (24) 份裡有 (18) 份純金，所以純金占 (\dfrac{18}{24}=\dfrac34)。</div>
+        </article>
+      </div>
+      <article class="lab" style="margin-top:14px" aria-labelledby="share-lab-title">
+        <h3 id="share-lab-title">動手算：把總量依比例分配</h3>
+        <p>修改總量與比例，觀察「每一份」和兩個實際量如何一起改變。</p>
+        <div class="form-grid">
+          <label>總量 (T)<input id="share-total" type="number" min="0" step="any" value="120"></label>
+          <label>第一項份數 (m)<input id="share-m" type="number" min="1" step="any" value="18"></label>
+          <label>第二項份數 (n)<input id="share-n" type="number" min="1" step="any" value="6"></label>
+        </div>
+        <div class="allocation-bar" aria-label="比例分配長條圖">
+          <div id="share-piece-a" class="allocation-piece"></div>
+          <div id="share-piece-b" class="allocation-piece"></div>
+        </div>
+        <div id="share-result" class="lab-result" aria-live="polite"></div>
+      </article>
+    </section>
+
+    <section class="section" id="direct-inverse">
+      <div class="section-head">
+        <span class="tag">第 3 步・由講義延伸</span>
+        <h2>正比一起變，反比互相拉扯</h2>
+        <p>不要只看「一個增加，另一個也增加／減少」。正比與反比都要先找出固定不變的量 (k)。以下先以常見的正量情境 (k>0) 說明；代數題若 (k<0)，增減方向會反過來，但關係式不變。</p>
+      </div>
+      <div class="table-scroll">
+        <table class="mini-table">
+          <thead>
+            <tr><th>關係</th><th>固定不變的是</th><th>當 (x) 變成 (r) 倍</th><th>常見生活量</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>正比 (y\propto x)</td>
+              <td>\(\dfrac{y}{x}=k\)，也就是 \(y=kx\)</td>
+              <td>\(y) 也變成 (r) 倍</td>
+              <td>單價固定時：總價與數量</td>
+            </tr>
+            <tr>
+              <td>反比 (y\propto\dfrac1x)</td>
+              <td>\(xy=k\)，也就是 \(y=\dfrac{k}{x}\)</td>
+              <td>\(y) 變成 \(\dfrac1r\) 倍</td>
+              <td>路程固定時：時間與速率</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="visual-grid">
+        <article class="graph-card">
+          <h3>正比：通過原點的直線</h3>
+          <svg viewBox="0 0 370 230" role="img" aria-label="正比 y 等於 kx 的第一象限直線圖">
+            <line x1="45" y1="190" x2="340" y2="190" stroke="#536f88" stroke-width="2"/>
+            <line x1="45" y1="202" x2="45" y2="28" stroke="#536f88" stroke-width="2"/>
+            <path d="M55 183 L320 43" fill="none" stroke="#1873b9" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="130" cy="143" r="5" fill="#1873b9"/><circle cx="215" cy="98" r="5" fill="#1873b9"/><circle cx="300" cy="53" r="5" fill="#1873b9"/>
+            <text x="326" y="207">x</text><text x="28" y="36">y</text><text x="235" y="76">y = kx</text><text x="112" y="165">x 變大</text><text x="245" y="126">y 也變大</text>
+          </svg>
+          <p class="legend">以正量為例，(x) 往右增加，(y) 會沿直線一起增加。</p>
+        </article>
+        <article class="graph-card">
+          <h3>反比：靠近座標軸、不碰座標軸</h3>
+          <svg viewBox="0 0 370 230" role="img" aria-label="反比 y 等於 k 除以 x 的第一象限曲線圖">
+            <line x1="45" y1="190" x2="340" y2="190" stroke="#536f88" stroke-width="2"/>
+            <line x1="45" y1="202" x2="45" y2="28" stroke="#536f88" stroke-width="2"/>
+            <path d="M56 44 C64 80, 84 122, 122 151 C165 181, 237 186, 324 188" fill="none" stroke="#0b8b75" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="88" cy="127" r="5" fill="#0b8b75"/><circle cx="145" cy="162" r="5" fill="#0b8b75"/><circle cx="265" cy="184" r="5" fill="#0b8b75"/>
+            <text x="326" y="207">x</text><text x="28" y="36">y</text><text x="197" y="144">y = k/x</text><text x="144" y="175">x 變大</text><text x="229" y="171">y 變小</text>
+          </svg>
+          <p class="legend">(x=0) 時 (\dfrac{k}{x}) 無定義；反比圖形不會碰到兩條座標軸。</p>
+        </article>
+      </div>
+      <article class="lab" style="margin-top:14px" aria-labelledby="relation-lab-title">
+        <h3 id="relation-lab-title">動手驗證：固定的是比值，還是乘積？</h3>
+        <div class="model-switch" role="group" aria-label="選擇正比或反比">
+          <button class="choice active" type="button" data-model="direct">正比 (y=kx)</button>
+          <button class="choice" type="button" data-model="inverse">反比 (y=\dfrac{k}{x})</button>
+        </div>
+        <div class="form-grid">
+          <label>原來的 (x)<input id="relation-x" type="number" step="any" value="2"></label>
+          <label>比例常數 (k)<input id="relation-k" type="number" step="any" value="5"></label>
+          <label>放大倍數 (r)<input id="relation-r" type="number" step="any" value="3"></label>
+        </div>
+        <p class="model-note">把 (x) 變成 (r) 倍，看看 (y) 的變化；請輸入 (x\ne0)、(k\ne0)、(r\ne0)。</p>
+        <div id="relation-result" class="lab-result" aria-live="polite"></div>
+      </article>
+      <div class="grid two" style="margin-top:14px">
+        <article class="card soft-purple">
+          <h3>進階：看到倒數，關係會翻轉</h3>
+          <p>這是講義中很實用的判斷。若 (x) 和 (y) 成正比，(\dfrac1x) 和 (y) 就成反比；若 (x) 和 (y) 成反比，(\dfrac1x) 和 (y) 就成正比。</p>
+          <div class="formula-box">
+            \[
+              y=kx\quad\Longrightarrow\quad y=\frac{k}{\frac1x}
+            \]
+            \[
+              y=\frac{k}{x}\quad\Longrightarrow\quad y=k\left(\frac1x\right)
+            \]
+          </div>
+        </article>
+        <article class="card soft-blue">
+          <h3>反比題的解題口訣</h3>
+          <p>若題目說「(y) 與 (3x-4) 成反比」，不要誤寫成 (y=3x-4)。應把整個 (3x-4) 當成一個量。</p>
+          <div class="formula-box">
+            \[
+              y(3x-4)=k
+            \]
+            <p>先用一組已知資料求 (k)，再代入另一組資料；每一步都保留括號。</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="practice">
+      <div class="section-head">
+        <span class="tag">第 4 步・做完要能說理由</span>
+        <h2>分層自我檢查</h2>
+        <p>答錯時不會鎖住整題；讀完提示後，還可以選其他答案再試一次。</p>
+      </div>
+      <div class="practice-grid">
+        <article class="card">
+          <span class="level basic">基礎・讀比例</span>
+          <p class="question">若 (a:b=3:5)，下列何者正確？</p>
+          <div class="answer-list" data-answer-set="ratio">
+            <button class="answer" type="button" data-correct="true" data-feedback="後項 b 是基準，所以 \(a=\dfrac35b\)。">A. (a=\dfrac35b)</button>
+            <button class="answer" type="button" data-feedback="方向顛倒了；\(\dfrac53b\) 是把 a 當成基準時才會出現。">B. (a=\dfrac53b)</button>
+            <button class="answer" type="button" data-feedback="\(a:b=3:5\) 是相對關係，不代表 \(a+b=8\)。">C. (a+b=8)</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="card">
+          <span class="level advanced">進階・比例分配</span>
+          <p class="question">純金：其他金屬＝(18:6)，一條項鍊重 (120) 公克。純金重多少公克？</p>
+          <div class="answer-list" data-answer-set="share">
+            <button class="answer" type="button" data-feedback="\(120\times\dfrac6{24}=30\)，這是其他金屬的重量。">A. (30) 公克</button>
+            <button class="answer" type="button" data-feedback="\(120\div24=5\) 是每一份，不是純金總重量。">B. (5) 公克</button>
+            <button class="answer" type="button" data-correct="true" data-feedback="共 \(18+6=24\) 份，純金為 \(120\times\dfrac{18}{24}=90\) 公克。">C. (90) 公克</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+        <article class="card">
+          <span class="level challenge">挑戰・反比的整體量</span>
+          <p class="question">(y) 與 (3x-4) 成反比，且 (x=2) 時 (y=5)。當 (y=-1) 時，(x) 為何？</p>
+          <div class="answer-list" data-answer-set="inverse">
+            <button class="answer" type="button" data-feedback="代入後 \(3x-4=-10\)，所以不是 \(-1\)。">A. (-1)</button>
+            <button class="answer" type="button" data-correct="true" data-feedback="先得 \(k=5(3\times2-4)=10\)。再令 \(-1(3x-4)=10\)，得 \(3x-4=-10\)，所以 \(x=-2\)。">B. (-2)</button>
+            <button class="answer" type="button" data-feedback="\(x=2\) 只是第一組已知資料；第二組要重新代入。">C. (2)</button>
+          </div>
+          <p class="feedback" aria-live="polite"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="teacher-use">
+      <div class="section-head">
+        <span class="tag">老師投影建議</span>
+        <h2>一節課可這樣帶</h2>
+      </div>
+      <div class="teacher-flow">
+        <div><strong>前 8 分鐘：先問基準</strong>投影 (3:5)，不急著交叉相乘；先追問「誰是誰的幾倍？」讓學生說出 (3\div5)。</div>
+        <div><strong>中間 15 分鐘：一份法</strong>用 (18:6)、總量 (120) 操作比例分配工具。先讓學生猜一份，再揭示 (120\div24)。</div>
+        <div><strong>後 15 分鐘：固定量辨認</strong>在正比／反比工具切換，要求學生用一句話回答：本題固定的是 (\dfrac yx) 還是 (xy)？</div>
+      </div>
+      <div class="teacher-note"><strong>收束問題：</strong>「兩量同時增加，為什麼還不能立刻說成正比？」答案是：還要確認 (\dfrac yx) 是否固定；例如 (y=x^2) 在正數範圍也會一起增加，但不是正比。</div>
+    </section>
+
+    <p class="back-row"><a class="back-link" href="./index.html">回到數學小遊戲教學首頁</a></p>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (id) => document.getElementById(id);
+      function restoreStaticMath() {
+        const slash = String.fromCharCode(92);
+        const tab = new RegExp(String.fromCharCode(9), "g");
+        const formFeed = new RegExp(String.fromCharCode(12), "g");
+        const root = document.querySelector("main");
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        textNodes.forEach((node) => {
+          const parent = node.parentElement;
+          if (!parent || parent.closest("svg")) return;
+          let text = node.nodeValue.replace(tab, slash + "t").replace(formFeed, slash + "f");
+          if (parent.closest(".formula-box")) {
+            node.nodeValue = text.replace(
+              /(^|\n)([ \t]*)\[([\s\S]*?)\]([ \t]*)(?=\n|$)/g,
+              (match, before, indent, formula, after) => before + indent + slash + "[" + formula + slash + "]" + after
+            );
+            return;
+          }
+          text = text.replace(/\(([\\a-zA-Z0-9\s:;=+\-*/^{}<>,.&|]+)\)/g, (match, formula, offset, whole) => {
+            if (offset > 0 && whole[offset - 1] === slash) return match;
+            return slash + "(" + formula + slash + ")";
+          });
+          node.nodeValue = text;
+        });
+      }
+      let typesetQueue = Promise.resolve();
+      function typeset(nodes) {
+        if (!window.MathJax?.typesetPromise) return;
+        typesetQueue = typesetQueue
+          .then(() => {
+            if (window.MathJax.typesetClear) window.MathJax.typesetClear(nodes);
+            return window.MathJax.typesetPromise(nodes);
+          })
+          .catch((error) => console.error("MathJax rendering failed:", error));
+      }
+
+      function readNumber(id) {
+        const value = Number($(id).value);
+        return Number.isFinite(value) ? value : null;
+      }
+      function formatNumber(value) {
+        if (!Number.isFinite(value)) return "無法計算";
+        const rounded = Math.round(value * 1000000) / 1000000;
+        return Number.isInteger(rounded) ? String(rounded) : String(rounded);
+      }
+
+      const shareInputs = ["share-total", "share-m", "share-n"];
+      function updateShareLab() {
+        const total = readNumber("share-total");
+        const m = readNumber("share-m");
+        const n = readNumber("share-n");
+        const result = $("share-result");
+        const first = $("share-piece-a");
+        const second = $("share-piece-b");
+        if (total === null || m === null || n === null || total < 0 || m <= 0 || n <= 0) {
+          result.textContent = "請輸入總量大於或等於 0，且兩個比例份數都大於 0。";
+          first.style.flex = "1";
+          second.style.flex = "1";
+          first.textContent = "第一項";
+          second.textContent = "第二項";
+          return;
+        }
+        const units = m + n;
+        const perUnit = total / units;
+        const a = m * perUnit;
+        const b = n * perUnit;
+        first.style.flex = String(m);
+        second.style.flex = String(n);
+        first.textContent = `第一項：${formatNumber(a)}`;
+        second.textContent = `第二項：${formatNumber(b)}`;
+        result.innerHTML = String.raw`
+          <p>共有 \(${formatNumber(m)}+${formatNumber(n)}=${formatNumber(units)}\) 份，所以一份是</p>
+          \[
+            \frac{${formatNumber(total)}}{${formatNumber(units)}}=${formatNumber(perUnit)}
+          \]
+          <p>第一項與第二項分別為</p>
+          \[
+            A=${formatNumber(m)}\times${formatNumber(perUnit)}=${formatNumber(a)},\qquad
+            B=${formatNumber(n)}\times${formatNumber(perUnit)}=${formatNumber(b)}
+          \]
+        `;
+        typeset([result]);
+      }
+      shareInputs.forEach((id) => $(id).addEventListener("input", updateShareLab));
+
+      let relationModel = "direct";
+      function updateRelationLab() {
+        const x = readNumber("relation-x");
+        const k = readNumber("relation-k");
+        const r = readNumber("relation-r");
+        const result = $("relation-result");
+        if (x === null || k === null || r === null || x === 0 || k === 0 || r === 0) {
+          result.textContent = "為了比較比例常數，請輸入 x、k、r 都不等於 0 的數。";
+          return;
+        }
+        const newX = r * x;
+        if (relationModel === "direct") {
+          const y = k * x;
+          const newY = k * newX;
+          result.innerHTML = String.raw`
+            <p>正比時固定的是 \(\dfrac{y}{x}=k\)。</p>
+            \[
+              y=${formatNumber(k)}\times${formatNumber(x)}=${formatNumber(y)}
+            \]
+            \[
+              x\longrightarrow ${formatNumber(r)}x=${formatNumber(newX)}
+              \quad\Longrightarrow\quad
+              y\longrightarrow ${formatNumber(r)}y=${formatNumber(newY)}
+            \]
+            <p>\(x\) 變成 \(${formatNumber(r)}\) 倍，\(y\) 也正好變成 \(${formatNumber(r)}\) 倍。</p>
+          `;
+        } else {
+          const y = k / x;
+          const newY = k / newX;
+          const inverseR = 1 / r;
+          result.innerHTML = String.raw`
+            <p>反比時固定的是 \(xy=k\)。</p>
+            \[
+              y=\frac{${formatNumber(k)}}{${formatNumber(x)}}=${formatNumber(y)},\qquad
+              xy=${formatNumber(x)}\times${formatNumber(y)}=${formatNumber(k)}
+            \]
+            \[
+              x\longrightarrow ${formatNumber(r)}x=${formatNumber(newX)}
+              \quad\Longrightarrow\quad
+              y\longrightarrow \frac{1}{${formatNumber(r)}}y=${formatNumber(newY)}
+            \]
+            <p>\(x\) 變成 \(${formatNumber(r)}\) 倍，\(y\) 變成 \(${formatNumber(inverseR)}\) 倍；乘積仍是 \(${formatNumber(k)}\)。</p>
+          `;
+        }
+        typeset([result]);
+      }
+      ["relation-x", "relation-k", "relation-r"].forEach((id) => $(id).addEventListener("input", updateRelationLab));
+      document.querySelectorAll(".choice").forEach((button) => {
+        button.addEventListener("click", () => {
+          relationModel = button.dataset.model;
+          document.querySelectorAll(".choice").forEach((item) => item.classList.toggle("active", item === button));
+          updateRelationLab();
+        });
+      });
+
+      document.querySelectorAll(".answer-list").forEach((list) => {
+        const feedback = list.parentElement.querySelector(".feedback");
+        list.querySelectorAll(".answer").forEach((button) => {
+          button.addEventListener("click", () => {
+            if (button.disabled) return;
+            const isCorrect = button.dataset.correct === "true";
+            if (isCorrect) {
+              button.classList.add("is-correct");
+              feedback.innerHTML = `答對！${button.dataset.feedback}`;
+              list.querySelectorAll(".answer").forEach((item) => { item.disabled = true; });
+            } else {
+              button.disabled = true;
+              button.classList.add("is-wrong");
+              feedback.innerHTML = `再想一下：${button.dataset.feedback}`;
+            }
+            typeset([feedback]);
+          });
+        });
+      });
+
+      restoreStaticMath();
+      updateShareLab();
+      updateRelationLab();
+      window.addEventListener("load", () => {
+        typeset([$("share-result"), $("relation-result")]);
+      }, { once: true });
+    })();
+  </script>
+</body>
+</html>

@@ -101,6 +101,66 @@
       white-space: nowrap;
     }
     .formula.compact { font-size: 17px; text-align: left; }
+    .formula-toolbox {
+      margin-top: 14px;
+      padding: clamp(16px, 3vw, 22px);
+      border: 1px solid #cbdcf0;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #fbfdff 0%, #f3f8ff 52%, #f1fffb 100%);
+    }
+    .formula-toolbox.purple-box {
+      border-color: #d8c9f2;
+      background: linear-gradient(135deg, #fdfbff 0%, #f6f1ff 55%, #f8fbff 100%);
+    }
+    .formula-toolbox h3 { margin-bottom: 4px; }
+    .formula-kicker { color: #426486; font-size: 14px; font-weight: 800; }
+    .formula-grid { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 13px; }
+    .formula-panel {
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid #cadced;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, .86);
+    }
+    .formula-panel.teal-panel { border-top: 4px solid var(--teal); }
+    .formula-panel.blue-panel { border-top: 4px solid var(--blue); }
+    .formula-panel.orange-panel { border-top: 4px solid var(--orange); }
+    .formula-panel.purple-panel { border-top: 4px solid var(--purple); }
+    .formula-panel h4 { margin-bottom: 5px; }
+    .formula-lines { display: grid; gap: 7px; margin-top: 8px; }
+    .formula-line {
+      padding: 7px 9px;
+      overflow-x: auto;
+      border-radius: 9px;
+      background: #f7fbff;
+      color: #17345e;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: 17px;
+      line-height: 1.45;
+      white-space: nowrap;
+    }
+    .formula-line.emphasis { color: #6b3410; background: #fff7ed; }
+    .formula-line.purple-line { color: #50317e; background: #f7f3ff; }
+    .formula-note { margin: 8px 0 0; color: #526d87; font-size: 14px; }
+    .formula-memory {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 110px minmax(0, 1fr);
+      align-items: center;
+      margin-top: 12px;
+      padding: 11px 12px;
+      border: 1px dashed #95b7da;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .68);
+    }
+    .formula-memory strong { color: #22528a; }
+    .formula-memory .formula-lines { margin: 0; }
+    .formula-memory .formula-line { text-align: center; }
+    .formula-compare { margin-top: 12px; overflow-x: auto; }
+    .formula-compare table { min-width: 660px; }
+    .formula-compare th { background: #f0ecff; color: #543987; }
+    .formula-compare td { text-align: left; vertical-align: top; }
+    .formula-compare .formula-line { display: inline-block; max-width: 100%; }
     .callout {
       margin-top: 12px;
       padding: 11px 13px;
@@ -269,12 +329,14 @@
     @media (max-width: 760px) {
       .wrap { padding: 14px 10px 34px; }
       .hero, .card { border-radius: 14px; }
-      .two, .three, .tool-layout, .mistake-grid { grid-template-columns: minmax(0, 1fr); }
+      .two, .three, .formula-grid, .tool-layout, .mistake-grid { grid-template-columns: minmax(0, 1fr); }
       .field-row { grid-template-columns: minmax(0, 1fr); }
       .field-row .button { width: 100%; }
       .formula { font-size: 18px; text-align: left; }
       .metric strong { font-size: 22px; }
       .compare-line { grid-template-columns: 78px minmax(0, 1fr); }
+      .formula-memory { grid-template-columns: minmax(0, 1fr); }
+      .formula-memory .formula-line { text-align: left; }
       canvas { height: 280px; }
     }
   </style>
@@ -283,7 +345,7 @@
   <main class="wrap">
     <header class="hero">
       <div class="tag-row">
-        <span class="tag">高三・數據分析</span>
+        <span class="tag">高一・數據分析</span>
         <span class="tag teal">核心工具：逐筆加入資料算標準差</span>
         <span class="tag orange">相關不等於因果</span>
       </div>
@@ -291,6 +353,7 @@
       <p class="lead">平均數告訴我們資料大約落在哪裡；標準差告訴我們資料有多整齊；相關係數與迴歸直線則用成對資料描述「一起變動」的趨勢。這一頁先讓學生看見資料，再把公式當成整理觀察的語言。</p>
       <nav class="nav" aria-label="本頁段落">
         <a href="#means">平均數</a>
+        <a href="#formula-toolbox">公式整理</a>
         <a href="#standard-deviation">標準差工具</a>
         <a href="#correlation">相關與迴歸</a>
         <a href="#check">自我檢查</a>
@@ -341,6 +404,50 @@
         </article>
       </div>
 
+      <article class="formula-toolbox" id="formula-toolbox" aria-labelledby="one-dimensional-formula-title">
+        <span class="label">一維資料公式整理</span>
+        <h3 id="one-dimensional-formula-title">先辨認資料型態，再選中心與分散的公式</h3>
+        <p class="formula-kicker">原始資料可直接計算；分組資料看不到每個原始值時，平均數多以組中點近似，百分位數要用內插法。</p>
+        <div class="formula-grid">
+          <section class="formula-panel blue-panel">
+            <h4>集中趨勢：代表值在哪裡？</h4>
+            <div class="formula-lines">
+              <div class="formula-line">眾數：出現次數最多的值（不一定只有一個）</div>
+              <div class="formula-line">中位數：由小到大排後的中間值；分組資料用 P₅₀ 內插</div>
+              <div class="formula-line">μ = (Σxᵢ) ÷ n</div>
+              <div class="formula-line">加權平均 = (Σwᵢxᵢ) ÷ (Σwᵢ)</div>
+            </div>
+            <p class="formula-note">分組資料的平均數：以各組「組中點」當該組的代表值；眾數則先找最高的次數組。</p>
+          </section>
+          <section class="formula-panel teal-panel">
+            <h4>倍率資料：幾何平均要先改成成長因子</h4>
+            <div class="formula-lines">
+              <div class="formula-line">(1 + r₁)(1 + r₂)⋯(1 + rₙ) = (1 + r)ⁿ</div>
+              <div class="formula-line">等效平均成長率 r = ⁿ√[(1+r₁)⋯(1+rₙ)] − 1</div>
+            </div>
+            <p class="formula-note">例如「漲 20%、跌 20%」先寫成 1.2、0.8；不要直接平均 20 與 −20。</p>
+          </section>
+          <section class="formula-panel orange-panel">
+            <h4>分散趨勢：資料拉得多開？</h4>
+            <div class="formula-lines">
+              <div class="formula-line">全距 = 最大值 − 最小值</div>
+              <div class="formula-line">IQR = Q₃ − Q₁</div>
+              <div class="formula-line">分組資料：IQR = P₇₅ − P₂₅（用內插法）</div>
+            </div>
+            <p class="formula-note">全距容易受單一極端值影響；四分位距較適合描述中間 50% 的資料寬度。</p>
+          </section>
+          <section class="formula-panel purple-panel">
+            <h4>平移、縮放與標準化</h4>
+            <div class="formula-lines">
+              <div class="formula-line purple-line">X′ = aX + b　⇒　μ′ = aμ + b</div>
+              <div class="formula-line purple-line">σ′ = |a|σ（只受縮放影響，不受平移影響）</div>
+              <div class="formula-line purple-line">Z = (X − μ) ÷ σ　⇒　平均數 0、標準差 1</div>
+            </div>
+            <p class="formula-note">最常錯在標準差：a 是負數時仍要取 |a|，因為標準差不能是負數。</p>
+          </section>
+        </div>
+      </article>
+
       <article class="card" style="margin-top:14px" aria-labelledby="mean-tool-title">
         <h3 id="mean-tool-title">快速檢查：同一串資料的兩種平均</h3>
         <p class="small">輸入以逗號、頓號、空白或換行分隔的正數。例：<code>2, 8, 18</code>。算術平均一定可算；幾何平均只在全部為正數時顯示。</p>
@@ -369,6 +476,37 @@
           <p>若只抽一些人來估計全校或全國，常用除以 <em>n − 1</em> 的樣本標準差。工具會同時列出兩者，避免把分母混在一起。</p>
         </article>
       </div>
+
+      <article class="formula-toolbox" aria-labelledby="sd-formula-title">
+        <span class="label teal">標準差速算與表格記憶</span>
+        <h3 id="sd-formula-title">同一件事的四種寫法：選最容易算的一種</h3>
+        <p class="formula-kicker">下列是「已收齊全體資料」的母體標準差 σ。抽樣估計時，請沿用上方工具的 n − 1 分母，不要混用。</p>
+        <div class="formula-grid">
+          <section class="formula-panel teal-panel">
+            <h4>從離平均數的距離出發</h4>
+            <div class="formula-lines">
+              <div class="formula-line">Sₓₓ = Σ(xᵢ − μ)² = nσ²</div>
+              <div class="formula-line">σ = √[Σ(xᵢ − μ)² ÷ n] = √(Sₓₓ ÷ n)</div>
+            </div>
+            <p class="formula-note">順序是：減平均、平方、加總、除以筆數、開根號。每一步的作用都不同，不能省略。</p>
+          </section>
+          <section class="formula-panel blue-panel">
+            <h4>已知 Σxᵢ 或 Σxᵢ² 時的速算</h4>
+            <div class="formula-lines">
+              <div class="formula-line">σ = √[(Σxᵢ² − nμ²) ÷ n]</div>
+              <div class="formula-line">σ = √[(Σxᵢ² ÷ n) − μ²]　＝　√(方均 − 均方)</div>
+              <div class="formula-line emphasis">Σxᵢ² = n(μ² + σ²)</div>
+            </div>
+            <p class="formula-note">看到 Σxᵢ² 時，先分清楚它是「平方後加總」；(Σxᵢ)² 則是「加總後才平方」，兩者不同。</p>
+          </section>
+        </div>
+        <div class="formula-memory" aria-label="標準差表格記憶公式">
+          <strong>用表格算時<br>三個總和</strong>
+          <div class="formula-lines">
+            <div class="formula-line">Σxᵢ = nμ　　｜　　Σ(xᵢ − μ) = 0　　｜　　Σ(xᵢ − μ)² = Sₓₓ = nσ²</div>
+          </div>
+        </div>
+      </article>
 
       <article class="card tool" style="margin-top:14px" aria-labelledby="sd-tool-title">
         <div class="tool-head">
@@ -468,6 +606,59 @@
         </article>
       </div>
 
+      <article class="formula-toolbox purple-box" aria-labelledby="two-dimensional-formula-title">
+        <span class="label purple">二維資料公式整理</span>
+        <h3 id="two-dimensional-formula-title">先建三個離差平方和，再讀相關與兩條回歸線</h3>
+        <p class="formula-kicker">以下以母體的 μₓ、μᵧ、σₓ、σᵧ 記號書寫；實作時可先用表格算 Sₓₓ、Sᵧᵧ、Sₓᵧ。</p>
+        <div class="formula-grid">
+          <section class="formula-panel purple-panel">
+            <h4>表格裡的三個總和</h4>
+            <div class="formula-lines">
+              <div class="formula-line purple-line">Sₓₓ = Σ(xᵢ − μₓ)²　　Sᵧᵧ = Σ(yᵢ − μᵧ)²</div>
+              <div class="formula-line purple-line">Sₓᵧ = Σ(xᵢ − μₓ)(yᵢ − μᵧ)</div>
+            </div>
+            <p class="formula-note">Sₓᵧ 的正負會反映點大致往右上或右下走；Sₓₓ、Sᵧᵧ 則保證是非負的。</p>
+          </section>
+          <section class="formula-panel blue-panel">
+            <h4>相關係數 r：三種等價寫法</h4>
+            <div class="formula-lines">
+              <div class="formula-line">r = Sₓᵧ ÷ √(SₓₓSᵧᵧ)</div>
+              <div class="formula-line">r = [Σxᵢyᵢ − nμₓμᵧ] ÷ √[(Σxᵢ²−nμₓ²)(Σyᵢ²−nμᵧ²)]</div>
+              <div class="formula-line">r = [(Σxᵢyᵢ ÷ n) − μₓμᵧ] ÷ (σₓσᵧ)</div>
+              <div class="formula-line emphasis">Σxᵢyᵢ = n(μₓμᵧ + rσₓσᵧ)</div>
+            </div>
+          </section>
+          <section class="formula-panel orange-panel">
+            <h4>y 對 x 的迴歸線：用 x 預測 y</h4>
+            <div class="formula-lines">
+              <div class="formula-line">ŷ − μᵧ = r(σᵧ ÷ σₓ)(x − μₓ)</div>
+              <div class="formula-line">ŷ − μᵧ = (Sₓᵧ ÷ Sₓₓ)(x − μₓ)</div>
+              <div class="formula-line">ŷ = a + bx，b = Sₓᵧ ÷ Sₓₓ</div>
+            </div>
+            <p class="formula-note">這正是工具畫出的橘線；它一定通過 (μₓ, μᵧ)。</p>
+          </section>
+          <section class="formula-panel teal-panel">
+            <h4>x 對 y 的迴歸線：用 y 預測 x</h4>
+            <div class="formula-lines">
+              <div class="formula-line">x̂ − μₓ = r(σₓ ÷ σᵧ)(y − μᵧ)</div>
+              <div class="formula-line">x̂ − μₓ = (Sₓᵧ ÷ Sᵧᵧ)(y − μᵧ)</div>
+            </div>
+            <p class="formula-note">題目問「由哪個變數預測哪個變數」，就選對應的回歸式；兩條回歸線不是隨便交換 x、y。</p>
+          </section>
+        </div>
+        <div class="formula-compare">
+          <table aria-label="相關與迴歸的性質整理">
+            <thead><tr><th>性質</th><th>看到公式時的判讀</th></tr></thead>
+            <tbody>
+              <tr><td>範圍與符號</td><td>−1 ≤ r ≤ 1；y 對 x 的迴歸線斜率與 r 同號。</td></tr>
+              <tr><td>兩條回歸線</td><td>都通過 (μₓ, μᵧ)。當 r = 0 時，y 對 x 是水平線、x 對 y 是鉛直線；當 |r| = 1 時，兩條線重合。</td></tr>
+              <tr><td>平移與縮放</td><td><span class="formula-line">X′ = aX+b，Y′ = cY+d　⇒　r′ = sgn(ac)r（a,c ≠ 0）</span> 平移不改變 r；正倍率不改變 r，只有負倍率會讓 r 變號。</td></tr>
+              <tr><td>何時先看圖</td><td>r 接近 0 只代表「線性」關係弱，可能仍有曲線關係；|r| 很小時，不宜硬用直線做預測。</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
       <article class="card tool correlation-tool" style="margin-top:14px" aria-labelledby="pair-tool-title">
         <div class="tool-head">
           <div>
@@ -550,7 +741,7 @@
       </div>
     </section>
 
-    <a class="back" href="./index.html#s3">← 回教學首頁的高三入口</a>
+    <a class="back" href="./index.html#s1">← 回教學首頁的高一入口</a>
   </main>
 
   <script>

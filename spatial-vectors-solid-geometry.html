@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>空間向量與立體幾何｜關係判定互動教學</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["\\(", "\\)"], ["$", "$"]], displayMath: [["\\[", "\\]"]] },
+      svg: { fontCache: "global" }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       --ink: #13233f;
@@ -87,6 +94,8 @@
     .formula { margin: 11px 0; padding: 11px 13px; overflow-x: auto; border-left: 5px solid #438db9; border-radius: 0 12px 12px 0; background: #f3f9fe; color: #183e61; font-family: "Cambria Math", "Times New Roman", serif; font-size: 18px; }
     .formula.warm { border-color: #d4822b; background: var(--orange-soft); }
     .formula.violet { border-color: #8766bf; background: #f6f2ff; }
+    .formula mjx-container { margin: 0 !important; }
+    mjx-container { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
     .relation-grid { margin-top: 15px; }
     .relation-card { padding: 17px; border: 1px solid var(--line); border-radius: 17px; }
     .relation-card h3 { color: var(--navy); }
@@ -234,10 +243,10 @@
         <article class="relation-card">
           <h3>直線 ℓ 與平面 α</h3>
           <ul>
-            <li><strong>ℓ 在 α 內：</strong>有無限多個共同點。</li>
-            <li><strong>ℓ 與 α 相交：</strong>通常只有一個交點 P。</li>
-            <li><strong>ℓ ∥ α：</strong>沒有共同點。</li>
-            <li><strong>ℓ ⟂ α：</strong>ℓ 通過交點 P，且垂直 α 內過 P 的兩條相交直線。</li>
+            <li><strong>\(\ell \subset \alpha\)：</strong>有無限多個共同點。</li>
+            <li><strong>\(\ell\cap\alpha=\{P\}\)：</strong>通常只有一個交點 \(P\)。</li>
+            <li><strong>\(\ell \parallel \alpha\)：</strong>沒有共同點。</li>
+            <li><strong>\(\ell \perp \alpha\)：</strong>\(\ell\) 通過交點 \(P\)，且垂直 \(\alpha\) 內過 \(P\) 的兩條相交直線。</li>
           </ul>
         </article>
         <article class="relation-card">
@@ -245,7 +254,7 @@
           <ul>
             <li><strong>相交：</strong>交集是一條直線，叫做<strong>交線</strong>。</li>
             <li><strong>平行：</strong>沒有共同點（或兩平面重合）。</li>
-            <li><strong>垂直：</strong>若 α 內有一條直線 ℓ 垂直 β，則 α ⟂ β。</li>
+            <li><strong>垂直：</strong>若 \(\alpha\) 內有一條直線 \(\ell\) 垂直 \(\beta\)，則 \(\alpha\perp\beta\)。</li>
           </ul>
         </article>
         <article class="relation-card">
@@ -263,11 +272,11 @@
         <table class="vector-table">
           <thead><tr><th>想判的關係</th><th>向量翻譯</th><th>解題時要補的一句話</th></tr></thead>
           <tbody>
-            <tr><td>兩線平行</td><td>方向向量 u = k v</td><td>還要注意：若兩線有共同點且方向平行，才是同一直線。</td></tr>
-            <tr><td>兩線垂直</td><td>u · v = 0</td><td>在空間中，方向垂直不保證兩線相交；不相交時仍可能是歪斜線。</td></tr>
-            <tr><td>線 ∥ 面</td><td>方向向量 u · 法向量 n = 0</td><td>再排除直線其實落在平面內的情況。</td></tr>
-            <tr><td>線 ⟂ 面</td><td>u ∥ n</td><td>幾何證明可改成：垂直平面內過交點的兩相交直線。</td></tr>
-            <tr><td>面 ∥ 面／面 ⟂ 面</td><td>n₁ ∥ n₂ ／ n₁ · n₂ = 0</td><td>法向量是把「面」轉成一個可運算的方向。</td></tr>
+            <tr><td>兩線平行</td><td>\(\mathbf{u}=k\mathbf{v}\)</td><td>還要注意：若兩線有共同點且方向平行，才是同一直線。</td></tr>
+            <tr><td>兩線垂直</td><td>\(\mathbf{u}\cdot\mathbf{v}=0\)</td><td>在空間中，方向垂直不保證兩線相交；不相交時仍可能是歪斜線。</td></tr>
+            <tr><td>線 ∥ 面</td><td>\(\mathbf{u}\cdot\mathbf{n}=0\)</td><td>再排除直線其實落在平面內的情況。</td></tr>
+            <tr><td>線 ⟂ 面</td><td>\(\mathbf{u}\parallel\mathbf{n}\)</td><td>幾何證明可改成：垂直平面內過交點的兩相交直線。</td></tr>
+            <tr><td>面 ∥ 面／面 ⟂ 面</td><td>\(\mathbf{n}_1\parallel\mathbf{n}_2\) ／ \(\mathbf{n}_1\cdot\mathbf{n}_2=0\)</td><td>法向量是把「面」轉成一個可運算的方向。</td></tr>
           </tbody>
         </table>
       </div>
@@ -280,30 +289,30 @@
       <div class="two-col">
         <article class="card">
           <div class="icon-title"><span class="icon">⟂</span><h3>直線垂直平面的判定</h3></div>
-          <p>直線 ℓ 在 P 點與平面 α 相交。若 ℓ 同時垂直 α 內<strong>通過 P 的兩條相交直線</strong>，就可判定 ℓ ⟂ α。</p>
-          <div class="formula">ℓ ⟂ a，ℓ ⟂ b，a、b ⊂ α 且 a、b 交於 P　⇒　ℓ ⟂ α</div>
+          <p>直線 \(\ell\) 在 \(P\) 點與平面 \(\alpha\) 相交。若 \(\ell\) 同時垂直 \(\alpha\) 內<strong>通過 \(P\) 的兩條相交直線</strong>，就可判定 \(\ell\perp\alpha\)。</p>
+          <div class="formula">\[\ell\perp a,\quad \ell\perp b,\quad a,b\subset\alpha,\quad a\cap b=\{P\}\quad\Longrightarrow\quad\ell\perp\alpha\]</div>
           <p><strong>為什麼一定要兩條？</strong>只垂直平面內的一條線，方向還可以繞那條線轉動，不能唯一決定垂直於整個平面。</p>
         </article>
         <article class="card">
           <div class="icon-title"><span class="icon">↘</span><h3>投影、距離與線面角</h3></div>
-          <p>從點 P 向平面 α 作垂線 PA，A 是垂足。<strong>PA 的長</strong>就是 P 到平面 α 的距離。</p>
-          <p>若 X 在 α 上，斜線 PX 在平面 α 上的射影為 AX，因此<strong>線 PX 與平面 α 所成角</strong>，要在直角三角形 PAX 中讀取，是 ∠PXA。</p>
-          <div class="formula warm">sin θ = PA / PX，cos θ = AX / PX，tan θ = PA / AX</div>
+          <p>從點 \(P\) 向平面 \(\alpha\) 作垂線 \(PA\)，\(A\) 是垂足。<strong>\(PA\) 的長</strong>就是 \(P\) 到平面 \(\alpha\) 的距離。</p>
+          <p>若 \(X\) 在 \(\alpha\) 上，斜線 \(PX\) 在平面 \(\alpha\) 上的射影為 \(AX\)，因此<strong>線 \(PX\) 與平面 \(\alpha\) 所成角</strong>，要在直角三角形 \(PAX\) 中讀取，是 \(\angle PXA\)。</p>
+          <div class="formula warm">\[\sin\theta=\frac{PA}{PX},\qquad \cos\theta=\frac{AX}{PX},\qquad \tan\theta=\frac{PA}{AX}\]</div>
         </article>
       </div>
       <div class="two-col" style="margin-top:18px">
         <article class="card">
           <div class="icon-title"><span class="icon">Ⅲ</span><h3>三垂線定理</h3></div>
-          <p>設 PA ⟂ 平面 α，A 是 P 的投影；B 在 α 上；直線 m 在 α 內且通過 B。斜線 PB 在 α 上的投影就是 AB。</p>
-          <div class="formula violet">PB ⟂ m　⇔　AB ⟂ m</div>
+          <p>設 \(PA\perp\alpha\)，\(A\) 是 \(P\) 的投影；\(B\) 在 \(\alpha\) 上；直線 \(m\) 在 \(\alpha\) 內且通過 \(B\)。斜線 \(PB\) 在 \(\alpha\) 上的投影就是 \(AB\)。</p>
+          <div class="formula violet">\[PB\perp m\quad\Longleftrightarrow\quad AB\perp m\]</div>
           <p>它的工作是把「空間中斜線 PB 的垂直」，轉譯為「平面上投影 AB 的垂直」。</p>
         </article>
         <article class="card">
           <h3>三垂線題的三步驟</h3>
           <ol>
-            <li>先寫出垂足：PA ⟂ α，找出 A。</li>
-            <li>把斜線 PB 的投影明確標成 AB。</li>
-            <li>在平面 α 內先證 AB ⟂ m，再由三垂線推出 PB ⟂ m。</li>
+            <li>先寫出垂足：\(PA\perp\alpha\)，找出 \(A\)。</li>
+            <li>把斜線 \(PB\) 的投影明確標成 \(AB\)。</li>
+            <li>在平面 \(\alpha\) 內先證 \(AB\perp m\)，再由三垂線推出 \(PB\perp m\)。</li>
           </ol>
           <div class="warning"><strong>常見錯誤：</strong>把 PA 當成 PB 的投影。PA 是垂線；PB 的投影應連接 P 的投影 A 與 B，所以是 AB。</div>
         </article>
@@ -317,31 +326,31 @@
         <article class="card">
           <h3>四面體／三角錐</h3>
           <p>先選一個三角形面當底面；從對頂點向<strong>底面所在平面</strong>作垂線，垂線長才是高 h。</p>
-          <div class="formula">V = (1 / 3) × 底面積 × h</div>
+          <div class="formula">\[V=\frac{1}{3}\times\text{底面積}\times h\]</div>
           <p>正四面體邊長為 a 時：</p>
-          <div class="formula">h = (√6 / 3)a，　V = (√2 / 12)a³</div>
+          <div class="formula">\[h=\frac{\sqrt{6}}{3}a,\qquad V=\frac{\sqrt{2}}{12}a^3\]</div>
           <p class="lead">切勿把任一側邊直接當高；高必須垂直整個底面。</p>
         </article>
         <article class="card">
           <h3>正四角錐</h3>
           <p>底面是邊長 a 的正方形，頂點投影在底面中心 O；高為 PO。</p>
-          <div class="formula warm">V = (1 / 3)a²h</div>
+          <div class="formula warm">\[V=\frac{1}{3}a^2h\]</div>
           <p>若題目給的是側面斜高 PM，不要直接代 h。先在直角三角形 POM 用畢氏定理求 PO。</p>
-          <div class="formula warm">PM² = PO² + OM²，且 OM = a / 2</div>
+          <div class="formula warm">\[\begin{gathered}PM^2=PO^2+OM^2\\\\OM=\frac{a}{2}\end{gathered}\]</div>
         </article>
         <article class="card">
           <h3>三直角三角錐</h3>
           <p>在同一頂點 O，三條棱 OA、OB、OC 兩兩垂直。可以把 OA、OB 當底面直角邊，OC 就是高。</p>
-          <div class="formula violet">V = (1 / 6) × OA × OB × OC</div>
-          <p>這是「先算直角三角形底面積 1/2 × OA × OB，再乘高、再除 3」的結果。</p>
+          <div class="formula violet">\[V=\frac{1}{6}\,OA\cdot OB\cdot OC\]</div>
+          <p>這是「先算直角三角形底面積 \(\frac{1}{2}OA\cdot OB\)，再乘高、再除以 \(3\)」的結果。</p>
         </article>
         <article class="card">
           <h3>例題：正四角錐的體積</h3>
           <p>底面邊長 6，側面斜高 PM = 5。求體積。</p>
           <ol>
-            <li>OM = 6 ÷ 2 = 3。</li>
-            <li>PO = √(5² − 3²) = 4。</li>
-            <li>V = (1 / 3) × 6² × 4 = <strong>48</strong>。</li>
+            <li>\(OM=\frac{6}{2}=3\)。</li>
+            <li>\(PO=\sqrt{5^2-3^2}=4\)。</li>
+            <li>\(V=\frac{1}{3}\times 6^2\times 4=\mathbf{48}\)。</li>
           </ol>
         </article>
       </div>
@@ -360,8 +369,8 @@
         </svg>
         <div>
           <h3>二面角：不要直接在立體圖上量</h3>
-          <p>兩個平面 α、β 相交於交線 ℓ。要量二面角，請取一個<strong>垂直於交線 ℓ 的截面</strong>；截面與 α、β 分別交出兩條射線，這兩條射線形成的平面角 θ，才是二面角。</p>
-          <div class="formula">正四面體的二面角 θ：cos θ = 1 / 3</div>
+          <p>兩個平面 \(\alpha,\beta\) 相交於交線 \(\ell\)。要量二面角，請取一個<strong>垂直於交線 \(\ell\) 的截面</strong>；截面與 \(\alpha,\beta\) 分別交出兩條射線，這兩條射線形成的平面角 \(\theta\)，才是二面角。</p>
+          <div class="formula">\[\text{正四面體的二面角 }\theta:\qquad \cos\theta=\frac{1}{3}\]</div>
           <p class="lead">看到「兩面交」的題目，先說交線，再想「作垂直交線的截面」。這是把立體角度轉成平面角度的核心。</p>
         </div>
       </div>
@@ -457,7 +466,7 @@
           facts: {
             structure: "四個面都是正三角形。任選一面當底面，對頂點到這個底面所在平面的垂線，就是高。",
             height: "紅色虛線是從 D 向底面 ABC 作的高。正四面體的高不會落在任一條底邊上，而是落在底面中心。",
-            volume: "選 △ABC 為底面：V = (1 / 3) × [ABC] × h。邊長 a 時，V = (√2 / 12)a³。",
+            volume: String.raw`選 \(\triangle ABC\) 為底面：\(V=\frac{1}{3}\bigl[\triangle ABC\bigr]h\)。邊長為 \(a\) 時，\(V=\frac{\sqrt{2}}{12}a^3\)。`,
             dihedral: "面 ABC 與面 ABD 的交線是 AB。二面角要以 AB 為軸，作垂直 AB 的截面來讀取。"
           }
         },
@@ -470,7 +479,7 @@
           facts: {
             structure: "立方體的八個頂點可交錯分成兩組；每一組的四點各形成一個正四面體。六個面心則可形成正八面體。",
             height: "以底面 ABCD 為底面時，EA 垂直底面，是高。立方體中同方向的 4 條邊互相平行。",
-            volume: "立方體邊長為 a 時，V = a³。若內接正八面體，八面體的六個頂點在立方體六個面心。",
+            volume: String.raw`立方體邊長為 \(a\) 時，\(V=a^3\)。若內接正八面體，八面體的六個頂點在立方體六個面心。`,
             dihedral: "底面 ABCD 與側面 ABEF 相交於 AB；它們的二面角為 90°。"
           }
         },
@@ -483,7 +492,7 @@
           facts: {
             structure: "正八面體可想成兩個全等四角錐底對底相接。它的六個頂點正好對應立方體六個面心。",
             height: "可將中間的正方形 ABCD 當底面，U 到這個平面的垂線是高度的一半；UL 是上下兩錐尖連線。",
-            volume: "把正八面體拆成上下兩個四角錐，再用各自的 (1 / 3)×底面積×高 相加。",
+            volume: String.raw`把正八面體拆成上下兩個四角錐，再用各自的 \(\frac{1}{3}\times\text{底面積}\times\text{高}\) 相加。`,
             dihedral: "面 UAB 與 LAB 相交於 AB。要研究夾角，同樣以 AB 為軸作垂直截面。"
           }
         },
@@ -496,7 +505,7 @@
           facts: {
             structure: "頂點 P 的投影 O 是正方形底面的中心。這個「中心投影」是正四角錐的關鍵條件。",
             height: "紅色 PO 垂直底面 ABCD，因此 PO 才是高 h；側邊 PA 與斜高 PM 都不是高。",
-            volume: "底面邊長 a、高 h：V = (1 / 3)a²h。若給斜高，要先用畢氏定理求 h。",
+            volume: String.raw`底面邊長為 \(a\)、高為 \(h\)：\(V=\frac{1}{3}a^2h\)。若給斜高，要先用畢氏定理求 \(h\)。`,
             dihedral: "底面 ABCD 與側面 PAB 的交線是 AB。取 AB 中點 M，截面 PMO 可用來讀這條邊上的二面角。"
           }
         },
@@ -507,9 +516,9 @@
           edges: [["O", "A"], ["O", "B"], ["O", "C"], ["A", "B"], ["A", "C"], ["B", "C"]],
           height: ["C", "O"], dihedral: [["O", "A", "B"], ["O", "A", "C"], ["O", "A"]],
           facts: {
-            structure: "在 O 點像三條互相垂直的桌角方向。先辨認 OA ⟂ OB、OB ⟂ OC、OC ⟂ OA。",
+            structure: String.raw`在 \(O\) 點像三條互相垂直的桌角方向。先辨認 \(OA\perp OB\)、\(OB\perp OC\)、\(OC\perp OA\)。`,
             height: "若選直角三角形 OAB 當底面，OC 垂直平面 OAB，所以 OC 直接是高。",
-            volume: "V = (1 / 6)×OA×OB×OC。這是直角三角形底面積再乘高、再除以 3。",
+            volume: String.raw`\(V=\frac{1}{6}\,OA\cdot OB\cdot OC\)。這是直角三角形底面積再乘高、再除以 \(3\)。`,
             dihedral: "面 OAB 與 OAC 相交於 OA；因 OB、OC 都垂直 OA，這是一個容易作截面的基本模型。"
           }
         }
@@ -521,6 +530,12 @@
         Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
         return el;
       };
+      function typesetMath(element) {
+        if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+          window.MathJax.typesetClear?.([element]);
+          window.MathJax.typesetPromise([element]).catch(error => console.error("MathJax typeset failed:", error));
+        }
+      }
       const pointString = (points, labels) => labels.map(label => project(points[label]).join(",")).join(" ");
       const samePoint = (a, b) => Array.isArray(a) && Array.isArray(b) && a.every((value, index) => Math.abs(value - b[index]) < .001);
       const addSegment = (start, end, attrs = {}) => {
@@ -548,7 +563,7 @@
         }
         if (state.focus === "volume") {
           const all = Object.values(model.points); const avg = all.reduce((sum, p) => [sum[0] + p[0], sum[1] + p[1], sum[2] + p[2]], [0, 0, 0]).map(value => value / all.length);
-          const [x, y] = project(avg); const label = make("text", { x, y, "text-anchor": "middle", fill: "#b96419", "font-size": 24, "font-weight": 900 }); label.textContent = "V = 底面積 × 高 ÷ 3"; svg.appendChild(label);
+          const [x, y] = project(avg); const label = make("text", { x, y, "text-anchor": "middle", fill: "#b96419", "font-size": 24, "font-weight": 900 }); label.textContent = "體積公式"; svg.appendChild(label);
         }
       }
       function renderSolid() {
@@ -564,6 +579,7 @@
           const txt = make("text", { x: x + 8, y: y - 7, fill: "#102d49", "font-size": 16, "font-weight": 800 }); txt.textContent = label; svg.appendChild(txt);
         });
         result.innerHTML = `<h4>${model.name}</h4><p><strong>${model.stats}</strong></p><p>${model.facts[state.focus]}</p>`;
+        typesetMath(result);
       }
       document.querySelectorAll("#shapeTabs button").forEach(button => button.addEventListener("click", () => {
         state.shape = button.dataset.shape;
@@ -580,24 +596,25 @@
       const questions = [
         { level: "基礎", q: "把一本書打開，左右兩頁分別代表平面 α、β。書背最適合代表什麼？", options: ["兩平面的交線", "兩平面的公垂線", "平面 α 的法向量", "兩平面的距離"], answer: 0, note: "兩個相交平面的共同部分是一條直線；書背正是兩頁共用的交線。" },
         { level: "基礎", q: "兩直線在空間中沒有交點，且方向不同。還需要確認哪一件事，才能判為歪斜線？", options: ["兩線長度是否相同", "兩線是否不共面", "兩線是否都垂直桌面", "兩線的端點是否可見"], answer: 1, note: "歪斜線的定義是：不相交、不平行，而且不共面。" },
-        { level: "進階", q: "直線 ℓ 在 P 點與平面 α 相交。若要證明 ℓ ⟂ α，最完整的做法是？", options: ["證明 ℓ 垂直 α 內過 P 的兩條相交直線", "證明 ℓ 與 α 內任一線段等長", "證明 ℓ 與 α 不相交", "證明 ℓ 平行 α 內的一條線"], answer: 0, note: "一條線垂直平面內過交點的兩條相交直線，即可垂直該平面。" },
-        { level: "進階", q: "正四角錐底面邊長為 6，斜高為 5。體積為多少？", options: ["36", "48", "60", "75"], answer: 1, note: "底面中心到邊中點為 3，高 = √(5²−3²)=4，所以 V=(1/3)×36×4=48。" },
-        { level: "挑戰", q: "三直角三角錐在 O 點有 OA=3、OB=4、OC=5，三條棱兩兩垂直。體積為多少？", options: ["10", "20", "30", "60"], answer: 0, note: "V=(1/6)×3×4×5=10。" },
-        { level: "挑戰", q: "兩平面 α、β 相交於 ℓ。要取得這兩平面的二面角，應作哪一個截面？", options: ["任意通過 ℓ 的截面", "平行 ℓ 的截面", "垂直 ℓ 的截面", "與 α 平行的截面"], answer: 2, note: "截面必須垂直交線 ℓ；截出的兩條射線所成平面角，才是二面角。" }
+        { level: "進階", q: String.raw`直線 \(\ell\) 在 \(P\) 點與平面 \(\alpha\) 相交。若要證明 \(\ell\perp\alpha\)，最完整的做法是？`, options: [String.raw`證明 \(\ell\) 垂直 \(\alpha\) 內過 \(P\) 的兩條相交直線`, String.raw`證明 \(\ell\) 與 \(\alpha\) 內任一線段等長`, String.raw`證明 \(\ell\) 與 \(\alpha\) 不相交`, String.raw`證明 \(\ell\) 平行 \(\alpha\) 內的一條線`], answer: 0, note: String.raw`一條線垂直平面內過交點的兩條相交直線，即可垂直該平面。` },
+        { level: "進階", q: "正四角錐底面邊長為 6，斜高為 5。體積為多少？", options: ["36", "48", "60", "75"], answer: 1, note: String.raw`底面中心到邊中點為 \(3\)，高 \(PO=\sqrt{5^2-3^2}=4\)，所以 \(V=\frac{1}{3}\times 36\times 4=48\)。` },
+        { level: "挑戰", q: String.raw`三直角三角錐在 \(O\) 點有 \(OA=3\)、\(OB=4\)、\(OC=5\)，三條棱兩兩垂直。體積為多少？`, options: ["10", "20", "30", "60"], answer: 0, note: String.raw`\(V=\frac{1}{6}\times 3\times 4\times 5=10\)。` },
+        { level: "挑戰", q: String.raw`兩平面 \(\alpha,\beta\) 相交於 \(\ell\)。要取得這兩平面的二面角，應作哪一個截面？`, options: [String.raw`任意通過 \(\ell\) 的截面`, String.raw`平行 \(\ell\) 的截面`, String.raw`垂直 \(\ell\) 的截面`, String.raw`與 \(\alpha\) 平行的截面`], answer: 2, note: String.raw`截面必須垂直交線 \(\ell\)；截出的兩條射線所成平面角，才是二面角。` }
       ];
       let qIndex = 0; let answered = false;
       const qLevel = document.getElementById("quizLevel"); const qText = document.getElementById("quizQuestion"); const qOptions = document.getElementById("quizOptions"); const qFeedback = document.getElementById("quizFeedback");
       function renderQuestion() {
-        const item = questions[qIndex]; answered = false; qLevel.textContent = item.level; qText.textContent = `第 ${qIndex + 1} 題｜${item.q}`; qOptions.innerHTML = ""; qFeedback.textContent = ""; qFeedback.className = "quiz-feedback";
-        item.options.forEach((option, index) => { const button = document.createElement("button"); button.type = "button"; button.textContent = `${String.fromCharCode(65 + index)}. ${option}`; button.addEventListener("click", () => chooseOption(index, button)); qOptions.appendChild(button); });
+        const item = questions[qIndex]; answered = false; qLevel.textContent = item.level; qText.innerHTML = `第 ${qIndex + 1} 題｜${item.q}`; qOptions.innerHTML = ""; qFeedback.textContent = ""; qFeedback.className = "quiz-feedback";
+        item.options.forEach((option, index) => { const button = document.createElement("button"); button.type = "button"; button.innerHTML = `${String.fromCharCode(65 + index)}. ${option}`; button.addEventListener("click", () => chooseOption(index, button)); qOptions.appendChild(button); });
+        typesetMath(qText); typesetMath(qOptions);
       }
       function chooseOption(index, button) {
         if (answered) return;
         const item = questions[qIndex];
         if (index === item.answer) {
-          answered = true; button.classList.add("good"); qFeedback.className = "quiz-feedback good"; qFeedback.textContent = `答對了！${item.note}`;
+          answered = true; button.classList.add("good"); qFeedback.className = "quiz-feedback good"; qFeedback.innerHTML = `答對了！${item.note}`; typesetMath(qFeedback);
         } else {
-          button.classList.add("wrong"); button.disabled = true; qFeedback.className = "quiz-feedback try"; qFeedback.textContent = "先保留這題，再想一次：" + item.note.replace(/。$/, "") + "。";
+          button.classList.add("wrong"); button.disabled = true; qFeedback.className = "quiz-feedback try"; qFeedback.innerHTML = "先保留這題，再想一次：" + item.note.replace(/。$/, "") + "。"; typesetMath(qFeedback);
         }
       }
       document.getElementById("nextQuestion").addEventListener("click", () => { qIndex = (qIndex + 1) % questions.length; renderQuestion(); });

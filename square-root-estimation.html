@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>根號估計與直式開根號｜互動教學</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       --ink: #172554;
@@ -70,6 +83,7 @@
     .section-head h2 { margin: 0; }
     .section-intro { max-width: 950px; margin-bottom: 14px; }
     .grid-2, .grid-3 { display: grid; gap: 13px; }
+    .grid-2 > *, .grid-3 > * { min-width: 0; }
     .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .mini, .example, .notice, .tool, .step-panel, .paper, .quiz-card {
@@ -79,8 +93,8 @@
     .example { border-color: #99f6e4; background: var(--teal-pale); }
     .notice { border-color: #fdba74; background: var(--amber-pale); }
     .notice strong { color: var(--amber); }
-    .formula, .math, .mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
-    .formula { display: block; margin: 9px 0; padding: 10px 12px; overflow-x: auto; border-left: 4px solid #38bdf8; border-radius: 7px; color: #172554; background: #eff6ff; font-weight: 800; white-space: nowrap; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .formula { display: block; margin: 9px 0; padding: 10px 12px; overflow-x: auto; border-left: 4px solid #38bdf8; border-radius: 7px; color: #172554; background: #eff6ff; font-weight: 800; }
     .math { color: #172554; font-weight: 800; }
     .method-map { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 8px; align-items: stretch; margin: 18px 0 0; }
     .map-box { padding: 12px; border: 1px solid #bae6fd; border-radius: 13px; background: #f0f9ff; text-align: center; }
@@ -175,7 +189,7 @@
     .foot { margin: 20px 0 0; color: #64748b; text-align: center; font-size: 14px; }
     @media (max-width: 760px) {
       .wrap { width: min(100% - 20px, 1120px); padding-top: 10px; }
-      .grid-2, .grid-3, .long-root-layout { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .long-root-layout { grid-template-columns: minmax(0, 1fr); }
       .method-map { grid-template-columns: 1fr; }
       .map-arrow { transform: rotate(90deg); min-height: 22px; }
       .long-root-layout .paper { order: -1; }
@@ -197,7 +211,7 @@
   <main class="wrap">
     <section class="hero">
       <h1>根號估計：從夾住答案，到自己開根號</h1>
-      <p class="lead">遇到 <span class="math">√20、√50、√12.25</span>，不必立刻拿計算機。先用平方數找位置，再把範圍一格一格縮小；最後，連直式開根號每一個動作也能自己做出來。</p>
+      <p class="lead">遇到 <span class="math">\(\sqrt{20}\)、\(\sqrt{50}\)、\(\sqrt{12.25}\)</span>，不必立刻拿計算機。先用平方數找位置，再把範圍一格一格縮小；最後，連直式開根號每一個動作也能自己做出來。</p>
       <div class="pills">
         <span class="pill">先講觀念，再講算法</span>
         <span class="pill">每個判斷都回到「平方比較」</span>
@@ -219,37 +233,37 @@
         <h2>0. 所有估計法都在做同一件事：比較平方</h2>
         <span class="level">觀念起點</span>
       </div>
-      <p class="section-intro">如果 <span class="math">a² &lt; N &lt; b²</span>，而 <span class="math">a、b</span> 都是正數，便能確定 <span class="math">a &lt; √N &lt; b</span>。根號不是神祕的新運算：它問的是「哪一個正數平方後會變成 <span class="math">N</span>？」</p>
+      <p class="section-intro">如果 <span class="math">\(a^2 &lt; N &lt; b^2\)</span>，而 <span class="math">\(a,b\)</span> 都是正數，便能確定 <span class="math">\(a &lt; \sqrt{N} &lt; b\)</span>。根號不是神祕的新運算：它問的是「哪一個正數平方後會變成 <span class="math">\(N\)</span>？」</p>
       <div class="grid-3">
         <article class="mini">
           <span class="tag">先背附近平方數</span>
-          <h3>例：√20 在哪裡？</h3>
-          <span class="formula">4² = 16 &lt; 20 &lt; 25 = 5²</span>
-          <p>所以 <span class="math">4 &lt; √20 &lt; 5</span>。這是後面所有小數估計的起點。</p>
+          <h3>例：\(\sqrt{20}\) 在哪裡？</h3>
+          <span class="formula">\[4^2=16 &lt; 20 &lt; 25=5^2\]</span>
+          <p>所以 <span class="math">\(4 &lt; \sqrt{20} &lt; 5\)</span>。這是後面所有小數估計的起點。</p>
         </article>
         <article class="mini">
           <span class="tag">平方越大，根號越大</span>
           <h3>比較不用真的開根號</h3>
-          <span class="formula">√37 &lt; 7，因為 37 &lt; 49 = 7²</span>
-          <p>比較 <span class="math">√37</span> 和整數時，先把整數平方；這比直接猜答案可靠。</p>
+          <span class="formula">\[\sqrt{37}&lt;7\quad\text{，因為 }37&lt;49=7^2\]</span>
+          <p>比較 <span class="math">\(\sqrt{37}\)</span> 和整數時，先把整數平方；這比直接猜答案可靠。</p>
         </article>
         <article class="notice">
           <h3>常見錯誤：只看被開方數的十位數</h3>
-          <p><strong>錯誤想法：</strong>20 介於 4 和 5，所以 √20 也許介於 2 和 3。<br><strong>改正：</strong>要比較的是 <em>平方</em>：<span class="math">4²、5²</span>，不是 4、5 本身。</p>
+          <p><strong>錯誤想法：</strong>20 介於 4 和 5，所以 \(\sqrt{20}\) 也許介於 2 和 3。<br><strong>改正：</strong>要比較的是 <em>平方</em>：<span class="math">\(4^2,5^2\)</span>，不是 4、5 本身。</p>
         </article>
       </div>
       <div class="number-line" aria-label="根號二十位於四和五之間的數線">
         <div class="rail"></div>
         <div class="tick" style="left: 0%"><span>4</span></div>
         <div class="tick" style="left: 100%"><span>5</span></div>
-        <div class="mark" style="left: 47.2%">√20 ≈ 4.47</div>
+        <div class="mark" style="left: 47.2%">\(\sqrt{20}\approx4.47\)</div>
       </div>
       <div class="method-map" aria-label="三種估計方法的關係">
-        <div class="map-box"><strong>先夾住整數</strong><span class="math">4 &lt; √20 &lt; 5</span></div>
+        <div class="map-box"><strong>先夾住整數</strong><span class="math">\(4 &lt; \sqrt{20} &lt; 5\)</span></div>
         <div class="map-arrow" aria-hidden="true">→</div>
-        <div class="map-box"><strong>縮小小數範圍</strong><span class="math">4.4 &lt; √20 &lt; 4.5</span></div>
+        <div class="map-box"><strong>縮小小數範圍</strong><span class="math">\(4.4 &lt; \sqrt{20} &lt; 4.5\)</span></div>
         <div class="map-arrow" aria-hidden="true">→</div>
-        <div class="map-box"><strong>快速預測</strong><span class="math">√20 ≈ 4 + 4/8 = 4.5</span></div>
+        <div class="map-box"><strong>快速預測</strong><span class="math">\(\sqrt{20}\approx4+\frac{4}{8}=4.5\)</span></div>
       </div>
     </section>
 
@@ -258,15 +272,15 @@
         <h2>1. 基本二分法：每次把答案範圍切一半</h2>
         <span class="level">基礎</span>
       </div>
-      <p class="section-intro">已知根號在兩個數之間，就取正中間的數 <span class="math">m</span>，只要算 <span class="math">m²</span>。若 <span class="math">m² &lt; N</span>，表示 <span class="math">m</span> 太小，左端往右移；反之右端往左移。</p>
+      <p class="section-intro">已知根號在兩個數之間，就取正中間的數 <span class="math">\(m\)</span>，只要算 <span class="math">\(m^2\)</span>。若 <span class="math">\(m^2 &lt; N\)</span>，表示 <span class="math">\(m\)</span> 太小，左端往右移；反之右端往左移。</p>
       <div class="grid-2">
         <article class="example">
-          <h3>手算示範：估 √20</h3>
+          <h3>手算示範：估 \(\sqrt{20}\)</h3>
           <ol>
-            <li>已知 <span class="math">4 &lt; √20 &lt; 5</span>。</li>
-            <li>中點是 <span class="math">4.5</span>，而 <span class="math">4.5² = 20.25 &gt; 20</span>，所以 <span class="math">√20 &lt; 4.5</span>。</li>
-            <li>新範圍為 <span class="math">4 &lt; √20 &lt; 4.5</span>；中點 <span class="math">4.25² = 18.0625 &lt; 20</span>。</li>
-            <li>所以再縮成 <span class="math">4.25 &lt; √20 &lt; 4.5</span>。每按一次，範圍就減半。</li>
+            <li>已知 <span class="math">\(4 &lt; \sqrt{20} &lt; 5\)</span>。</li>
+            <li>中點是 <span class="math">\(4.5\)</span>，而 <span class="math">\(4.5^2=20.25&gt;20\)</span>，所以 <span class="math">\(\sqrt{20}&lt;4.5\)</span>。</li>
+            <li>新範圍為 <span class="math">\(4 &lt; \sqrt{20} &lt; 4.5\)</span>；中點 <span class="math">\(4.25^2=18.0625&lt;20\)</span>。</li>
+            <li>所以再縮成 <span class="math">\(4.25 &lt; \sqrt{20} &lt; 4.5\)</span>。每按一次，範圍就減半。</li>
           </ol>
         </article>
         <div class="tool">
@@ -300,12 +314,12 @@
         <h2>2. 十分法：先選到 0.1，再選到 0.01</h2>
         <span class="level">基礎</span>
       </div>
-      <p class="section-intro">十分法不是亂猜小數，而是在已知下界上，一格一格試 <span class="math">0.1</span>。找出「平方仍不超過 <span class="math">N</span>」的最大數；接著把步長改成 <span class="math">0.01</span>，做完全同樣的事。</p>
+      <p class="section-intro">十分法不是亂猜小數，而是在已知下界上，一格一格試 <span class="math">\(0.1\)</span>。找出「平方仍不超過 <span class="math">\(N\)</span>」的最大數；接著把步長改成 <span class="math">\(0.01\)</span>，做完全同樣的事。</p>
       <div class="grid-2">
         <article class="mini">
-          <h3>例：√20 的十分位</h3>
-          <span class="formula">4.4² = 19.36 &lt; 20；4.5² = 20.25 &gt; 20</span>
-          <p>因此 <span class="math">4.4 &lt; √20 &lt; 4.5</span>，十分位是 4。接著試 <span class="math">4.41、4.42、…</span>，就能找百分位。</p>
+          <h3>例：\(\sqrt{20}\) 的十分位</h3>
+          <span class="formula">\[4.4^2=19.36&lt;20\quad\text{；}\quad4.5^2=20.25&gt;20\]</span>
+          <p>因此 <span class="math">\(4.4 &lt; \sqrt{20} &lt; 4.5\)</span>，十分位是 4。接著試 <span class="math">\(4.41,4.42,\ldots\)</span>，就能找百分位。</p>
           <p>這是「由粗到細」的試位；直式開根號其實也在做逐位選數字，只是把試算整理得更省力。</p>
         </article>
         <div class="tool">
@@ -325,7 +339,7 @@
           <div id="decimal-answer" class="decimal-answer" aria-live="polite"></div>
         </div>
       </div>
-      <div class="notice"><strong>常見錯誤：</strong>看到 <span class="math">4.5² &gt; 20</span>，答案不是 4.5；應回到前一個仍不超過 20 的數 4.4。若要寫估計範圍，就要同時寫出上下兩端。</div>
+      <div class="notice"><strong>常見錯誤：</strong>看到 <span class="math">\(4.5^2&gt;20\)</span>，答案不是 4.5；應回到前一個仍不超過 20 的數 4.4。若要寫估計範圍，就要同時寫出上下兩端。</div>
     </section>
 
     <section class="card" id="formula">
@@ -333,15 +347,15 @@
         <h2>3. 用乘法公式快速估計：把「差多少」分給 2a</h2>
         <span class="level advanced">進階</span>
       </div>
-      <p class="section-intro">當 <span class="math">N</span> 靠近一個完全平方數 <span class="math">a²</span> 時，設 <span class="math">√N = a + x</span>。展開平方後，根號的變化量 <span class="math">x</span> 就能快速估出來。</p>
+      <p class="section-intro">當 <span class="math">\(N\)</span> 靠近一個完全平方數 <span class="math">\(a^2\)</span> 時，設 <span class="math">\(\sqrt{N}=a+x\)</span>。展開平方後，根號的變化量 <span class="math">\(x\)</span> 就能快速估出來。</p>
       <div class="grid-2">
         <article class="example">
           <h3>從乘法公式推出估計式</h3>
-          <span class="formula">(a + x)² = a² + 2ax + x²</span>
-          <p>令 <span class="math">N = a² + d</span>，則 <span class="math">d = 2ax + x²</span>。</p>
-          <p>若 <span class="math">x</span> 很小，<span class="math">x²</span> 更小，先忽略它：</p>
-          <span class="formula">x ≈ d / (2a)，所以 √N ≈ a + (N − a²) / (2a)</span>
-          <p>例如 <span class="math">√50</span> 靠近 <span class="math">7² = 49</span>：<span class="math">√50 ≈ 7 + 1/14 ≈ 7.0714</span>。</p>
+          <span class="formula">\[(a+x)^2=a^2+2ax+x^2\]</span>
+          <p>令 <span class="math">\(N=a^2+d\)</span>，則 <span class="math">\(d=2ax+x^2\)</span>。</p>
+          <p>若 <span class="math">\(x\)</span> 很小，<span class="math">\(x^2\)</span> 更小，先忽略它：</p>
+          <span class="formula">\[x\approx\frac{d}{2a}\quad\text{，所以}\quad\sqrt{N}\approx a+\frac{N-a^2}{2a}\]</span>
+          <p>例如 <span class="math">\(\sqrt{50}\)</span> 靠近 <span class="math">\(7^2=49\)</span>：<span class="math">\(\sqrt{50}\approx7+\frac{1}{14}\approx7.0714\)</span>。</p>
         </article>
         <div class="tool formula-tool">
           <h3>乘法公式估計器</h3>
@@ -358,13 +372,13 @@
       <div class="grid-2" style="margin-top:13px">
         <article class="mini">
           <h3>更快驗算候選小數</h3>
-          <p>要驗 <span class="math">7.07</span> 是否接近 <span class="math">√50</span>，不要硬做 7.07 × 7.07：</p>
-          <span class="formula">(7 + 0.07)² = 49 + 2×7×0.07 + 0.07² = 49.9849</span>
-          <p>因為仍小於 50，故 <span class="math">7.07 &lt; √50</span>。</p>
+          <p>要驗 <span class="math">\(7.07\)</span> 是否接近 <span class="math">\(\sqrt{50}\)</span>，不要硬做 \(7.07\times7.07\)：</p>
+          <span class="formula">\[(7+0.07)^2=49+2\times7\times0.07+0.07^2=49.9849\]</span>
+          <p>因為仍小於 50，故 <span class="math">\(7.07 &lt; \sqrt{50}\)</span>。</p>
         </article>
         <article class="notice">
           <h3>估計式不是精確等號</h3>
-          <p><strong>不能把 ≈ 寫成 =。</strong>由於 <span class="math">x²</span> 被先省略，這是近似值。實際上 <span class="math">a + d/(2a)</span> 的平方會比 <span class="math">N</span> 多出一個正的 <span class="math">x²</span>，所以這個一次估計通常略偏大。</p>
+          <p><strong>不能把 \(\approx\) 寫成 \(=\)。</strong>由於 <span class="math">\(x^2\)</span> 被先省略，這是近似值。實際上 <span class="math">\(a+\frac{d}{2a}\)</span> 的平方會比 <span class="math">\(N\)</span> 多出一個正的 <span class="math">\(x^2\)</span>，所以這個一次估計通常略偏大。</p>
         </article>
       </div>
     </section>
@@ -374,15 +388,15 @@
         <h2>4. 直式開根號：每按一次，只做一個動作</h2>
         <span class="level advanced">逐步算法</span>
       </div>
-      <p class="section-intro">直式法把被開方數<strong>從小數點向左右，每兩位分一組</strong>。每一組決定根號的一位數。先用 <span class="math">√529</span> 看清楚完整的整數流程；再選 <span class="math">√12.25</span>，特別觀察小數點何時要對齊寫進答案。</p>
+      <p class="section-intro">直式法把被開方數<strong>從小數點向左右，每兩位分一組</strong>。每一組決定根號的一位數。先用 <span class="math">\(\sqrt{529}\)</span> 看清楚完整的整數流程；再選 <span class="math">\(\sqrt{12.25}\)</span>，特別觀察小數點何時要對齊寫進答案。</p>
       <div class="controls" style="margin-bottom:13px">
         <div>
           <label for="long-root-example">範例</label>
           <select id="long-root-example" style="min-height:42px;padding:8px 10px;border:1px solid #94a3b8;border-radius:9px;color:#172554;background:#fff;font:inherit">
-            <option value="529">√529 = 23（整數根）</option>
-            <option value="12.25">√12.25 = 3.5（含小數點）</option>
-            <option value="2">√2 ≈ 1.414（無限小數）</option>
-            <option value="0.04">√0.04 = 0.2（小於 1）</option>
+            <option value="529">529：整數根為 23</option>
+            <option value="12.25">12.25：根號結果為 3.5</option>
+            <option value="2">2：無限小數範例</option>
+            <option value="0.04">0.04：小於 1 的範例</option>
           </select>
         </div>
         <div class="button-row" style="align-self:end">
@@ -394,12 +408,12 @@
         <div class="step-panel" aria-live="polite">
           <div id="long-root-counter" class="action-counter">準備開始</div>
           <div id="long-root-title" class="action-title">先把數字每兩位分成一組</div>
-          <div id="long-root-copy" class="action-copy"><p>例如 529 要分成 <span class="math">5 ｜ 29</span>。第一組先找平方數；接著依序「相減、帶下、根號加倍、試填、相減」。</p></div>
+          <div id="long-root-copy" class="action-copy"><p>例如 529 要分成 <span class="math">\(5\mathbin{|}29\)</span>。第一組先找平方數；接著依序「相減、帶下、根號加倍、試填、相減」。</p></div>
           <div class="group-strip" id="group-strip" aria-label="被開方數分組"></div>
           <div class="button-row">
             <button class="btn" id="long-root-next-bottom" type="button">下一個動作</button>
           </div>
-          <div id="long-root-note" class="long-note"><strong>先記住兩個核心：</strong>第一位找 <span class="math">x²</span>；後續先把已得根號加倍，在右邊留一格，再用同一個試填數字填入空格並相乘。</div>
+          <div id="long-root-note" class="long-note"><strong>先記住兩個核心：</strong>第一位找 <span class="math">\(x^2\)</span>；後續先把已得根號加倍，在右邊留一格，再用同一個試填數字填入空格並相乘。</div>
         </div>
         <div class="paper" aria-label="直式開根號算式紙面">
           <div class="root-paper">
@@ -417,7 +431,7 @@
           </div>
         </div>
       </div>
-      <div class="notice"><strong>最常卡住的地方：</strong>看到已得根號是 <span class="math">3</span>，先寫 <span class="math">3×2=6</span>，再留一格成為 <span class="math">6＿</span>；試 5 時，空格與乘數都填 5，得到 <span class="math">65×5=325</span>。因此不是只算 <span class="math">6×5</span>。每次帶下兩位，正是這個直式規則成立的原因。</div>
+      <div class="notice"><strong>最常卡住的地方：</strong>看到已得根號是 <span class="math">\(3\)</span>，先寫 <span class="math">\(3\times2=6\)</span>，再留一格成為 <span class="math">\(6\underline{\phantom{0}}\)</span>；試 5 時，空格與乘數都填 5，得到 <span class="math">\(65\times5=325\)</span>。因此不是只算 <span class="math">\(6\times5\)</span>。每次帶下兩位，正是這個直式規則成立的原因。</div>
     </section>
 
     <section class="card" id="check">
@@ -426,9 +440,9 @@
         <span class="level">基礎 → 進階</span>
       </div>
       <div class="grid-3">
-        <article class="quiz-card" data-answer="b" data-explain="因為 5²=25 小於 30，6²=36 大於 30，所以 √30 在 5 和 6 之間。">
+        <article class="quiz-card" data-answer="b" data-explain="因為 \(5^2=25\lt30\)，\(6^2=36\gt30\)，所以 \(\sqrt{30}\) 在 5 和 6 之間。">
           <span class="tag">基礎</span>
-          <p class="quiz-question">√30 最先應夾在哪兩個整數之間？</p>
+          <p class="quiz-question">\(\sqrt{30}\) 最先應夾在哪兩個整數之間？</p>
           <div class="quiz-options">
             <button class="quiz-option" type="button" data-choice="a">4 和 5</button>
             <button class="quiz-option" type="button" data-choice="b">5 和 6</button>
@@ -436,9 +450,9 @@
           </div>
           <p class="quiz-feedback" aria-live="polite"></p>
         </article>
-        <article class="quiz-card" data-answer="c" data-explain="4.4²=19.36 小於 20，而 4.5²=20.25 大於 20，因此 √20 的十分位是 4。">
+        <article class="quiz-card" data-answer="c" data-explain="\(4.4^2=19.36\lt20\)，而 \(4.5^2=20.25\gt20\)，因此 \(\sqrt{20}\) 的十分位是 4。">
           <span class="tag">進階</span>
-          <p class="quiz-question">4.4² &lt; 20 &lt; 4.5²，√20 的十分位是多少？</p>
+          <p class="quiz-question">\(4.4^2 &lt; 20 &lt; 4.5^2\)，\(\sqrt{20}\) 的十分位是多少？</p>
           <div class="quiz-options">
             <button class="quiz-option" type="button" data-choice="a">3</button>
             <button class="quiz-option" type="button" data-choice="b">5</button>
@@ -446,9 +460,9 @@
           </div>
           <p class="quiz-feedback" aria-live="polite"></p>
         </article>
-        <article class="quiz-card" data-answer="a" data-explain="已得根號 3，先加倍成 6＿；試填 5 時，65×5=325，剛好不超過目前數。">
+        <article class="quiz-card" data-answer="a" data-explain="已得根號 \(3\)，先加倍成 \(6\underline{\phantom{0}}\)；試填 \(5\) 時，\(65\times5=325\)，剛好不超過目前數。">
           <span class="tag">挑戰</span>
-          <p class="quiz-question">直式中已得根號 3、目前數是 325；6＿ × ＿的空格應填哪個數？</p>
+          <p class="quiz-question">直式中已得根號 \(3\)、目前數是 \(325\)；\(6\underline{\phantom{0}}\times\underline{\phantom{0}}\) 的空格應填哪個數？</p>
           <div class="quiz-options">
             <button class="quiz-option" type="button" data-choice="a">5</button>
             <button class="quiz-option" type="button" data-choice="b">4</button>
@@ -470,6 +484,16 @@
       };
       const square = value => value * value;
       const validPositive = value => Number.isFinite(value) && value > 0;
+      const inlineTex = source => `\\(${source}\\)`;
+      const rootTex = value => String.raw`\sqrt{${value}}`;
+      const squaredTex = value => `${value}^{2}`;
+      function typesetMath(target) {
+        if (!target || !window.MathJax?.typesetPromise) return;
+        window.MathJax.typesetClear?.([target]);
+        window.MathJax.typesetPromise([target]).catch(error => {
+          console.error('MathJax 排版失敗：', error);
+        });
+      }
 
       // 二分法：始終維持 lower² ≤ N ≤ upper² 的不變量。
       const bisectInput = document.getElementById('bisect-number');
@@ -494,9 +518,10 @@
           bisectLower.textContent = fmt(rootFloor);
           bisectMiddle.textContent = fmt(rootFloor);
           bisectUpper.textContent = fmt(rootFloor);
-          bisectMessage.textContent = `√${fmt(n)} = ${rootFloor}，這是完全平方數，不必二分。`;
+          bisectMessage.innerHTML = `${inlineTex(`${rootTex(fmt(n))}=${rootFloor}`)}，這是完全平方數，不必二分。`;
           bisectMessage.className = 'status ok';
           bisectHistory.innerHTML = '';
+          typesetMath(bisectMessage);
           return;
         }
         bisectState = { n, lower: rootFloor, upper: rootFloor + 1, exact: false, history: [] };
@@ -509,9 +534,11 @@
         bisectLower.textContent = fmt(lower);
         bisectMiddle.textContent = fmt(middle);
         bisectUpper.textContent = fmt(upper);
-        bisectMessage.textContent = message;
+        bisectMessage.innerHTML = message;
         bisectMessage.className = `status ${tone}`;
         bisectHistory.innerHTML = history.slice(-4).map(item => `<li>${item}</li>`).join('');
+        typesetMath(bisectMessage);
+        typesetMath(bisectHistory);
       }
 
       function nextBisection() {
@@ -524,17 +551,17 @@
         if (Math.abs(midSq - n) < 1e-12) {
           bisectState.lower = middle;
           bisectState.upper = middle;
-          message = `${fmt(middle)}² = ${fmt(n)}，剛好找到 √${fmt(n)} = ${fmt(middle)}。`;
+          message = `${inlineTex(`${squaredTex(fmt(middle))}=${fmt(n)}`)}，剛好找到 ${inlineTex(`${rootTex(fmt(n))}=${fmt(middle)}`)}。`;
           bisectState.history.push(message);
           renderBisection(message, 'ok');
           return;
         }
         if (midSq < n) {
           bisectState.lower = middle;
-          message = `${fmt(middle)}² = ${fmt(midSq)} ＜ ${fmt(n)}，中點太小，左端移到 ${fmt(middle)}。`;
+          message = `${inlineTex(`${squaredTex(fmt(middle))}=${fmt(midSq)}\\lt${fmt(n)}`)}，中點太小，左端移到 ${inlineTex(fmt(middle))}。`;
         } else {
           bisectState.upper = middle;
-          message = `${fmt(middle)}² = ${fmt(midSq)} ＞ ${fmt(n)}，中點太大，右端移到 ${fmt(middle)}。`;
+          message = `${inlineTex(`${squaredTex(fmt(middle))}=${fmt(midSq)}\\gt${fmt(n)}`)}，中點太大，右端移到 ${inlineTex(fmt(middle))}。`;
         }
         bisectState.history.push(message);
         renderBisection(message, 'ok');
@@ -564,7 +591,8 @@
         }
         const base = Math.floor(Math.sqrt(n));
         decimalState = { n, value: base, place: 1, base, finished: false };
-        decimalAnswer.innerHTML = `先有 <span class="math">${base} ≤ √${fmt(n)} &lt; ${base + 1}</span>`;
+        decimalAnswer.innerHTML = `先有 <span class="math">${inlineTex(`${base}\\le${rootTex(fmt(n))}\\lt${base + 1}`)}</span>`;
+        typesetMath(decimalAnswer);
         renderDecimalDigits();
       }
 
@@ -573,8 +601,9 @@
         const { n, value, place } = decimalState;
         const unit = 10 ** (-place);
         const label = place === 1 ? '十分位' : place === 2 ? '百分位' : `小數第 ${place} 位`;
-        decimalPrompt.textContent = `現在選${label}：在 ${fmt(value)} 後面試 0～9，找平方仍 ≤ ${fmt(n)} 的最大數字。`;
+        decimalPrompt.innerHTML = `現在選${label}：在 ${inlineTex(fmt(value))} 後面試 ${inlineTex('0')}～${inlineTex('9')}，找平方仍 ${inlineTex(`\\le${fmt(n)}`)} 的最大數字。`;
         decimalPrompt.className = 'status';
+        typesetMath(decimalPrompt);
         digitTrack.innerHTML = '';
         let best = 0;
         for (let digit = 0; digit <= 9; digit += 1) {
@@ -606,8 +635,10 @@
           const direction = digit > best
             ? '平方已超過目標；請改選較小的數字。'
             : '平方仍未超過目標；還可以繼續試更大的數字。';
-          decimalPrompt.textContent = `${fmt(candidate)}² = ${fmt(candidateSq)} ${candidateSq > n ? '＞' : '＜'} ${fmt(n)}。${direction}`;
+          const relation = candidateSq > n ? '\\gt' : '\\lt';
+          decimalPrompt.innerHTML = `${inlineTex(`${squaredTex(fmt(candidate))}=${fmt(candidateSq)}${relation}${fmt(n)}`)}。${direction}`;
           decimalPrompt.className = 'status warn';
+          typesetMath(decimalPrompt);
           return;
         }
         buttons.forEach((button, index) => {
@@ -617,10 +648,12 @@
         });
         decimalState.value = value + best * unit;
         decimalState.finished = true;
-        decimalPrompt.textContent = `對！${fmt(decimalState.value)}² = ${fmt(square(decimalState.value))} ≤ ${fmt(n)}，下一個數字再大就會超過。`;
+        decimalPrompt.innerHTML = `對！${inlineTex(`${squaredTex(fmt(decimalState.value))}=${fmt(square(decimalState.value))}\\le${fmt(n)}`)}，下一個數字再大就會超過。`;
         decimalPrompt.className = 'status ok';
         const upper = decimalState.value + unit;
-        decimalAnswer.innerHTML = `<span class="math">${fmt(decimalState.value)} ≤ √${fmt(n)} &lt; ${fmt(upper)}</span>`;
+        decimalAnswer.innerHTML = `<span class="math">${inlineTex(`${fmt(decimalState.value)}\\le${rootTex(fmt(n))}\\lt${fmt(upper)}`)}</span>`;
+        typesetMath(decimalPrompt);
+        typesetMath(decimalAnswer);
       }
 
       function nextDecimalPlace() {
@@ -660,7 +693,8 @@
         const ceilA = Math.ceil(root);
         const a = Math.abs(n - floorA ** 2) <= Math.abs(ceilA ** 2 - n) ? floorA : ceilA;
         if (a === 0) {
-          formulaResult.innerHTML = `√${fmt(n)} 小於 1；先用十分法較直觀。精確值約為 <strong>${fmt(root, 6)}</strong>。`;
+          formulaResult.innerHTML = `${inlineTex(`${rootTex(fmt(n))}\\lt1`)}；先用十分法較直觀。精確值約為 ${inlineTex(fmt(root, 6))}。`;
+          typesetMath(formulaResult);
           return;
         }
         const d = n - a ** 2;
@@ -669,9 +703,10 @@
         const refined = a + d / (2 * a + x0);
         const firstSquare = square(first);
         const direction = firstSquare > n ? '略大於' : firstSquare < n ? '略小於' : '剛好等於';
-        formulaResult.innerHTML = `選附近平方數：<span class="math">${a}² = ${fmt(a ** 2)}</span>，差 <span class="math">d = ${fmt(n)} − ${fmt(a ** 2)} = ${fmt(d)}</span>。<br>` +
-          `<span class="math">√${fmt(n)} ≈ ${a} + ${fmt(d)}/${2 * a} = <strong>${fmt(first, 6)}</strong></span><br>` +
-          `驗算：${fmt(first, 6)}² = ${fmt(firstSquare, 6)}，所以第一次估計${direction} ${fmt(n)}。再把分母的 <span class="math">2a</span> 微調為 <span class="math">2a+x</span>，可得 <strong>${fmt(refined, 6)}</strong>（實際約 ${fmt(root, 6)}）。`;
+        formulaResult.innerHTML = `選附近平方數：<span class="math">${inlineTex(`${a}^2=${fmt(a ** 2)}`)}</span>，差 <span class="math">${inlineTex(`d=${fmt(n)}-${fmt(a ** 2)}=${fmt(d)}`)}</span>。<br>` +
+          `<span class="math">${inlineTex(`${rootTex(fmt(n))}\\approx${a}+\\frac{${fmt(d)}}{${2 * a}}\\approx${fmt(first, 6)}`)}</span><br>` +
+          `驗算：${inlineTex(`${squaredTex(fmt(first, 6))}=${fmt(firstSquare, 6)}`)}，所以第一次估計${direction} ${inlineTex(fmt(n))}。再把分母的 <span class="math">${inlineTex('2a')}</span> 微調為 <span class="math">${inlineTex('2a+x')}</span>，可得 ${inlineTex(fmt(refined, 6))}（實際約 ${inlineTex(fmt(root, 6))}）。`;
+        typesetMath(formulaResult);
       }
       document.getElementById('formula-calc').addEventListener('click', calculateFormula);
       formulaInput.addEventListener('change', calculateFormula);
@@ -867,24 +902,48 @@
         }).join('');
       }
 
+      function plainMathToTex(source) {
+        return source.trim()
+          .replace(/√\s*([0-9.]+)/g, (_, value) => String.raw`\sqrt{${value}}`)
+          .replace(/([0-9]+)²/g, (_, value) => `${value}^{2}`)
+          .replaceAll('×', String.raw`\times`)
+          .replaceAll('≤', String.raw`\le`)
+          .replaceAll('≥', String.raw`\ge`)
+          .replaceAll('＜', String.raw`\lt`)
+          .replaceAll('＞', String.raw`\gt`)
+          .replaceAll('−', '-')
+          .replaceAll('｜', String.raw`\mathbin{|}`)
+          .replaceAll('＿', String.raw`\underline{\phantom{0}}`);
+      }
+
+      function actionMathMarkup(html) {
+        return html.replace(/<span class="math">([\s\S]*?)<\/span>/g, (_, source) => {
+          return `<span class="math">${inlineTex(plainMathToTex(source))}</span>`;
+        });
+      }
+
+      function actionTitleMarkup(title) {
+        return title.replace(/√\s*([0-9.]+)/g, (_, value) => inlineTex(String.raw`\sqrt{${value}}`));
+      }
+
       function renderTrialColumn(records) {
         return records.map(record => {
           if (record.isFirst) {
             const equation = record.phase === 'brought'
-              ? `<span class="trial-blank">＿² ≤ ${record.firstPair}</span>`
-              : `<span class="paper-new-digit">${record.digit}</span>² = ${record.product}`;
+              ? `<span class="trial-blank">${inlineTex(String.raw`\underline{\phantom{0}}^{2}\le${record.firstPair}`)}</span>`
+              : `<span class="paper-new-digit">${inlineTex(`${record.digit}^{2}=${record.product}`)}</span>`;
             return `<div class="trial-block"><span class="trial-kicker">找第一位</span><span class="trial-equation">${equation}</span></div>`;
           }
           const doubled = record.doubled;
           const equation = record.phase === 'brought'
             ? ''
             : record.phase === 'doubled'
-              ? `<span class="trial-blank">${doubled}＿ × ＿</span>`
-              : `${doubled}<span class="paper-trial-digit">${record.digit}</span> × <span class="paper-trial-digit">${record.digit}</span>`;
+              ? `<span class="trial-blank">${inlineTex(String.raw`${doubled}\underline{\phantom{0}}\times\underline{\phantom{0}}`)}</span>`
+              : `<span class="paper-trial-digit">${inlineTex(`${doubled}${record.digit}\\times${record.digit}`)}</span>`;
           const product = record.phase === 'trial' || record.phase === 'subtracted'
-            ? `<span class="trial-product">= ${record.product}</span>`
+            ? `<span class="trial-product">${inlineTex(`=${record.product}`)}</span>`
             : '';
-          return `<div class="trial-block"><span class="trial-kicker">${record.rootBefore} × 2 = ${doubled}，右邊留一格</span><span class="trial-equation">${equation || '&nbsp;'}</span>${product}</div>`;
+          return `<div class="trial-block"><span class="trial-kicker">${inlineTex(`${record.rootBefore}\\times2=${doubled}`)}，右邊留一格</span><span class="trial-equation">${equation || '&nbsp;'}</span>${product}</div>`;
         }).join('');
       }
 
@@ -894,7 +953,7 @@
           const hasRemainder = record.phase === 'subtracted';
           const numberClass = record.phase === 'brought' ? 'active' : 'current';
           const product = hasProduct
-            ? `<div class="calc-row product"><span class="minus">−</span>${record.product}</div>`
+            ? `<div class="calc-row product">${inlineTex(`-${record.product}`)}</div>`
             : '';
           const subtraction = hasRemainder
             ? `<div class="calc-rule"></div><div class="calc-row remainder">${record.remainder}</div>`
@@ -910,6 +969,10 @@
         const rootDigits = [];
         let remainder = 0n;
         let root = 0n;
+        const visibleIntegerPairs = pairs.slice(0, integerPairs)
+          .map((pair, index) => index === 0 ? String(BigInt(pair)) : pair)
+          .join(' ｜ ');
+        const visibleDecimalPairs = pairs.slice(integerPairs).join(' ｜ ');
 
         const addAction = ({ title, copy, note, currentGroup, showDecimal = false }) => {
           actions.push({
@@ -925,7 +988,7 @@
 
         addAction({
           title: '動作 0：從小數點向兩邊，每兩位分一組',
-          copy: `<p><span class="math">${raw}</span> 分成 <span class="math">${pairs.slice(0, integerPairs).join(' ｜ ')}${pairs.length > integerPairs ? ' ． ' + pairs.slice(integerPairs).join(' ｜ ') : ''}</span>。</p><p>上方的根號答案，一組對應一位；下方右欄才是每次的減法與餘數。</p>`,
+          copy: `<p><span class="math">${raw}</span> 分成 <span class="math">${visibleIntegerPairs}${pairs.length > integerPairs ? ' ． ' + visibleDecimalPairs : ''}</span>。</p><p>上方的根號答案，一組對應一位；下方右欄才是每次的減法與餘數。</p>`,
           note: '<strong>先看版面：</strong>右邊由上到下是「目前數、減去的乘積、橫線、餘數」；左邊只負責記錄加倍後的試填式。',
           currentGroup: -1
         });
@@ -1001,7 +1064,7 @@
             addAction({
               title: `動作 ${actions.length}：兩個空格都試填 ${digit}`,
               copy: `<p>試填 <span class="math">${digit}</span>：<span class="math">${record.doubled}${digit} × ${digit} = ${product}</span>，剛好不超過 <span class="math">${current}</span>。</p><p>因此把 ${digit} 同時寫入左欄兩個空格，也寫入上方答案。</p>`,
-              note: '<strong>一個數填兩處：</strong>不是只算 ${record.doubled}×${digit}；要把試填數補在右邊，形成 ${record.doubled}${digit}×${digit}。',
+              note: `<strong>一個數填兩處：</strong>不是只算 <span class="math">${record.doubled}×${digit}</span>；要把試填數補在右邊，形成 <span class="math">${record.doubled}${digit}×${digit}</span>。`,
               currentGroup: index,
               showDecimal
             });
@@ -1036,9 +1099,9 @@
         const { pairs, integerPairs, actions, step } = longRootState;
         const action = actions[step];
         longRootCounter.textContent = step === 0 ? '起點：先準備分組' : `第 ${step} / ${actions.length - 1} 個動作`;
-        longRootTitle.textContent = action.title;
-        longRootCopy.innerHTML = action.copy;
-        longRootNote.innerHTML = action.note;
+        longRootTitle.innerHTML = actionTitleMarkup(action.title);
+        longRootCopy.innerHTML = actionMathMarkup(action.copy);
+        longRootNote.innerHTML = actionMathMarkup(action.note);
         groupStrip.innerHTML = pairs.map((pair, index) => {
           const separator = index === integerPairs ? '<span aria-hidden="true">．</span>' : '';
           const visiblePair = index === 0 ? String(BigInt(pair)) : pair;
@@ -1048,6 +1111,11 @@
         paperRadicand.innerHTML = paperRadicandHtml(pairs, integerPairs);
         paperTrial.innerHTML = renderTrialColumn(action.records);
         paperWork.innerHTML = renderCalculationColumn(action.records);
+        typesetMath(longRootTitle);
+        typesetMath(longRootCopy);
+        typesetMath(longRootNote);
+        typesetMath(paperTrial);
+        typesetMath(paperWork);
         const finished = step >= actions.length - 1;
         longRootNext.disabled = finished;
         longRootNextBottom.disabled = finished;
@@ -1086,8 +1154,9 @@
               if (option.dataset.choice === answer) option.classList.add('correct');
             });
             if (!correct) button.classList.add('wrong');
-            feedback.textContent = `${correct ? '答對。' : '再看一次。'}${explain}`;
+            feedback.innerHTML = `${correct ? '答對。' : '再看一次。'}${explain}`;
             feedback.className = `quiz-feedback ${correct ? 'status ok' : 'status no'}`;
+            typesetMath(feedback);
           });
         });
       });

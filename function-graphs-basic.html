@@ -24,6 +24,11 @@
     .controls { padding: 14px 20px 8px; display: flex; flex-wrap: wrap; gap: 8px; }
     .func-btn { border: 1px solid #9db2df; background: #f7faff; color: #1f3762; border-radius: 999px; padding: 8px 14px; font-weight: 700; cursor: pointer; }
     .func-btn.active { background: #31599d; color: #fff; border-color: #31599d; }
+    .teaching-strip { padding: 8px 20px 12px; }
+    .step-grid, .risk-grid { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
+    .teaching-item { border: 1px solid var(--line); border-radius: 12px; padding: 11px; background: #f8fbff; }
+    .teaching-item strong { display: block; color: #243d6b; margin-bottom: 4px; }
+    .teaching-item p { font-size: .93rem; }
     .layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; padding: 8px 20px 20px; }
     .card { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 12px; }
     canvas { width: 100%; height: auto; border: 1px solid #bfd0ef; border-radius: 10px; background: #fff; display: block; }
@@ -38,7 +43,12 @@
     th, td { border: 1px solid #d8e2f4; padding: 7px 8px; text-align: center; white-space: nowrap; }
     th { background: #eef4ff; color: #233a67; }
     .row-label { background: #f8fbff; font-weight: 700; color: #223a67; text-align: left; padding-left: 10px; }
-    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+    .summary-table td { vertical-align: top; white-space: normal; }
+    .practice-list { display: grid; gap: 8px; }
+    details { border: 1px solid #d8e2f4; border-radius: 10px; background: #f8fbff; padding: 9px 10px; }
+    summary { cursor: pointer; color: #24406f; font-weight: 700; }
+    details p { margin-top: 8px; }
+    @media (max-width: 900px) { .layout, .step-grid, .risk-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -52,6 +62,20 @@
       <button class="func-btn" data-fn="reciprocal">\(y=\frac{1}{x}\)</button>
       <button class="func-btn" data-fn="exp">\(y=\left(\frac{1}{2}\right)^x\)</button>
       <button class="func-btn" data-fn="square">\(y=x^2\)</button>
+    </section>
+    <section class="teaching-strip" aria-label="比大小的判斷流程">
+      <h2>比大小，先走這三步</h2>
+      <div class="step-grid">
+        <article class="teaching-item"><strong>第 1 步：辨認函數</strong><p>先確認是加負號、倒數、指數，還是平方；不要一看到符號就急著反向。</p></article>
+        <article class="teaching-item"><strong>第 2 步：檢查範圍</strong><p>問自己：有沒有跨過 \(0\)？是否包含負數？底數是否介於 \(0\) 與 \(1\)？</p></article>
+        <article class="teaching-item"><strong>第 3 步：看圖形方向</strong><p>在討論的區間內，遞增就保留大小；遞減才反向。</p></article>
+      </div>
+      <h2 style="margin-top:14px;">三個高風險檢查點</h2>
+      <div class="risk-grid">
+        <article class="teaching-item"><strong>\(0\)</strong><p>倒數在 \(x=0\) 無定義，也是正負區間的分界。</p></article>
+        <article class="teaching-item"><strong>負數</strong><p>加負號與平方都可能改變原本的大小關係。</p></article>
+        <article class="teaching-item"><strong>\(0\lt a\lt1\)</strong><p>這類底數的指數函數遞減，指數越大，值反而越小。</p></article>
+      </div>
     </section>
     <section class="layout">
       <article class="card">
@@ -69,6 +93,28 @@
     <section class="table-wrap">
       <h2>對應值表（\(\,x=-5\) 到 \(5\,\)）</h2>
       <table id="valueTable"></table>
+    </section>
+    <section class="table-wrap">
+      <h2>四種情況總整理</h2>
+      <table class="summary-table">
+        <thead><tr><th>類型</th><th>可安全比較的條件</th><th>大小關係</th><th>一句提醒</th></tr></thead>
+        <tbody>
+          <tr><td class="row-label">\(y=-x\)</td><td>所有實數</td><td>\(a>b\Rightarrow -a\lt-b\)</td><td>整條圖形遞減，所以一定反向。</td></tr>
+          <tr><td class="row-label">\(y=\frac{1}{x}\)</td><td>同號且不等於 \(0\)</td><td>\(0\lt a\lt b\Rightarrow \frac1a>\frac1b\)<br>\(a\lt b\lt0\Rightarrow \frac1a>\frac1b\)</td><td>先分正數區、負數區，不能跨過 \(0\)。</td></tr>
+          <tr><td class="row-label">\(y=a^x\)</td><td>\(0\lt a\lt1\)</td><td>\(p>q\Rightarrow a^p\lt a^q\)</td><td>不是「有次方就反向」，關鍵是底數小於 \(1\)。</td></tr>
+          <tr><td class="row-label">\(y=x^2\)</td><td>要先看正負區間</td><td>\(0\lt a\lt b\Rightarrow a^2\lt b^2\)<br>\(a\lt b\lt0\Rightarrow a^2>b^2\)</td><td>平方比較要看 \(|x|\)，不能只看原數大小。</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="table-wrap">
+      <h2>綜合自我檢查</h2>
+      <p>先按三步驟自己判斷，再點開查看解析。</p>
+      <div class="practice-list">
+        <details><summary>1. 比較 \(\frac{1}{-6}\) 與 \(\frac{1}{-2}\)</summary><p>因為 \(-6\lt-2\lt0\)，兩數同在負數區，倒數後反向：\(\frac{1}{-6}>\frac{1}{-2}\)。</p></details>
+        <details><summary>2. 比較 \(0.2^3\) 與 \(0.2^5\)</summary><p>\(0\lt0.2\lt1\)，所以指數函數遞減；因為 \(3\lt5\)，故 \(0.2^3>0.2^5\)。</p></details>
+        <details><summary>3. 已知 \(-7\lt-4\)，比較 \((-7)^2\) 與 \((-4)^2\)</summary><p>先看絕對值：\(|-7|>|-4|\)，因此 \((-7)^2>(-4)^2\)。</p></details>
+        <details><summary>4. 判斷：\(a>b\Rightarrow a^2>b^2\) 是否一定成立？</summary><p>不一定。例如 \(-2>-3\)，但 \((-2)^2=4<9=(-3)^2\)。看到平方時，務必先檢查正負區間。</p></details>
+      </div>
     </section>
   </main>
   <script>
@@ -91,26 +137,26 @@
       negx: {
         label: "y=-x", fn: (x) => -x,
         note: "\\(x\\) 增加時，\\(y\\) 減少，屬於反向。",
-        concept: ["若 \\(a>b\\)，則 \\(-a<-b\\)。", "圖形由左上往右下，代表遞減。"],
+        concept: ["若 \\(a>b\\)，則 \\(-a\\lt-b\\)。", "圖形由左上往右下，代表遞減。"],
         mistakes: ["把 \\(a>b\\) 誤寫成 \\(-a>-b\\)。"],
         basic: "基礎：已知 \\(7>3\\)，比較 \\(-7\\) 與 \\(-3\\)。",
         advanced: "進階：若 \\(x_1>x_2\\)，比較 \\(f(x_1),f(x_2)\\)，\\(f(x)=-x\\)。",
-        challenge: "挑戰：若 \\(-a<-b\\)，能否反推 \\(a>b\\)？",
-        quiz: { q: "若 \\(a>b\\)，哪個正確？", opts: [{t:"\\(-a>-b\\)",ok:false,f:"要反向。"}, {t:"\\(-a<-b\\)",ok:true,f:"正確。"}] }
+        challenge: "挑戰：若 \\(-a\\lt-b\\)，能否反推 \\(a>b\\)？",
+        quiz: { q: "若 \\(a>b\\)，哪個正確？", opts: [{t:"\\(-a>-b\\)",ok:false,f:"要反向。"}, {t:"\\(-a\\lt-b\\)",ok:true,f:"正確。"}] }
       },
       reciprocal: {
         label: "y=\\frac{1}{x}", fn: (x) => 1 / x,
-        note: "\\(x=0\\) 無定義；在 \\(x>0\\) 與 \\(x<0\\) 各區間都遞減。",
+        note: "\\(x=0\\) 無定義；在 \\(x>0\\) 與 \\(x\\lt0\\) 各區間都遞減。",
         concept: ["同區間內，\\(x\\) 越大，\\(\\frac{1}{x}\\) 越小。", "不能跨 \\(0\\) 直接套同一規則。"],
         mistakes: ["把 \\(x=0\\) 代入。", "負數倒數大小判斷顛倒。"],
         basic: "基礎：比較 \\(\\frac{1}{3}\\) 與 \\(\\frac{1}{8}\\)。",
-        advanced: "進階：若 \\(a<b<0\\)，比較 \\(\\frac{1}{a}\\) 與 \\(\\frac{1}{b}\\)。",
-        challenge: "挑戰：為何 \\(a>b\\Rightarrow\\frac{1}{a}<\\frac{1}{b}\\) 不能套所有實數？",
+        advanced: "進階：若 \\(a\\lt b\\lt0\\)，比較 \\(\\frac{1}{a}\\) 與 \\(\\frac{1}{b}\\)。",
+        challenge: "挑戰：為何 \\(a>b\\Rightarrow\\frac{1}{a}\\lt\\frac{1}{b}\\) 不能套所有實數？",
         quiz: { q: "哪個正確？", opts: [{t:"\\(x=0\\Rightarrow y=0\\)",ok:false,f:"\\(x=0\\) 無定義。"}, {t:"\\(x>0\\) 時 \\(x\\) 越大，\\(\\frac{1}{x}\\) 越小",ok:true,f:"正確。"}] }
       },
       exp: {
         label: "y=\\left(\\frac{1}{2}\\right)^x", fn: (x) => 2 ** (-x),
-        note: "底數 \\(0<a<1\\) 時屬遞減。",
+        note: "底數 \\(0\\lt a\\lt1\\) 時屬遞減。",
         concept: ["\\(x\\) 越大，值越接近 \\(0\\)。", "通過 \\((0,1)\\)。"],
         mistakes: ["和 \\(2^x\\)（遞增）混淆。"],
         basic: "基礎：比較 \\(\\left(\\frac{1}{2}\\right)^2\\) 與 \\(\\left(\\frac{1}{2}\\right)^5\\)。",
@@ -121,12 +167,12 @@
       square: {
         label: "y=x^2", fn: (x) => x * x,
         note: "先看 \\(|x|\\) 再看平方；左右區間行為不同。",
-        concept: ["\\(x^2=|x|^2\\)。", "\\(x>0\\) 區間遞增、\\(x<0\\) 區間遞減。"],
+        concept: ["\\(x^2=|x|^2\\)。", "\\(x>0\\) 區間遞增、\\(x\\lt0\\) 區間遞減。"],
         mistakes: ["誤認 \\(a>b\\Rightarrow a^2>b^2\\) 一定成立。"],
         basic: "基礎：比較 \\((-7)^2\\) 與 \\((-4)^2\\)。",
-        advanced: "進階：已知 \\(-3<-1\\)，比較 \\((-3)^2\\) 與 \\((-1)^2\\)。",
-        challenge: "挑戰：若 \\(a<b<0\\)，為何 \\(a^2>b^2\\)？",
-        quiz: { q: "哪個正確？", opts: [{t:"\\(a>b\\Rightarrow a^2>b^2\\) 必真",ok:false,f:"跨正負會失敗。"}, {t:"\\(a<b<0\\Rightarrow a^2>b^2\\)",ok:true,f:"正確。"}] }
+        advanced: "進階：已知 \\(-3\\lt-1\\)，比較 \\((-3)^2\\) 與 \\((-1)^2\\)。",
+        challenge: "挑戰：若 \\(a\\lt b\\lt0\\)，為何 \\(a^2>b^2\\)？",
+        quiz: { q: "哪個正確？", opts: [{t:"\\(a>b\\Rightarrow a^2>b^2\\) 必真",ok:false,f:"跨正負會失敗。"}, {t:"\\(a\\lt b\\lt0\\Rightarrow a^2>b^2\\)",ok:true,f:"正確。"}] }
       }
     };
 
@@ -203,10 +249,20 @@
       renderQuiz(d.quiz);
       typeset([els.functionInfo, els.conceptList, els.mistakeList, els.basicQ, els.advancedQ, els.challengeQ]);
     }
-    function typeset(nodes) { if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise(nodes); }
+    let typesetQueue = Promise.resolve();
+    function typeset(nodes) {
+      if (!window.MathJax?.typesetPromise) return;
+      typesetQueue = typesetQueue
+        .then(() => {
+          if (window.MathJax.typesetClear) window.MathJax.typesetClear(nodes);
+          return window.MathJax.typesetPromise(nodes);
+        })
+        .catch((error) => console.error("MathJax rendering failed:", error));
+    }
     function render() { drawGrid(); drawAxes(); drawFunction(); renderTeaching(); renderTable(); }
     buttons.forEach((btn) => btn.addEventListener("click", () => { buttons.forEach((b) => b.classList.remove("active")); btn.classList.add("active"); state.current = btn.dataset.fn; render(); }));
     render();
+    window.addEventListener("load", render, { once: true });
   </script>
 </body>
 </html>

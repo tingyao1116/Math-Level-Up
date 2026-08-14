@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>指數與科學記號：國中到高中完整學習頁</title>
+  <title>高一指數與科學記號：基礎到進階</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      chtml: { displayAlign: 'left' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       --bg: #f8fafc;
@@ -105,12 +115,12 @@
       border-left: 4px solid #38bdf8;
       border-radius: 7px;
       background: #eff6ff;
-      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
       font-size: 16px;
       font-weight: 800;
-      white-space: nowrap;
+      white-space: normal;
     }
-    .math { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-weight: 800; color: #172554; }
+    .formula mjx-container[display="true"] { margin: 0 !important; }
+    .math { font-weight: 800; color: #172554; }
     .example { background: #f0fdfa; border-color: #99f6e4; }
     .example p:last-child, .mini p:last-child, .warn-box p:last-child { margin-bottom: 0; }
     .answer { color: var(--ok); font-weight: 800; }
@@ -197,301 +207,490 @@
 <body>
   <main class="wrap">
     <section class="hero">
-      <h1>指數與科學記號</h1>
-      <p class="lead">先把「同樣的乘法可以怎麼簡寫」看懂，再把數字的大小用 <span class="math">10 的冪</span>說清楚。國中版練基本規則與科學記號；高中版再接分數次方、指數方程式／不等式，以及用對數反推科學記號中的指數。</p>
+      <h1>高一指數與科學記號</h1>
+      <p class="lead">先用高一必備的先備知識回顧「同樣的乘法如何簡寫」，再把數字大小用 <span class="math">\(10^n\)</span> 說清楚；接著進入分數次方、負次方、指數方程式／不等式，以及用對數反推科學記號中的指數。</p>
       <div class="pills">
         <span class="pill">先觀念，再公式</span>
-        <span class="pill">國中基礎＋高中進階</span>
+        <span class="pill">高一先備＋進階</span>
         <span class="pill">答題後看關鍵理由</span>
       </div>
       <nav class="nav" aria-label="頁面導覽">
-        <a href="#junior">國中版</a>
-        <a href="#senior">高中版</a>
-        <a href="#advanced">高中挑戰</a>
+        <a href="#junior">高一先備</a>
+        <a href="#exponent-meaning">指數定義</a>
+        <a href="#senior">高一核心</a>
+        <a href="#log-tool">對數觀念</a>
+        <a href="#growth">成長與衰減</a>
+        <a href="#digits">位數判讀</a>
+        <a href="#advanced">負次方挑戰</a>
         <a href="#practice">分級練習</a>
-        <a href="#log-tool">對數小工具</a>
         <a href="./index.html">回首頁</a>
       </nav>
     </section>
 
     <section class="card" id="junior">
       <div class="section-head">
-        <h2>一、國中版：指數是乘法的簡寫</h2>
-        <span class="level-label">國中基礎</span>
+        <h2>一、高一先備：指數是乘法的簡寫</h2>
+        <span class="level-label">高一先備</span>
       </div>
       <div class="grid">
         <article class="mini">
           <div class="tag">先看意思</div>
-          <p><span class="math">3<sup>4</sup></span> 不是 <span class="math">3×4</span>，而是把 3 連乘四次：</p>
-          <span class="formula">3<sup>4</sup> = 3 × 3 × 3 × 3 = 81</span>
+          <p><span class="math">\(3^4\)</span> 不是 <span class="math">\(3\times4\)</span>，而是把 3 連乘四次：</p>
+          <span class="formula">\[3^4=3\times3\times3\times3=81\]</span>
           <p>底數是 3；指數是 4。指數回答的是「這個底數連乘幾次」。</p>
         </article>
         <article class="mini">
           <div class="tag">生活直覺</div>
-          <p>若一張紙每次都對折，厚度會每次變成 2 倍。對折 5 次後，是原來的 <span class="math">2<sup>5</sup></span> 倍，而不是 <span class="math">2×5</span> 倍。</p>
+          <p>若一張紙每次都對折，厚度會每次變成 2 倍。對折 5 次後，是原來的 <span class="math">\(2^5\)</span> 倍，而不是 <span class="math">\(2\times5\)</span> 倍。</p>
           <p>「每次乘同一個數」就是指數最常出現的情境。</p>
         </article>
         <article class="mini">
           <div class="tag">先判斷括號</div>
-          <p><span class="math">(-2)<sup>4</sup> = 16</span>，因為負的 2 連乘四次。</p>
-          <p><span class="math">-2<sup>4</sup> = -(2<sup>4</sup>) = -16</span>，因為次方只算 2；負號在外面。</p>
+          <p><span class="math">\((-2)^4=16\)</span>，因為負的 2 連乘四次。</p>
+          <p><span class="math">\(-2^4=-(2^4)=-16\)</span>，因為次方只算 2；負號在外面。</p>
         </article>
       </div>
     </section>
 
-    <section class="card">
-      <h2>二、國中版：同底數的三個基本公式</h2>
-      <p>公式不是憑空背的：先把每個次方展開，就能看出連乘的個數如何改變。以下先以底數 <span class="math">a ≠ 0</span>、整數指數為主。</p>
+    <section class="card" id="exponent-meaning">
+      <div class="section-head">
+        <h2>二、指數的定義：先確認「能不能算」</h2>
+        <span class="level-label">重要觀念</span>
+      </div>
+      <p>公式要有使用範圍。先看底數、再看指數，能避免把 <span class="math">\(0^0\)</span>、負底數的分數次方等不適合的式子硬套公式。</p>
       <div class="grid">
         <article class="mini">
-          <div class="tag">相乘：指數相加</div>
-          <span class="formula">a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup></span>
-          <p>例：<span class="math">2<sup>3</sup>×2<sup>4</sup> = 2<sup>7</sup></span>。三個 2 再接四個 2，一共有七個 2。</p>
+          <div class="tag">自然數指數</div>
+          <span class="formula">\[a^n=\underbrace{a\times a\times\cdots\times a}_{n\text{ 個}}\qquad(n\in\mathbb{N})\]</span>
+          <p>此時底數 <span class="math">\(a\)</span> 可為任何實數；例如 <span class="math">\((-3)^3=-27\)</span>。</p>
         </article>
         <article class="mini">
-          <div class="tag">相除：指數相減</div>
-          <span class="formula">a<sup>m</sup> ÷ a<sup>n</sup> = a<sup>m−n</sup></span>
-          <p>例：<span class="math">5<sup>7</sup>÷5<sup>2</sup> = 5<sup>5</sup></span>。分子、分母相同的 5 可以約掉兩組。</p>
+          <div class="tag">零指數與負整數指數</div>
+          <span class="formula">\[a^0=1,\qquad a^{-n}=\frac{1}{a^n}\qquad(a\ne0)\]</span>
+          <p><span class="math">\(0^0\)</span> 不在這個規則內；<span class="math">\(0^{-1}\)</span> 也沒有意義，因為會出現分母為 0。</p>
         </article>
         <article class="mini">
-          <div class="tag">再乘一次方：指數相乘</div>
-          <span class="formula">(a<sup>m</sup>)<sup>n</sup> = a<sup>mn</sup></span>
-          <p>例：<span class="math">(3<sup>2</sup>)<sup>4</sup> = 3<sup>8</sup></span>。每一組有兩個 3，一共四組，所以有 <span class="math">2×4</span> 個 3。</p>
+          <div class="tag high">分數與實數指數</div>
+          <span class="formula">\[a^{\frac{m}{n}}=\sqrt[n]{a^m}\qquad\text{高中常用先取 }a&gt;0\]</span>
+          <p>若分母為偶數，根號內不能是負數；若分母為奇數，負數仍可能有意義，例如 <span class="math">\((-8)^{\frac13}=-2\)</span>。</p>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="example">
+          <h3>例題：負指數從哪裡來？</h3>
+          <p>化簡 <span class="math">\(\dfrac{2^3\times2^{-5}}{2^{-1}}\)</span>。</p>
+          <p><span class="math">\(=2^{3+(-5)-(-1)}=2^{-1}\)</span></p>
+          <p class="answer">\(=\dfrac12\)</p>
+        </article>
+        <article class="example">
+          <h3>判斷：哪個在實數範圍無意義？</h3>
+          <p><span class="math">\((-1)^{\frac12}\)</span> 需要平方根，沒有實數值；但 <span class="math">\((-1)^3=-1\)</span> 可以計算。</p>
         </article>
       </div>
       <div class="warn-box">
-        <strong>最常錯：</strong> <span class="math">a<sup>m</sup> + a<sup>n</sup></span> 不能合併成 <span class="math">a<sup>m+n</sup></span>。例如 <span class="math">2<sup>2</sup>+2<sup>3</sup> = 4+8=12</span>，不是 <span class="math">2<sup>5</sup>=32</span>。只有「相乘／相除」才可用上面的指數規則。
+        <strong>先別急著套公式：</strong>指數律中的除法、負次方通常都需要底數不為 0；而遇到分數次方，先把它翻成根號，再判斷根號有沒有實數意義。
       </div>
     </section>
 
     <section class="card">
-      <h2>三、國中版：科學記號讓大數、小數一眼看出大小</h2>
+      <h2>三、高一先備：同底數的三個基本公式</h2>
+      <p>公式不是憑空背的：先把每個次方展開，就能看出連乘的個數如何改變。以下先以底數 <span class="math">\(a\ne0\)</span>、整數指數為主。</p>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag">相乘：指數相加</div>
+          <span class="formula">\[a^m\times a^n=a^{m+n}\]</span>
+          <p>例：<span class="math">\(2^3\times2^4=2^7\)</span>。三個 2 再接四個 2，一共有七個 2。</p>
+        </article>
+        <article class="mini">
+          <div class="tag">相除：指數相減</div>
+          <span class="formula">\[a^m\div a^n=a^{m-n}\]</span>
+          <p>例：<span class="math">\(5^7\div5^2=5^5\)</span>。分子、分母相同的 5 可以約掉兩組。</p>
+        </article>
+        <article class="mini">
+          <div class="tag">再乘一次方：指數相乘</div>
+          <span class="formula">\[(a^m)^n=a^{mn}\]</span>
+          <p>例：<span class="math">\((3^2)^4=3^8\)</span>。每一組有兩個 3，一共四組，所以有 <span class="math">\(2\times4\)</span> 個 3。</p>
+        </article>
+      </div>
+      <div class="warn-box">
+        <strong>最常錯：</strong> <span class="math">\(a^m+a^n\)</span> 不能合併成 <span class="math">\(a^{m+n}\)</span>。例如 <span class="math">\(2^2+2^3=4+8=12\)</span>，不是 <span class="math">\(2^5=32\)</span>。只有「相乘／相除」才可用上面的指數規則。
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>四、高一先備：科學記號讓大數、小數一眼看出大小</h2>
       <div class="grid">
         <article class="mini">
           <div class="tag">標準形式</div>
           <p>科學記號寫成：</p>
-          <span class="formula">a × 10<sup>n</sup>，其中 1 ≤ a &lt; 10</span>
-          <p>前面的 <span class="math">a</span> 只能有一個整數位。例如 <span class="math">34.2×10<sup>5</sup></span> 還要整理成 <span class="math">3.42×10<sup>6</sup></span>。</p>
+          <span class="formula">\[a\times10^n,\qquad 1\le a&lt;10\]</span>
+          <p>前面的 <span class="math">\(a\)</span> 只能有一個整數位。例如 <span class="math">\(34.2\times10^5\)</span> 還要整理成 <span class="math">\(3.42\times10^6\)</span>。</p>
         </article>
         <article class="mini">
           <div class="tag">大於 1 的數</div>
           <p>把小數點往左移到第一個非零數字後面；移了幾位，指數就是正幾。</p>
-          <span class="formula">342 000 000 = 3.42 × 10<sup>8</sup></span>
+          <span class="formula">\[342\,000\,000=3.42\times10^8\]</span>
           <p>小數點從最後移到 3 後面，共向左移 8 位。</p>
         </article>
         <article class="mini">
           <div class="tag">介於 0 與 1 的數</div>
           <p>把小數點往右移到第一個非零數字後面；移了幾位，指數就是負幾。</p>
-          <span class="formula">0.000052 = 5.2 × 10<sup>−5</sup></span>
-          <p>小數點向右移 5 位，所以是 <span class="math">10<sup>−5</sup></span>。</p>
+          <span class="formula">\[0.000052=5.2\times10^{-5}\]</span>
+          <p>小數點向右移 5 位，所以是 <span class="math">\(10^{-5}\)</span>。</p>
         </article>
       </div>
       <div class="two-col" style="margin-top:12px;">
         <article class="example">
           <h3>例題：把科學記號還原</h3>
-          <p><span class="math">8.15×10<sup>5</sup></span> 要把小數點向右移 5 位。</p>
-          <p class="answer">= 815 000</p>
+          <p><span class="math">\(8.15\times10^5\)</span> 要把小數點向右移 5 位。</p>
+          <p class="answer">\(=815\,000\)</p>
         </article>
         <article class="example">
           <h3>例題：先估大小再檢查</h3>
-          <p><span class="math">6.7×10<sup>−3</sup></span> 一定比 1 小，結果應是小數。</p>
-          <p class="answer">= 0.0067</p>
+          <p><span class="math">\(6.7\times10^{-3}\)</span> 一定比 1 小，結果應是小數。</p>
+          <p class="answer">\(=0.0067\)</p>
         </article>
       </div>
       <div class="warn-box">
-        <strong>檢查口訣：</strong>數大於 1，科學記號的 10 次方通常是正指數；數介於 0 和 1，通常是負指數。若寫完後 <span class="math">a</span> 不是 1 到 10 之間，表示還沒有標準化。
+        <strong>檢查口訣：</strong>數大於 1，科學記號的 10 次方通常是正指數；數介於 0 和 1，通常是負指數。若寫完後 <span class="math">\(a\)</span> 不是 1 到 10 之間，表示還沒有標準化。
       </div>
     </section>
 
     <section class="card" id="senior">
       <div class="section-head">
-        <h2>四、高中版：分數次方把「開根號」寫成指數</h2>
-        <span class="level-label high">高中進階</span>
+        <h2>五、高一核心：分數次方把「開根號」寫成指數</h2>
+        <span class="level-label high">高一進階</span>
       </div>
       <p>分母告訴我們要開幾次根號，分子告訴我們再做幾次方。先在實數範圍下討論，遇到偶次根號尤其要先看定義域。</p>
       <div class="grid">
         <article class="mini">
           <div class="tag high">核心翻譯</div>
-          <span class="formula">a<sup>m/n</sup> = (ⁿ√a)<sup>m</sup> = ⁿ√(a<sup>m</sup>)</span>
-          <p>例：<span class="math">16<sup>3/4</sup> = (⁴√16)<sup>3</sup> = 2<sup>3</sup> = 8</span>。</p>
+          <span class="formula">\[a^{\frac{m}{n}}=\left(\sqrt[n]{a}\right)^m=\sqrt[n]{a^m}\]</span>
+          <p>例：<span class="math">\(16^{\frac34}=(\sqrt[4]{16})^3=2^3=8\)</span>。</p>
         </article>
         <article class="mini">
           <div class="tag high">負指數仍是倒數</div>
-          <span class="formula">a<sup>−m/n</sup> = 1 / a<sup>m/n</sup></span>
-          <p>例：<span class="math">81<sup>−3/4</sup> = 1/(⁴√81)<sup>3</sup> = 1/27</span>。</p>
+          <span class="formula">\[a^{-\frac{m}{n}}=\frac{1}{a^{\frac{m}{n}}}\]</span>
+          <p>例：<span class="math">\(81^{-\frac34}=\frac{1}{(\sqrt[4]{81})^3}=\frac1{27}\)</span>。</p>
         </article>
         <article class="mini">
           <div class="tag high">定義域先行</div>
-          <p>若分母化簡後是偶數，例如 <span class="math">x<sup>1/2</sup></span>，實數範圍必須 <span class="math">x ≥ 0</span>。</p>
-          <p>若分母是奇數，例如 <span class="math">x<sup>1/3</sup></span>，負數也可以代入。</p>
+          <p>若分母化簡後是偶數，例如 <span class="math">\(x^{\frac12}\)</span>，實數範圍必須 <span class="math">\(x\ge0\)</span>。</p>
+          <p>若分母是奇數，例如 <span class="math">\(x^{\frac13}\)</span>，負數也可以代入。</p>
         </article>
       </div>
       <div class="two-col" style="margin-top:12px;">
         <article class="example">
           <h3>例題：分數次方方程式</h3>
-          <p>解 <span class="math">x<sup>2/3</sup> = 4</span>。</p>
-          <p>令 <span class="math">t=∛x</span>，則 <span class="math">t<sup>2</sup>=4</span>，所以 <span class="math">t=±2</span>。</p>
-          <p class="answer">x = t<sup>3</sup> = ±8</p>
+          <p>解 <span class="math">\(x^{\frac23}=4\)</span>。</p>
+          <p>令 <span class="math">\(t=\sqrt[3]{x}\)</span>，則 <span class="math">\(t^2=4\)</span>，所以 <span class="math">\(t=\pm2\)</span>。</p>
+          <p class="answer">\(x=t^3=\pm8\)</p>
         </article>
         <article class="example">
           <h3>易錯提醒：不要漏掉負解</h3>
-          <p>因為 <span class="math">(-8)<sup>2/3</sup>=(∛(-8))<sup>2</sup>=(-2)<sup>2</sup>=4</span>，所以只寫 <span class="math">x=8</span> 不完整。</p>
+          <p>因為 <span class="math">\((-8)^{\frac23}=(\sqrt[3]{-8})^2=(-2)^2=4\)</span>，所以只寫 <span class="math">\(x=8\)</span> 不完整。</p>
         </article>
       </div>
     </section>
 
     <section class="card">
-      <h2>五、高中版：把複雜指數式換成一個正變數</h2>
-      <p>遇到 <span class="math">a<sup>2x</sup></span>、<span class="math">a<sup>x</sup></span> 同時出現時，不要急著取對數；先令 <span class="math">t=a<sup>x</sup></span>。因為指數函數值永遠正，所以還要保留 <span class="math">t&gt;0</span>。</p>
+      <h2>六、高一核心：把複雜指數式換成一個正變數</h2>
+      <p>遇到 <span class="math">\(a^{2x}\)</span>、<span class="math">\(a^x\)</span> 同時出現時，不要急著取對數；先令 <span class="math">\(t=a^x\)</span>。因為指數函數值永遠正，所以還要保留 <span class="math">\(t&gt;0\)</span>。</p>
       <div class="flow">
-        <div class="flow-step"><div class="step-number">1</div><div><h3>看出同一個底數</h3><p><span class="math">2<sup>2x</sup> = (2<sup>x</sup>)<sup>2</sup></span>，這使原式能變成二次式。</p></div></div>
-        <div class="flow-step"><div class="step-number">2</div><div><h3>代換並先解 t</h3><p>令 <span class="math">t=2<sup>x</sup>&gt;0</span>。例如 <span class="math">2<sup>2x</sup>−5·2<sup>x</sup>+4=0</span> 變為 <span class="math">t<sup>2</sup>−5t+4=0</span>。</p></div></div>
-        <div class="flow-step"><div class="step-number">3</div><div><h3>篩掉不合 <span class="math">t&gt;0</span> 的值，再換回 x</h3><p><span class="math">(t−1)(t−4)=0</span>，得 <span class="math">t=1,4</span>；所以 <span class="math">2<sup>x</sup>=1,4</span>，答案是 <span class="math">x=0,2</span>。</p></div></div>
+        <div class="flow-step"><div class="step-number">1</div><div><h3>看出同一個底數</h3><p><span class="math">\(2^{2x}=(2^x)^2\)</span>，這使原式能變成二次式。</p></div></div>
+        <div class="flow-step"><div class="step-number">2</div><div><h3>代換並先解 t</h3><p>令 <span class="math">\(t=2^x&gt;0\)</span>。例如 <span class="math">\(2^{2x}-5\cdot2^x+4=0\)</span> 變為 <span class="math">\(t^2-5t+4=0\)</span>。</p></div></div>
+        <div class="flow-step"><div class="step-number">3</div><div><h3>篩掉不合 <span class="math">\(t&gt;0\)</span> 的值，再換回 x</h3><p><span class="math">\((t-1)(t-4)=0\)</span>，得 <span class="math">\(t=1,4\)</span>；所以 <span class="math">\(2^x=1,4\)</span>，答案是 <span class="math">\(x=0,2\)</span>。</p></div></div>
       </div>
       <div class="warn-box">
-        <strong>最常錯：</strong>代換後得到 <span class="math">t=-2</span> 時，不能直接回推 <span class="math">a<sup>x</sup>=-2</span>；實數範圍的正底數指數函數不會等於負數。
+        <strong>最常錯：</strong>代換後得到 <span class="math">\(t=-2\)</span> 時，不能直接回推 <span class="math">\(a^x=-2\)</span>；實數範圍的正底數指數函數不會等於負數。
       </div>
     </section>
 
     <section class="card">
-      <h2>六、高中版：指數不等式先判斷底數</h2>
+      <h2>七、高一核心：指數不等式先判斷底數</h2>
       <div class="grid">
         <article class="mini">
           <div class="tag high">底數大於 1：方向不變</div>
-          <span class="formula">a &gt; 1：a<sup>u</sup> &gt; a<sup>v</sup> ⇔ u &gt; v</span>
-          <p>例：<span class="math">3<sup>x+1</sup> ≥ 9<sup>x−1</sup></span>，先寫成 <span class="math">3<sup>x+1</sup> ≥ 3<sup>2x−2</sup></span>，所以 <span class="math">x+1 ≥ 2x−2</span>，得 <span class="math">x≤3</span>。</p>
+          <span class="formula">\[a&gt;1:\quad a^u&gt;a^v\iff u&gt;v\]</span>
+          <p>例：<span class="math">\(3^{x+1}\ge9^{x-1}\)</span>，先寫成 <span class="math">\(3^{x+1}\ge3^{2x-2}\)</span>，所以 <span class="math">\(x+1\ge2x-2\)</span>，得 <span class="math">\(x\le3\)</span>。</p>
         </article>
         <article class="mini">
           <div class="tag high">底數介於 0 與 1：方向反轉</div>
-          <span class="formula">0 &lt; a &lt; 1：a<sup>u</sup> &lt; a<sup>v</sup> ⇔ u &gt; v</span>
-          <p>例：<span class="math">(1/2)<sup>2x−1</sup> &lt; (1/2)<sup>x+2</sup></span>，指數比較時要反向：<span class="math">2x−1 &gt; x+2</span>，得 <span class="math">x&gt;3</span>。</p>
+          <span class="formula">\[0&lt;a&lt;1:\quad a^u&lt;a^v\iff u&gt;v\]</span>
+          <p>例：<span class="math">\(\left(\frac12\right)^{2x-1}&lt;\left(\frac12\right)^{x+2}\)</span>，指數比較時要反向：<span class="math">\(2x-1&gt;x+2\)</span>，得 <span class="math">\(x&gt;3\)</span>。</p>
         </article>
         <article class="mini">
           <div class="tag high">代換型不等式</div>
-          <p><span class="math">2<sup>2x</sup>−5·2<sup>x</sup>+4&gt;0</span>，令 <span class="math">t=2<sup>x</sup>&gt;0</span>，變成 <span class="math">(t−1)(t−4)&gt;0</span>。</p>
-          <p>解得 <span class="math">0&lt;t&lt;1</span> 或 <span class="math">t&gt;4</span>，所以 <span class="math">x&lt;0</span> 或 <span class="math">x&gt;2</span>。</p>
+          <p><span class="math">\(2^{2x}-5\cdot2^x+4&gt;0\)</span>，令 <span class="math">\(t=2^x&gt;0\)</span>，變成 <span class="math">\((t-1)(t-4)&gt;0\)</span>。</p>
+          <p>解得 <span class="math">\(0&lt;t&lt;1\)</span> 或 <span class="math">\(t&gt;4\)</span>，所以 <span class="math">\(x&lt;0\)</span> 或 <span class="math">\(x&gt;2\)</span>。</p>
         </article>
       </div>
     </section>
 
     <section class="card" id="log-tool">
-      <h2>七、高中版：用對數反推科學記號中的指數</h2>
-      <p>當數字不是剛好等於 <span class="math">10<sup>n</sup></span> 時，對數會補上「介於兩個整數次方之間」的那一小段。這正是用科學記號判斷數量級的關鍵。</p>
+      <h2>八、高一核心：用對數反推科學記號中的指數</h2>
+      <p>對數不是另一套孤立公式；它是在回答「底數要做幾次方，才會得到這個數？」。先能在指數式與對數式之間互換，才容易處理科學記號與位數問題。</p>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag high">指數、對數互換</div>
+          <span class="formula">\[a^x=b\iff\log_a b=x\]</span>
+          <p>例如 <span class="math">\(2^3=8\)</span>，所以 <span class="math">\(\log_2 8=3\)</span>。先找「底數」與「結果」，最後才讀出指數。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">對數有意義的條件</div>
+          <span class="formula">\[a&gt;0,\qquad a\ne1,\qquad b&gt;0\]</span>
+          <p>在 <span class="math">\(\log_a b\)</span> 中，底數 <span class="math">\(a\)</span> 必須正且不為 1；真數 <span class="math">\(b\)</span> 必須正。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">三個立刻可用的值</div>
+          <span class="formula">\[\log_a1=0,\qquad\log_a a=1,\qquad\log_a\frac1a=-1\]</span>
+          <p>因為 <span class="math">\(a^0=1\)</span>、<span class="math">\(a^1=a\)</span>、<span class="math">\(a^{-1}=\frac1a\)</span>。每一個都能回到指數定義檢查。</p>
+        </article>
+      </div>
+      <div class="warn-box">
+        <strong>對數題先做兩個檢查：</strong><span class="math">\(\log_2(-3)\)</span> 的真數是負數，無意義；<span class="math">\(\log_{-2}8\)</span> 的底數是負數，也不在實數對數的範圍。不要只看「最後能不能湊成某個次方」。
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="mini">
+          <div class="tag high">乘除對應指數的加減</div>
+          <span class="formula">\[\log_a(xy)=\log_a x+\log_a y,\qquad \log_a\frac{x}{y}=\log_a x-\log_a y\]</span>
+          <p>因為 <span class="math">\(a^m\cdot a^n=a^{m+n}\)</span>。先把 <span class="math">\(x,y\)</span> 想成某些次方值，就能理解為何乘法才會變成對數相加。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">次方可搬到前面</div>
+          <span class="formula">\[\log_a(x^n)=n\log_a x\]</span>
+          <p>例：<span class="math">\(\log(3^{100})=100\log3\)</span>，這正是大數位數題的第一步。注意 <span class="math">\(\log_a(x+y)\)</span> 不能拆成兩個對數相加。</p>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="example">
+          <h3>例題：對數式與指數式互換</h3>
+          <p>解 <span class="math">\(2^x=12\)</span>。因為 12 不是 2 的整數次方，答案可保留成對數。</p>
+          <p class="answer">\(x=\log_2 12=\dfrac{\log12}{\log2}\)</p>
+        </article>
+        <article class="example">
+          <h3>挑戰：先認出完全平方</h3>
+          <p>求 <span class="math">\(\log_2\left(\sqrt{3+\sqrt8}-\sqrt{3-\sqrt8}\right)\)</span>。</p>
+          <p><span class="math">\(3\pm\sqrt8=3\pm2\sqrt2=(\sqrt2\pm1)^2\)</span>，根號相減後為 <span class="math">\((\sqrt2+1)-(\sqrt2-1)=2\)</span>。</p>
+          <p class="answer">\(\log_2 2=1\)</p>
+        </article>
+      </div>
+      <h3 style="margin-top:18px;">由常用對數連到科學記號</h3>
+      <p>當數字不是剛好等於 <span class="math">\(10^n\)</span> 時，對數會補上「介於兩個整數次方之間」的那一小段。這正是用科學記號判斷數量級的關鍵。</p>
       <div class="grid">
         <article class="mini">
           <div class="tag high">從科學記號反推 x</div>
-          <p>若 <span class="math">10<sup>x</sup> = c×10<sup>n</sup></span>，且 <span class="math">1≤c&lt;10</span>，兩邊取常用對數：</p>
-          <span class="formula">x = log(c×10<sup>n</sup>) = log c + n</span>
-          <p>例：<span class="math">10<sup>x</sup>=6.02×10<sup>23</sup></span>，則 <span class="math">x=23+log 6.02≈23.7796</span>。</p>
+          <p>若 <span class="math">\(10^x=c\times10^n\)</span>，且 <span class="math">\(1\le c&lt;10\)</span>，兩邊取常用對數：</p>
+          <span class="formula">\[x=\log_{10}(c\times10^n)=\log_{10}c+n\]</span>
+          <p>例：<span class="math">\(10^x=6.02\times10^{23}\)</span>，則 <span class="math">\(x=23+\log_{10}6.02\approx23.7796\)</span>。</p>
         </article>
         <article class="mini">
           <div class="tag high">從 x 寫回科學記號</div>
-          <p>若 <span class="math">x=−5.347</span>，整數部分要取下整數 <span class="math">−6</span>：</p>
-          <span class="formula">10<sup>−5.347</sup> = 10<sup>0.653</sup> × 10<sup>−6</sup> ≈ 4.50×10<sup>−6</sup></span>
+          <p>若 <span class="math">\(x=-5.347\)</span>，整數部分要取下整數 <span class="math">\(-6\)</span>：</p>
+          <span class="formula">\[10^{-5.347}=10^{0.653}\times10^{-6}\approx4.50\times10^{-6}\]</span>
           <p>負數時不能直接把小數點「截掉」成 −5；必須用下整數，才能讓前面的係數落在 1 到 10 之間。</p>
         </article>
         <article class="mini">
           <div class="tag high">一般底數的反推</div>
-          <p>若 <span class="math">a<sup>x</sup>=N</span>，且 <span class="math">a&gt;0、a≠1、N&gt;0</span>，則：</p>
-          <span class="formula">x = log<sub>a</sub>N = log N / log a</span>
-          <p>例如 <span class="math">2<sup>x</sup>=1000</span>，可以用 <span class="math">x=log 1000/log 2</span> 求近似值。</p>
+          <p>若 <span class="math">\(a^x=N\)</span>，且 <span class="math">\(a&gt;0,\ a\ne1,\ N&gt;0\)</span>，則：</p>
+          <span class="formula">\[x=\log_aN=\frac{\log N}{\log a}\]</span>
+          <p>例如 <span class="math">\(2^x=1000\)</span>，可以用 <span class="math">\(x=\frac{\log1000}{\log2}\)</span> 求近似值。</p>
         </article>
       </div>
       <div class="two-col" style="margin-top:12px;">
         <section class="calculator" aria-labelledby="to-log-title">
           <h3 id="to-log-title">小工具 A：科學記號 → 10 的指數</h3>
-          <p>輸入 <span class="math">c×10<sup>n</sup></span>，計算 <span class="math">log<sub>10</sub>(c×10<sup>n</sup>)</span>。</p>
+          <p>輸入 <span class="math">\(c\times10^n\)</span>，計算 <span class="math">\(\log_{10}(c\times10^n)\)</span>。</p>
           <label for="mantissa">係數 c（1 ≤ c &lt; 10）</label>
           <input id="mantissa" type="number" value="6.02" min="1" max="9.999999" step="any">
           <label for="scientific-exponent">整數指數 n</label>
           <input id="scientific-exponent" type="number" value="23" step="1">
           <div class="tools"><button class="btn" type="button" id="calculate-log">計算 x</button></div>
-          <div class="result" id="log-result" aria-live="polite">例如：6.02 × 10<sup>23</sup> 對應的 x 約為 23.7796。</div>
+          <div class="result" id="log-result" aria-live="polite">例如：\(6.02\times10^{23}\) 對應的 \(x\) 約為 \(23.7796\)。</div>
         </section>
         <section class="calculator" aria-labelledby="from-log-title">
           <h3 id="from-log-title">小工具 B：10 的指數 → 科學記號</h3>
-          <p>輸入 <span class="math">x</span>，將 <span class="math">10<sup>x</sup></span> 寫成標準科學記號。</p>
+          <p>輸入 <span class="math">\(x\)</span>，將 <span class="math">\(10^x\)</span> 寫成標準科學記號。</p>
           <label for="log-input">x</label>
           <input id="log-input" type="number" value="-5.347" step="any">
           <div class="tools"><button class="btn" type="button" id="calculate-scientific">換成科學記號</button></div>
-          <div class="result" id="scientific-result" aria-live="polite">例如：10<sup>−5.347</sup> ≈ 4.50 × 10<sup>−6</sup>。</div>
+          <div class="result" id="scientific-result" aria-live="polite">例如：\(10^{-5.347}\approx4.50\times10^{-6}\)。</div>
         </section>
       </div>
       <div class="warn-box">
-        <strong>計算機提醒：</strong>本頁的 <span class="math">log</span> 指常用對數（底數 10）。若計算機畫面顯示 <span class="math">ln</span>，那是自然對數；要算 <span class="math">10<sup>x</sup></span> 的反推時，優先使用 <span class="math">log</span>。
+        <strong>計算機提醒：</strong>本頁的 <span class="math">\(\log\)</span> 指常用對數（底數 10）。若計算機畫面顯示 <span class="math">\(\ln\)</span>，那是自然對數；要算 <span class="math">\(10^x\)</span> 的反推時，優先使用 <span class="math">\(\log\)</span>。
+      </div>
+    </section>
+
+    <section class="card" id="growth">
+      <div class="section-head">
+        <h2>九、應用：每隔固定時間乘同一倍率</h2>
+        <span class="level-label high">成長／衰減</span>
+      </div>
+      <p>只要「每一段相同時間都乘上同一個倍率」，就是指數變化。先辨認原本量、每段時間、倍率，再代入；不要把倍率和百分率混在一起。</p>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag high">通用模型</div>
+          <span class="formula">\[F(t)=A\,r^{\frac{t}{T}}\]</span>
+          <p><span class="math">\(A\)</span> 是起始量，<span class="math">\(T\)</span> 是一個週期，<span class="math">\(r\)</span> 是每個週期的倍率。若每期增加 20%，倍率是 <span class="math">\(1.2\)</span>，不是 0.2。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">衰減與半衰期</div>
+          <span class="formula">\[F(t)=A\left(\frac12\right)^{\frac{t}{T}}\]</span>
+          <p>每經過一個半衰期，數量變成一半。<span class="math">\(T\)</span> 是「減半一次所需時間」，不是題目中的總時間。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">複利的結構</div>
+          <span class="formula">\[A_n=P(1+r)^n\]</span>
+          <p>本金 <span class="math">\(P\)</span> 每期乘上 <span class="math">\(1+r\)</span>；和單利 <span class="math">\(P(1+nr)\)</span> 最大差異，是每期會連本帶利再乘一次。</p>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="example">
+          <h3>例題：從資料找半衰期</h3>
+          <p>某物質第 1 年有 128 公克，第 10 年有 16 公克。9 年間的倍率為 <span class="math">\(\frac{16}{128}=\frac18=\left(\frac12\right)^3\)</span>。</p>
+          <p>9 年剛好經過 3 個半衰期。</p>
+          <p class="answer">半衰期 \(T=3\) 年。</p>
+        </article>
+        <article class="example">
+          <h3>例題：細菌等比成長</h3>
+          <p>細菌 3 日後有 200 000 個，4.5 日後有 1 600 000 個。1.5 日多了 8 倍，所以 <span class="math">\(r^{1.5}=8\)</span>。</p>
+          <p><span class="math">\(r^3=64\)</span>，得每日倍率 <span class="math">\(r=4\)</span>；由 200 000 到 3 200 000 還要乘 16，即再經過 2 日。</p>
+          <p class="answer">第 5 日有 \(3\,200\,000\) 個。</p>
+        </article>
+      </div>
+      <div class="warn-box">
+        <strong>常見語句陷阱：</strong>「變成原來的 <span class="math">\(r\)</span> 倍」的倍率是 <span class="math">\(r\)</span>；「增加 <span class="math">\(r\%\)</span>」的倍率則是 <span class="math">\(1+\frac{r}{100}\)</span>。先把中文翻成倍率，模型才不會寫錯。
+      </div>
+    </section>
+
+    <section class="card" id="digits">
+      <div class="section-head">
+        <h2>十、對數與科學記號：位數、首位數、尾數</h2>
+        <span class="level-label high">數量級挑戰</span>
+      </div>
+      <p>這類題不必真的算出巨大的整數。把數字的常用對數拆成「整數部分＋小數部分」，再換回科學記號，就能看出位數與首位數。</p>
+      <div class="grid">
+        <article class="mini">
+          <div class="tag high">首數與尾數</div>
+          <span class="formula">\[N=a\times10^n,\ 1\le a&lt;10\quad\Longrightarrow\quad \log N=n+\log a\]</span>
+          <p><span class="math">\(n\)</span> 是 <span class="math">\(\log N\)</span> 的整數部分（首數），<span class="math">\(\log a\)</span> 在 <span class="math">\(0\)</span> 到 <span class="math">\(1\)</span> 之間（尾數）。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">正整數的位數</div>
+          <span class="formula">\[\log N=k+\alpha,\quad 0\le\alpha&lt;1\quad\Longrightarrow\quad N\text{ 有 }k+1\text{ 位}\]</span>
+          <p>整數部分告訴我們 <span class="math">\(N\)</span> 落在 <span class="math">\(10^k\)</span> 與 <span class="math">\(10^{k+1}\)</span> 之間；小數部分則決定前面的係數。</p>
+        </article>
+        <article class="mini">
+          <div class="tag high">小數第一個非零位</div>
+          <span class="formula">\[\log N=-k+\alpha,\quad 0\le\alpha&lt;1\quad\Longrightarrow\quad N=10^\alpha\times10^{-k}\]</span>
+          <p>若 <span class="math">\(0&lt;N&lt;1\)</span>，先把負對數改寫成「小數部分＋負整數」，才看得出第一個非零數字的位置。</p>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="example">
+          <h3>例題：求 \(3^{100}\) 的位數與首位數</h3>
+          <p>已知 <span class="math">\(\log3\approx0.4771\)</span>，所以 <span class="math">\(\log(3^{100})=100\log3\approx47.71\)</span>。</p>
+          <p><span class="math">\(3^{100}=10^{0.71}\times10^{47}\approx5.1\times10^{47}\)</span></p>
+          <p class="answer">有 \(48\) 位數，首位數是 \(5\)。</p>
+        </article>
+        <article class="example">
+          <h3>例題：求 \(2^{159}\) 的位數與首位數</h3>
+          <p>已知 <span class="math">\(\log2\approx0.3010\)</span>，所以 <span class="math">\(\log(2^{159})\approx159(0.3010)=47.859\)</span>。</p>
+          <p><span class="math">\(2^{159}=10^{0.859}\times10^{47}\approx7.2\times10^{47}\)</span></p>
+          <p class="answer">有 \(48\) 位數，首位數是 \(7\)。</p>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <article class="example">
+          <h3>挑戰：很小的數</h3>
+          <p><span class="math">\(\log(3^{-100})=-47.71=-48+0.29\)</span>，所以 <span class="math">\(3^{-100}\approx10^{0.29}\times10^{-48}\)</span>。</p>
+          <p class="answer">小數點後第 \(48\) 位開始出現非零數字，首位數是 \(1\)。</p>
+        </article>
+        <article class="example">
+          <h3>相加前先統一數量級</h3>
+          <p><span class="math">\(2^{159}\approx7.2\times10^{47}\)</span>、<span class="math">\(3^{100}\approx5.1\times10^{47}\)</span>，所以和約為 <span class="math">\(1.23\times10^{48}\)</span>。</p>
+          <p class="answer">\(2^{159}+3^{100}\) 有 \(49\) 位數，首位數是 \(1\)。</p>
+        </article>
+      </div>
+      <div class="warn-box">
+        <strong>不能直接取對數相加：</strong><span class="math">\(\log(A+B)\ne\log A+\log B\)</span>。遇到和或差，先各自寫成科學記號、對齊 <span class="math">\(10\)</span> 的次方，再做加減。
       </div>
     </section>
 
     <section class="card" id="advanced">
       <div class="section-head">
-        <h2>八、高中挑戰：負次方與複雜次方計算</h2>
-        <span class="level-label high">高中挑戰</span>
+        <h2>十一、高一挑戰：負次方與複雜次方計算</h2>
+        <span class="level-label high">高一挑戰</span>
       </div>
       <p>這一版的重點不是把指數湊成很大的數，而是能在負次方、負號、括號和多個底數混在一起時，仍然穩定地看出結構。所有含負次方的底數都必須不為 0。</p>
       <div class="grid">
         <article class="mini">
           <div class="tag high">負次方不是負數</div>
-          <span class="formula">a<sup>−n</sup> = 1 / a<sup>n</sup>（a ≠ 0）</span>
-          <p><span class="math">2<sup>−3</sup> = 1/2<sup>3</sup> = 1/8</span>。負號告訴我們「取倒數」，不是讓答案自動變成負數。</p>
-          <p>例如 <span class="math">(−2)<sup>−3</sup>=−1/8</span>，答案為負是因為底數本來是負數且次方為奇數。</p>
+          <span class="formula">\[a^{-n}=\frac{1}{a^n}\qquad(a\ne0)\]</span>
+          <p><span class="math">\(2^{-3}=\frac{1}{2^3}=\frac18\)</span>。負號告訴我們「取倒數」，不是讓答案自動變成負數。</p>
+          <p>例如 <span class="math">\((-2)^{-3}=-\frac18\)</span>，答案為負是因為底數本來是負數且次方為奇數。</p>
         </article>
         <article class="mini">
           <div class="tag high">由相除公式看來源</div>
-          <span class="formula">a<sup>3</sup> / a<sup>5</sup> = a<sup>3−5</sup> = a<sup>−2</sup> = 1/a<sup>2</sup></span>
+          <span class="formula">\[\frac{a^3}{a^5}=a^{3-5}=a^{-2}=\frac{1}{a^2}\]</span>
           <p>負次方其實是「分母的同底數比上分子的同底數還多」；把多出的因數留在分母，就自然得到倒數。</p>
         </article>
         <article class="mini">
           <div class="tag high">括號決定負號算到哪裡</div>
-          <p><span class="math">(−2)<sup>−4</sup>=1/16</span>，底數是 −2。</p>
-          <p><span class="math">−2<sup>−4</sup>=−(2<sup>−4</sup>)=−1/16</span>，外面的負號沒有被次方算進去。</p>
+          <p><span class="math">\((-2)^{-4}=\frac1{16}\)</span>，底數是 −2。</p>
+          <p><span class="math">\(-2^{-4}=-(2^{-4})=-\frac1{16}\)</span>，外面的負號沒有被次方算進去。</p>
           <p>遇到負數底數，先圈出底數範圍，再開始算。</p>
         </article>
       </div>
 
       <h3 style="margin-top:18px;">複雜次方計算的四步驟</h3>
       <div class="flow">
-        <div class="flow-step"><div class="step-number">1</div><div><h3>先保留括號，辨認每個底數</h3><p><span class="math">(2<sup>−2</sup>)<sup>−3</sup></span> 的底數是整個 <span class="math">2<sup>−2</sup></span>；不能把兩個負號先消掉就停下來。</p></div></div>
-        <div class="flow-step"><div class="step-number">2</div><div><h3>把可改寫的數化成同一底數</h3><p>例如 <span class="math">4=2<sup>2</sup></span>、<span class="math">8=2<sup>3</sup></span>、<span class="math">9=3<sup>2</sup></span>、<span class="math">27=3<sup>3</sup></span>；同底數後才可加減指數。</p></div></div>
-        <div class="flow-step"><div class="step-number">3</div><div><h3>由內而外處理「次方的次方」</h3><p><span class="math">(a<sup>m</sup>)<sup>n</sup>=a<sup>mn</sup></span>，連負號也要一起乘：<span class="math">(2<sup>−2</sup>)<sup>−3</sup>=2<sup>(−2)(−3)</sup>=2<sup>6</sup></span>。</p></div></div>
-        <div class="flow-step"><div class="step-number">4</div><div><h3>最後才把負指數搬成倒數</h3><p>先合併同底數可減少分數運算；最後把 <span class="math">a<sup>−k</sup></span> 改寫為 <span class="math">1/a<sup>k</sup></span>，答案通常更清楚。</p></div></div>
+        <div class="flow-step"><div class="step-number">1</div><div><h3>先保留括號，辨認每個底數</h3><p><span class="math">\((2^{-2})^{-3}\)</span> 的底數是整個 <span class="math">\(2^{-2}\)</span>；不能把兩個負號先消掉就停下來。</p></div></div>
+        <div class="flow-step"><div class="step-number">2</div><div><h3>把可改寫的數化成同一底數</h3><p>例如 <span class="math">\(4=2^2\)</span>、<span class="math">\(8=2^3\)</span>、<span class="math">\(9=3^2\)</span>、<span class="math">\(27=3^3\)</span>；同底數後才可加減指數。</p></div></div>
+        <div class="flow-step"><div class="step-number">3</div><div><h3>由內而外處理「次方的次方」</h3><p><span class="math">\((a^m)^n=a^{mn}\)</span>，連負號也要一起乘：<span class="math">\((2^{-2})^{-3}=2^{(-2)(-3)}=2^6\)</span>。</p></div></div>
+        <div class="flow-step"><div class="step-number">4</div><div><h3>最後才把負指數搬成倒數</h3><p>先合併同底數可減少分數運算；最後把 <span class="math">\(a^{-k}\)</span> 改寫為 <span class="math">\(\frac1{a^k}\)</span>，答案通常更清楚。</p></div></div>
       </div>
 
       <div class="two-col" style="margin-top:12px;">
         <article class="example">
           <h3>例題 A：巢狀負次方</h3>
-          <p>化簡 <span class="math">(2<sup>−2</sup>)<sup>−3</sup> × 4<sup>−1</sup></span>。</p>
-          <p><span class="math">=2<sup>6</sup>×(2<sup>2</sup>)<sup>−1</sup>=2<sup>6</sup>×2<sup>−2</sup>=2<sup>4</sup></span></p>
-          <p class="answer">= 16</p>
+          <p>化簡 <span class="math">\((2^{-2})^{-3}\times4^{-1}\)</span>。</p>
+          <p><span class="math">\(=2^6\times(2^2)^{-1}=2^6\times2^{-2}=2^4\)</span></p>
+          <p class="answer">\(=16\)</p>
         </article>
         <article class="example">
           <h3>例題 B：含字母的複雜化簡</h3>
-          <p>化簡 <span class="math">(a<sup>−2</sup>b<sup>3</sup>)<sup>−2</sup> ÷ (ab<sup>−1</sup>)</span>（<span class="math">a,b≠0</span>）。</p>
-          <p><span class="math">=a<sup>4</sup>b<sup>−6</sup> ÷ (ab<sup>−1</sup>)=a<sup>4−1</sup>b<sup>−6−(−1)</sup>=a<sup>3</sup>b<sup>−5</sup></span></p>
-          <p class="answer">= a<sup>3</sup> / b<sup>5</sup></p>
+          <p>化簡 <span class="math">\((a^{-2}b^3)^{-2}\div(ab^{-1})\)</span>（<span class="math">\(a,b\ne0\)</span>）。</p>
+          <p><span class="math">\(=a^4b^{-6}\div(ab^{-1})=a^{4-1}b^{-6-(-1)}=a^3b^{-5}\)</span></p>
+          <p class="answer">\(=\frac{a^3}{b^5}\)</p>
         </article>
       </div>
       <div class="warn-box">
         <strong>三個高頻失誤：</strong>
-        <span class="math">(a+b)<sup>−2</sup></span> 不能寫成 <span class="math">a<sup>−2</sup>+b<sup>−2</sup></span>；
-        <span class="math">(ab)<sup>−2</sup></span> 才能寫成 <span class="math">a<sup>−2</sup>b<sup>−2</sup></span>；
-        而 <span class="math">a<sup>−2</sup>+a<sup>−3</sup></span> 仍是加法，必須先通分或提出公因式，不能直接把指數相加。
+        <span class="math">\((a+b)^{-2}\)</span> 不能寫成 <span class="math">\(a^{-2}+b^{-2}\)</span>；
+        <span class="math">\((ab)^{-2}\)</span> 才能寫成 <span class="math">\(a^{-2}b^{-2}\)</span>；
+        而 <span class="math">\(a^{-2}+a^{-3}\)</span> 仍是加法，必須先通分或提出公因式，不能直接把指數相加。
       </div>
     </section>
 
     <section class="card" id="practice">
-      <h2>九、分級自我檢查</h2>
+      <h2>十二、分級自我檢查</h2>
       <p class="practice-intro">先選題型，再作答。答錯時請先讀「關鍵理由」，再按下一題；進階題請特別練習「先化同底數、再合併、最後處理倒數」的順序。</p>
       <div class="mode-row" aria-label="選擇練習題型">
-        <button class="btn secondary mode-active" type="button" data-mode="junior-rules">國中：指數規則</button>
-        <button class="btn secondary" type="button" data-mode="junior-scientific">國中：科學記號</button>
-        <button class="btn secondary" type="button" data-mode="high-fractional">高中：分數次方</button>
-        <button class="btn secondary" type="button" data-mode="high-equation">高中：指數方程式</button>
-        <button class="btn secondary" type="button" data-mode="high-inequality">高中：指數不等式</button>
-        <button class="btn secondary" type="button" data-mode="high-log">高中：對數反推</button>
-        <button class="btn secondary" type="button" data-mode="high-negative">高中挑戰：負次方與複雜計算</button>
+        <button class="btn secondary mode-active" type="button" data-mode="junior-rules">高一先備：指數規則</button>
+        <button class="btn secondary" type="button" data-mode="junior-scientific">高一先備：科學記號</button>
+        <button class="btn secondary" type="button" data-mode="high-fractional">高一：分數次方</button>
+        <button class="btn secondary" type="button" data-mode="high-equation">高一：指數方程式</button>
+        <button class="btn secondary" type="button" data-mode="high-inequality">高一：指數不等式</button>
+        <button class="btn secondary" type="button" data-mode="high-log">高一：對數反推</button>
+        <button class="btn secondary" type="button" data-mode="high-log-basics">高一：對數基本觀念</button>
+        <button class="btn secondary" type="button" data-mode="high-growth">高一：成長與衰減</button>
+        <button class="btn secondary" type="button" data-mode="high-digits">高一挑戰：位數與首位數</button>
+        <button class="btn secondary" type="button" data-mode="high-negative">高一挑戰：負次方與複雜計算</button>
       </div>
       <div class="score" aria-live="polite">
-        <span id="score-title">國中：指數規則</span>
+        <span id="score-title">高一先備：指數規則</span>
         <span id="score-total">答對 0 / 0 題</span>
         <span id="score-streak">連續答對 0 題</span>
       </div>
@@ -503,13 +702,13 @@
         <div class="tools"><button class="btn" type="button" id="next-question">下一題</button></div>
       </div>
     </section>
-    <p class="foot">教學建議：國中先用「展開連乘」建立公式來源；高中再帶入 t=a<sup>x</sup> 的代換與底數判斷；最後用負次方挑戰題練習括號、同底數化簡與倒數，再以對數連結科學記號與數量級。</p>
+    <p class="foot">教學建議：高一先用「展開連乘」喚回先備概念；再帶入 <span class="math">\(t=a^x\)</span> 的代換與底數判斷；最後用負次方挑戰題練習括號、同底數化簡與倒數，再以對數連結科學記號與數量級。</p>
   </main>
 
   <script>
     const modes = {
       "junior-rules": {
-        title: "國中：指數規則",
+        title: "高一先備：指數規則",
         note: "觀念：相乘才是指數相加；先辨認運算符號。",
         questions: [
           { prompt: "2^3 × 2^4 = ?", choices: ["2^7", "2^12", "4^7", "2^1"], correct: "2^7", explanation: "同底數相乘，連乘的 2 共有 3+4=7 個，所以是 2^7。" },
@@ -520,7 +719,7 @@
         ]
       },
       "junior-scientific": {
-        title: "國中：科學記號",
+        title: "高一先備：科學記號",
         note: "觀念：標準科學記號的係數一定要在 1 到 10 之間。",
         questions: [
           { prompt: "0.00074 的標準科學記號是？", choices: ["7.4 × 10^-4", "7.4 × 10^4", "74 × 10^-5", "0.74 × 10^-3"], correct: "7.4 × 10^-4", explanation: "小數點向右移 4 位才到 7 後面，所以指數是 −4；7.4 也符合 1≤a<10。" },
@@ -531,7 +730,7 @@
         ]
       },
       "high-fractional": {
-        title: "高中：分數次方",
+        title: "高一：分數次方",
         note: "觀念：分母是根號次數，分子是次方次數；偶次根號要先看定義域。",
         questions: [
           { prompt: "16^(3/4) = ?", choices: ["8", "4", "64", "2"], correct: "8", explanation: "先開四次根號：4√16=2，再立三次方：2^3=8。" },
@@ -542,7 +741,7 @@
         ]
       },
       "high-equation": {
-        title: "高中：指數方程式",
+        title: "高一：指數方程式",
         note: "觀念：令 t=a^x，並記得 t 必須大於 0。",
         questions: [
           { prompt: "解 2^(2x) − 5·2^x + 4 = 0", choices: ["x=0 或 2", "x=1 或 4", "x=−1 或 2", "無解"], correct: "x=0 或 2", explanation: "令 t=2^x>0，得 t^2−5t+4=0，t=1 或 4；回代得 x=0 或 2。" },
@@ -552,7 +751,7 @@
         ]
       },
       "high-inequality": {
-        title: "高中：指數不等式",
+        title: "高一：指數不等式",
         note: "觀念：底數大於 1，指數比較方向不變；底數在 0 與 1 之間，方向反轉。",
         questions: [
           { prompt: "解 (1/2)^(2x−1) < (1/2)^(x+2)", choices: ["x>3", "x<3", "x≥3", "x≤3"], correct: "x>3", explanation: "底數 1/2 介於 0 和 1，指數比較要反向：2x−1>x+2，所以 x>3。" },
@@ -562,7 +761,7 @@
         ]
       },
       "high-log": {
-        title: "高中：對數反推",
+        title: "高一：對數反推",
         note: "觀念：10^x=c×10^n 時，x=n+log c；log 是常用對數。",
         questions: [
           { prompt: "若 log 3≈0.4771，且 10^x=3×10^8，x 約為？", choices: ["8.4771", "8.0000", "24.0000", "7.5229"], correct: "8.4771", explanation: "取 log：x=log 3+log 10^8≈0.4771+8=8.4771。" },
@@ -571,8 +770,41 @@
           { prompt: "若 x=−5.347，10^x 的科學記號中 10 的整數指數應是？", choices: ["−6", "−5", "5", "−5.347"], correct: "−6", explanation: "要讓係數落在 1 到 10，需取 floor(−5.347)=−6，再把 0.653 留在係數 10^0.653。" }
         ]
       },
+      "high-log-basics": {
+        title: "高一：對數基本觀念",
+        note: "觀念：先把 a^x=b 翻成對數式；底數要正且不為 1，真數要正。",
+        questions: [
+          { prompt: "log_2 8 = ?", choices: ["3", "4", "1/3", "−3"], correct: "3", explanation: "因為 2^3=8，所以以 2 為底、8 的對數值是 3。" },
+          { prompt: "log_5(1/25) = ?", choices: ["−2", "2", "−1/2", "25"], correct: "−2", explanation: "因為 1/25=5^(−2)，所以對數值為 −2。" },
+          { prompt: "下列哪一個對數在實數範圍有意義？", choices: ["log_2 1", "log_2(−3)", "log_{-2} 8", "log_3 0"], correct: "log_2 1", explanation: "第一個選項的底數為正且不為 1，真數為正；其餘分別有負真數、負底數或真數為 0。" },
+          { prompt: "若 log_a b=4，等價的指數式是？", choices: ["a^4=b", "4^a=b", "a^b=4", "b^4=a"], correct: "a^4=b", explanation: "log_a b=4 的意思是：以 a 為底數，做 4 次方得到 b，所以 a^4=b。" },
+          { prompt: "log_2 4 + log_2 2 = ?", choices: ["3", "4", "2", "8"], correct: "3", explanation: "log_2 4=2、log_2 2=1，和為 3；也可寫成 log_2(4×2)=log_2 8=3。" }
+        ]
+      },
+      "high-growth": {
+        title: "高一：成長與衰減",
+        note: "觀念：每期增加 p%，倍率是 1+p/100；每期減半的倍率是 1/2。",
+        questions: [
+          { prompt: "某數量每週變成原來的 3 倍，經過 4 週會變成原來的幾倍？", choices: ["81", "12", "7", "64"], correct: "81", explanation: "每一週都乘 3，四週後為 3^4=81 倍，不是 3×4=12 倍。" },
+          { prompt: "某數量每年增加 12%，每年的倍率應寫成？", choices: ["1.12", "0.12", "12", "1.2"], correct: "1.12", explanation: "增加 12% 表示原來的 100% 再加 12%，倍率為 1+0.12=1.12。" },
+          { prompt: "某物質每 3 年剩下一半，9 年後會剩原來的幾分之幾？", choices: ["1/8", "1/6", "1/3", "1/2"], correct: "1/8", explanation: "9 年有 3 個半衰期，因此倍率是 (1/2)^3=1/8。" },
+          { prompt: "F(t)=A·2^(t/5) 中，5 代表什麼？", choices: ["每 5 單位時間加倍一次", "初始量", "每期增加 5 倍", "經過的總時間"], correct: "每 5 單位時間加倍一次", explanation: "t/5 表示經過幾個「5 單位時間」的週期；每完整一個週期，指數多 1，數量乘 2。" },
+          { prompt: "本金 P 以年利率 r 複利計算 3 年，正確的本利和為？", choices: ["P(1+r)^3", "P(1+3r)", "3P(1+r)", "P+r^3"], correct: "P(1+r)^3", explanation: "複利每一年都把當年的總額乘上 1+r，因此連乘三次得到 P(1+r)^3。" }
+        ]
+      },
+      "high-digits": {
+        title: "高一挑戰：位數與首位數",
+        note: "觀念：若 log N=k+α（0≤α<1），N 有 k+1 位；α 決定科學記號前面的係數。",
+        questions: [
+          { prompt: "已知 log 3≈0.4771，3^100 有幾位數？", choices: ["48", "47", "49", "100"], correct: "48", explanation: "log(3^100)=100log3≈47.71，介於 10^47 與 10^48 之間，所以有 47+1=48 位。" },
+          { prompt: "已知 log 2≈0.3010，2^159 的首位數是？", choices: ["7", "4", "8", "2"], correct: "7", explanation: "log(2^159)≈47.859，所以 2^159≈10^0.859×10^47≈7.2×10^47，首位數為 7。" },
+          { prompt: "若正整數 N 滿足 log N=12.38，N 有幾位數？", choices: ["13", "12", "14", "38"], correct: "13", explanation: "12<log N<13，故 10^12<N<10^13，N 有 13 位數。" },
+          { prompt: "若 0<M<1 且 log M=−5.7，小數點後第幾位開始出現非零數字？", choices: ["6", "5", "7", "4"], correct: "6", explanation: "−5.7=−6+0.3，所以 M=10^0.3×10^(−6)，第一個非零數字從小數點後第 6 位開始。" },
+          { prompt: "關於 log(A+B)，下列何者正確？", choices: ["log(A+B)≠log A+log B", "log(A+B)=log A+log B", "log(A+B)=log A−log B", "log(A+B)=(log A)(log B)"], correct: "log(A+B)≠log A+log B", explanation: "乘法才有 log(AB)=log A+log B；加法要先估算或改寫成同一數量級。" }
+        ]
+      },
       "high-negative": {
-        title: "高中挑戰：負次方與複雜計算",
+        title: "高一挑戰：負次方與複雜計算",
         note: "策略：先保留括號、化成同底數，再合併指數；負指數最後改成倒數。",
         questions: [
           { prompt: "2^(−5) = ?", choices: ["1/32", "−1/32", "−32", "32"], correct: "1/32", explanation: "負次方表示倒數：2^(−5)=1/2^5=1/32。指數的負號不等於答案為負。" },
@@ -601,6 +833,40 @@
       return copy;
     }
 
+    function texifyExpression(source) {
+      let tex = String(source).trim().replaceAll("−", "-");
+      tex = tex
+        .replace(/([A-Za-z])\^(-?\d+)\/([A-Za-z])\^(-?\d+)/g, (_, a, m, b, n) => `\\frac{${a}^{${m}}}{${b}^{${n}}}`)
+        .replace(/(\d+)\/(\d+)/g, (_, numerator, denominator) => `\\frac{${numerator}}{${denominator}}`)
+        .replace(/\^\(([^()]*)\)/g, "^{$1}")
+        .replace(/\^(-?[A-Za-z0-9]+)/g, "^{$1}")
+        .replaceAll("×", "\\times ")
+        .replaceAll("·", "\\cdot ")
+        .replaceAll("÷", "\\div ")
+        .replaceAll("≥", "\\ge ")
+        .replaceAll("≤", "\\le ")
+        .replaceAll("≠", "\\ne ")
+        .replaceAll("≈", "\\approx ")
+        .replace(/\blog\b/g, "\\log");
+      return tex;
+    }
+
+    function renderMixedFormula(text) {
+      const formulaPattern = /[A-Za-z0-9_().,\s−+\-*/^×·÷<>=≥≤≠≈]+[=^×·÷<>≥≤≠≈][A-Za-z0-9_().,\s−+\-*/^×·÷<>=≥≤≠≈]*/g;
+      return String(text).replace(formulaPattern, (match) => `\\(${texifyExpression(match)}\\)`);
+    }
+
+    function renderChoiceFormula(choice) {
+      if (/[\u4e00-\u9fff]/.test(choice)) return renderMixedFormula(choice);
+      return `\\(${texifyExpression(choice)}\\)`;
+    }
+
+    function typesetMath(nodes) {
+      if (!window.MathJax || typeof window.MathJax.typesetPromise !== "function") return;
+      window.MathJax.typesetClear(nodes);
+      window.MathJax.typesetPromise(nodes).catch((error) => console.error("MathJax typeset error", error));
+    }
+
     function renderScore() {
       const mode = modes[state.mode];
       document.getElementById("score-title").textContent = mode.title;
@@ -612,15 +878,16 @@
       const mode = modes[state.mode];
       state.current = pick(mode.questions);
       state.answered = false;
-      document.getElementById("question-note").textContent = mode.note;
-      document.getElementById("practice-question").textContent = state.current.prompt;
+      document.getElementById("question-note").innerHTML = renderMixedFormula(mode.note);
+      const questionElement = document.getElementById("practice-question");
+      questionElement.innerHTML = renderMixedFormula(state.current.prompt);
       const choices = document.getElementById("practice-choices");
       choices.innerHTML = "";
       shuffled(state.current.choices).forEach((choice) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "choice";
-        button.textContent = choice;
+        button.innerHTML = renderChoiceFormula(choice);
         button.dataset.value = choice;
         button.addEventListener("click", () => answerQuestion(choice));
         choices.appendChild(button);
@@ -628,6 +895,7 @@
       const feedback = document.getElementById("practice-feedback");
       feedback.className = "feedback";
       feedback.textContent = "";
+      typesetMath([document.getElementById("question-note"), questionElement, choices]);
     }
 
     function answerQuestion(choice) {
@@ -645,8 +913,9 @@
       const feedback = document.getElementById("practice-feedback");
       feedback.className = `feedback show ${isCorrect ? "ok" : "no"}`;
       feedback.innerHTML = isCorrect
-        ? `<strong>答對了。</strong> ${state.current.explanation}`
-        : `<strong>正確答案是「${state.current.correct}」。</strong> ${state.current.explanation}`;
+        ? `<strong>答對了。</strong> ${renderMixedFormula(state.current.explanation)}`
+        : `<strong>正確答案是 ${renderChoiceFormula(state.current.correct)}。</strong> ${renderMixedFormula(state.current.explanation)}`;
+      typesetMath([feedback]);
       renderScore();
     }
 
@@ -676,7 +945,8 @@
       }
       const logCoefficient = Math.log10(coefficient);
       const x = exponent + logCoefficient;
-      result.innerHTML = `${formatNumber(coefficient, 8)} × 10<sup>${exponent}</sup>：x = ${exponent} + log ${formatNumber(coefficient, 8)} ≈ <strong>${x.toFixed(4)}</strong>。`;
+      result.innerHTML = `\\(${formatNumber(coefficient, 8)}\\times10^{${exponent}}\\quad\\Rightarrow\\quad x=${exponent}+\\log_{10}${formatNumber(coefficient, 8)}\\approx\\mathbf{${x.toFixed(4)}}\\)`;
+      typesetMath([result]);
     }
 
     function calculateScientificNotation() {
@@ -688,7 +958,8 @@
       }
       const exponent = Math.floor(x);
       const coefficient = Math.pow(10, x - exponent);
-      result.innerHTML = `10<sup>${formatNumber(x, 10)}</sup> = 10<sup>${formatNumber(x - exponent, 10)}</sup> × 10<sup>${exponent}</sup> ≈ <strong>${coefficient.toFixed(4)} × 10<sup>${exponent}</sup></strong>。`;
+      result.innerHTML = `\\(10^{${formatNumber(x, 10)}}=10^{${formatNumber(x - exponent, 10)}}\\times10^{${exponent}}\\approx\\mathbf{${coefficient.toFixed(4)}\\times10^{${exponent}}}\\)`;
+      typesetMath([result]);
     }
 
     document.querySelectorAll("[data-mode]").forEach((button) => {
@@ -700,6 +971,7 @@
 
     renderScore();
     nextQuestion();
+    window.addEventListener("load", () => typesetMath([document.body]));
   </script>
 </body>
 </html>

@@ -4,6 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>三角形內點：面積比與線段比｜互動教學</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      startup: {
+        pageReady() {
+          return MathJax.startup.defaultPageReady().then(() => {
+            window.dispatchEvent(new Event('mathjax-ready'));
+          });
+        }
+      }
+    };
+  </script>
+  <script async id="mathjax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       --ink: #15283c;
@@ -87,7 +103,10 @@
       text-align: center;
     }
     .formula.small { font-size: 1.05rem; }
-    .math { font-family: Cambria, "Times New Roman", serif; font-size: 1.06em; }
+    .math { font-family: Cambria, "Times New Roman", serif; font-size: 1.06em; white-space: nowrap; }
+    mjx-container { margin: 0 !important; }
+    .formula mjx-container[display="true"] { margin: .12em 0 !important; }
+    .live-formula mjx-container, .vector-formula-box mjx-container, .vector-result mjx-container { font-size: 1em !important; }
     .note, .teacher-note, .error-note, .success-note {
       margin-top: 13px;
       padding: 12px 14px;
@@ -272,24 +291,24 @@
       <div class="section-head">
         <span class="tag orange">先約定符號</span>
         <h2 id="setup-title">把三塊面積寫成 a：b：c</h2>
-        <p>在 △ABC 內取一點 K，連結 K 與三個頂點。面積標記要先放對位置：<strong>哪一塊的對面是 A，就配 a</strong>；其餘依序是 b、c。</p>
+        <p>在 \(\triangle ABC\) 內取一點 \(K\)，連結 K 與三個頂點。面積標記要先放對位置：<strong>哪一塊的對面是 \(A\)，就配 \(a\)</strong>；其餘依序是 \(b,c\)。</p>
       </div>
       <div class="grid">
         <article class="card">
           <table class="definition-table">
             <thead><tr><th>面積塊</th><th>記號</th><th>它對著哪個頂點？</th></tr></thead>
             <tbody>
-              <tr><td>△KBC</td><td><span class="math">a</span></td><td>A</td></tr>
-              <tr><td>△KCA</td><td><span class="math">b</span></td><td>B</td></tr>
-              <tr><td>△KAB</td><td><span class="math">c</span></td><td>C</td></tr>
+              <tr><td>\(\triangle KBC\)</td><td>\(a\)</td><td>\(A\)</td></tr>
+              <tr><td>\(\triangle KCA\)</td><td>\(b\)</td><td>\(B\)</td></tr>
+              <tr><td>\(\triangle KAB\)</td><td>\(c\)</td><td>\(C\)</td></tr>
             </tbody>
           </table>
           <div class="note"><strong>定位口訣：</strong>a、b、c 不是照順時針亂排；它們分別對應頂點 A、B、C。這樣座標公式和所有線段公式才會一致。</div>
         </article>
         <article class="card">
           <h3>今天要讀出的兩組「六段」</h3>
-          <p>令 <span class="math">D=AK∩BC、E=BK∩CA、F=CK∩AB</span>。已知最簡整數面積比 <span class="math">a:b:c</span> 後，可以立即得到：</p>
-          <div class="formula small">邊上六小段：BD、DC、CE、EA、AF、FB<br>中線六小段：AK、KD、BK、KE、CK、KF</div>
+          <p>令 \(D=\overline{AK}\cap\overline{BC}\)、\(E=\overline{BK}\cap\overline{CA}\)、\(F=\overline{CK}\cap\overline{AB}\)。已知最簡整數面積比 \(a:b:c\) 後，可以立即得到：</p>
+          <div class="formula small">\[\text{邊上六小段： }\overline{BD},\overline{DC},\overline{CE},\overline{EA},\overline{AF},\overline{FB}\]<br>\[\text{中線六小段： }\overline{AK},\overline{KD},\overline{BK},\overline{KE},\overline{CK},\overline{KF}\]</div>
           <div class="teacher-note"><strong>重要：</strong>題目只給面積比時，得到的是「比例」而非每一段的實際公分數；還要有一段真實長度，才能求出確切長度。</div>
         </article>
       </div>
@@ -299,7 +318,7 @@
       <div class="section-head">
         <span class="tag teal">可拖曳的座標主圖</span>
         <h2 id="map-title">改變 a：b：c，K 與六段比例一起變</h2>
-        <p>拖曳橘色 K 點，或調整右邊三個面積滑桿。圖上的 A(2,8)、B(0,0)、C(9,1) 故意不做成等腰三角形：規律不靠對稱，而是靠面積與同一直線的關係。</p>
+        <p>拖曳橘色 \(K\) 點，或調整右邊三個面積滑桿。圖上的 \(A(2,8),B(0,0),C(9,1)\) 故意不做成等腰三角形：規律不靠對稱，而是靠面積與同一直線的關係。</p>
       </div>
       <article class="card activity-card">
         <div class="activity-layout">
@@ -325,9 +344,9 @@
             <div id="live-panel" class="live-panel" aria-live="polite"></div>
 
             <div class="range-stack" aria-label="面積比例調整">
-              <div class="range-item"><div class="range-top"><label for="a-range">a = [△KBC]</label><output id="a-out"></output></div><input id="a-range" type="range" min="1" max="18" step="1" value="2"></div>
-              <div class="range-item"><div class="range-top"><label for="b-range">b = [△KCA]</label><output id="b-out"></output></div><input id="b-range" type="range" min="1" max="18" step="1" value="3"></div>
-              <div class="range-item"><div class="range-top"><label for="c-range">c = [△KAB]</label><output id="c-out"></output></div><input id="c-range" type="range" min="1" max="18" step="1" value="5"></div>
+              <div class="range-item"><div class="range-top"><label for="a-range">\(a=[\triangle KBC]\)</label><output id="a-out"></output></div><input id="a-range" type="range" min="1" max="18" step="1" value="2"></div>
+              <div class="range-item"><div class="range-top"><label for="b-range">\(b=[\triangle KCA]\)</label><output id="b-out"></output></div><input id="b-range" type="range" min="1" max="18" step="1" value="3"></div>
+              <div class="range-item"><div class="range-top"><label for="c-range">\(c=[\triangle KAB]\)</label><output id="c-out"></output></div><input id="c-range" type="range" min="1" max="18" step="1" value="5"></div>
             </div>
             <div class="button-row" aria-label="快速套用面積比例">
               <button class="preset-button alt" data-a="1" data-b="1" data-c="1" type="button">重心 1：1：1</button>
@@ -354,25 +373,25 @@
       <div class="section-head">
         <span class="tag orange">解題時固定做這三件事</span>
         <h2 id="actions-title">不背六條式子，也能從圖上重新推回來</h2>
-        <p>以下以 <span class="math">A—K—D</span> 為例；換成 B—K—E 或 C—K—F，只要把字母循環替換即可。</p>
+        <p>以下以 \(A\text{—}K\text{—}D\) 為例；換成 \(B\text{—}K\text{—}E\) 或 \(C\text{—}K\text{—}F\)，只要把字母循環替換即可。</p>
       </div>
       <div class="walk-grid">
         <article class="walk-card">
           <span class="walk-number">1</span>
           <h3>先看底邊：同高</h3>
-          <p>△KBD 與 △KDC 從 K 向 BC 的高相同，所以 <span class="math">BD:DC=[△KBD]:[△KDC]</span>。這一步提醒我們：同高三角形要把「底」和「面積」成對看。</p>
+          <p>\(\triangle KBD\) 與 \(\triangle KDC\) 從 \(K\) 向 \(\overline{BC}\) 的高相同，所以 \(\overline{BD}:\overline{DC}=[\triangle KBD]:[\triangle KDC]\)。這一步提醒我們：同高三角形要把「底」和「面積」成對看。</p>
         </article>
         <article class="walk-card">
           <span class="walk-number">2</span>
           <h3>再看上方兩塊</h3>
-          <p>△KAB 的面積是 c，△KAC 的面積是 b。它們共用 AK；而 B、D、C 在同一直線上，因此它們對 AK 的高比正是 <span class="math">BD:DC</span>。</p>
-          <div class="formula small">BD : DC = c : b</div>
+          <p>\(\triangle KAB\) 的面積是 \(c\)，\(\triangle KAC\) 的面積是 \(b\)。它們共用 \(\overline{AK}\)；而 \(B,D,C\) 在同一直線上，因此它們對 \(\overline{AK}\) 的高比正是 \(\overline{BD}:\overline{DC}\)。</p>
+          <div class="formula small">\[\overline{BD}:\overline{DC}=c:b\]</div>
         </article>
         <article class="walk-card">
           <span class="walk-number">3</span>
           <h3>最後讀中線的內外段</h3>
-          <p>△ABC 與 △KBC 共用 BC，故 <span class="math">AD:KD=(a+b+c):a</span>。將 AD 拆成 AK+KD，便得到「K 前面經過的兩塊」對「對面那一塊」的比。</p>
-          <div class="formula small">AK : KD = (b+c) : a</div>
+          <p>\(\triangle ABC\) 與 \(\triangle KBC\) 共用 \(\overline{BC}\)，故 \(\overline{AD}:\overline{KD}=(a+b+c):a\)。將 \(\overline{AD}\) 拆成 \(\overline{AK}+\overline{KD}\)，便得到「K 前面經過的兩塊」對「對面那一塊」的比。</p>
+          <div class="formula small">\[\overline{AK}:\overline{KD}=(b+c):a\]</div>
         </article>
       </div>
       <div class="error-note"><strong>學生最常卡住的地方：</strong>第 1 步的底部小三角形面積，並不等於原本標的 a、b、c；a、b、c 要在第 2 步看「共用 AK 的兩塊」時才直接出現。這正是為什麼要分成三個動作。</div>
@@ -382,25 +401,25 @@
       <div class="section-head">
         <span class="tag">一頁總表</span>
         <h2 id="formula-title">由 a：b：c 直接讀出的六段比例</h2>
-        <p>設定 <span class="math">a=[△KBC]、b=[△KCA]、c=[△KAB]</span> 為最簡整數比，並令 <span class="math">D=AK∩BC、E=BK∩CA、F=CK∩AB</span>。</p>
+        <p>設定 \(a=[\triangle KBC],\ b=[\triangle KCA],\ c=[\triangle KAB]\) 為最簡整數比，並令 \(D=\overline{AK}\cap\overline{BC},\ E=\overline{BK}\cap\overline{CA},\ F=\overline{CK}\cap\overline{AB}\)。</p>
       </div>
       <article class="card">
         <table class="comparison">
           <thead><tr><th>通過哪個頂點？</th><th>邊上兩段</th><th>中線被 K 分成兩段</th><th>記憶方向</th></tr></thead>
           <tbody>
-            <tr><td>A—K—D</td><td><span class="math">BD:DC=c:b</span></td><td><span class="math">AK:KD=(b+c):a</span></td><td>邊 BC 讀 B 附近的 c、C 附近的 b；中線則把另外兩塊 b+c 對著 a。</td></tr>
-            <tr><td>B—K—E</td><td><span class="math">CE:EA=a:c</span></td><td><span class="math">BK:KE=(c+a):b</span></td><td>沿 CA 從 C 到 A，依序讀 a、c；中線的對面區塊是 b。</td></tr>
-            <tr><td>C—K—F</td><td><span class="math">AF:FB=b:a</span></td><td><span class="math">CK:KF=(a+b):c</span></td><td>沿 AB 從 A 到 B，依序讀 b、a；中線的對面區塊是 c。</td></tr>
+            <tr><td>\(A\text{—}K\text{—}D\)</td><td>\(\overline{BD}:\overline{DC}=c:b\)</td><td>\(\overline{AK}:\overline{KD}=(b+c):a\)</td><td>邊 \(\overline{BC}\) 讀 B 附近的 \(c\)、C 附近的 \(b\)；中線則把另外兩塊 \(b+c\) 對著 \(a\)。</td></tr>
+            <tr><td>\(B\text{—}K\text{—}E\)</td><td>\(\overline{CE}:\overline{EA}=a:c\)</td><td>\(\overline{BK}:\overline{KE}=(c+a):b\)</td><td>沿 \(\overline{CA}\) 從 C 到 A，依序讀 \(a,c\)；中線的對面區塊是 \(b\)。</td></tr>
+            <tr><td>\(C\text{—}K\text{—}F\)</td><td>\(\overline{AF}:\overline{FB}=b:a\)</td><td>\(\overline{CK}:\overline{KF}=(a+b):c\)</td><td>沿 \(\overline{AB}\) 從 A 到 B，依序讀 \(b,a\)；中線的對面區塊是 \(c\)。</td></tr>
           </tbody>
         </table>
-        <div class="success-note"><strong>快速自檢：</strong>每次顯示都會約成最簡整數比。例如 a:b:c=2:4:6 必須寫成 1:2:3；六條邊上小段與三條中線的比也同樣要約分。</div>
+        <div class="success-note"><strong>快速自檢：</strong>每次顯示都會約成最簡整數比。例如 \(a:b:c=2:4:6\) 必須寫成 \(1:2:3\)；六條邊上小段與三條中線的比也同樣要約分。</div>
       </article>
     </section>
 
     <section id="reverse-practice" class="section" aria-labelledby="reverse-title">
       <div class="section-head">
         <span class="tag teal">反推練習・每次隨機出題</span>
-        <h2 id="reverse-title">先由兩組線段比，反推面積 a：b：c</h2>
+        <h2 id="reverse-title">先由兩組線段比，反推面積 \(a:b:c\)</h2>
         <p>六種可用比例是三組邊上分段比與三組中線分段比。單獨一組線段比只能確定部分關係，還不能決定三塊面積；因此每題給兩組已知，先找出最簡整數面積比，再求另外四組線段比。</p>
       </div>
       <article class="card">
@@ -411,9 +430,9 @@
         </div>
         <div id="reverse-question" class="question-panel" aria-live="polite"></div>
         <div class="answer-grid" aria-label="輸入面積最簡整數比">
-          <label for="quiz-a">a = [△KBC]<input id="quiz-a" type="number" inputmode="numeric" min="1" step="1" placeholder="a"></label>
-          <label for="quiz-b">b = [△KCA]<input id="quiz-b" type="number" inputmode="numeric" min="1" step="1" placeholder="b"></label>
-          <label for="quiz-c">c = [△KAB]<input id="quiz-c" type="number" inputmode="numeric" min="1" step="1" placeholder="c"></label>
+          <label for="quiz-a">\(a=[\triangle KBC]\)<input id="quiz-a" type="number" inputmode="numeric" min="1" step="1" placeholder="a"></label>
+          <label for="quiz-b">\(b=[\triangle KCA]\)<input id="quiz-b" type="number" inputmode="numeric" min="1" step="1" placeholder="b"></label>
+          <label for="quiz-c">\(c=[\triangle KAB]\)<input id="quiz-c" type="number" inputmode="numeric" min="1" step="1" placeholder="c"></label>
         </div>
         <div class="button-row" aria-label="先檢查面積比例">
           <button id="check-area-ratio" type="button">先檢查面積比例</button>
@@ -436,8 +455,8 @@
       </div>
       <div class="grid">
         <article class="card">
-          <div class="formula">K = (aA + bB + cC) / (a + b + c)</div>
-          <p>此處的 a、b、c 要維持同一個約定：a 對 A、b 對 B、c 對 C。主圖採用 A(2,8)、B(0,0)、C(9,1)。</p>
+          <div class="formula">\[K=\frac{aA+bB+cC}{a+b+c}\]</div>
+          <p>此處的 \(a,b,c\) 要維持同一個約定：\(a\) 對 \(A\)、\(b\) 對 \(B\)、\(c\) 對 \(C\)。主圖採用 \(A(2,8),B(0,0),C(9,1)\)。</p>
           <div id="coordinate-result" class="success-note" aria-live="polite"></div>
         </article>
         <article class="card">
@@ -456,32 +475,32 @@
       <div class="section-head">
         <span class="tag violet">向量延伸・加權平均</span>
         <h2 id="vectors-title">面積比也能寫成 K 的向量位置</h2>
-        <p>取任意原點 O。三塊面積比 <span class="math">a:b:c</span> 會成為 A、B、C 的權重；換到以 A 為起點的表示時，就能直接用 <span class="math">AB</span>、<span class="math">AC</span> 反推三塊面積。</p>
+        <p>取任意原點 \(O\)。三塊面積比 \(a:b:c\) 會成為 \(A,B,C\) 的權重；換到以 \(A\) 為起點的表示時，就能直接用 \(\vec{AB}\)、\(\vec{AC}\) 反推三塊面積。</p>
       </div>
       <div class="vector-layout">
         <article class="card">
           <span class="tag teal">由面積比寫向量</span>
-          <h3>用 <span class="math">OA、OB、OC</span> 表示 <span class="math">OK</span></h3>
-          <p>下圖會跟著上方主圖目前的 <span class="math">a:b:c</span> 更新；O 可以是任意原點，不必在三角形上。</p>
+          <h3>用 \(\vec{OA},\vec{OB},\vec{OC}\) 表示 \(\vec{OK}\)</h3>
+          <p>下圖會跟著上方主圖目前的 \(a:b:c\) 更新；\(O\) 可以是任意原點，不必在三角形上。</p>
           <div class="vector-diagram-frame">
             <svg id="vector-diagram" class="vector-diagram" viewBox="0 0 500 330" role="img" aria-label="以任意原點 O 表示 OA、OB、OC 與 OK 向量的示意圖"></svg>
           </div>
           <div id="vector-formulas" class="vector-formula-box" aria-live="polite"></div>
-          <div class="note"><strong>重點：</strong><span class="math">a、b、c</span> 分別配給 A、B、C，而不是配給相鄰的邊。這和三分點座標公式是完全同一件事。</div>
+          <div class="note"><strong>重點：</strong>\(a,b,c\) 分別配給 \(A,B,C\)，而不是配給相鄰的邊。這和三分點座標公式是完全同一件事。</div>
         </article>
 
         <article class="card">
           <span class="tag orange">由向量反推面積比</span>
-          <h3>若 <span class="math">AK</span> 用 <span class="math">AB、AC</span> 表示</h3>
-          <div class="formula small"><span class="vec">AK</span> = u<span class="vec">AB</span> + v<span class="vec">AC</span><br><span class="math">a:b:c = (1-u-v):u:v</span></div>
-          <p>輸入 <span class="math">u、v</span> 的兩個分數。若 <span class="math">u&gt;0、v&gt;0、u+v&lt;1</span>，則 K 在 △ABC 內部，工具會把答案化為最簡整數面積比。</p>
+          <h3>若 \(\vec{AK}\) 用 \(\vec{AB},\vec{AC}\) 表示</h3>
+          <div class="formula small">\[\vec{AK}=u\vec{AB}+v\vec{AC}\qquad a:b:c=(1-u-v):u:v\]</div>
+          <p>輸入 \(u,v\) 的兩個分數。若 \(u&gt;0,\ v&gt;0,\ u+v&lt;1\)，則 \(K\) 在 \(\triangle ABC\) 內部，工具會把答案化為最簡整數面積比。</p>
           <div class="vector-input-grid" aria-label="輸入 AK 的向量係數">
             <div class="vector-input-group">
-              <h4><span class="vec">AB</span> 的係數 u</h4>
+              <h4>\(\vec{AB}\) 的係數 \(u\)</h4>
               <div class="fraction-inputs"><input id="vector-ab-num" type="number" inputmode="numeric" min="0" step="1" value="1" aria-label="AB 係數分子"><span>／</span><input id="vector-ab-den" type="number" inputmode="numeric" min="1" step="1" value="4" aria-label="AB 係數分母"></div>
             </div>
             <div class="vector-input-group">
-              <h4><span class="vec">AC</span> 的係數 v</h4>
+              <h4>\(\vec{AC}\) 的係數 \(v\)</h4>
               <div class="fraction-inputs"><input id="vector-ac-num" type="number" inputmode="numeric" min="0" step="1" value="2" aria-label="AC 係數分子"><span>／</span><input id="vector-ac-den" type="number" inputmode="numeric" min="1" step="1" value="5" aria-label="AC 係數分母"></div>
             </div>
           </div>
@@ -489,8 +508,8 @@
             <button id="calculate-vector-area" type="button">由向量求面積比</button>
             <button id="apply-vector-area" class="alt" type="button">套用到上方主圖</button>
           </div>
-          <div id="vector-result" class="vector-result" aria-live="polite">例如 <span class="math">AK=(1/4)AB+(2/5)AC</span>，可反推 <span class="math">a:b:c=7:5:8</span>。</div>
-          <div class="teacher-note"><strong>推導提醒：</strong><span class="math">u=b/(a+b+c)</span>、<span class="math">v=c/(a+b+c)</span>，所以剩下的 <span class="math">1-u-v</span> 正是 <span class="math">a/(a+b+c)</span>。</div>
+          <div id="vector-result" class="vector-result" aria-live="polite">例如 \(\vec{AK}=\frac14\vec{AB}+\frac25\vec{AC}\)，可反推 \(a:b:c=7:5:8\)。</div>
+          <div class="teacher-note"><strong>推導提醒：</strong>\(u=\frac{b}{a+b+c}\)、\(v=\frac{c}{a+b+c}\)，所以剩下的 \(1-u-v\) 正是 \(\frac{a}{a+b+c}\)。</div>
         </article>
       </div>
     </section>
@@ -505,23 +524,23 @@
         <article class="card">
           <span class="level basic">基礎例題</span>
           <h3>已知三塊面積比，讀出所有比例</h3>
-          <p>若 <span class="math">[△KBC]:[△KCA]:[△KAB]=2:3:5</span>，求三邊的分段比，以及 <span class="math">AK:KD</span>。</p>
-          <div class="formula small">BD:DC=5:3；CE:EA=2:5；AF:FB=3:2<br>AK:KD=(3+5):2=4:1</div>
-          <div class="note"><strong>講解重點：</strong>問邊 BC 時，不要使用 a；要讀取靠 B 的 c 與靠 C 的 b。問 AK:KD 時，再把 K 與 A 中間那一側的兩塊 b、c 相加。</div>
+          <p>若 \([\triangle KBC]:[\triangle KCA]:[\triangle KAB]=2:3:5\)，求三邊的分段比，以及 \(\overline{AK}:\overline{KD}\)。</p>
+          <div class="formula small">\[\overline{BD}:\overline{DC}=5:3,\quad \overline{CE}:\overline{EA}=2:5,\quad \overline{AF}:\overline{FB}=3:2\]<br>\[\overline{AK}:\overline{KD}=(3+5):2=4:1\]</div>
+          <div class="note"><strong>講解重點：</strong>問邊 \(\overline{BC}\) 時，不要使用 \(a\)；要讀取靠 B 的 \(c\) 與靠 C 的 \(b\)。問 \(\overline{AK}:\overline{KD}\) 時，再把 K 與 A 中間那一側的兩塊 \(b,c\) 相加。</div>
         </article>
         <article class="card">
           <span class="level advance">進階練習</span>
           <h3>由一條中線比反推面積</h3>
-          <p>已知 <span class="math">a:b:c=3:2:4</span>，且 <span class="math">AD=27</span>，求 AK、KD、BD:DC。</p>
-          <details><summary>查看解答</summary><p><span class="math">AD:KD=(3+2+4):3=9:3=3:1</span>，所以 KD=9、AK=18。又 <span class="math">BD:DC=c:b=4:2=2:1</span>。</p></details>
-          <div class="teacher-note"><strong>教師提醒：</strong>這題的 AD 是整條中線，不是 AK；先用 AD:KD，再做相減，學生較不會把 27 直接錯分成 AK:KD。</div>
+          <p>已知 \(a:b:c=3:2:4\)，且 \(\overline{AD}=27\)，求 \(\overline{AK}\)、\(\overline{KD}\)、\(\overline{BD}:\overline{DC}\)。</p>
+          <details><summary>查看解答</summary><p>\(\overline{AD}:\overline{KD}=(3+2+4):3=9:3=3:1\)，所以 \(\overline{KD}=9\)、\(\overline{AK}=18\)。又 \(\overline{BD}:\overline{DC}=c:b=4:2=2:1\)。</p></details>
+          <div class="teacher-note"><strong>教師提醒：</strong>這題的 \(\overline{AD}\) 是整條中線，不是 \(\overline{AK}\)；先用 \(\overline{AD}:\overline{KD}\)，再做相減，學生較不會把 27 直接錯分成 \(\overline{AK}:\overline{KD}\)。</div>
         </article>
         <article class="card">
           <span class="level challenge">挑戰</span>
           <h3>座標與面積比一起用</h3>
-          <p>若 A(2,8)、B(0,0)、C(9,1)，且三塊面積比為 <span class="math">2:3:5</span>，求 K 座標。</p>
-          <details><summary>查看解答</summary><p><span class="math">K=(2A+3B+5C)/10</span>，所以 <span class="math">x=(2×2+3×0+5×9)/10=4.9</span>，<span class="math">y=(2×8+3×0+5×1)/10=2.1</span>；故 K=(4.9,2.1)。</p></details>
-          <div class="error-note"><strong>自我檢查：</strong>K 應落在靠 C 的一側，因為 c=5 最大，代表對 C 的權重最大；若算到左上角，就要回頭檢查 a、b、c 的配對。</div>
+          <p>若 \(A(2,8),B(0,0),C(9,1)\)，且三塊面積比為 \(2:3:5\)，求 \(K\) 座標。</p>
+          <details><summary>查看解答</summary><p>\(K=\frac{2A+3B+5C}{10}\)，所以 \(x=\frac{2\times2+3\times0+5\times9}{10}=4.9\)，\(y=\frac{2\times8+3\times0+5\times1}{10}=2.1\)；故 \(K=(4.9,2.1)\)。</p></details>
+          <div class="error-note"><strong>自我檢查：</strong>\(K\) 應落在靠 C 的一側，因為 \(c=5\) 最大，代表對 C 的權重最大；若算到左上角，就要回頭檢查 \(a,b,c\) 的配對。</div>
         </article>
       </div>
     </section>
@@ -545,6 +564,7 @@
       let reverseQuestion = null;
       let reverseMode = 'basic';
       let vectorAreaResult = null;
+      let typesetTimer = null;
 
       const screen = (point) => ({ x: coord.left + point.x * coord.unitX, y: coord.bottom - point.y * coord.unitY });
       const fromScreen = (point) => ({ x: (point.x - coord.left) / coord.unitX, y: (coord.bottom - point.y) / coord.unitY });
@@ -572,8 +592,23 @@
       };
       const fractionLabel = (numerator, denominator) => {
         const parts = ratioParts(numerator, denominator);
-        return parts.left === parts.right ? '1' : `${parts.left}/${parts.right}`;
+        return parts.left === parts.right ? '1' : `\\frac{${parts.left}}{${parts.right}}`;
       };
+      const math = (tex) => `<span class="math">\\(${tex}\\)</span>`;
+      const texSegment = (name) => `\\overline{${name}}`;
+      const texVector = (name) => `\\vec{${name}}`;
+      const texTriangle = (vertices) => `\\triangle ${vertices}`;
+      const texPointDefinitions = () => String.raw`D=${texSegment('AK')}\cap${texSegment('BC')},\ E=${texSegment('BK')}\cap${texSegment('CA')},\ F=${texSegment('CK')}\cap${texSegment('AB')}`;
+      const texSegmentRatio = (label) => label.split(':').map((name) => texSegment(name.trim())).join(':');
+      const texRecordEquation = (record) => `${texSegmentRatio(record.label)}=${record.algebra}=${record.value}`;
+      const typesetMath = () => {
+        window.clearTimeout(typesetTimer);
+        typesetTimer = window.setTimeout(() => {
+          if (!window.MathJax?.typesetPromise) return;
+          window.MathJax.typesetPromise().catch((error) => console.warn('MathJax typesetting failed:', error));
+        }, 0);
+      };
+      window.addEventListener('mathjax-ready', typesetMath);
       const lcm = (a, b) => Math.abs(a * b) / gcd(a, b);
       const activeData = () => ({
         A: {
@@ -581,6 +616,8 @@
           side: ratio(state.c, state.b), middle: ratio(state.b + state.c, state.a),
           sideFormula: 'BD : DC = c : b', middleFormula: 'AK : KD = (b + c) : a',
           lowerFormula: '△KBD : △KDC = BD : DC', upperFormula: '△KAB : △KAC = c : b = BD : DC',
+          sideTex: '\\overline{BD}:\\overline{DC}=c:b', middleTex: '\\overline{AK}:\\overline{KD}=(b+c):a',
+          lowerTex: '\\triangle KBD:\\triangle KDC=\\overline{BD}:\\overline{DC}', upperTex: '\\triangle KAB:\\triangle KAC=c:b=\\overline{BD}:\\overline{DC}',
           upperAreas: ['c', 'b'], opposite: 'a'
         },
         B: {
@@ -588,6 +625,8 @@
           side: ratio(state.a, state.c), middle: ratio(state.c + state.a, state.b),
           sideFormula: 'CE : EA = a : c', middleFormula: 'BK : KE = (c + a) : b',
           lowerFormula: '△KCE : △KEA = CE : EA', upperFormula: '△KBC : △KBA = a : c = CE : EA',
+          sideTex: '\\overline{CE}:\\overline{EA}=a:c', middleTex: '\\overline{BK}:\\overline{KE}=(c+a):b',
+          lowerTex: '\\triangle KCE:\\triangle KEA=\\overline{CE}:\\overline{EA}', upperTex: '\\triangle KBC:\\triangle KBA=a:c=\\overline{CE}:\\overline{EA}',
           upperAreas: ['a', 'c'], opposite: 'b'
         },
         C: {
@@ -595,6 +634,8 @@
           side: ratio(state.b, state.a), middle: ratio(state.a + state.b, state.c),
           sideFormula: 'AF : FB = b : a', middleFormula: 'CK : KF = (a + b) : c',
           lowerFormula: '△KAF : △KFB = AF : FB', upperFormula: '△KCA : △KCB = b : a = AF : FB',
+          sideTex: '\\overline{AF}:\\overline{FB}=b:a', middleTex: '\\overline{CK}:\\overline{KF}=(a+b):c',
+          lowerTex: '\\triangle KAF:\\triangle KFB=\\overline{AF}:\\overline{FB}', upperTex: '\\triangle KCA:\\triangle KCB=b:a=\\overline{AF}:\\overline{FB}',
           upperAreas: ['b', 'a'], opposite: 'c'
         }
       })[state.vertex];
@@ -679,35 +720,35 @@
         const stepCopy = {
           1: {
             title: `動作 ①｜先在 ${data.sideStart}${data.divider}${data.sideEnd} 的底邊上比`,
-            text: `${data.lowerFormula}。兩個小三角形的頂點都是 K，底都在同一條邊上，所以高相同。`,
-            formula: '同高三角形：底邊比 = 面積比'
+            text: `${math(data.lowerTex)}。兩個小三角形的頂點都是 K，底都在同一條邊上，所以高相同。`,
+            formula: '\\text{同高三角形：底邊比}=\\text{面積比}'
           },
           2: {
             title: `動作 ②｜再把上方兩塊面積接到邊長`,
-            text: `此時直接使用題目給的 a、b、c：${data.upperFormula}。因此可以把三塊面積的比例翻譯成邊上的兩小段。`,
-            formula: data.sideFormula
+            text: `此時直接使用題目給的 a、b、c：${math(data.upperTex)}。因此可以把三塊面積的比例翻譯成邊上的兩小段。`,
+            formula: data.sideTex
           },
           3: {
             title: `動作 ③｜中線用「兩塊合起來」對「對面一塊」`,
             text: `K 前面靠近 ${data.start} 的部分，穿過另外兩塊面積；把它們加總後，就得到中線內外段的比例。`,
-            formula: data.middleFormula
+            formula: data.middleTex
           }
         }[state.step];
-        $('live-panel').innerHTML = `<h3>${stepCopy.title}</h3><p>${stepCopy.text}</p><span class="live-formula">面積最簡整數比 a : b : c = ${state.a} : ${state.b} : ${state.c}<br>${stepCopy.formula}</span>`;
-        $('side-a-ratio').textContent = `BD : DC = ${ratio(state.c, state.b)}`;
-        $('side-a-detail').textContent = `讀 c : b = ${state.c} : ${state.b}（最簡整數比）`;
-        $('side-b-ratio').textContent = `CE : EA = ${ratio(state.a, state.c)}`;
-        $('side-b-detail').textContent = `讀 a : c = ${state.a} : ${state.c}（最簡整數比）`;
-        $('side-c-ratio').textContent = `AF : FB = ${ratio(state.b, state.a)}`;
-        $('side-c-detail').textContent = `讀 b : a = ${state.b} : ${state.a}（最簡整數比）`;
-        $('middle-a-ratio').textContent = `AK : KD = ${ratio(state.b + state.c, state.a)}`;
-        $('middle-a-detail').textContent = `(${state.b} + ${state.c}) : ${state.a}，已約成最簡整數比`;
-        $('middle-b-ratio').textContent = `BK : KE = ${ratio(state.c + state.a, state.b)}`;
-        $('middle-b-detail').textContent = `(${state.c} + ${state.a}) : ${state.b}，已約成最簡整數比`;
-        $('middle-c-ratio').textContent = `CK : KF = ${ratio(state.a + state.b, state.c)}`;
-        $('middle-c-detail').textContent = `(${state.a} + ${state.b}) : ${state.c}，已約成最簡整數比`;
+        $('live-panel').innerHTML = `<h3>${stepCopy.title}</h3><p>${stepCopy.text}</p><span class="live-formula">面積最簡整數比 ${math(`a:b:c=${state.a}:${state.b}:${state.c}`)}<br>${math(stepCopy.formula)}</span>`;
+        $('side-a-ratio').innerHTML = math(`${texSegmentRatio('BD:DC')}=${ratio(state.c, state.b)}`);
+        $('side-a-detail').innerHTML = `讀 ${math(`c:b=${state.c}:${state.b}`)}（最簡整數比）`;
+        $('side-b-ratio').innerHTML = math(`${texSegmentRatio('CE:EA')}=${ratio(state.a, state.c)}`);
+        $('side-b-detail').innerHTML = `讀 ${math(`a:c=${state.a}:${state.c}`)}（最簡整數比）`;
+        $('side-c-ratio').innerHTML = math(`${texSegmentRatio('AF:FB')}=${ratio(state.b, state.a)}`);
+        $('side-c-detail').innerHTML = `讀 ${math(`b:a=${state.b}:${state.a}`)}（最簡整數比）`;
+        $('middle-a-ratio').innerHTML = math(`${texSegmentRatio('AK:KD')}=${ratio(state.b + state.c, state.a)}`);
+        $('middle-a-detail').innerHTML = `${math(`(${state.b}+${state.c}):${state.a}`)}，已約成最簡整數比`;
+        $('middle-b-ratio').innerHTML = math(`${texSegmentRatio('BK:KE')}=${ratio(state.c + state.a, state.b)}`);
+        $('middle-b-detail').innerHTML = `${math(`(${state.c}+${state.a}):${state.b}`)}，已約成最簡整數比`;
+        $('middle-c-ratio').innerHTML = math(`${texSegmentRatio('CK:KF')}=${ratio(state.a + state.b, state.c)}`);
+        $('middle-c-detail').innerHTML = `${math(`(${state.a}+${state.b}):${state.c}`)}，已約成最簡整數比`;
         const K = actualK();
-        $('coordinate-result').innerHTML = `<strong>目前主圖：</strong><span class="math">a:b:c=${state.a}:${state.b}:${state.c}</span>，<span class="math">K=(${niceNumber(K.x)}, ${niceNumber(K.y)})</span><br>以 <span class="math">K=(${state.a}A+${state.b}B+${state.c}C)/${total()}</span> 算得。`;
+        $('coordinate-result').innerHTML = `<strong>目前主圖：</strong>${math(`a:b:c=${state.a}:${state.b}:${state.c}`)}，${math(`K=\\left(${niceNumber(K.x)},${niceNumber(K.y)}\\right)`)}<br>以 ${math(`K=\\frac{${state.a}A+${state.b}B+${state.c}C}{${total()}}`)} 算得。`;
       }
 
       function render() {
@@ -715,6 +756,7 @@
         renderMap();
         updateText();
         renderVectorSection();
+        typesetMath();
       }
 
       function setAreaRatio(a, b, c) {
@@ -771,9 +813,9 @@
         vectorDiagram.innerHTML = output;
         const vectorFormulas = $('vector-formulas');
         const S = total();
-        vectorFormulas.innerHTML = `<strong>目前主圖：</strong><span class="math">a:b:c=${state.a}:${state.b}:${state.c}</span>，<span class="math">S=a+b+c=${S}</span>
-          <span class="math-line"><span class="vec">OK</span> = ${fractionLabel(state.a, S)}<span class="vec">OA</span> + ${fractionLabel(state.b, S)}<span class="vec">OB</span> + ${fractionLabel(state.c, S)}<span class="vec">OC</span></span>
-          <span class="math-line"><span class="vec">AK</span> = ${fractionLabel(state.b, S)}<span class="vec">AB</span> + ${fractionLabel(state.c, S)}<span class="vec">AC</span></span>`;
+        vectorFormulas.innerHTML = `<strong>目前主圖：</strong>${math(`a:b:c=${state.a}:${state.b}:${state.c}`)}，${math(`S=a+b+c=${S}`)}
+          <span class="math-line">${math(`${texVector('OK')}=${fractionLabel(state.a, S)}${texVector('OA')}+${fractionLabel(state.b, S)}${texVector('OB')}+${fractionLabel(state.c, S)}${texVector('OC')}`)}</span>
+          <span class="math-line">${math(`${texVector('AK')}=${fractionLabel(state.b, S)}${texVector('AB')}+${fractionLabel(state.c, S)}${texVector('AC')}`)}</span>`;
       }
 
       function calculateVectorArea() {
@@ -793,12 +835,14 @@
         if (aRaw <= 0) {
           vectorAreaResult = null;
           resultBox.className = 'vector-result incorrect';
-          resultBox.innerHTML = `目前 <span class="math">u+v=${fractionLabel(bRaw + cRaw, commonDenominator)}</span> 不小於 1，K 不在 △ABC 的內部。請調小兩個係數的和。`;
+          resultBox.innerHTML = `目前 ${math(`u+v=${fractionLabel(bRaw + cRaw, commonDenominator)}`)} 不小於 ${math('1')}，${math('K')} 不在 ${math(texTriangle('ABC'))} 的內部。請調小兩個係數的和。`;
+          typesetMath();
           return;
         }
         vectorAreaResult = normalizeTriple(aRaw, bRaw, cRaw);
         resultBox.className = 'vector-result correct';
-        resultBox.innerHTML = `<strong>向量係數：</strong><span class="math">u=${fractionLabel(abNum, abDen)}</span>，<span class="math">v=${fractionLabel(acNum, acDen)}</span><br><span class="math">1-u-v=${aRaw}/${commonDenominator}</span>，所以 <span class="math">a:b:c=${aRaw}:${bRaw}:${cRaw}=${vectorAreaResult.a}:${vectorAreaResult.b}:${vectorAreaResult.c}</span>。`;
+        resultBox.innerHTML = `<strong>向量係數：</strong>${math(`u=${fractionLabel(abNum, abDen)}`)}，${math(`v=${fractionLabel(acNum, acDen)}`)}<br>${math(`1-u-v=${fractionLabel(aRaw, commonDenominator)}`)}，所以 ${math(`a:b:c=${aRaw}:${bRaw}:${cRaw}=${vectorAreaResult.a}:${vectorAreaResult.b}:${vectorAreaResult.c}`)}。`;
+        typesetMath();
       }
 
       function applyVectorArea() {
@@ -809,7 +853,8 @@
         }
         setAreaRatio(vectorAreaResult.a, vectorAreaResult.b, vectorAreaResult.c);
         $('vector-result').className = 'vector-result correct';
-        $('vector-result').innerHTML = `已套用到上方主圖：<span class="math">a:b:c=${vectorAreaResult.a}:${vectorAreaResult.b}:${vectorAreaResult.c}</span>。可回到主圖觀察 K 與六種線段比。`;
+        $('vector-result').innerHTML = `已套用到上方主圖：${math(`a:b:c=${vectorAreaResult.a}:${vectorAreaResult.b}:${vectorAreaResult.c}`)}。可回到主圖觀察 ${math('K')} 與六種線段比。`;
+        typesetMath();
       }
 
       function segmentRatioRecords(a, b, c) {
@@ -908,23 +953,23 @@
         const n = middle.parts.right;
         const formulas = {
           0: {
-            setup: `由 <span class="math">${side.label}=c:b=${side.value}</span>，先把 <span class="math">c:b</span> 放大 <span class="math">${m}</span> 倍：<span class="math">c:b=${x * m}:${y * m}</span>，所以 <span class="math">b+c=${m * (x + y)}</span>。`,
-            solve: `再將 <span class="math">${middle.label}=(b+c):a=${middle.value}</span> 放大 <span class="math">${x + y}</span> 倍，得 <span class="math">(b+c):a=${m * (x + y)}:${n * (x + y)}</span>；故 <span class="math">a:b:c=${n * (x + y)}:${y * m}:${x * m}</span>。`
+            setup: `由 ${math(`${texSegmentRatio(side.label)}=c:b=${side.value}`)}，先把 ${math('c:b')} 放大 ${math(`${m}`)} 倍：${math(`c:b=${x * m}:${y * m}`)}，所以 ${math(`b+c=${m * (x + y)}`)}。`,
+            solve: `再將 ${math(`${texSegmentRatio(middle.label)}=(b+c):a=${middle.value}`)} 放大 ${math(`${x + y}`)} 倍，得 ${math(`(b+c):a=${m * (x + y)}:${n * (x + y)}`)}；故 ${math(`a:b:c=${n * (x + y)}:${y * m}:${x * m}`)}。`
           },
           1: {
-            setup: `由 <span class="math">${side.label}=a:c=${side.value}</span>，先把 <span class="math">a:c</span> 放大 <span class="math">${m}</span> 倍：<span class="math">a:c=${x * m}:${y * m}</span>，所以 <span class="math">c+a=${m * (x + y)}</span>。`,
-            solve: `再將 <span class="math">${middle.label}=(c+a):b=${middle.value}</span> 放大 <span class="math">${x + y}</span> 倍，得 <span class="math">(c+a):b=${m * (x + y)}:${n * (x + y)}</span>；故 <span class="math">a:b:c=${x * m}:${n * (x + y)}:${y * m}</span>。`
+            setup: `由 ${math(`${texSegmentRatio(side.label)}=a:c=${side.value}`)}，先把 ${math('a:c')} 放大 ${math(`${m}`)} 倍：${math(`a:c=${x * m}:${y * m}`)}，所以 ${math(`c+a=${m * (x + y)}`)}。`,
+            solve: `再將 ${math(`${texSegmentRatio(middle.label)}=(c+a):b=${middle.value}`)} 放大 ${math(`${x + y}`)} 倍，得 ${math(`(c+a):b=${m * (x + y)}:${n * (x + y)}`)}；故 ${math(`a:b:c=${x * m}:${n * (x + y)}:${y * m}`)}。`
           },
           2: {
-            setup: `由 <span class="math">${side.label}=b:a=${side.value}</span>，先把 <span class="math">b:a</span> 放大 <span class="math">${m}</span> 倍：<span class="math">b:a=${x * m}:${y * m}</span>，所以 <span class="math">a+b=${m * (x + y)}</span>。`,
-            solve: `再將 <span class="math">${middle.label}=(a+b):c=${middle.value}</span> 放大 <span class="math">${x + y}</span> 倍，得 <span class="math">(a+b):c=${m * (x + y)}:${n * (x + y)}</span>；故 <span class="math">a:b:c=${y * m}:${x * m}:${n * (x + y)}</span>。`
+            setup: `由 ${math(`${texSegmentRatio(side.label)}=b:a=${side.value}`)}，先把 ${math('b:a')} 放大 ${math(`${m}`)} 倍：${math(`b:a=${x * m}:${y * m}`)}，所以 ${math(`a+b=${m * (x + y)}`)}。`,
+            solve: `再將 ${math(`${texSegmentRatio(middle.label)}=(a+b):c=${middle.value}`)} 放大 ${math(`${x + y}`)} 倍，得 ${math(`(a+b):c=${m * (x + y)}:${n * (x + y)}`)}；故 ${math(`a:b:c=${y * m}:${x * m}:${n * (x + y)}`)}。`
           }
         }[sideIndex];
-        return `<p><strong>第 1 步：</strong>把兩組已知比換成面積關係：<span class="math">${givens.map((item) => `${item.label}=${item.algebra}=${item.value}`).join('；')}</span>。</p><p><strong>第 2 步：</strong>${formulas.setup}${formulas.solve} 將分數同乘分母後約分，即得 <span class="math">a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。</p>`;
+        return `<p><strong>第 1 步：</strong>把兩組已知比換成面積關係：${givens.map((item) => math(texRecordEquation(item))).join('；')}。</p><p><strong>第 2 步：</strong>${formulas.setup}${formulas.solve} 將分數同乘分母後約分，即得 ${math(`a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}`)}。</p>`;
       }
 
       function renderRatioAnswerFields(targets) {
-        $('ratio-answer-area').innerHTML = `<h3>再求其餘 ${targets.length} 種線段比</h3><p>請填最簡整數比，例如 <span class="math">3:2</span>。題目已知的兩組不必重填。</p><div class="target-answer-grid">${targets.map((item) => `<label for="quiz-ratio-${item.index}">${item.label}<input id="quiz-ratio-${item.index}" type="text" inputmode="text" autocomplete="off" placeholder="例如 3:2"></label>`).join('')}</div>`;
+        $('ratio-answer-area').innerHTML = `<h3>再求其餘 ${targets.length} 種線段比</h3><p>請填最簡整數比，例如 ${math('3:2')}。題目已知的兩組不必重填。</p><div class="target-answer-grid">${targets.map((item) => `<label for="quiz-ratio-${item.index}">${math(texSegmentRatio(item.label))}<input id="quiz-ratio-${item.index}" type="text" inputmode="text" autocomplete="off" placeholder="例如 3:2"></label>`).join('')}</div>`;
       }
 
       function renderReverseQuestion() {
@@ -937,13 +982,14 @@
           : (reverseMode === 'advanced'
             ? '其中一個已知比例位於中線上；亮色實線與標籤就是兩個已知，另外四種線段比都要由面積比反推。'
             : '兩組已知比例都在三角形的邊上；先求面積比，再完成其餘一種邊上比例與三種中線比例。');
-        $('reverse-question').innerHTML = `<h3>${modeTitle}</h3><p>△ABC 內有點 K，且 <span class="math">D=AK∩BC、E=BK∩CA、F=CK∩AB</span>。${modeText}</p><div class="reverse-layout"><div class="reverse-diagram-frame"><svg id="reverse-diagram" class="reverse-diagram" viewBox="0 0 510 330" role="img" aria-label="反推題三角形圖示，兩個已知邊上或中線比例標示在對應線段上"></svg><p class="reverse-legend">藍色、綠色粗線與標籤＝已知比例；灰色虛線＝未給出的線段。</p></div><div><p><strong>請先由圖上的兩組已知比求最簡整數面積比 <span class="math">a:b:c</span>。</strong></p><div class="given-ratios">${givens.map((item) => `<div class="given-ratio">${item.label} = ${item.value}</div>`).join('')}</div><p style="margin-top:13px"><strong>本題另外 ${targets.length} 種待求：</strong></p><div class="target-ratios">${targets.map((item) => `<div class="target-ratio">${item.label} = ？</div>`).join('')}</div></div></div>`;
+        $('reverse-question').innerHTML = `<h3>${modeTitle}</h3><p>${math(texTriangle('ABC'))} 內有點 ${math('K')}，且 ${math(texPointDefinitions())}。${modeText}</p><div class="reverse-layout"><div class="reverse-diagram-frame"><svg id="reverse-diagram" class="reverse-diagram" viewBox="0 0 510 330" role="img" aria-label="反推題三角形圖示，兩個已知邊上或中線比例標示在對應線段上"></svg><p class="reverse-legend">藍色、綠色粗線與標籤＝已知比例；灰色虛線＝未給出的線段。</p></div><div><p><strong>請先由圖上的兩組已知比求最簡整數面積比 ${math('a:b:c')}。</strong></p><div class="given-ratios">${givens.map((item) => `<div class="given-ratio">${math(`${texSegmentRatio(item.label)}=${item.value}`)}</div>`).join('')}</div><p style="margin-top:13px"><strong>本題另外 ${targets.length} 種待求：</strong></p><div class="target-ratios">${targets.map((item) => `<div class="target-ratio">${math(`${texSegmentRatio(item.label)}=\\text{?}`)}</div>`).join('')}</div></div></div>`;
         renderReverseDiagram(records);
         renderRatioAnswerFields(targets);
         const ratioWork = reverseMode === 'advanced' || reverseMode === 'challenge'
           ? advancedDerivation(records, givens)
-          : `<p><strong>第 1 步：</strong>將已知邊長比先翻成面積字母：<span class="math">${givens.map((item) => `${item.label}=${item.algebra}=${item.value}`).join('；')}</span>。</p><p><strong>第 2 步：</strong>把兩式中共同出現的字母倍率對齊，再約成最簡整數比，得到 <span class="math">a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。</p>`;
-        $('reverse-solution-body').innerHTML = `${ratioWork}<p><strong>第 3 步：</strong>代回其餘 ${targets.length} 種線段比：</p><div class="formula small">${targets.map((item) => `${item.label}=${item.algebra}=${item.value}`).join('<br>')}<br>（完整對照：${records.map((item) => `${item.label}=${item.value}`).join('；')}）</div>`;
+          : `<p><strong>第 1 步：</strong>將已知邊長比先翻成面積字母：${givens.map((item) => math(texRecordEquation(item))).join('；')}。</p><p><strong>第 2 步：</strong>把兩式中共同出現的字母倍率對齊，再約成最簡整數比，得到 ${math(`a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}`)}。</p>`;
+        $('reverse-solution-body').innerHTML = `${ratioWork}<p><strong>第 3 步：</strong>代回其餘 ${targets.length} 種線段比：</p><div class="formula small">${targets.map((item) => math(texRecordEquation(item))).join('<br>')}<br>（完整對照：${records.map((item) => math(`${texSegmentRatio(item.label)}=${item.value}`)).join('；')}）</div>`;
+        typesetMath();
       }
 
       function randomReducedPair(requireLeftAtLeastTwo = false) {
@@ -1034,14 +1080,15 @@
           $('reverse-feedback').textContent = '請在 a、b、c 三格各填入一個正整數，再組成最簡整數比。';
         } else if (area.correct && area.isLowest) {
           $('reverse-feedback').className = 'quiz-feedback correct';
-          $('reverse-feedback').innerHTML = `面積比例正確！<span class="math">a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。現在可以繼續求下方其餘線段比。`;
+          $('reverse-feedback').innerHTML = `面積比例正確！${math(`a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}`)}。現在可以繼續求下方其餘線段比。`;
         } else if (area.correct) {
           $('reverse-feedback').className = 'quiz-feedback incorrect';
-          $('reverse-feedback').innerHTML = `比例方向正確，但 <span class="math">${area.raw.join(':')}</span> 還不是最簡整數比；請約成 <span class="math">${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。`;
+          $('reverse-feedback').innerHTML = `比例方向正確，但 ${math(area.raw.join(':'))} 還不是最簡整數比；請約成 ${math(`${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}`)}。`;
         } else {
           $('reverse-feedback').className = 'quiz-feedback incorrect';
           $('reverse-feedback').textContent = reverseMode === 'challenge' ? '面積比例還不對。先用放大對齊，讓邊上兩塊的和與中線比的前項相同，再填 a、b、c。' : '面積比例還不對。請先把兩個已知線段比換成 a、b、c 的關係，再重新檢查比例順序。';
         }
+        typesetMath();
         return area;
       }
 
@@ -1061,16 +1108,17 @@
         const allTargetsCorrect = targetChecks.every(Boolean);
         if (area.correct && area.isLowest && allTargetsCorrect) {
           $('reverse-feedback').className = 'quiz-feedback correct';
-          $('reverse-feedback').innerHTML = `全部答對！面積最簡整數比為 <span class="math">a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>，其餘 ${targets.length} 種線段比也都已約成最簡整數比。`;
+          $('reverse-feedback').innerHTML = `全部答對！面積最簡整數比為 ${math(`a:b:c=${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}`)}，其餘 ${targets.length} 種線段比也都已約成最簡整數比。`;
         } else if (area.correct) {
           $('reverse-feedback').className = 'quiz-feedback incorrect';
-          const areaNote = area.isLowest ? '面積比正確。' : `面積比例方向正確，但 <span class="math">${area.raw.join(':')}</span> 還不是最簡整數比；應約成 <span class="math">${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}</span>。`;
+          const areaNote = area.isLowest ? '面積比正確。' : `面積比例方向正確，但 ${math(area.raw.join(':'))} 還不是最簡整數比；應約成 ${math(`${reverseQuestion.a}:${reverseQuestion.b}:${reverseQuestion.c}`)}。`;
           const segmentNote = allTargetsCorrect ? '其餘線段比也正確。' : `其餘 ${targets.length} 種線段比尚有錯誤或未填完；每一格都要填成最簡整數比。`;
           $('reverse-feedback').innerHTML = `${areaNote}${segmentNote}`;
         } else {
           $('reverse-feedback').className = 'quiz-feedback incorrect';
           $('reverse-feedback').textContent = reverseMode === 'challenge' ? '還差一步。找出邊上比中兩塊面積的和，先放大到和等於中線比的前項，再由中線比的後項讀出第三塊面積。' : (reverseMode === 'advanced' ? '還差一步。先用邊上比例設定兩塊面積，再把它們相加後代入已知中線比，最後求第三塊面積。' : '還差一步。請先把每個已知邊長比換成對應的 a、b、c，再讓兩個式子的共同字母數值相同。');
         }
+        typesetMath();
       }
 
       ['a', 'b', 'c'].forEach((letter) => {

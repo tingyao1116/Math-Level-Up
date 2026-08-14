@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>平行四邊形重點｜判定、性質、面積與進階推理</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      chtml: { matchFontHeight: false }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #17283d;
+      --muted: #52657a;
+      --paper: #f5f8fb;
+      --card: #ffffff;
+      --line: #d7e2eb;
+      --blue: #1e68a8;
+      --blue-pale: #eaf5ff;
+      --teal: #087b73;
+      --teal-pale: #e6f8f3;
+      --gold: #9b6200;
+      --gold-pale: #fff4d9;
+      --purple: #6d4ca7;
+      --purple-pale: #f2ecff;
+      --red: #ae4040;
+      --red-pale: #fff0f0;
+      --shadow: 0 14px 35px rgba(29, 59, 88, .09);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 6% 0%, #e0f4ff 0, transparent 30rem),
+        radial-gradient(circle at 96% 13%, #fff1cc 0, transparent 25rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.75;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .wrap { width: min(1140px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 60px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      margin: 18px 0 31px;
+      padding: clamp(27px, 5vw, 54px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(132deg, #173d67 0%, #166fa4 55%, #0d8278 100%);
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      position: absolute;
+      right: -58px;
+      bottom: -105px;
+      width: 310px;
+      height: 225px;
+      border: 4px solid rgba(255,255,255,.27);
+      border-radius: 15px;
+      content: "";
+      transform: skewX(-22deg) rotate(-5deg);
+    }
+    .eyebrow, .tag, .level {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .eyebrow { color: #dcf7ff; background: rgba(255,255,255,.15); }
+    .hero h1 { position: relative; z-index: 1; margin: 9px 0 8px; font-size: clamp(2rem, 5vw, 3.45rem); line-height: 1.2; }
+    .lead { position: relative; z-index: 1; max-width: 770px; margin: 0; color: #e8f8ff; font-size: 1.08rem; }
+    .nav { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
+    .nav a { padding: 7px 13px; border: 1px solid rgba(255,255,255,.48); border-radius: 999px; color: #fff; font-weight: 850; text-decoration: none; }
+    .nav a:hover { background: rgba(255,255,255,.14); }
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 40px; }
+    .section-head { margin-bottom: 15px; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.2rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.18rem; line-height: 1.48; }
+    h4 { margin: 0 0 5px; font-size: 1.01rem; }
+    p { margin: 7px 0; }
+    .section-head > p, .card > p, .muted { color: var(--muted); }
+    .tag { color: var(--blue); background: var(--blue-pale); }
+    .tag.teal { color: var(--teal); background: var(--teal-pale); }
+    .tag.gold { color: var(--gold); background: var(--gold-pale); }
+    .tag.purple { color: var(--purple); background: var(--purple-pale); }
+    .grid, .two-col, .three-grid { display: grid; gap: 16px; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .two-col { grid-template-columns: minmax(0, 1.16fr) minmax(270px, .84fr); align-items: center; }
+    .three-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card {
+      min-width: 0;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .formula {
+      overflow-x: auto;
+      padding: 10px 13px;
+      border: 1px solid #cce1f0;
+      border-radius: 12px;
+      background: #f7fcff;
+      color: #174f79;
+      font-weight: 750;
+      text-align: center;
+    }
+    .formula + .formula { margin-top: 8px; }
+    .note, .error-note, .teacher-note, .method {
+      margin-top: 13px;
+      padding: 12px 14px;
+      border-left: 5px solid var(--teal);
+      border-radius: 12px;
+      background: var(--teal-pale);
+    }
+    .error-note { border-left-color: var(--red); background: var(--red-pale); }
+    .teacher-note { border-left-color: var(--gold); background: var(--gold-pale); }
+    .method { border-left-color: var(--purple); background: var(--purple-pale); }
+    .diagram-frame {
+      overflow: hidden;
+      padding: 8px;
+      border: 1px solid #cfdfeb;
+      border-radius: 17px;
+      background: linear-gradient(145deg, #fafdff, #eef8ff);
+    }
+    .diagram { display: block; width: 100%; min-height: 260px; }
+    .control-panel { margin-top: 15px; padding: 14px; border: 1px solid #cfe2ed; border-radius: 14px; background: #fbfdff; }
+    .range-row { display: grid; grid-template-columns: 130px minmax(0, 1fr) 70px; gap: 10px; align-items: center; margin-top: 9px; }
+    .range-row label { font-weight: 800; }
+    input[type="range"] { width: 100%; accent-color: var(--blue); }
+    .value { padding: 2px 8px; border-radius: 8px; background: var(--blue-pale); color: var(--blue); font-weight: 850; text-align: center; }
+    .rule-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .rule-list li { position: relative; padding: 11px 12px 11px 39px; border: 1px solid #d8e5ec; border-radius: 13px; background: #fbfdff; }
+    .rule-list li::before { position: absolute; left: 13px; color: var(--teal); content: "✓"; font-weight: 950; }
+    .property-grid { display: grid; grid-template-columns: 42px 1fr; gap: 8px 12px; align-items: start; }
+    .property-grid b { display: grid; width: 33px; height: 33px; place-items: center; border-radius: 50%; color: #fff; background: var(--blue); }
+    .mode-buttons, .special-buttons, .answer-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .mode-button, .special-button, .answer {
+      padding: 9px 12px;
+      border: 1px solid #bed6e5;
+      border-radius: 12px;
+      color: var(--ink);
+      background: #fff;
+      font-weight: 800;
+      text-align: left;
+    }
+    .mode-button:hover, .special-button:hover, .answer:hover { border-color: var(--blue); background: var(--blue-pale); }
+    .mode-button.active, .special-button.active { border-color: var(--blue); color: #fff; background: var(--blue); }
+    .answer { flex: 1 1 215px; }
+    .answer.incorrect { border-color: var(--red); color: #8f2e2e; background: var(--red-pale); }
+    .answer.correct { border-color: var(--teal); color: #075c56; background: var(--teal-pale); }
+    .proof-check { margin-top: 14px; }
+    .proof-check .answer { flex-basis: 185px; }
+    .feedback { min-height: 52px; margin-top: 12px; padding: 10px 13px; border-radius: 12px; background: #f1f6f9; color: var(--muted); }
+    .feedback.good { color: #075c56; background: var(--teal-pale); }
+    .feedback.bad { color: #8f2e2e; background: var(--red-pale); }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; min-width: 640px; border-collapse: collapse; }
+    th, td { padding: 11px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: #174f79; background: #edf7ff; }
+    .level { margin-bottom: 8px; }
+    .level.basic { color: #0d6a61; background: var(--teal-pale); }
+    .level.advanced { color: #8a5700; background: var(--gold-pale); }
+    .level.challenge { color: #644299; background: var(--purple-pale); }
+    details { margin-top: 12px; border: 1px solid #cfdfeb; border-radius: 12px; background: #fbfdff; }
+    summary { padding: 10px 13px; color: var(--blue); cursor: pointer; font-weight: 850; }
+    details > div { padding: 0 13px 13px; }
+    .quiz { margin-top: 16px; }
+    .quiz-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .quiz-count { color: var(--purple); font-weight: 850; }
+    .next-button {
+      margin-top: 12px;
+      padding: 9px 14px;
+      border: 0;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--purple);
+      font-weight: 850;
+    }
+    .next-button:disabled { cursor: not-allowed; opacity: .45; }
+    .diagram-text { fill: #19324a; font-size: 17px; font-weight: 800; }
+    .small-text { fill: #52657a; font-size: 14px; font-weight: 700; }
+    .svg-label { fill: #fff; font-size: 15px; font-weight: 900; text-anchor: middle; dominant-baseline: middle; }
+    .footer { margin: 35px 0 0; color: var(--muted); text-align: center; }
+    @media (max-width: 800px) {
+      .grid, .two-col, .three-grid { grid-template-columns: 1fr; }
+      .range-row { grid-template-columns: 115px minmax(0, 1fr) 60px; }
+      .wrap { width: min(100% - 22px, 1140px); }
+      .card { padding: 16px; }
+    }
+    @media (max-width: 480px) {
+      .wrap { padding-top: 14px; }
+      .hero { border-radius: 22px; }
+      .nav a { padding: 6px 10px; font-size: .92rem; }
+      .range-row { grid-template-columns: 1fr 58px; }
+      .range-row label { grid-column: 1 / -1; }
+      .diagram { min-height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回到數學教學小遊戲首頁</a>
+
+    <header class="hero">
+      <span class="eyebrow">國二幾何・把條件翻譯成圖形</span>
+      <h1>平行四邊形：先看圖，再下結論</h1>
+      <p class="lead">這一頁用同一張可變形的圖，整理平行四邊形的定義、性質、判定、面積與對角線推理。先辨認「哪兩組邊平行」，再決定該用全等、面積或比例，面對難題就不必憑記憶硬猜。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#start">圖形直覺</a>
+        <a href="#properties">性質與判定</a>
+        <a href="#area">面積與內點</a>
+        <a href="#special">特殊四邊形</a>
+        <a href="#challenge">進階挑戰</a>
+      </nav>
+    </header>
+
+    <section id="start" class="section" aria-labelledby="start-title">
+      <div class="section-head">
+        <span class="tag gold">第一步・把「歪」看成仍然有規律</span>
+        <h2 id="start-title">平行四邊形不是長得像矩形，而是有兩組對邊平行</h2>
+        <p>把上邊往左或往右推，圖形可以很斜；只要 \(AB\parallel CD\)、\(AD\parallel BC\)，它仍是平行四邊形。這正是後面所有性質的起點。</p>
+      </div>
+
+      <article class="card">
+        <div class="two-col">
+          <div class="diagram-frame">
+            <svg id="shape-svg" class="diagram" viewBox="0 0 600 330" role="img" aria-label="可變形的平行四邊形，標示兩組平行對邊與四個頂點"></svg>
+          </div>
+          <div>
+            <span class="tag teal">用手推一推</span>
+            <h3>斜度改變，平行關係不會消失</h3>
+            <p>想像把一疊課本向右推：上下封面仍平行，左右側面也仍平行。它不再是矩形，卻仍保留「成對平行」的骨架。</p>
+            <div class="formula">\[AB\parallel CD,\qquad AD\parallel BC\]</div>
+            <div class="control-panel">
+              <div class="range-row"><label for="shear-range">推移斜度</label><input id="shear-range" type="range" min="-80" max="105" value="72"><output id="shear-value" class="value">向右推</output></div>
+            </div>
+            <div class="error-note"><strong>常見誤解：</strong>「對邊等長」或「對角相等」本身不是定義，而是從兩組平行邊推得的性質。證明題要分清楚：題目給了什麼，才能用什麼。</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="properties" class="section" aria-labelledby="properties-title">
+      <div class="section-head">
+        <span class="tag">第二步・先用性質，再記判定</span>
+        <h2 id="properties-title">同一張圖有兩種閱讀方式：已知是平行四邊形，或要證明它是</h2>
+        <p>題目一開始若已寫「\(ABCD\) 是平行四邊形」，就用<strong>性質</strong>；若只給邊、角、對角線條件，目標是證明它是平行四邊形，就找一條<strong>判定</strong>。</p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <span class="tag teal">已知是平行四邊形：可直接用的性質</span>
+          <h3>把對邊、對角、對角線分開記</h3>
+          <div class="property-grid">
+            <b>1</b><div><strong>兩組對邊分別相等：</strong> \(AB=CD,\ AD=BC\)。</div>
+            <b>2</b><div><strong>兩組對角分別相等，鄰角互補：</strong> \(\angle A=\angle C,\ \angle A+\angle B=180^\circ\)。</div>
+            <b>3</b><div><strong>兩條對角線互相平分：</strong> 若交於 \(O\)，則 \(AO=OC,\ BO=OD\)。</div>
+            <b>4</b><div><strong>一條對角線分成兩個全等三角形：</strong> 例如 \(\triangle ABC\cong\triangle CDA\)。</div>
+          </div>
+          <div class="teacher-note"><strong>上課問法：</strong>「畫一條對角線後，哪兩個角因為平行線而相等？」讓學生自己找出 ASA，再得到全等；不要一開始就背整串性質。</div>
+        </article>
+
+        <article class="card">
+          <span class="tag gold">還沒知道是不是：五種足夠的判定</span>
+          <h3>任選一條成立，就可以下結論</h3>
+          <ul class="rule-list">
+            <li>兩組對邊<strong>分別平行</strong>。</li>
+            <li>兩組對邊<strong>分別相等</strong>。</li>
+            <li>一組對邊<strong>平行且相等</strong>。</li>
+            <li>兩組對角<strong>分別相等</strong>。</li>
+            <li>兩條對角線<strong>互相平分</strong>。</li>
+          </ul>
+          <div class="error-note"><strong>最常錯：</strong>「一組對邊平行」不夠，梯形也有；「一組對邊相等」也不夠。必須是<strong>同一組對邊同時平行且相等</strong>，才是判定。</div>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:16px">
+        <div class="two-col">
+          <div class="diagram-frame">
+            <svg id="diagonal-svg" class="diagram" viewBox="0 0 600 330" role="img" aria-label="平行四邊形對角線互相平分與對角線分成全等三角形示意圖"></svg>
+          </div>
+          <div>
+            <span class="tag purple">一張對角線圖，帶出兩個關鍵性質</span>
+            <h3>交點 \(O\) 是推理轉接站</h3>
+            <div class="mode-buttons" role="group" aria-label="切換對角線觀察重點">
+              <button class="mode-button active" type="button" data-diagonal-mode="bisect">看互相平分</button>
+              <button class="mode-button" type="button" data-diagonal-mode="congruent">看兩個全等三角形</button>
+            </div>
+            <div id="diagonal-note" class="method">因為對角線在 \(O\) 互相平分，所以 \(AO=OC\)、\(BO=OD\)。反過來，若一個四邊形的對角線互相平分，也可以判定為平行四邊形。</div>
+            <div class="proof-check">
+              <h4>快速判斷：下列哪個條件足以判定四邊形是平行四邊形？</h4>
+              <div class="answer-grid" id="proof-options">
+                <button class="answer" type="button" data-proof="no">只有一組對邊平行</button>
+                <button class="answer" type="button" data-proof="yes">一組對邊平行且等長</button>
+                <button class="answer" type="button" data-proof="no">兩條對角線等長</button>
+              </div>
+              <div id="proof-feedback" class="feedback" aria-live="polite">先判斷條件能否排除梯形、等腰梯形等其他四邊形。</div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="area" class="section" aria-labelledby="area-title">
+      <div class="section-head">
+        <span class="tag teal">第三步・面積不是斜邊乘底</span>
+        <h2 id="area-title">把斜的部分剪下來補到另一側：面積仍是底 × 高</h2>
+        <p>「高」一定要垂直於選定的底。斜邊再長，也不能直接當高；把平行四邊形剪切成矩形，就能看見面積為何不受斜度影響。</p>
+      </div>
+
+      <article class="card">
+        <div class="two-col">
+          <div class="diagram-frame">
+            <svg id="area-svg" class="diagram" viewBox="0 0 600 330" role="img" aria-label="平行四邊形剪切成等面積矩形的示意圖"></svg>
+          </div>
+          <div>
+            <span class="tag gold">面積的圖形理由</span>
+            <h3>只要底和對應高相同，歪不歪都一樣大</h3>
+            <div class="formula">\[\text{平行四邊形面積}=\text{底}\times\text{高}=bh\]</div>
+            <div class="control-panel">
+              <div class="range-row"><label for="base-range">底 \(b\)</label><input id="base-range" type="range" min="4" max="13" value="10"><output id="base-value" class="value">10</output></div>
+              <div class="range-row"><label for="height-range">高 \(h\)</label><input id="height-range" type="range" min="3" max="10" value="6"><output id="height-value" class="value">6</output></div>
+            </div>
+            <div id="area-result" class="formula" style="margin-top:13px"></div>
+            <div class="error-note"><strong>易錯：</strong>若題目給的是斜邊 \(AD\)，先確認它是否垂直於 \(AB\)。沒有直角記號時，\(AD\) 通常不能直接當高。</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" style="margin-top:16px">
+        <div class="two-col">
+          <div class="diagram-frame">
+            <svg id="point-area-svg" class="diagram" viewBox="0 0 600 340" role="img" aria-label="平行四邊形內一點連到四頂點後的四個三角形面積關係"></svg>
+          </div>
+          <div>
+            <span class="tag purple">內點面積・難題常用的平衡</span>
+            <h3>任取內點 \(P\)，兩組對面三角形的面積和都等於一半</h3>
+            <p>把 \(P\) 連到四個頂點，會分成四個三角形。無論 \(P\) 怎麼移動，兩組相對三角形的面積和都保持相等。</p>
+            <div id="point-area-formula" class="formula"></div>
+            <div class="control-panel">
+              <div class="range-row"><label for="point-u">\(P\) 左右移動</label><input id="point-u" type="range" min="15" max="85" value="38"><output id="point-u-value" class="value">38%</output></div>
+              <div class="range-row"><label for="point-v">\(P\) 上下移動</label><input id="point-v" type="range" min="15" max="85" value="62"><output id="point-v-value" class="value">62%</output></div>
+            </div>
+            <div class="note"><strong>考題翻譯：</strong>如果已知其中三塊面積，第四塊不用量長度。只要用「相對兩塊相加相等」，再把四塊相加得到總面積。</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="special" class="section" aria-labelledby="special-title">
+      <div class="section-head">
+        <span class="tag gold">第四步・特殊四邊形不是互相亂推</span>
+        <h2 id="special-title">菱形、矩形、正方形都屬於平行四邊形，但對角線性質不同</h2>
+        <p>所有平行四邊形都只有「對角線互相平分」；再加上不同條件，才得到菱形、矩形或正方形。這是判斷題最常被混淆的地方。</p>
+      </div>
+
+      <article class="card">
+        <div class="two-col">
+          <div class="diagram-frame">
+            <svg id="special-svg" class="diagram" viewBox="0 0 600 330" role="img" aria-label="平行四邊形、菱形、矩形、正方形的對角線比較圖"></svg>
+          </div>
+          <div>
+            <span class="tag teal">點一下，比一比</span>
+            <div class="special-buttons" role="group" aria-label="選擇特殊四邊形">
+              <button class="special-button active" type="button" data-special="para">一般平行四邊形</button>
+              <button class="special-button" type="button" data-special="rhombus">菱形</button>
+              <button class="special-button" type="button" data-special="rectangle">矩形</button>
+              <button class="special-button" type="button" data-special="square">正方形</button>
+            </div>
+            <div id="special-note" class="method"></div>
+          </div>
+        </div>
+        <div class="table-wrap" style="margin-top:16px">
+          <table>
+            <thead><tr><th>圖形</th><th>一定成立的對角線性質</th><th>不能擅自加上的性質</th></tr></thead>
+            <tbody>
+              <tr><td>一般平行四邊形</td><td>互相平分</td><td>垂直、等長</td></tr>
+              <tr><td>菱形</td><td>互相平分、互相垂直，且各自平分頂角</td><td>兩條對角線等長</td></tr>
+              <tr><td>矩形</td><td>互相平分、兩條對角線等長</td><td>兩條對角線垂直</td></tr>
+              <tr><td>正方形</td><td>互相平分、互相垂直、等長，且平分頂角</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section id="challenge" class="section" aria-labelledby="challenge-title">
+      <div class="section-head">
+        <span class="tag purple">第五步・把圖拆小，難題就有入口</span>
+        <h2 id="challenge-title">進階挑戰：面積、比例與對角線交點</h2>
+        <p>每題都先問「已知條件落在哪個圖形區塊？」再選工具。建議先蓋住答案自己畫圖，卡住時才展開提示與完整步驟。</p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <span class="level advanced">進階 1・內點面積</span>
+          <h3>三塊已知，第四塊與總面積</h3>
+          <p>在平行四邊形 \(ABCD\) 內取一點 \(P\)，連結四頂點。已知 \([\triangle ABP]=12\)、\([\triangle BCP]=15\)、\([\triangle DAP]=21\)。求 \([\triangle CDP]\) 與 \([ABCD]\)。</p>
+          <details><summary>查看分步解法</summary><div><p>相對兩塊的和相等：</p><div class="formula">\[[\triangle ABP]+[\triangle CDP]=[\triangle BCP]+[\triangle DAP]\]</div><p>所以 \(12+x=15+21\)，得 \(x=24\)。全部面積為 \(12+15+24+21=72\)。</p><div class="method"><strong>關鍵：</strong>不要把四塊當成任意三角形；它們被平行四邊形的兩組平行線綁住了。</div></div></details>
+        </article>
+
+        <article class="card">
+          <span class="level challenge">挑戰 2・邊上比例碰到對角線</span>
+          <h3>一條截線為什麼會切出 \(1:3\)？</h3>
+          <p>平行四邊形 \(ABCD\) 的面積為 \(96\)。\(E\) 在 \(AB\) 上且 \(AE:EB=2:1\)。連結 \(EC\)，與對角線 \(BD\) 交於 \(P\)。求 \(BP:PD\)，以及 \([\triangle BEP]\)。</p>
+          <details><summary>查看分步解法</summary><div><p>先把平行四邊形剪切想成單位正方形：令 \(A=(0,0),B=(1,0),D=(0,1),C=(1,1)\)，則 \(E=(\frac23,0)\)。</p><p>直線 \(EC\) 與 \(BD\) 的交點為 \(P=(\frac34,\frac14)\)，因此沿著 \(BD\)：</p><div class="formula">\[BP:PD=\frac14:\frac34=1:3\]</div><p>\(\triangle BEP\) 的底 \(BE=\frac13 AB\)，高是平行四邊形對應高的 \(\frac14\)，所以</p><div class="formula">\[[\triangle BEP]=\frac12\cdot\frac13\cdot\frac14\cdot96=4\]</div><div class="teacher-note"><strong>更高層的觀點：</strong>把平行四邊形剪切成矩形不會改變共線、平行與線段比；這是複雜斜圖可以先「正方形化」的原因。</div></div></details>
+        </article>
+
+        <article class="card">
+          <span class="level challenge">挑戰 3・兩側分點的通式思考</span>
+          <h3>不要量圖，直接找到對角線分比</h3>
+          <p>\(E\) 在 \(AD\) 上，且 \(AE:ED=1:2\)；\(F\) 在 \(BC\) 上，且 \(BF:FC=4:1\)。線段 \(EF\) 與對角線 \(AC\) 交於 \(P\)。求 \(AP:PC\)。</p>
+          <details><summary>查看分步解法</summary><div><p>同樣把圖形視為單位正方形。\(E\) 的高度是 \(\frac13\)，\(F\) 的高度是 \(\frac45\)。若 \(P\) 在對角線 \(AC\) 上，設 \(P=(t,t)\)。</p><p>直線 \(EF\) 的高度隨橫向位置線性變化：</p><div class="formula">\[t=\frac13+t\left(\frac45-\frac13\right)=\frac13+\frac{7}{15}t\]</div><p>解得 \(t=\frac58\)，因此</p><div class="formula">\[AP:PC=\frac58:\frac38=5:3\]</div><div class="note"><strong>檢查直覺：</strong>\(F\) 比 \(E\) 高很多，交點會落在 \(AC\) 的後半段；答案 \(5:3\) 符合圖形位置。</div></div></details>
+        </article>
+
+        <article class="card">
+          <span class="level challenge">挑戰 4・判定與特殊圖形</span>
+          <h3>對角線「垂直」能不能直接判成菱形？</h3>
+          <p>四邊形 \(WXYZ\) 的兩條對角線互相垂直，且互相平分。能否判定它是菱形？若再知道兩條對角線等長，圖形又是什麼？</p>
+          <details><summary>查看分步解法</summary><div><p>先由「對角線互相平分」判定 \(WXYZ\) 是平行四邊形；再加上「對角線互相垂直」，可判定為菱形。</p><p>若兩條對角線還等長，則它同時具有菱形與矩形的特徵，因此是正方形。</p><div class="formula">\[\text{互相平分}\Rightarrow\text{平行四邊形}\quad\xrightarrow{\perp}\quad\text{菱形}\quad\xrightarrow{\text{等長}}\quad\text{正方形}\]</div><div class="error-note"><strong>易錯：</strong>只有「對角線垂直」不夠，例如箏形也可能垂直；一定要先確認它是平行四邊形。</div></div></details>
+        </article>
+      </div>
+
+      <article class="card quiz" aria-labelledby="quiz-title">
+        <div class="quiz-head"><div><span class="tag purple">自我檢查・答錯可重試</span><h3 id="quiz-title">最後一關：選出真正能用的條件</h3></div><span id="quiz-count" class="quiz-count"></span></div>
+        <p id="quiz-question"></p>
+        <div id="quiz-options" class="answer-grid"></div>
+        <div id="quiz-feedback" class="feedback" aria-live="polite"></div>
+        <button id="next-quiz" class="next-button" type="button" disabled>下一題</button>
+      </article>
+    </section>
+
+    <p class="footer">複習口訣：先看兩組平行，再分清「已知圖形用性質」與「未知圖形找判定」；遇到斜圖，先畫對角線、輔助高或把它剪切成矩形。</p>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      const state = { shear: 72, base: 10, height: 6, u: .38, v: .62, diagonalMode: 'bisect', special: 'para', quizIndex: 0, solved: false };
+      let typesetQueue = Promise.resolve();
+
+      const typesetMath = (nodes) => {
+        if (!window.MathJax || !window.MathJax.typesetPromise) return;
+        const targets = (Array.isArray(nodes) ? nodes : [nodes]).filter(Boolean);
+        if (!targets.length) return;
+        typesetQueue = typesetQueue.then(() => {
+          if (window.MathJax.typesetClear) window.MathJax.typesetClear(targets);
+          return window.MathJax.typesetPromise(targets);
+        }).catch(() => {});
+      };
+
+      const point = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
+      const shapePoints = (shear = state.shear) => ({ A: { x: 96, y: 258 }, B: { x: 418, y: 258 }, C: { x: 418 + shear, y: 72 }, D: { x: 96 + shear, y: 72 } });
+      const polygon = (points) => points.map((p) => point(p.x, p.y)).join(' ');
+      const midpoint = (p, q) => ({ x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 });
+      const fmt = (value) => Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, '');
+
+      const renderShape = () => {
+        const { A, B, C, D } = shapePoints();
+        const skewText = state.shear < -15 ? '向左推' : state.shear > 15 ? '向右推' : '近似矩形';
+        $('shear-value').textContent = skewText;
+        $('shape-svg').innerHTML = `
+          <defs><marker id="shape-arrow" markerWidth="9" markerHeight="9" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#1769aa"></path></marker></defs>
+          <polygon points="${polygon([A,B,C,D])}" fill="#dff3ff" stroke="#1f4d70" stroke-width="4"></polygon>
+          <line x1="${A.x}" y1="${A.y + 23}" x2="${B.x}" y2="${B.y + 23}" stroke="#1769aa" stroke-width="3" marker-end="url(#shape-arrow)"></line>
+          <line x1="${D.x}" y1="${D.y - 23}" x2="${C.x}" y2="${C.y - 23}" stroke="#1769aa" stroke-width="3" marker-end="url(#shape-arrow)"></line>
+          <line x1="${A.x - 19}" y1="${A.y - 4}" x2="${D.x - 19}" y2="${D.y + 4}" stroke="#087b73" stroke-width="3" marker-end="url(#shape-arrow)"></line>
+          <line x1="${B.x + 19}" y1="${B.y - 4}" x2="${C.x + 19}" y2="${C.y + 4}" stroke="#087b73" stroke-width="3" marker-end="url(#shape-arrow)"></line>
+          ${[['A',A,-21,21],['B',B,10,21],['C',C,10,-10],['D',D,-22,-10]].map(([name,p,dx,dy]) => `<circle cx="${p.x}" cy="${p.y}" r="14" fill="#1e68a8"></circle><text x="${p.x + dx}" y="${p.y + dy}" class="svg-label">${name}</text>`).join('')}
+          <text x="257" y="309" class="small-text">AB ∥ CD</text><text x="${Math.max(20, A.x - 84)}" y="172" class="small-text" fill="#087b73">AD ∥ BC</text>
+          <text x="210" y="174" class="diagram-text">兩組對邊平行</text>
+        `;
+      };
+
+      const renderDiagonal = () => {
+        const { A, B, C, D } = shapePoints(68);
+        const O = midpoint(A, C);
+        const isBisect = state.diagonalMode === 'bisect';
+        $('diagonal-svg').innerHTML = `
+          <polygon points="${polygon([A,B,C,D])}" fill="#eff8ff" stroke="#1f4d70" stroke-width="4"></polygon>
+          <line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" stroke="#1769aa" stroke-width="4" stroke-dasharray="${isBisect ? '0' : '8 6'}"></line>
+          <line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" stroke="#087b73" stroke-width="4" stroke-dasharray="${isBisect ? '0' : '8 6'}"></line>
+          ${isBisect ? `<line x1="${A.x}" y1="${A.y}" x2="${O.x}" y2="${O.y}" stroke="#754bb0" stroke-width="8" opacity=".72"></line><line x1="${B.x}" y1="${B.y}" x2="${O.x}" y2="${O.y}" stroke="#c48310" stroke-width="8" opacity=".7"></line>` : `<polygon points="${polygon([A,B,C])}" fill="#d8efff" opacity=".9"></polygon><polygon points="${polygon([A,C,D])}" fill="#e4f8f1" opacity=".9"></polygon>`}
+          ${[['A',A,-22,22],['B',B,10,22],['C',C,10,-10],['D',D,-22,-10]].map(([name,p,dx,dy]) => `<circle cx="${p.x}" cy="${p.y}" r="13" fill="#1e68a8"></circle><text x="${p.x + dx}" y="${p.y + dy}" class="svg-label">${name}</text>`).join('')}
+          <circle cx="${O.x}" cy="${O.y}" r="12" fill="#754bb0"></circle><text x="${O.x}" y="${O.y + 1}" class="svg-label">O</text>
+          ${isBisect ? `<text x="${(A.x+O.x)/2-10}" y="${(A.y+O.y)/2-8}" class="small-text">AO</text><text x="${(O.x+C.x)/2+8}" y="${(O.y+C.y)/2+17}" class="small-text">OC</text><text x="${(B.x+O.x)/2+13}" y="${(B.y+O.y)/2-7}" class="small-text">BO</text><text x="${(D.x+O.x)/2-35}" y="${(D.y+O.y)/2+17}" class="small-text">OD</text>` : `<text x="227" y="150" class="diagram-text" fill="#1769aa">△ABC</text><text x="318" y="199" class="diagram-text" fill="#087b73">△CDA</text>`}
+        `;
+      };
+
+      const renderArea = () => {
+        const scale = 27, bPx = state.base * scale, hPx = state.height * 18, x = 88, bottom = 275, skew = 78;
+        const A = { x, y: bottom }, B = { x: x + bPx, y: bottom }, C = { x: x + bPx + skew, y: bottom - hPx }, D = { x: x + skew, y: bottom - hPx };
+        $('base-value').textContent = state.base;
+        $('height-value').textContent = state.height;
+        $('area-result').innerHTML = `\\[S=bh=${state.base}\\times${state.height}=${state.base * state.height}\\]`;
+        $('area-svg').innerHTML = `
+          <defs><marker id="area-arrow" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#9b6200"></path></marker></defs>
+          <polygon points="${polygon([A,B,C,D])}" fill="#dff3ff" stroke="#1f4d70" stroke-width="4"></polygon>
+          <polygon points="${polygon([{x:A.x,y:A.y},{x:D.x,y:D.y},{x:A.x,y:D.y}])}" fill="#ffe6a8" opacity=".9" stroke="#9b6200" stroke-width="2" stroke-dasharray="5 4"></polygon>
+          <rect x="${A.x + bPx + 22}" y="${bottom-hPx}" width="${Math.min(skew, 96)}" height="${hPx}" fill="#ffe6a8" opacity=".92" stroke="#9b6200" stroke-width="2" stroke-dasharray="5 4"></rect>
+          <line x1="${A.x}" y1="${bottom+17}" x2="${B.x}" y2="${bottom+17}" stroke="#1769aa" stroke-width="3"></line>
+          <line x1="${A.x-24}" y1="${bottom}" x2="${A.x-24}" y2="${bottom-hPx}" stroke="#9b6200" stroke-width="3" marker-start="url(#area-arrow)" marker-end="url(#area-arrow)"></line>
+          <path d="M${A.x} ${bottom-hPx+16} L${A.x+16} ${bottom-hPx+16} L${A.x+16} ${bottom-hPx}" fill="none" stroke="#ae4040" stroke-width="3"></path>
+          <text x="${A.x+bPx/2}" y="${bottom+43}" class="diagram-text" text-anchor="middle">底 b = ${state.base}</text>
+          <text x="18" y="${bottom-hPx/2}" class="diagram-text" fill="#9b6200">高 h = ${state.height}</text>
+          <text x="${A.x+bPx/2+20}" y="${bottom-hPx/2}" class="diagram-text" text-anchor="middle">剪下的三角形<br>補到右側</text>
+          <text x="${A.x+bPx/2+20}" y="${bottom-hPx/2+26}" class="small-text" text-anchor="middle">面積不變</text>
+        `;
+        typesetMath($('area-result'));
+      };
+
+      const renderPointAreas = () => {
+        const { A, B, C, D } = shapePoints(72);
+        const P = { x: A.x + state.u * (B.x - A.x) + state.v * (D.x - A.x), y: A.y + state.u * (B.y - A.y) + state.v * (D.y - A.y) };
+        const total = state.base * state.height;
+        const parts = { ab: total * state.v / 2, bc: total * (1 - state.u) / 2, cd: total * (1 - state.v) / 2, da: total * state.u / 2 };
+        $('point-u-value').textContent = `${Math.round(state.u*100)}%`;
+        $('point-v-value').textContent = `${Math.round(state.v*100)}%`;
+        $('point-area-formula').innerHTML = `\\[[ABP]+[CDP]=${fmt(parts.ab)}+${fmt(parts.cd)}=${fmt(total / 2)}\\]\\[[BCP]+[DAP]=${fmt(parts.bc)}+${fmt(parts.da)}=${fmt(total / 2)}\\]`;
+        const labelPos = (p, q, r) => ({ x: (p.x + q.x + r.x) / 3, y: (p.y + q.y + r.y) / 3 });
+        const labs = [
+          ['a', labelPos(A,B,P), parts.ab, '#1769aa'], ['b', labelPos(B,C,P), parts.bc, '#087b73'],
+          ['c', labelPos(C,D,P), parts.cd, '#9b6200'], ['d', labelPos(D,A,P), parts.da, '#754bb0']
+        ];
+        $('point-area-svg').innerHTML = `
+          <polygon points="${polygon([A,B,P])}" fill="#d9efff" stroke="#fff" stroke-width="3"></polygon>
+          <polygon points="${polygon([B,C,P])}" fill="#d9f6ee" stroke="#fff" stroke-width="3"></polygon>
+          <polygon points="${polygon([C,D,P])}" fill="#ffefc9" stroke="#fff" stroke-width="3"></polygon>
+          <polygon points="${polygon([D,A,P])}" fill="#eee6ff" stroke="#fff" stroke-width="3"></polygon>
+          <polygon points="${polygon([A,B,C,D])}" fill="none" stroke="#1f4d70" stroke-width="4"></polygon>
+          ${[['A',A,-21,22],['B',B,10,22],['C',C,10,-10],['D',D,-22,-10]].map(([name,p,dx,dy]) => `<circle cx="${p.x}" cy="${p.y}" r="13" fill="#1e68a8"></circle><text x="${p.x + dx}" y="${p.y + dy}" class="svg-label">${name}</text>`).join('')}
+          <circle cx="${P.x}" cy="${P.y}" r="14" fill="#ae4040"></circle><text x="${P.x}" y="${P.y+1}" class="svg-label">P</text>
+          ${labs.map(([name,p,area,color]) => `<text x="${p.x}" y="${p.y}" text-anchor="middle" class="diagram-text" fill="${color}">${name}=${fmt(area)}</text>`).join('')}
+          <text x="300" y="318" class="small-text" text-anchor="middle">藍＋黃 = 綠＋紫 = 平行四邊形面積的一半</text>
+        `;
+        typesetMath($('point-area-formula'));
+      };
+
+      const specialInfo = {
+        para: { title: '一般平行四邊形', text: '必有：對角線互相平分。<br>不能保證：垂直、等長，或平分頂角。' },
+        rhombus: { title: '菱形', text: '四邊等長，所以對角線<strong>互相垂直</strong>，而且各自平分一對頂角；但通常不等長。' },
+        rectangle: { title: '矩形', text: '四個角都是直角，所以對角線<strong>等長</strong>；但通常不垂直。' },
+        square: { title: '正方形', text: '同時是菱形與矩形：對角線互相平分、垂直、等長，也平分頂角。' }
+      };
+
+      const renderSpecial = () => {
+        const kind = state.special;
+        let A, B, C, D, right = false, perpendicular = false, equal = false;
+        if (kind === 'para') { A={x:105,y:258};B={x:430,y:258};C={x:502,y:75};D={x:177,y:75}; }
+        if (kind === 'rhombus') { A={x:92,y:172};B={x:302,y:282};C={x:512,y:172};D={x:302,y:62}; perpendicular=true; }
+        if (kind === 'rectangle') { A={x:120,y:260};B={x:480,y:260};C={x:480,y:80};D={x:120,y:80}; right=true; equal=true; }
+        if (kind === 'square') { A={x:190,y:270};B={x:430,y:270};C={x:430,y:30};D={x:190,y:30}; right=true; perpendicular=true; equal=true; }
+        const O = midpoint(A,C), info = specialInfo[kind];
+        const rightMark = right ? `<path d="M${A.x} ${A.y-20} L${A.x+20} ${A.y-20} L${A.x+20} ${A.y}" fill="none" stroke="#ae4040" stroke-width="3"></path>` : '';
+        const crossMark = perpendicular ? `<path d="M${O.x-12} ${O.y+12} L${O.x} ${O.y+24} L${O.x+12} ${O.y+12}" fill="none" stroke="#ae4040" stroke-width="3"></path>` : '';
+        $('special-svg').innerHTML = `
+          <polygon points="${polygon([A,B,C,D])}" fill="#e8f7ff" stroke="#1f4d70" stroke-width="4"></polygon>
+          <line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" stroke="#1769aa" stroke-width="4"></line>
+          <line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" stroke="#087b73" stroke-width="4"></line>
+          <circle cx="${O.x}" cy="${O.y}" r="11" fill="#754bb0"></circle>${rightMark}${crossMark}
+          <text x="${O.x}" y="${O.y+2}" class="svg-label">O</text>
+          ${[['A',A,-20,23],['B',B,10,23],['C',C,10,-10],['D',D,-22,-10]].map(([name,p,dx,dy]) => `<circle cx="${p.x}" cy="${p.y}" r="12" fill="#1e68a8"></circle><text x="${p.x+dx}" y="${p.y+dy}" class="svg-label">${name}</text>`).join('')}
+          ${equal ? `<path d="M${A.x+55} ${A.y-8} l8 16 M${D.x+55} ${D.y+8} l8 -16" stroke="#9b6200" stroke-width="3"></path><text x="300" y="315" class="small-text" text-anchor="middle">對角線等長</text>` : ''}
+          ${perpendicular ? `<text x="${O.x+28}" y="${O.y-18}" class="small-text" fill="#ae4040">垂直</text>` : ''}
+        `;
+        $('special-note').innerHTML = `<strong>${info.title}</strong><br>${info.text}`;
+      };
+
+      const diagonalNote = () => {
+        const note = state.diagonalMode === 'bisect'
+          ? '因為對角線在 \\(O\\) 互相平分，所以 \\(AO=OC\\)、\\(BO=OD\\)。反過來，若一個四邊形的對角線互相平分，也可以判定為平行四邊形。'
+          : '畫出 \\(AC\\) 後，\\(AB\\parallel CD\\)、\\(BC\\parallel AD\\) 讓兩組內錯角相等，再配上公共邊 \\(AC\\)，可得 \\(\\triangle ABC\\cong\\triangle CDA\\)。';
+        $('diagonal-note').innerHTML = note;
+        typesetMath($('diagonal-note'));
+      };
+
+      const quizQuestions = [
+        { q: '四邊形 \\(ABCD\\) 中，已知 \\(AB\\parallel CD\\) 且 \\(AB=CD\\)。最恰當的結論是？', choices: ['無法判定，因為還少一組對邊', '可以判定為平行四邊形', '只能判定為等腰梯形'], correct: 1, hint: '同一組對邊「平行且等長」就是一條完整的判定。' },
+        { q: '若 \\(ABCD\\) 是一般平行四邊形，哪一個一定不必成立？', choices: ['\\(AO=OC\\)', '對角線 \\(AC\\perp BD\\)', '\\(\\angle A=\\angle C\\)'], correct: 1, hint: '一般平行四邊形只保證對角線互相平分；垂直要加上菱形等條件。' },
+        { q: '平行四邊形內點 \\(P\\) 分出四塊面積，若 \\([ABP]=9\\)、\\([BCP]=14\\)、\\([DAP]=19\\)，則 \\([CDP]\\) 為何？', choices: ['4', '14', '24'], correct: 2, hint: '用 \\( [ABP]+[CDP]=[BCP]+[DAP] \\)。' }
+      ];
+
+      const renderQuiz = () => {
+        const item = quizQuestions[state.quizIndex];
+        state.solved = false;
+        $('quiz-count').textContent = `第 ${state.quizIndex + 1} / ${quizQuestions.length} 題`;
+        $('quiz-question').innerHTML = item.q;
+        $('quiz-options').innerHTML = item.choices.map((choice, index) => `<button class="answer" type="button" data-choice="${index}">${choice}</button>`).join('');
+        $('quiz-feedback').className = 'feedback';
+        $('quiz-feedback').textContent = '選一個答案；答錯後可保留這一題再試一次。';
+        $('next-quiz').disabled = true;
+        $('next-quiz').textContent = state.quizIndex === quizQuestions.length - 1 ? '重新挑戰' : '下一題';
+        $('quiz-options').querySelectorAll('.answer').forEach((button) => button.addEventListener('click', () => {
+          if (state.solved) return;
+          const picked = Number(button.dataset.choice);
+          if (picked === item.correct) {
+            button.classList.add('correct');
+            $('quiz-feedback').className = 'feedback good';
+            $('quiz-feedback').innerHTML = `<strong>答對了。</strong>${item.hint}`;
+            state.solved = true;
+            $('next-quiz').disabled = false;
+          } else {
+            button.classList.add('incorrect');
+            $('quiz-feedback').className = 'feedback bad';
+            $('quiz-feedback').innerHTML = `<strong>先不要換題。</strong>${item.hint}`;
+          }
+          typesetMath([$('quiz-question'), $('quiz-feedback')]);
+        }));
+        typesetMath([$('quiz-question'), $('quiz-options')]);
+      };
+
+      $('shear-range').addEventListener('input', (event) => { state.shear = Number(event.target.value); renderShape(); });
+      $('base-range').addEventListener('input', (event) => { state.base = Number(event.target.value); renderArea(); renderPointAreas(); });
+      $('height-range').addEventListener('input', (event) => { state.height = Number(event.target.value); renderArea(); renderPointAreas(); });
+      $('point-u').addEventListener('input', (event) => { state.u = Number(event.target.value) / 100; renderPointAreas(); });
+      $('point-v').addEventListener('input', (event) => { state.v = Number(event.target.value) / 100; renderPointAreas(); });
+      document.querySelectorAll('[data-diagonal-mode]').forEach((button) => button.addEventListener('click', () => {
+        state.diagonalMode = button.dataset.diagonalMode;
+        document.querySelectorAll('[data-diagonal-mode]').forEach((item) => item.classList.toggle('active', item === button));
+        renderDiagonal(); diagonalNote();
+      }));
+      $('proof-options').querySelectorAll('.answer').forEach((button) => button.addEventListener('click', () => {
+        const good = button.dataset.proof === 'yes';
+        $('proof-options').querySelectorAll('.answer').forEach((item) => item.classList.remove('correct', 'incorrect'));
+        button.classList.add(good ? 'correct' : 'incorrect');
+        $('proof-feedback').className = `feedback ${good ? 'good' : 'bad'}`;
+        $('proof-feedback').innerHTML = good ? '<strong>正確。</strong>一組對邊同時平行且等長，就能排除一般梯形，足以判定。' : '<strong>還不夠。</strong>只有一組平行可能是梯形；對角線等長也可能是等腰梯形。';
+      }));
+      document.querySelectorAll('[data-special]').forEach((button) => button.addEventListener('click', () => {
+        state.special = button.dataset.special;
+        document.querySelectorAll('[data-special]').forEach((item) => item.classList.toggle('active', item === button));
+        renderSpecial();
+      }));
+      $('next-quiz').addEventListener('click', () => {
+        if (!state.solved) return;
+        state.quizIndex = (state.quizIndex + 1) % quizQuestions.length;
+        renderQuiz();
+      });
+
+      renderShape();
+      renderDiagonal();
+      diagonalNote();
+      renderArea();
+      renderPointAreas();
+      renderSpecial();
+      renderQuiz();
+      window.addEventListener('load', () => typesetMath(document.querySelectorAll('.formula, .method, .note, .error-note, .teacher-note, details, #quiz-question, #quiz-options')));
+    })();
+  </script>
+</body>
+</html>

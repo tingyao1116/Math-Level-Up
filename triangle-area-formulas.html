@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高一三角形面積公式整理｜公式地圖</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #183047;
+      --muted: #536b7d;
+      --paper: #f4f8fb;
+      --card: #fff;
+      --line: #d7e3ea;
+      --blue: #176da8;
+      --blue-pale: #e7f4fc;
+      --teal: #087b70;
+      --teal-pale: #e5f8f3;
+      --orange: #ae5c14;
+      --orange-pale: #fff1e4;
+      --violet: #6b4ba3;
+      --violet-pale: #f1ebff;
+      --red: #a63c45;
+      --red-pale: #fff0f1;
+      --shadow: 0 16px 38px rgba(31, 65, 93, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 4% 0%, #d9f2ff 0, transparent 28rem),
+        radial-gradient(circle at 96% 8%, #fff1d3 0, transparent 24rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.78;
+    }
+    .wrap { width: min(1140px, calc(100% - 32px)); margin: 0 auto; padding: 25px 0 58px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      margin: 18px 0 32px;
+      padding: clamp(28px, 5vw, 55px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(130deg, #173d68, #176eaa 55%, #078174);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow, .tag, .level {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .eyebrow { color: #def8ff; background: rgba(255, 255, 255, .16); }
+    h1 { margin: 9px 0 8px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.18; }
+    .lead { max-width: 850px; margin: 0; color: #edfaff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .nav a {
+      padding: 7px 13px;
+      border: 1px solid rgba(255, 255, 255, .52);
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 850;
+      text-decoration: none;
+    }
+    .nav a:hover { background: rgba(255, 255, 255, .16); }
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 40px; }
+    .section-head { margin-bottom: 16px; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.2rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.17rem; line-height: 1.5; }
+    .section-head p, .card > p { margin: 5px 0 0; color: var(--muted); }
+    .tag { color: var(--blue); background: var(--blue-pale); }
+    .tag.teal { color: var(--teal); background: var(--teal-pale); }
+    .tag.orange { color: var(--orange); background: var(--orange-pale); }
+    .tag.violet { color: var(--violet); background: var(--violet-pale); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .three-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .card {
+      min-width: 0;
+      padding: clamp(18px, 3vw, 27px);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: 0 7px 21px rgba(28, 60, 88, .05);
+    }
+    .formula {
+      min-width: 0;
+      max-width: 100%;
+      margin: 13px 0;
+      padding: 13px 14px;
+      overflow-x: auto;
+      border-radius: 13px;
+      color: #153f5c;
+      background: #eff8fc;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: clamp(1.05rem, 2.7vw, 1.42rem);
+      font-weight: 700;
+      line-height: 1.62;
+      text-align: center;
+    }
+    .formula.dense { font-size: clamp(.98rem, 2.35vw, 1.18rem); }
+    .formula mjx-container[display="true"] { min-width: max-content; margin: .15em 0 !important; }
+    mjx-container { margin: 0 !important; }
+    .level.basic { color: #0b685f; background: var(--teal-pale); }
+    .level.advance { color: #915603; background: #fff4dc; }
+    .level.challenge { color: #68449d; background: var(--violet-pale); }
+    .note, .teacher-note, .error-note, .success-note {
+      margin-top: 13px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      background: var(--blue-pale);
+    }
+    .teacher-note { border-color: var(--orange); background: var(--orange-pale); }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .success-note { border-color: var(--teal); background: var(--teal-pale); }
+    .selection-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; margin-top: 16px; }
+    .selection-grid > div { padding: 12px 13px; border: 1px solid var(--line); border-radius: 13px; background: #fbfdff; }
+    .selection-grid strong { display: block; color: #1b527a; font-size: .97rem; }
+    .selection-grid span { display: block; margin-top: 3px; color: var(--muted); font-size: .9rem; }
+    details { margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    summary { padding: 11px 14px; cursor: pointer; color: var(--blue); font-weight: 850; }
+    details > div, details > p { margin-left: 14px; margin-right: 14px; }
+    details > p { margin-bottom: 14px; color: var(--muted); }
+    .example-card h3 { color: #234e69; }
+    .example-card ol { margin: 10px 0 0; padding-left: 1.38rem; color: #415b6e; }
+    .example-card li + li { margin-top: 4px; }
+    .quick-check { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(240px, .85fr); gap: 16px; align-items: start; }
+    .check-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .check-list li { padding: 11px 13px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    .check-list strong { color: #1d547b; }
+    .footer { margin: 43px 0 0; color: var(--muted); text-align: center; }
+    a:focus, summary:focus { outline: 3px solid #83cae9; outline-offset: 2px; }
+    @media (max-width: 700px) {
+      .wrap { width: min(100% - 22px, 1140px); padding-top: 15px; }
+      .grid, .three-grid, .selection-grid, .quick-check { grid-template-columns: minmax(0, 1fr); }
+      .hero { border-radius: 22px; }
+      .formula { padding: 11px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回到數學小遊戲首頁</a>
+
+    <header class="hero">
+      <span class="eyebrow">高一・三角形・座標與向量</span>
+      <h1>三角形面積重要公式地圖</h1>
+      <p class="lead">先辨認題目給的是底高、兩邊夾角、三邊、圓半徑，還是座標／向量；再選公式。前半段先整理高中最常用的面積公式，後半段把面積延伸到行列式與向量。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#first-half">公式前半段</a>
+        <a href="#second-half">公式後半段</a>
+        <a href="#examples">例題分層</a>
+        <a href="#self-check">自我檢查</a>
+      </nav>
+    </header>
+
+    <section id="first-half" class="section" aria-labelledby="first-half-title">
+      <div class="section-head">
+        <span class="tag orange">重要公式・前半段</span>
+        <h2 id="first-half-title">先看已知條件，選對三角形面積公式</h2>
+        <p>所有公式都在回答同一件事：如何得到「底 × 高」的一半。高沒有直接給時，就靠正弦、三邊，或圓的半徑補出它。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="level basic">基礎：底與對應高</span>
+          <h3>只要有一組底和高，優先用這條</h3>
+          <div class="formula">
+            \[\Delta=\frac{1}{2}ah_a=\frac{1}{2}bh_b=\frac{1}{2}ch_c\]
+          </div>
+          <p>\(a,b,c\) 是三邊長；\(h_a,h_b,h_c\) 分別是對邊 \(a,b,c\) 的高。鈍角三角形的高可以落在邊的延長線上，公式仍成立。</p>
+          <div class="error-note"><strong>易錯：</strong>\(h_a\) 必須垂直於邊 \(a\)，不是「從 A 畫出的任意線段」。</div>
+        </article>
+        <article class="card">
+          <span class="level advance">進階：兩邊與夾角</span>
+          <h3>把高寫成「另一邊 × 正弦」</h3>
+          <div class="formula">
+            \[\Delta=\frac{1}{2}bc\sin A=\frac{1}{2}ca\sin B=\frac{1}{2}ab\sin C\]
+          </div>
+          <p>角 \(A\) 的兩鄰邊是 \(b,c\)，所以配 \(\frac12bc\sin A\)。題目要給的是<strong>兩邊與它們的夾角</strong>，不能任取兩邊再任取一個角。</p>
+          <div class="teacher-note"><strong>口訣：</strong>看到 \(\sin A\)，就找夾住 \(A\) 的兩邊 \(b,c\)。</div>
+        </article>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <span class="level advance">進階：已知三邊</span>
+          <h3>海龍公式：先算半周長 \(s\)</h3>
+          <div class="formula">
+            \[s=\frac{a+b+c}{2}\]
+            \[\Delta=\sqrt{s(s-a)(s-b)(s-c)}\]
+          </div>
+          <p>只知道 \(a,b,c\) 時使用。若根號內出現負數，先回頭檢查三角形不等式與邊長資料。</p>
+        </article>
+        <article class="card">
+          <span class="level challenge">進階：外接圓、內切圓</span>
+          <h3>面積、半徑與三邊之間的連結</h3>
+          <div class="formula">
+            \[\Delta=\frac{abc}{4R}=rs\]
+            \[R=\frac{a}{2\sin A}=\frac{b}{2\sin B}=\frac{c}{2\sin C}\]
+            \[r=\frac{\Delta}{s}\]
+          </div>
+          <p>\(R\) 是外接圓半徑，\(r\) 是內切圓半徑，\(s\) 是半周長。看到「三邊＋外接圓半徑」或「半周長＋內切圓半徑」，就可直接連到面積。</p>
+        </article>
+      </div>
+      <div class="selection-grid" aria-label="面積公式選擇流程">
+        <div><strong>有底與高</strong><span>用 \(\frac12\times\text{底}\times\text{高}\)。</span></div>
+        <div><strong>有兩邊與夾角</strong><span>用 \(\frac12bc\sin A\) 的循環形式。</span></div>
+        <div><strong>只有三邊或圓半徑</strong><span>用海龍公式、\(\frac{abc}{4R}\) 或 \(rs\)。</span></div>
+      </div>
+      <details>
+        <summary>延伸公式：半角公式與圓內接四邊形</summary>
+        <div class="formula dense">
+          \[\sin\frac{A}{2}=\sqrt{\frac{(s-b)(s-c)}{bc}}\]
+          \[\cos\frac{A}{2}=\sqrt{\frac{s(s-a)}{bc}}\]
+          \[\tan\frac{A}{2}=\sqrt{\frac{(s-b)(s-c)}{s(s-a)}}\]
+          \[\text{圓內接四邊形面積}=\sqrt{(s-a)(s-b)(s-c)(s-d)},\qquad s=\frac{a+b+c+d}{2}\]
+        </div>
+        <p>前面三條可由海龍公式推得；最後一條是海龍公式延伸到圓內接四邊形的布拉馬古普塔公式。</p>
+      </details>
+    </section>
+
+    <section id="second-half" class="section" aria-labelledby="second-half-title">
+      <div class="section-head">
+        <span class="tag violet">重要公式・後半段</span>
+        <h2 id="second-half-title">座標與向量：用行列式快速讀出面積</h2>
+        <p>把圖形放到座標平面，面積可以一次用行列式算完；用向量時，先得到平行四邊形面積，再除以 \(2\)。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="level advance">座標：一點在原點</span>
+          <h3>\(O(0,0)\) 時的二階行列式</h3>
+          <p>若 \(A(a_1,a_2),\ B(b_1,b_2)\)，則</p>
+          <div class="formula dense">
+            \[\begin{aligned}[\triangle OAB]&=\frac{1}{2}\left\lvert\begin{vmatrix}a_1 & a_2\\b_1 & b_2\end{vmatrix}\right\rvert\\[4pt]&=\frac{1}{2}\left\lvert a_1b_2-a_2b_1\right\rvert\end{aligned}\]
+          </div>
+          <p>行列式正、負和點的繞行方向有關；面積不會是負數，所以最後一定要取絕對值。</p>
+        </article>
+        <article class="card">
+          <span class="level advance">座標：任意三點</span>
+          <h3>平移到同一個起點，再算二階行列式</h3>
+          <div class="formula dense">
+            \[\begin{aligned}[\triangle ABC]&=\frac{1}{2}\left\lvert\begin{vmatrix}x_1 & y_1 & 1\\x_2 & y_2 & 1\\x_3 & y_3 & 1\end{vmatrix}\right\rvert\\[4pt]&=\frac{1}{2}\left\lvert\begin{vmatrix}x_2-x_1 & y_2-y_1\\x_3-x_1 & y_3-y_1\end{vmatrix}\right\rvert\end{aligned}\]
+          </div>
+          <p>第二式就是先把 \(A\) 當原點，改看 \(\vec{AB}\)、\(\vec{AC}\) 的分量。三點共線時，行列式為 \(0\)。</p>
+        </article>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <span class="level challenge">向量：平面上的夾角</span>
+          <h3>叉積長度的一半，就是三角形面積</h3>
+          <div class="formula dense">
+            \[\begin{aligned}[\triangle ABC]&=\frac{1}{2}\left\lVert\vec{AB}\times\vec{AC}\right\rVert\\[4pt]&=\frac{1}{2}\sqrt{\left\lVert\vec{AB}\right\rVert^2\left\lVert\vec{AC}\right\rVert^2-\left(\vec{AB}\cdot\vec{AC}\right)^2}\end{aligned}\]
+          </div>
+          <p>\(\left\lVert\vec{AB}\times\vec{AC}\right\rVert\) 本身是平行四邊形面積；題目問三角形時，最後別漏掉 \(\frac12\)。</p>
+        </article>
+        <article class="card">
+          <span class="level challenge">向量：空間三維</span>
+          <h3>用三個二階行列式組成叉積長度</h3>
+          <div class="formula dense">
+            \[\begin{aligned}\vec{u}&=(u_1,u_2,u_3),\quad \vec{v}=(v_1,v_2,v_3),\\[4pt]{}[\triangle]&=\frac{1}{2}\sqrt{\begin{aligned}&\left\lvert\begin{vmatrix}u_2&u_3\\v_2&v_3\end{vmatrix}\right\rvert^2+\left\lvert\begin{vmatrix}u_3&u_1\\v_3&v_1\end{vmatrix}\right\rvert^2\\[-2pt]&\quad+\left\lvert\begin{vmatrix}u_1&u_2\\v_1&v_2\end{vmatrix}\right\rvert^2\end{aligned}}\end{aligned}\]
+          </div>
+          <p>這是 \(\frac12\lVert\vec u\times\vec v\rVert\) 的分量寫法；若問題改問平行四邊形，答案就改為 \(\lVert\vec u\times\vec v\rVert\)。</p>
+        </article>
+      </div>
+      <div class="error-note"><strong>後半段固定自問：</strong>行列式有沒有取絕對值？向量求的是三角形還是平行四邊形？這兩個檢查能避免最常見的失分。</div>
+    </section>
+
+    <section id="examples" class="section" aria-labelledby="examples-title">
+      <div class="section-head">
+        <span class="tag teal">可直接上課使用</span>
+        <h2 id="examples-title">三層例題：從選公式到完整計算</h2>
+        <p>先讓學生說出「已知條件是什麼」，再代公式；這比一開始就背式子更不容易混淆。</p>
+      </div>
+      <div class="three-grid">
+        <article class="card example-card">
+          <span class="level basic">基礎</span>
+          <h3>兩邊與夾角</h3>
+          <p>若 \(b=8,\ c=5,\ A=30^\circ\)，求 \(\triangle ABC\) 面積。</p>
+          <div class="formula">
+            \[\Delta=\frac12\cdot8\cdot5\cdot\sin30^\circ=10\]
+          </div>
+          <div class="note"><strong>判讀：</strong>已知 \(b,c\) 和它們的夾角 \(A\)，所以選正弦面積公式。</div>
+        </article>
+        <article class="card example-card">
+          <span class="level advance">進階</span>
+          <h3>三邊 \(13,14,15\)</h3>
+          <p>只知道三邊，先求半周長，再使用海龍公式。</p>
+          <div class="formula dense">
+            \[s=\frac{13+14+15}{2}=21,\qquad \Delta=\sqrt{21\cdot8\cdot7\cdot6}=84\]
+          </div>
+          <div class="note"><strong>判讀：</strong>沒有角、沒有高，卻有三邊，所以不是硬湊正弦，而是選海龍公式。</div>
+        </article>
+        <article class="card example-card">
+          <span class="level challenge">挑戰</span>
+          <h3>座標三點</h3>
+          <p>若 \(A(1,2),B(5,3),C(2,6)\)，求面積。</p>
+          <div class="formula dense">
+            \[\Delta=\frac12\left\lvert\begin{vmatrix}4&1\\1&4\end{vmatrix}\right\rvert=\frac12\left\lvert16-1\right\rvert=\frac{15}{2}\]
+          </div>
+          <div class="note"><strong>判讀：</strong>先以 A 為起點，\(\vec{AB}=(4,1)\)、\(\vec{AC}=(1,4)\)，再算行列式。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="self-check" class="section" aria-labelledby="self-check-title">
+      <div class="section-head">
+        <span class="tag">解題前後各檢查一次</span>
+        <h2 id="self-check-title">30 秒自我檢查</h2>
+      </div>
+      <div class="quick-check">
+        <article class="card">
+          <ul class="check-list">
+            <li><strong>選式前：</strong>我手上是「底高」、「兩邊夾角」、「三邊」，還是「座標／向量」？</li>
+            <li><strong>代入時：</strong>若寫 \(\sin A\)，兩邊是不是 \(b,c\)？若寫 \(h_a\)，高是否垂直於 \(a\)？</li>
+            <li><strong>算完後：</strong>行列式有絕對值嗎？向量結果有依題意除以 \(2\) 嗎？</li>
+          </ul>
+        </article>
+        <aside class="card">
+          <h3>和原本互動頁的關係</h3>
+          <p>本頁整理「怎麼算一個三角形的面積」；另一頁則處理「三角形內一點的三塊面積比，如何反推線段比」。兩者用途不同，分開使用會更清楚。</p>
+          <a class="back" href="./triangle-area-segment-ratios.html">前往三角形內點：面積比與線段比 →</a>
+        </aside>
+      </div>
+    </section>
+
+    <p class="footer">高一三角形面積公式整理｜先判讀條件，再選公式。</p>
+  </main>
+</body>
+</html>

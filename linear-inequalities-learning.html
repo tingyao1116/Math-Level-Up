@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一元一次不等式｜中文轉換、負數反向與數線</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root { --bg:#f7fafc; --card:#fff; --ink:#172033; --sub:#526176; --line:#d8e2ee; --teal:#0f766e; --teal-dark:#115e59; --teal-pale:#ccfbf1; --blue:#075985; --blue-pale:#e0f2fe; --orange:#9a3412; --orange-pale:#fff7ed; --red:#b42318; --red-pale:#fff1f2; --green:#166534; --green-pale:#dcfce7; --purple:#6d28d9; --purple-pale:#f3e8ff; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:radial-gradient(circle at 2% 0%,#ccfbf1 0,transparent 25%),radial-gradient(circle at 98% 3%,#dbeafe 0,transparent 26%),var(--bg); font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.78; }
+    button,input,select { font:inherit; } button { cursor:pointer; }
+    .wrap { max-width:1160px; margin:auto; padding:22px 16px 42px; }
+    .back { display:inline-block; margin-bottom:12px; color:var(--teal-dark); font-weight:800; text-decoration:none; }
+    .hero,.section,.teacher-note { border:1px solid var(--line); border-radius:18px; background:var(--card); box-shadow:0 13px 30px rgba(15,23,42,.06); }
+    .hero { position:relative; overflow:hidden; padding:clamp(24px,5vw,44px); }
+    .hero::after { content:"<  >  ≤  ≥"; position:absolute; right:14px; bottom:-34px; color:rgba(15,118,110,.07); font:900 clamp(56px,13vw,144px) Georgia,serif; pointer-events:none; }
+    h1,h2,h3,h4,p { margin-top:0; } h1 { position:relative; z-index:1; margin-bottom:10px; font-size:clamp(30px,5vw,46px); line-height:1.25; letter-spacing:.02em; } h2 { margin-bottom:8px; font-size:clamp(23px,3vw,30px); line-height:1.35; } h3 { margin-bottom:7px; font-size:19px; line-height:1.45; } p,li,td { color:var(--sub); }
+    .lead { position:relative; z-index:1; max-width:830px; margin-bottom:15px; font-size:17px; }
+    .chip,.tag,.level { display:inline-block; margin:2px 5px 2px 0; padding:3px 10px; border-radius:999px; font-size:13px; font-weight:800; }
+    .chip { border:1px solid #99f6e4; color:#134e4a; background:var(--teal-pale); } .tag { margin-bottom:7px; border:1px solid #bae6fd; color:#0c4a6e; background:var(--blue-pale); font-size:12px; } .tag.orange,.level.advance { border-color:#fdba74; color:var(--orange); background:var(--orange-pale); } .tag.purple,.level.challenge { border-color:#ddd6fe; color:var(--purple); background:var(--purple-pale); } .tag.green { border-color:#86efac; color:var(--green); background:var(--green-pale); } .level.base { color:#0c4a6e; background:var(--blue-pale); }
+    .nav,.toggle-row,.choice-row { position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:8px; } .nav { margin-top:16px; }
+    .nav a,.primary,.choice,.toggle { appearance:none; border:1px solid var(--teal); border-radius:10px; padding:8px 12px; color:#fff; background:var(--teal); font-weight:800; text-decoration:none; } .nav a:hover,.primary:hover { border-color:var(--teal-dark); background:var(--teal-dark); }
+    .section { margin-top:18px; padding:clamp(18px,3.5vw,28px); } .section-head { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin-bottom:12px; } .section-head p { margin:0; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; } .two-col,.practice-layout { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(270px,.9fr); gap:16px; }
+    .card,.mini,.example,.practice-panel { min-width:0; border:1px solid var(--line); border-radius:14px; background:#fff; } .card,.example,.practice-panel { padding:16px; } .mini { padding:12px; background:#fcfdff; } .mini p:last-child,.card p:last-child { margin-bottom:0; }
+    .formula { margin:10px 0; padding:10px 12px; border-left:4px solid var(--teal); border-radius:9px; color:#134e4a; background:#f0fdfa; font-size:17px; font-weight:800; text-align:center; } .formula.orange { border-color:var(--orange); color:var(--orange); background:var(--orange-pale); } .formula mjx-container { margin:0!important; }
+    .math { display:inline-block; padding:0 4px; border:1px solid #c7d2fe; border-radius:6px; color:#312e81; background:#eef2ff; white-space:nowrap; }
+    .note,.mistake,.success,.feedback,.teacher-note { margin-top:12px; padding:11px 13px; border-radius:12px; } .note { border:1px solid #fde68a; background:#fffbeb; } .mistake { border:1px solid #fecdd3; color:var(--red); background:var(--red-pale); } .success { border:1px solid #86efac; color:var(--green); background:var(--green-pale); } .teacher-note { border:1px solid #bfdbfe; background:#eff6ff; box-shadow:none; }
+    .sign-table { width:100%; border-collapse:collapse; margin-top:8px; } .sign-table th,.sign-table td { padding:9px 10px; border:1px solid var(--line); text-align:left; vertical-align:top; } .sign-table th { color:#134e4a; background:#f0fdfa; } .sign-table .symbol { width:108px; color:var(--ink); font-size:19px; font-weight:900; white-space:nowrap; } .sign-table .strict { background:#fffdf5; }
+    .numberline { display:block; width:100%; min-height:178px; overflow:visible; } .numberline text { fill:#475569; font:13px "Noto Sans TC","Microsoft JhengHei",sans-serif; } .line-caption { margin:0; color:var(--sub); font-size:14px; text-align:center; }
+    .control-row { display:grid; grid-template-columns:minmax(0,1fr) 105px; gap:10px; align-items:end; } label { display:block; margin-bottom:4px; color:var(--ink); font-weight:800; } select,input[type="number"] { width:100%; border:1px solid #94a3b8; border-radius:10px; padding:9px 10px; color:var(--ink); background:#fff; } .range-value { margin:12px 0 5px; color:var(--teal-dark); font-size:21px; font-weight:900; text-align:center; }
+    .rule-box { padding:15px; border:2px solid #fb7185; border-radius:14px; background:linear-gradient(135deg,#fff1f2,#fff7ed); } .rule-box h3 { color:#9f1239; font-size:20px; } .rule-line { display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:start; } .rule-mark { display:grid; width:30px; height:30px; place-items:center; border-radius:50%; color:#fff; background:#e11d48; font-weight:900; }
+    .toggle { color:var(--teal-dark); background:#fff; } .toggle:hover,.toggle.active { color:#fff; background:var(--teal); } .toggle.negative { border-color:#e11d48; color:#9f1239; } .toggle.negative:hover,.toggle.negative.active { color:#fff; background:#e11d48; }
+    .steps { display:grid; gap:8px; counter-reset:step; } .step { position:relative; padding:10px 10px 10px 45px; border:1px solid var(--line); border-radius:10px; background:#fcfdff; } .step::before { content:counter(step); counter-increment:step; position:absolute; top:10px; left:11px; display:grid; width:24px; height:24px; place-items:center; border-radius:50%; color:#fff; background:var(--teal); font-weight:900; } .step.alert::before { background:#e11d48; }
+    .compare { display:grid; grid-template-columns:1fr auto 1fr; gap:6px; align-items:center; margin:12px 0; color:var(--ink); font-size:clamp(21px,4vw,29px); font-weight:900; text-align:center; } .compare .operator { color:#e11d48; font-size:35px; } .compare .value { padding:8px; border-radius:10px; background:#fff; }
+    .merge-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; } .merge-example { padding:12px; border:1px solid var(--line); border-radius:12px; background:#fcfdff; } .merge-example .answer { color:var(--teal-dark); font-weight:900; }
+    .example+.example { margin-top:12px; } .example-title { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; align-items:baseline; }
+    .question-count { color:var(--teal-dark); font-size:14px; font-weight:900; } .question { margin:8px 0 13px; color:var(--ink); font-size:clamp(20px,3vw,26px); font-weight:900; line-height:1.5; } .choice { flex:1 1 175px; padding:10px 12px; color:var(--teal-dark); background:#fff; text-align:left; } .choice:hover,.choice.selected { color:#fff; background:var(--teal); } .choice.selected { border-color:var(--teal-dark); } .choice:disabled { cursor:default; opacity:.82; } .feedback { min-height:62px; border:1px dashed #94a3b8; color:var(--sub); background:#f8fafc; } .feedback.good { border-color:#86efac; color:var(--green); background:var(--green-pale); } .feedback.try { border-color:#fdba74; color:var(--orange); background:var(--orange-pale); } .primary.secondary { border-color:#99f6e4; color:var(--teal-dark); background:#fff; } .primary.secondary:hover { background:#f0fdfa; } .practice-side { display:grid; align-content:start; gap:11px; } .check-list { margin:0; padding-left:20px; } .footer { padding:24px 0 2px; color:var(--sub); font-size:14px; text-align:center; }
+    @media (max-width:720px) { .wrap { padding:14px 12px 30px; } .two-col,.practice-layout,.merge-grid { grid-template-columns:1fr; } .nav a { flex:1 1 126px; text-align:center; } .sign-table { font-size:14px; } .sign-table th,.sign-table td { padding:7px; } .sign-table .symbol { width:72px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回數學教學首頁</a>
+    <section class="hero">
+      <span class="chip">國一・5-1 一元一次不等式</span>
+      <h1>一元一次不等式：先讀範圍，再記負號要反向</h1>
+      <p class="lead">不等式不是在找「唯一答案」，而是在找數線上的一段範圍。加、減和方程式一樣；只有在兩邊<strong>同乘或同除負數</strong>時，&lt;、&gt;、≤、≥ 必須反向。本頁把中文敘述、數線、合併範圍和常見應用一起整理。</p>
+      <nav class="nav" aria-label="單元導覽"><a href="#words">1. 中文轉符號</a><a href="#numberline">2. 數線範圍</a><a href="#reverse">3. 負數反向</a><a href="#merge">4. 合併範圍</a><a href="#examples">5. 例題</a><a href="#practice">6. 自我檢查</a></nav>
+    </section>
+
+    <section id="words" class="section">
+      <div class="section-head"><h2>1. 先把中文讀成不等號</h2><p>先抓關鍵字：有「等於」的意思嗎？有的話就選 ≤ 或 ≥。</p></div>
+      <div class="two-col">
+        <div class="card">
+          <table class="sign-table">
+            <thead><tr><th>符號</th><th>常見中文</th><th>先想成</th></tr></thead>
+            <tbody>
+              <tr class="strict"><td class="symbol">x &gt; a</td><td>大於、超過、逾</td><td>比 a 還大，<strong>不含 a</strong></td></tr>
+              <tr class="strict"><td class="symbol">x &lt; a</td><td>小於、不足、未滿</td><td>比 a 還小，<strong>不含 a</strong></td></tr>
+              <tr><td class="symbol">x ≥ a</td><td>不小於、以上、至少、達到／滿</td><td>大於或等於 a，<strong>包含 a</strong></td></tr>
+              <tr><td class="symbol">x ≤ a</td><td>不大於、以下、至多、不超過</td><td>小於或等於 a，<strong>包含 a</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="note"><strong>一句口訣：</strong>「超過、未滿」沒有等號；「至少、至多、以上、以下、不超過」都要把等號算進去。</div>
+        </div>
+        <div class="card"><span class="tag orange">最容易混淆</span><h3>「介於／之間」先看端點有沒有被包含</h3><div class="formula orange">「x 在 2 與 5 之間」：\(2&lt;x&lt;5\)</div><p>若題目說「介於 2 與 5 之間，<strong>含端點</strong>」，或「不小於 2 且不大於 5」，才寫成 <span class="math">\(2\le x\le5\)</span>。</p><div class="mistake"><strong>常見錯誤：</strong>把「不超過 10」寫成 x &lt; 10。剛好 10 也沒有超過，所以正確是 x ≤ 10。</div></div>
+      </div>
+    </section>
+
+    <section id="numberline" class="section">
+      <div class="section-head"><h2>2. 符號要能落在數線上</h2><p>數線左小右大；端點有等號畫實心，沒有等號畫空心。</p></div>
+      <div class="two-col">
+        <div class="card"><span class="tag">數線即時觀察</span><h3>改變符號與端點，看範圍怎麼走</h3><div class="control-row"><div><label for="line-sign">不等號</label><select id="line-sign"><option value="gt">x &gt; a</option><option value="ge">x ≥ a</option><option value="lt">x &lt; a</option><option value="le">x ≤ a</option></select></div><div><label for="line-boundary">端點 a</label><input id="line-boundary" type="number" min="-8" max="8" step="1" value="3" inputmode="numeric"></div></div><p id="line-expression" class="range-value" aria-live="polite">x &gt; 3</p><p id="line-explanation">3 畫空心，往右取值。</p><div class="note"><strong>看方向：</strong>x 比端點大就往右；x 比端點小就往左。先判斷方向，再判斷空心或實心。</div></div>
+        <div class="card"><svg id="line-svg" class="numberline" viewBox="0 0 680 180" role="img" aria-label="一元一次不等式的數線範圍"></svg><p class="line-caption">綠色線段和箭頭表示可取的範圍；端點圓圈提醒是否包含端點。</p></div>
+      </div>
+    </section>
+
+    <section id="reverse" class="section">
+      <div class="section-head"><h2>3. 唯一不同：乘除以負數，符號要反向</h2><p>加減正負數都不反向；乘除正數也不反向。反向只發生在「同乘或同除負數」。</p></div>
+      <div class="rule-box"><h3>最重要規則：負數一出現，就先找反向</h3><div class="rule-line"><span class="rule-mark">!</span><div>若 <span class="math">\(a&lt;b\)</span>，兩邊同乘（或同除）負數 <span class="math">\(c&lt;0\)</span>，會變成 <span class="math">\(ac&gt;bc\)</span>。</div></div><div class="formula">\(2&lt;5\quad\xrightarrow{\times(-1)}\quad -2&gt;-5\)</div><p>原因不是硬背：負數會把數線上每個數翻到 0 的另一邊，原本右邊較大的位置會跑到左邊，因此大小順序對調。</p></div>
+      <div class="two-col" style="margin-top:16px;"><div class="card"><span class="tag purple">反向開關</span><h3>用同一組數觀察正負數的差別</h3><div class="toggle-row" role="group" aria-label="選擇同乘的數"><button class="toggle active" type="button" data-multiplier="3">兩邊同乘 +3</button><button class="toggle negative" type="button" data-multiplier="-1">兩邊同乘 −1</button><button class="toggle negative" type="button" data-multiplier="-2">兩邊同乘 −2</button></div><div id="flip-demo" class="compare" aria-live="polite"></div><p id="flip-message"></p></div><div class="card"><span class="tag orange">解題固定順序</span><h3>每一行只做一種等價變形</h3><div class="steps"><div class="step">先把含 x 的項留在一邊，常數留在另一邊。</div><div class="step">若要消掉係數，判斷要乘除的是正數還是負數。</div><div class="step alert">乘除負數時，立刻把不等號反向。</div><div class="step">用數線或代入一個數檢查範圍是否合理。</div></div></div></div>
+      <div class="grid" style="margin-top:14px;"><article class="card"><span class="tag green">不反向</span><h3>\(3x-5\le7\)</h3><div class="steps"><div class="step">兩邊加 5：\(3x\le12\)</div><div class="step">兩邊除以正數 3：\(x\le4\)</div></div><p class="success"><strong>除以正數，方向不變。</strong></p></article><article class="card"><span class="tag orange">一定反向</span><h3>\(-2x+3&gt;9\)</h3><div class="steps"><div class="step">兩邊減 3：\(-2x&gt;6\)</div><div class="step alert">兩邊除以 −2，反向：\(x&lt;-3\)</div></div><p class="mistake"><strong>錯誤警報：</strong>若仍寫 x &gt; −3，就是漏掉「除以負數要反向」。</p></article></div>
+    </section>
+
+    <section id="merge" class="section">
+      <div class="section-head"><h2>4. 同時要符合兩個範圍時，取重疊</h2><p>看到「且、同時、都要」就找共同部分；不要把兩段範圍全都保留。</p></div>
+      <div class="merge-grid"><div class="merge-example"><span class="tag">兩個同方向：取較嚴格</span><h3>\(x&gt;-1\) 且 \(x\ge3\)</h3><p>大於 3 的數一定也大於 −1，所以只留下較嚴格的限制。</p><p class="answer">答案：\(x\ge3\)</p></div><div class="merge-example"><span class="tag">兩個反方向：取中間重疊</span><h3>\(x&gt;-1\) 且 \(x\le3\)</h3><p>同時在 −1 的右邊、3 的左邊，範圍被夾在中間。</p><p class="answer">答案：\(-1&lt;x\le3\)</p></div></div>
+      <div class="teacher-note"><strong>補充：</strong>上面是「且」的合併。若題目說「或」，只要符合其中一個條件即可，要取兩段範圍的聯集，不能直接套「取重疊」。</div>
+    </section>
+
+    <section id="examples" class="section">
+      <div class="section-head"><h2>5. 可直接板書的例題</h2><p>先翻中文或整理式子，再決定是否需要反向。</p></div>
+      <article class="example"><div class="example-title"><div><span class="tag">基礎・中文轉換</span><h3>活動參加人數至少 25 人才成團</h3></div><span class="level base">基礎</span></div><p>設參加人數為 x。因為「至少」包含剛好 25 人，所以：</p><div class="formula">\(x\ge25\)</div><p class="note"><strong>檢查：</strong>x = 25 時確實成團；若寫 x &gt; 25，會錯把剛好 25 人排除。</p></article>
+      <article class="example"><div class="example-title"><div><span class="tag orange">進階・負數反向</span><h3>解 \(-3(x-2)\ge12\)</h3></div><span class="level advance">進階</span></div><div class="steps"><div class="step">先看係數：\(-3\) 是負數，因此最後除以 −3 時一定要反向。</div><div class="step alert">兩邊除以 −3：\(x-2\le-4\)</div><div class="step">兩邊加 2：\(x\le-2\)</div></div><p class="mistake"><strong>最常犯錯：</strong>把第二行寫成 x − 2 ≥ −4。請在除以負數的那一行就反向，不要等到最後才想起來。</p></article>
+      <article class="example"><div class="example-title"><div><span class="tag purple">應用・至多與整數</span><h3>每張票 180 元，帶 1200 元，至多可買幾張？</h3></div><span class="level challenge">挑戰</span></div><p>設買 x 張票。總價不超過 1200 元：</p><div class="steps"><div class="step">列式：\(180x\le1200\)</div><div class="step">兩邊除以正數 180：\(x\le\frac{20}{3}\)</div><div class="step">x 是張數，只能是整數，因此最多買 6 張。</div></div><p class="note"><strong>生活題提醒：</strong>不等式解是範圍；題目若是人數、張數、房間數，最後還要回到符合情境的整數。</p></article>
+      <div class="grid" style="margin-top:14px;">
+        <article class="card">
+          <span class="tag">常見應用・先找限制</span>
+          <h3>門票、投票、火車與分房：關鍵字決定不等號</h3>
+          <ul>
+            <li><strong>門票打折：</strong>先算折後單價；「總費用不超過預算」寫成「折後單價 × 張數 ≤ 預算」。</li>
+            <li><strong>投票：</strong>「贊成票超過半數」是贊成票 &gt; 總票數的一半；「至少三分之二同意」則要用 ≥。</li>
+            <li><strong>火車穿越隧道：</strong>完全通過的距離＝火車長＋隧道長；若時間至多 t 秒，就用「距離 ≤ 速度 × t」。</li>
+            <li><strong>分配房間：</strong>每間至多住 6 人，n 人至少需要 r 間時，\(6r\ge n\)；最後的房間數要<strong>往上取整數</strong>。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="tag orange">幾何限制・先寫合理範圍</span>
+          <h3>等腰三角形的角度不等式</h3>
+          <p>設底角為 x°、頂角為 y°，除了 <span class="math">\(2x+y=180\)</span>，還要先知道：</p>
+          <div class="formula orange">\(0&lt;x&lt;90,\qquad 0&lt;y&lt;180\)</div>
+          <p>底角若到 90°，兩個底角已經合計 180°，就沒有正的頂角；所以 x 必須小於 90。這是「式子解得出來」之外，幾何情境還必須符合的範圍。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="practice" class="section">
+      <div class="section-head"><h2>6. 自我檢查：先想，再按答案</h2><p>答錯可重新選；答對後才會開啟下一題，並顯示關鍵理由。</p></div>
+      <div class="practice-layout"><div class="practice-panel"><p id="quiz-count" class="question-count"></p><div id="quiz-question" class="question"></div><div id="quiz-options" class="choice-row" aria-label="答案選項"></div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"><button id="check-quiz" class="primary" type="button">檢查我的答案</button><button id="next-quiz" class="primary secondary" type="button" hidden>下一題</button></div><div id="quiz-feedback" class="feedback" aria-live="polite">先選一個答案，再按「檢查我的答案」。</div></div><aside class="practice-side"><div class="mini"><span class="tag">每題三問</span><ol class="check-list"><li>中文有沒有「含等號」？</li><li>這一步是否乘除負數？</li><li>答案在數線哪一側？端點空心或實心？</li></ol></div><div class="mini"><span class="tag orange">考前最後看</span><p><strong>「移項」不是反向的原因。</strong>真正需要反向，是你把不等式兩邊同乘或同除一個負數。</p></div></aside></div>
+    </section>
+    <section class="teacher-note" aria-label="教學使用建議"><strong>老師投影建議：</strong>先用第 1 節讓學生把「不超過／至少」舉牌選符號；第 2 節由學生說出端點的空實與方向；再用第 3 節的 2 &lt; 5 同乘負數，先看數線翻轉的理由，再做含負係數的題目。這樣「反向」就不只是背誦。</section>
+    <footer class="footer">一元一次不等式・中文語意、數線範圍、負數反向與分層練習</footer>
+  </main>
+  <script>
+    const ns='http://www.w3.org/2000/svg';
+    const lineSign=document.querySelector('#line-sign'); const lineBoundary=document.querySelector('#line-boundary'); const lineExpression=document.querySelector('#line-expression'); const lineExplanation=document.querySelector('#line-explanation'); const lineSvg=document.querySelector('#line-svg');
+    function clampBoundary(value){const parsed=Number(value);return Number.isFinite(parsed)?Math.max(-8,Math.min(8,Math.round(parsed))):3;}
+    function svgElement(name,attributes,text){const element=document.createElementNS(ns,name);Object.entries(attributes).forEach(([key,value])=>element.setAttribute(key,String(value)));if(text!==undefined)element.textContent=text;return element;}
+    function drawNumberLine(){const sign=lineSign.value;const boundary=clampBoundary(lineBoundary.value);lineBoundary.value=boundary;const isRight=sign==='gt'||sign==='ge';const isClosed=sign==='ge'||sign==='le';const labels={gt:'>',ge:'≥',lt:'<',le:'≤'};lineExpression.textContent=`x ${labels[sign]} ${boundary}`;lineExplanation.textContent=`${boundary} 畫${isClosed?'實心（包含端點）':'空心（不包含端點）'}，${isRight?'往右取值':'往左取值'}。`;const start=70,end=610,y=86,mapX=(value)=>start+((value+9)/18)*(end-start),pointX=mapX(boundary);lineSvg.replaceChildren();const defs=svgElement('defs',{}),marker=svgElement('marker',{id:'arrow',markerWidth:10,markerHeight:8,refX:9,refY:4,orient:'auto',markerUnits:'strokeWidth'});marker.append(svgElement('path',{d:'M0,0 L10,4 L0,8 z',fill:'#0f766e'}));defs.append(marker);lineSvg.append(defs,svgElement('line',{x1:start,y1:y,x2:end,y2:y,stroke:'#64748b','stroke-width':2}),svgElement('path',{d:`M${end},${y} l-9,-5 v10 z`,fill:'#64748b'}),svgElement('path',{d:`M${start},${y} l9,-5 v10 z`,fill:'#64748b'}));for(let value=-8;value<=8;value+=1){const x=mapX(value);lineSvg.append(svgElement('line',{x1:x,y1:y-7,x2:x,y2:y+7,stroke:'#94a3b8','stroke-width':1}),svgElement('text',{x,y:y+29,'text-anchor':'middle'},String(value)));}lineSvg.append(svgElement('line',{x1:pointX,y1:y,x2:isRight?end+3:start-3,y2:y,stroke:'#0f766e','stroke-width':9,'stroke-linecap':'round','marker-end':'url(#arrow)'}),svgElement('circle',{cx:pointX,cy:y,r:9,fill:isClosed?'#0f766e':'#fff',stroke:'#115e59','stroke-width':3}),svgElement('text',{x:pointX,y:42,'text-anchor':'middle',fill:'#115e59','font-weight':800},`端點 ${boundary}`));}
+    lineSign.addEventListener('change',drawNumberLine);lineBoundary.addEventListener('input',drawNumberLine);
+    const multiplierButtons=[...document.querySelectorAll('[data-multiplier]')];const flipDemo=document.querySelector('#flip-demo');const flipMessage=document.querySelector('#flip-message');
+    function renderFlipDemo(multiplier){const left=2*multiplier,right=5*multiplier,operator=multiplier<0?'>':'<',valueText=(value)=>value<0?`−${Math.abs(value)}`:String(value);flipDemo.innerHTML=`<span class="value">${valueText(left)}</span><span class="operator">${operator}</span><span class="value">${valueText(right)}</span>`;flipMessage.innerHTML=multiplier<0?`<strong>反向：</strong>2 &lt; 5，但同乘 ${valueText(multiplier)} 後，${valueText(left)} &gt; ${valueText(right)}。負數把數線的方向翻過來。`:`<strong>不反向：</strong>2 &lt; 5，同乘正數 ${multiplier} 後，${valueText(left)} &lt; ${valueText(right)}，大小順序不變。`;multiplierButtons.forEach((button)=>button.classList.toggle('active',Number(button.dataset.multiplier)===multiplier));}
+    multiplierButtons.forEach((button)=>button.addEventListener('click',()=>renderFlipDemo(Number(button.dataset.multiplier))));
+    const quizData=[
+      {level:'基礎',question:'「水溫不超過 28°C」若以 x 表示水溫，應寫成？',options:['x &lt; 28','x ≤ 28','x &gt; 28','x ≥ 28'],answer:1,explanation:'「不超過」包含剛好 28，所以要有等號：x ≤ 28。'},
+      {level:'基礎',question:'解 4x − 3 &gt; 9，x 的範圍是？',options:['x &gt; 3','x ≥ 3','x &lt; 3','x ≤ 3'],answer:0,explanation:'兩邊加 3 得 4x &gt; 12；再除以正數 4，方向不變，所以 x &gt; 3。'},
+      {level:'進階',question:'解 −4x + 1 &lt; 13，x 的範圍是？',options:['x &lt; −3','x ≤ −3','x &gt; −3','x ≥ −3'],answer:2,explanation:'先減 1 得 −4x &lt; 12；兩邊除以 −4 時要反向，得到 x &gt; −3。'},
+      {level:'進階',question:'同時符合 x ≥ −2 且 x &lt; 4，應寫成？',options:['−2 &lt; x &lt; 4','−2 ≤ x &lt; 4','−2 ≤ x ≤ 4','x &lt; −2 或 x ≥ 4'],answer:1,explanation:'−2 要包含（≥），4 不包含（&lt;），所以是 −2 ≤ x &lt; 4。'},
+      {level:'挑戰',question:'解 2 − 3(x − 1) ≥ 14，x 的範圍是？',options:['x ≥ −3','x &gt; −3','x ≤ −3','x &lt; −3'],answer:2,explanation:'展開得 5 − 3x ≥ 14，故 −3x ≥ 9；兩邊除以 −3 反向，x ≤ −3。'}
+    ];
+    const quizCount=document.querySelector('#quiz-count'),quizQuestion=document.querySelector('#quiz-question'),quizOptions=document.querySelector('#quiz-options'),checkQuiz=document.querySelector('#check-quiz'),nextQuiz=document.querySelector('#next-quiz'),quizFeedback=document.querySelector('#quiz-feedback');let quizIndex=0,selectedAnswer=null,quizSolved=false;
+    function renderQuiz(){const item=quizData[quizIndex];selectedAnswer=null;quizSolved=false;quizCount.textContent=`${item.level}｜第 ${quizIndex+1} 題／${quizData.length} 題`;quizQuestion.innerHTML=item.question;quizOptions.replaceChildren();item.options.forEach((option,index)=>{const button=document.createElement('button');button.type='button';button.className='choice';button.innerHTML=`${String.fromCharCode(65+index)}. ${option}`;button.addEventListener('click',()=>{if(quizSolved)return;selectedAnswer=index;[...quizOptions.children].forEach((choice,choiceIndex)=>choice.classList.toggle('selected',choiceIndex===index));});quizOptions.append(button);});quizFeedback.className='feedback';quizFeedback.textContent='先選一個答案，再按「檢查我的答案」。';nextQuiz.hidden=true;checkQuiz.hidden=false;}
+    checkQuiz.addEventListener('click',()=>{if(selectedAnswer===null){quizFeedback.className='feedback try';quizFeedback.textContent='先選一個答案。可以先問自己：有沒有等號？有沒有乘除負數？';return;}const item=quizData[quizIndex];if(selectedAnswer===item.answer){quizSolved=true;quizFeedback.className='feedback good';quizFeedback.innerHTML=`<strong>答對了！</strong>${item.explanation}`;[...quizOptions.children].forEach((choice)=>{choice.disabled=true;});checkQuiz.hidden=true;nextQuiz.hidden=false;}else{quizFeedback.className='feedback try';quizFeedback.innerHTML='<strong>還可以再想一次。</strong>先找語句中的「含等號」線索，或回看是否有在兩邊同乘、同除負數。重新選答案不扣分。';}});
+    nextQuiz.addEventListener('click',()=>{quizIndex=(quizIndex+1)%quizData.length;renderQuiz();});
+    drawNumberLine();renderFlipDemo(3);renderQuiz();
+  </script>
+</body>
+</html>

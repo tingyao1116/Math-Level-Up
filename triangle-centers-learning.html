@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>三角形的四個心｜內心、外心、重心、垂心</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #1a2739;
+      --muted: #536275;
+      --paper: #f7fafc;
+      --card: #fff;
+      --line: #d9e3ed;
+      --blue: #1769aa;
+      --blue-pale: #eaf5ff;
+      --purple: #8737ae;
+      --purple-pale: #f8eefe;
+      --orange: #b86000;
+      --orange-pale: #fff3e1;
+      --green: #087960;
+      --green-pale: #e8f8f2;
+      --red: #b43b4e;
+      --red-pale: #fff0f2;
+      --gold: #956000;
+      --gold-pale: #fff7df;
+      --shadow: 0 14px 34px rgba(21, 49, 83, .09);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, #dff3ff 0, transparent 28rem),
+        radial-gradient(circle at 96% 12%, #fff2d5 0, transparent 24rem),
+        var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.75;
+    }
+
+    .wrap { width: min(1140px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 58px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      margin: 18px 0 30px;
+      padding: clamp(26px, 5vw, 52px);
+      border-radius: 28px;
+      color: #fff;
+      background: linear-gradient(135deg, #123c65, #1769aa 54%, #2b91b7);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow, .tag, .center-pill {
+      display: inline-block;
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .eyebrow { padding: 3px 10px; color: #d9f1ff; background: rgba(255,255,255,.14); }
+    .hero h1 { margin: 9px 0 8px; font-size: clamp(2rem, 5vw, 3.42rem); line-height: 1.2; }
+    .lead { max-width: 800px; margin: 0; color: #ecf8ff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
+    .nav a {
+      padding: 7px 13px;
+      border: 1px solid rgba(255,255,255,.48);
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .nav a:hover { background: rgba(255,255,255,.15); }
+
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 37px; }
+    .section-head { margin-bottom: 14px; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.15rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.2rem; line-height: 1.45; }
+    .section-head p, .card p { margin: 5px 0 0; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .card {
+      padding: clamp(18px, 3vw, 26px);
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: var(--card);
+      box-shadow: 0 6px 20px rgba(33, 59, 89, .045);
+    }
+    .tag { padding: 3px 10px; color: var(--blue); background: var(--blue-pale); }
+    .tag.purple { color: var(--purple); background: var(--purple-pale); }
+    .tag.orange { color: var(--orange); background: var(--orange-pale); }
+    .tag.green { color: var(--green); background: var(--green-pale); }
+    .tag.red { color: var(--red); background: var(--red-pale); }
+    .tag.gold { color: var(--gold); background: var(--gold-pale); }
+    .formula {
+      margin: 14px 0;
+      padding: 13px;
+      border-radius: 13px;
+      color: #103451;
+      background: #f1f8fc;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: clamp(1.15rem, 2.8vw, 1.52rem);
+      font-weight: 700;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .formula.small { font-size: 1.05rem; }
+    .formula-map-intro {
+      margin: 0 0 15px;
+      padding: 14px 16px;
+      border: 1px solid #cbe2f0;
+      border-radius: 14px;
+      color: #29485f;
+      background: linear-gradient(135deg, #f9fdff, #edf7fd);
+    }
+    .formula-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .formula-card { min-width: 0; }
+    .formula-block {
+      overflow-x: auto;
+      margin: 13px 0;
+      padding: 10px 12px;
+      border: 1px solid #dbe8f1;
+      border-radius: 12px;
+      background: #f8fbfd;
+      text-align: center;
+    }
+    .formula-block mjx-container[display="true"] { margin: .25em 0 !important; }
+    .formula-block mjx-container { color: #123b5b; }
+    .tex-note { margin: 8px 0 0; color: var(--muted); font-size: .93rem; }
+    .note, .error-note, .teacher-note, .success-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 12px 12px 0;
+      background: var(--blue-pale);
+    }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .teacher-note { border-color: var(--gold); background: var(--gold-pale); }
+    .success-note { border-color: var(--green); background: var(--green-pale); }
+    .rule-list { margin: 11px 0 0; padding-left: 1.25em; }
+    .rule-list li { margin: 5px 0; }
+
+    .explore-layout { display: grid; grid-template-columns: minmax(0, 1.22fr) minmax(285px, .78fr); gap: 17px; align-items: stretch; }
+    .diagram-card { padding: 14px; }
+    .diagram-card svg { display: block; width: 100%; height: auto; min-height: 305px; }
+    .diagram-caption { margin: 4px 4px 0; color: var(--muted); font-size: .92rem; text-align: center; }
+    .control-panel { display: grid; gap: 13px; align-content: start; }
+    .control-group { padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .control-label { display: block; margin-bottom: 8px; color: #31445a; font-weight: 900; }
+    .shape-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    button {
+      min-height: 40px;
+      padding: 8px 13px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--blue);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 850;
+    }
+    button:hover { background: #10598f; }
+    button.secondary { color: #17415e; background: #dceef8; }
+    button.secondary:hover { background: #c8e4f3; }
+    button.shape-button { color: #36546a; background: #fff; border-color: #c9d8e5; }
+    button.shape-button:hover, button.shape-button.active { color: #fff; border-color: var(--blue); background: var(--blue); }
+    button:focus, input:focus, a:focus { outline: 3px solid #82c8ee; outline-offset: 2px; }
+    .center-toggles { display: grid; gap: 7px; }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .toggle-row:hover { background: #eef6fb; }
+    .toggle-row input { width: 17px; height: 17px; accent-color: var(--blue); }
+    .toggle-row.i { color: var(--purple); }
+    .toggle-row.o { color: var(--orange); }
+    .toggle-row.g { color: var(--green); }
+    .toggle-row.h { color: var(--red); }
+    .observation { margin: 0; padding: 14px; border-radius: 13px; color: #29485f; background: #edf7fd; }
+    .observation strong { color: #104d79; }
+    .micro-note { margin: 8px 0 0; color: var(--muted); font-size: .92rem; }
+
+    .center-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .center-card { position: relative; overflow: hidden; }
+    .center-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; background: var(--blue); }
+    .center-card.incenter::before { background: var(--purple); }
+    .center-card.circumcenter::before { background: var(--orange); }
+    .center-card.centroid::before { background: var(--green); }
+    .center-card.orthocenter::before { background: var(--red); }
+    .center-card .card-body { padding-left: 5px; }
+    .center-pill { min-width: 29px; padding: 2px 8px; color: #fff; background: var(--blue); text-align: center; }
+    .incenter .center-pill { background: var(--purple); }
+    .circumcenter .center-pill { background: var(--orange); }
+    .centroid .center-pill { background: var(--green); }
+    .orthocenter .center-pill { background: var(--red); }
+    .definition { color: #31445a; font-weight: 800; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 690px; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: center; vertical-align: top; }
+    th { color: #17415e; background: #edf7fd; font-weight: 850; }
+    th:first-child, td:first-child { text-align: left; }
+    .special-name { font-weight: 900; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 12px 0 0; color: #3b5468; font-size: .92rem; font-weight: 800; }
+    .legend span::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 5px; border-radius: 50%; background: currentColor; }
+    .legend .i { color: var(--purple); }
+    .legend .o { color: var(--orange); }
+    .legend .g { color: var(--green); }
+    .legend .h { color: var(--red); }
+
+    .steps { display: grid; gap: 9px; margin-top: 13px; }
+    .step { padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    .step strong { color: var(--blue); }
+    .example-answer { margin-top: 12px; padding: 12px; border-radius: 11px; background: #f1f8fc; }
+    .example-answer ol { margin: 5px 0 0; padding-left: 1.35em; }
+
+    .quiz-card { padding: clamp(19px, 4vw, 30px); }
+    .quiz-top { display: flex; align-items: end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .progress { color: #416073; font-weight: 850; }
+    .question { margin: 16px 0 12px; font-size: clamp(1.2rem, 3vw, 1.55rem); font-weight: 900; line-height: 1.55; }
+    .choice-list { display: grid; gap: 9px; }
+    .choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px 12px;
+      border: 1px solid #c9d8e5;
+      border-radius: 11px;
+      background: #fff;
+      cursor: pointer;
+      color: #31445a;
+      font-weight: 750;
+    }
+    .choice:hover { border-color: #7eb9db; background: #f5fbff; }
+    .choice input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--blue); }
+    .feedback { min-height: 31px; margin-top: 13px; padding: 8px 11px; border-radius: 9px; color: #315269; background: #e8f2f8; font-weight: 750; }
+    .feedback.good { color: #08634e; background: var(--green-pale); }
+    .feedback.bad { color: #962f2f; background: var(--red-pale); }
+    .tools { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 15px; }
+    .footer { margin: 42px 0 0; color: var(--muted); text-align: center; }
+
+    .triangle-fill { fill: #eef8ff; }
+    .triangle-outline { fill: none; stroke: #173f5e; stroke-width: 3; stroke-linejoin: round; }
+    .construction { fill: none; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
+    .construction.i { stroke: var(--purple); stroke-dasharray: 7 5; }
+    .construction.o { stroke: var(--orange); stroke-dasharray: 10 5 2 5; }
+    .construction.g { stroke: var(--green); stroke-dasharray: 5 5; }
+    .construction.h { stroke: var(--red); stroke-dasharray: 12 5; }
+    .circumcircle { fill: none; stroke: var(--orange); stroke-width: 2.2; stroke-dasharray: 7 5; opacity: .62; }
+    .incircle { fill: rgba(135,55,174,.06); stroke: var(--purple); stroke-width: 2.2; stroke-dasharray: 5 4; opacity: .85; }
+    .vertex { fill: #173f5e; }
+    .center-dot { stroke: #fff; stroke-width: 2.4; }
+    .center-dot.i { fill: var(--purple); }
+    .center-dot.o { fill: var(--orange); }
+    .center-dot.g { fill: var(--green); }
+    .center-dot.h { fill: var(--red); }
+    .svg-label { fill: #163a55; font-size: 18px; font-weight: 900; }
+    .center-label { font-size: 17px; font-weight: 900; }
+    .center-label.i { fill: var(--purple); }
+    .center-label.o { fill: var(--orange); }
+    .center-label.g { fill: var(--green); }
+    .center-label.h { fill: var(--red); }
+    .side-midpoint { fill: #fff; stroke: #607b91; stroke-width: 1.7; }
+    .right-mark { fill: none; stroke: #b43b4e; stroke-width: 1.8; }
+    .radius-line { stroke: var(--purple); stroke-width: 2; stroke-dasharray: 3 4; }
+
+    @media (max-width: 820px) {
+      .explore-layout { grid-template-columns: 1fr; }
+      .center-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 22px, 1140px); padding-top: 15px; }
+      .grid { grid-template-columns: 1fr; }
+      .formula-grid { grid-template-columns: 1fr; }
+      .hero { border-radius: 21px; }
+      .shape-buttons { grid-template-columns: 1fr; }
+      .diagram-card { padding: 6px; }
+      .diagram-card svg { min-height: 250px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回數學教學工具首頁</a>
+
+    <section class="hero">
+      <span class="eyebrow">國中幾何｜作圖線與特殊三角形</span>
+      <h1>三角形的四個心</h1>
+      <p class="lead">內心、外心、重心、垂心不是四個要死背的位置；它們分別是「角平分線、中垂線、中線、高」相交後留下的關鍵點。先看作圖線，再用正三角形、等腰三角形、直角三角形找出最容易判斷的特例。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#explore">一圖看四心</a>
+        <a href="#definitions">四心定義</a>
+        <a href="#special">特殊三角形</a>
+        <a href="#formulas">公式地圖</a>
+        <a href="#examples">例題</a>
+        <a href="#check">自我檢查</a>
+        <a href="./triangle-centers-senior-learning.html">前往高中版：座標與向量</a>
+      </nav>
+    </section>
+
+    <section id="explore" class="section">
+      <div class="section-head">
+        <h2>先看「哪三條線」相交</h2>
+        <p>預設先看外心的中垂線；再自行勾選其他心的作圖線，最後全部顯示，比較四個點的位置。</p>
+      </div>
+      <div class="explore-layout">
+        <article class="card diagram-card">
+          <svg id="triangleDiagram" viewBox="0 0 540 360" role="img" aria-labelledby="diagramTitle diagramDesc">
+            <title id="diagramTitle">三角形四心動態圖</title>
+            <desc id="diagramDesc">可切換一般、正、等腰與直角三角形，顯示內心、外心、重心、垂心及其作圖線。</desc>
+          </svg>
+          <p class="diagram-caption">紫色：角平分線　橘色：中垂線　綠色：中線　紅色：高</p>
+        </article>
+        <aside class="control-panel" aria-label="圖形控制與觀察">
+          <div class="control-group">
+            <span class="control-label">① 選擇三角形</span>
+            <div class="shape-buttons" role="group" aria-label="三角形類型">
+              <button class="shape-button active" type="button" data-shape="scalene">一般銳角△</button>
+              <button class="shape-button" type="button" data-shape="equilateral">正三角形</button>
+              <button class="shape-button" type="button" data-shape="isosceles">等腰三角形</button>
+              <button class="shape-button" type="button" data-shape="right">直角三角形</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label">② 顯示哪些心與作圖線？</span>
+            <div class="center-toggles">
+              <label class="toggle-row i"><input type="checkbox" data-center="i"> 內心 I：角平分線</label>
+              <label class="toggle-row o"><input type="checkbox" data-center="o" checked> 外心 O：中垂線</label>
+              <label class="toggle-row g"><input type="checkbox" data-center="g"> 重心 G：中線</label>
+              <label class="toggle-row h"><input type="checkbox" data-center="h"> 垂心 H：高</label>
+            </div>
+            <div class="tools"><button id="showAll" class="secondary" type="button">全部顯示</button></div>
+          </div>
+          <p id="shapeObservation" class="observation" aria-live="polite"></p>
+          <p class="micro-note">圖上的虛線是「找點的方法」，不是額外的邊；白色小點是各邊的中點。</p>
+        </aside>
+      </div>
+      <div class="legend" aria-label="四心顏色圖例">
+        <span class="i">內心 I</span><span class="o">外心 O</span><span class="g">重心 G</span><span class="h">垂心 H</span>
+      </div>
+    </section>
+
+    <section id="definitions" class="section">
+      <div class="section-head">
+        <h2>四個心：定義、等距性與位置</h2>
+        <p>最穩的辨認法不是看點的名稱，而是先問：「它是哪一組線的交點？」再問：「它等距的是邊，還是頂點？」</p>
+      </div>
+      <div class="center-grid">
+        <article class="card center-card incenter">
+          <div class="card-body">
+            <span class="center-pill">I</span>
+            <h3>內心（Incenter）</h3>
+            <p class="definition">三個<strong>內角平分線</strong>的交點。</p>
+            <ul class="rule-list">
+              <li>內心到三條<strong>邊</strong>的距離相等，所以它是內切圓的圓心。</li>
+              <li>內心一定在三角形<strong>內部</strong>。</li>
+              <li>圖上紫色圓是內切圓：半徑垂直於相切的邊。</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card center-card circumcenter">
+          <div class="card-body">
+            <span class="center-pill">O</span>
+            <h3>外心（Circumcenter）</h3>
+            <p class="definition">三邊<strong>中垂線</strong>的交點。</p>
+            <ul class="rule-list">
+              <li>外心到三個<strong>頂點</strong>的距離相等，所以它是外接圓的圓心。</li>
+              <li>銳角△：在內部；直角△：在斜邊中點；鈍角△：在外部。</li>
+              <li>橘色虛線要同時滿足「過中點」與「垂直於該邊」。</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card center-card centroid">
+          <div class="card-body">
+            <span class="center-pill">G</span>
+            <h3>重心（Centroid）</h3>
+            <p class="definition">三條<strong>中線</strong>的交點。</p>
+            <ul class="rule-list">
+              <li>中線是「頂點連到對邊中點」的線段。</li>
+              <li>每一條中線都被重心分成 <strong>\(2:1\)</strong>（頂點端：中點端）。</li>
+              <li>把三角形看成均勻薄板時，重心就是平衡點；它一定在內部。</li>
+            </ul>
+          </div>
+        </article>
+        <article class="card center-card orthocenter">
+          <div class="card-body">
+            <span class="center-pill">H</span>
+            <h3>垂心（Orthocenter）</h3>
+            <p class="definition">三條<strong>高</strong>所在直線的交點。</p>
+            <ul class="rule-list">
+              <li>高是「從一個頂點向對邊（或對邊延長線）作垂線」。</li>
+              <li>銳角△：在內部；直角△：就是直角頂點；鈍角△：在外部。</li>
+              <li>不要把「高」誤認成「看起來最高的邊」；高一定要有垂直關係。</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <span class="tag gold">快速分辨</span>
+          <h3>「邊」還是「頂點」？</h3>
+          <div class="formula small">\(d(I,AB)=d(I,BC)=d(I,CA)\)　｜　\(OA=OB=OC\)</div>
+          <p>這是最常混淆的一組。題目若提到「內切圓碰到三邊」，先想到內心；若提到「外接圓通過三頂點」，先想到外心。</p>
+        </article>
+        <article class="card">
+          <span class="tag">進階連結</span>
+          <h3>歐拉線（銳角或一般三角形）</h3>
+          <div class="formula small">\(O,\ G,\ H\) 共線，且 \(\overline{OG}:\overline{GH}=1:2\)</div>
+          <p>這是高中延伸常用的關係。正三角形時四心重合，這條線沒有方向；因此不能把「畫不出歐拉線」誤解成性質失效。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="special" class="section">
+      <div class="section-head">
+        <h2>特殊三角形：先記最有力的結論</h2>
+        <p>切回上方動態圖，逐一比對。特例很省時間，但要確認題目真的給了「正、等腰、直角」的條件。</p>
+      </div>
+      <article class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>三角形</th><th>四心的位置</th><th>最值得立刻使用的性質</th><th>圖上怎麼看</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="special-name">正三角形</td>
+                <td><strong>\(I=O=G=H\)</strong><br>四心完全重合。</td>
+                <td>每一條中線同時是高、角平分線與中垂線；外接圓半徑滿足 \(R=2r\)（\(r\) 為內切圓半徑）。</td>
+                <td>切到「正三角形」後，四色點疊在同一個位置。</td>
+              </tr>
+              <tr>
+                <td class="special-name">等腰三角形</td>
+                <td>四心都在底邊中點與頂點連成的<strong>對稱軸</strong>上；通常不重合。</td>
+                <td>頂角到底邊中點的線段，同時是中線、高、角平分線與底邊中垂線。</td>
+                <td>切到「等腰三角形」後，四色點排在同一條直線上。</td>
+              </tr>
+              <tr>
+                <td class="special-name">直角三角形</td>
+                <td><strong>\(H\) 是直角頂點</strong>；<strong>\(O\) 是斜邊中點</strong>；\(I,G\) 仍在內部。</td>
+                <td>若斜邊長為 \(c\)，外接圓半徑 \(R=\frac{c}{2}\)；斜邊就是外接圓的直徑。</td>
+                <td>切到「直角三角形」後，紅點回到直角頂點，橘點落在斜邊中點。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="teacher-note"><strong>上課提示：</strong>先問學生「為什麼直角△的垂心就是直角頂點？」兩條直角邊已經互相垂直，分別就是從另兩個頂點作出的高；它們在直角頂點相交。</div>
+      </article>
+    </section>
+
+    <section id="formulas" class="section">
+      <div class="section-head">
+        <h2>四心公式地圖：標記清楚，才代入計算</h2>
+        <p>以下整理截圖中的常用關係。先在圖上標好頂點、對邊與中點；同一個字母在不同題目可能代表不同邊，不能只背式子就代數。</p>
+      </div>
+      <div class="formula-map-intro">
+        在 \(\triangle ABC\) 中，先約定 \(a=\overline{BC}\)、\(b=\overline{CA}\)、\(c=\overline{AB}\)，半周長為
+        <div class="formula-block">\[s=\frac{a+b+c}{2}\]</div>
+        面積以下記作 \([\triangle ABC]\)。若題目另行把斜邊叫作 \(c\)，就以題目的約定為準。
+      </div>
+      <div class="formula-grid">
+        <article class="card formula-card">
+          <span class="tag orange">外心與外接圓</span>
+          <h3>先抓「到三頂點等距」</h3>
+          <p>三邊中垂線交於外心 \(O\)，外接圓半徑是 \(R\)。</p>
+          <div class="formula-block">\[OA=OB=OC=R\]</div>
+          <p>圓周角與圓心角要先對準同一段弧。例如 \(\angle ABC\) 對應弧 \(\widehat{AC}\) 時：</p>
+          <div class="formula-block">\[m\!\left(\widehat{AC}\right)=\angle AOC=2\angle ABC\]</div>
+          <div class="formula-block">\[m\!\left(\widehat{ABC}\right)=360^\circ-2\angle ABC\]</div>
+          <p class="tex-note">直角三角形中，外心是斜邊中點；若斜邊為 \(c\)，則 \(R=\frac{c}{2}\)。</p>
+        </article>
+
+        <article class="card formula-card">
+          <span class="tag purple">內心、內切圓與面積</span>
+          <h3>先抓「到三邊等距」</h3>
+          <p>三內角平分線交於內心 \(I\)。設內切圓半徑為 \(r\)。</p>
+          <div class="formula-block">\[d(I,AB)=d(I,BC)=d(I,CA)=r\]</div>
+          <div class="formula-block">\[[\triangle ABC]=rs=r\cdot\frac{a+b+c}{2}\]</div>
+          <div class="formula-block">\[r=\frac{[\triangle ABC]}{s}=\frac{2[\triangle ABC]}{a+b+c}\]</div>
+          <p class="tex-note">若兩股為 \(p,q\)，斜邊為 \(c\)，則直角三角形的內切圓半徑為 \(r=\frac{p+q-c}{2}\)。</p>
+        </article>
+
+        <article class="card formula-card">
+          <span class="tag purple">內心的角與座標</span>
+          <h3>角平分線交點的兩個進階工具</h3>
+          <p>若 \(I\) 是內心，最常用的角度關係是：</p>
+          <div class="formula-block">\[\angle BIC=90^\circ+\frac{1}{2}\angle A\]</div>
+          <p>若頂點座標分別為 \(A(x_A,y_A)\)、\(B(x_B,y_B)\)、\(C(x_C,y_C)\)，則內心是以對邊長為權重的平均：</p>
+          <div class="formula-block">\[I=\left(\frac{ax_A+bx_B+cx_C}{a+b+c},\ \frac{ay_A+by_B+cy_C}{a+b+c}\right)\]</div>
+          <p class="tex-note">這裡 \(a,b,c\) 分別是 \(A,B,C\) 的對邊；權重不要放錯頂點。</p>
+        </article>
+
+        <article class="card formula-card">
+          <span class="tag green">重心與面積、座標</span>
+          <h3>中線交點一定是 \(2:1\)</h3>
+          <p>設 \(M\) 是 \(BC\) 的中點，\(G\) 是重心，則：</p>
+          <div class="formula-block">\[\overline{AG}:\overline{GM}=2:1\]</div>
+          <div class="formula-block">\[\overline{AG}=\frac{2}{3}\overline{AM},\qquad \overline{GM}=\frac{1}{3}\overline{AM}\]</div>
+          <p>三條中線畫齊後，六個小三角形面積相等；另外：</p>
+          <div class="formula-block">\[[\triangle AGB]=[\triangle BGC]=[\triangle CGA]=\frac{1}{3}[\triangle ABC]\]</div>
+          <div class="formula-block">\[G=\left(\frac{x_A+x_B+x_C}{3},\ \frac{y_A+y_B+y_C}{3}\right)\]</div>
+        </article>
+
+        <article class="card formula-card">
+          <span class="tag gold">正三角形：四心重合</span>
+          <h3>一條中線，帶出所有半徑</h3>
+          <p>設 \(\overline{AB}=\overline{BC}=\overline{CA}=a\)，\(D\) 為 \(BC\) 中點。此時 \(I=O=G=H\)。</p>
+          <div class="formula-block">\[\overline{AD}=\frac{\sqrt{3}}{2}a\]</div>
+          <div class="formula-block">\[R=\frac{2}{3}\overline{AD}=\frac{\sqrt{3}}{3}a\]</div>
+          <div class="formula-block">\[r=\frac{1}{3}\overline{AD}=\frac{\sqrt{3}}{6}a,\qquad R=2r\]</div>
+          <p class="tex-note">根號與分數請連同整個分子、分母閱讀；例如 \(\frac{\sqrt{3}}{6}a\) 不是 \(\sqrt{\frac{3}{6}a}\)。</p>
+        </article>
+
+        <article class="card formula-card">
+          <span class="tag red">等腰與直角三角形</span>
+          <h3>先用特例減少未知數</h3>
+          <p>若 \(AB=AC=\ell\)、\(BC=b\)，\(M\) 是 \(BC\) 中點，則對稱軸 \(AM\) 先可由畢氏定理求出：</p>
+          <div class="formula-block">\[\overline{AM}=\sqrt{\ell^2-\left(\frac{b}{2}\right)^2}\]</div>
+          <div class="formula-block">\[[\triangle ABC]=\frac{1}{2}b\cdot\overline{AM},\qquad r=\frac{[\triangle ABC]}{s}\]</div>
+          <p>直角三角形中，若 \(\angle A=90^\circ\)、斜邊 \(\overline{BC}=c\)，且 \(G\) 為重心：</p>
+          <div class="formula-block">\[R=\frac{c}{2},\qquad \overline{OG}=\frac{c}{6}\]</div>
+          <p class="tex-note">最後一式使用了「外心 \(O\) 是斜邊中點」與「重心把中線分成 \(2:1\)」。</p>
+        </article>
+
+        <article class="card formula-card">
+          <span class="tag">求長度的三條路</span>
+          <h3>四心題常要先把長度補齊</h3>
+          <p>看到直角、相似／平行或高時，先選正確工具，再回到四心公式。</p>
+          <div class="formula-block">\[p^2+q^2=c^2\]</div>
+          <div class="formula-block">\[\frac{x_1}{x_2}=\frac{y_1}{y_2}\]</div>
+          <div class="formula-block">\[[\triangle ABC]=\frac{1}{2}\cdot\text{底}\cdot\text{高}\]</div>
+          <p class="tex-note">依序檢查：直角才用畢氏；有相似或平行才寫比例；有同底或同高才直接比較面積。</p>
+        </article>
+
+        <article class="card formula-card">
+          <span class="tag orange">外接圓半徑的面積式</span>
+          <h3>已知三邊與面積時的捷徑</h3>
+          <p>若 \(a,b,c\) 是三邊長、\(R\) 是外接圓半徑，則：</p>
+          <div class="formula-block">\[R=\frac{abc}{4[\triangle ABC]}\]</div>
+          <p>它常和內切圓面積式搭配使用：先由高、畢氏或海龍公式求面積，再決定要找 \(r\) 還是 \(R\)。</p>
+          <div class="error-note"><strong>別混淆：</strong>\(r\) 是內切圓半徑，\(R\) 是外接圓半徑；同一題中大小寫不同，意義完全不同。</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="examples" class="section">
+      <div class="section-head">
+        <h2>可直接上課的例題</h2>
+        <p>每題先圈出題目給的三角形類型，再挑出對應的心；不要一開始就把四心全部搬出來。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">基礎｜等腰三角形</span>
+          <h3>一條線有四個身分</h3>
+          <p>\(\triangle ABC\) 中，\(AB=AC\)，\(M\) 是 \(BC\) 的中點。說明 \(\overline{AM}\) 還具有哪些性質？四個心在哪裡？</p>
+          <div class="example-answer">
+            <strong>解題步驟</strong>
+            <ol>
+              <li>\(AB=AC\)，所以 \(\triangle ABC\) 是以 \(A\) 為頂點的等腰三角形。</li>
+              <li>\(M\) 是底邊 \(BC\) 的中點，因此 \(\overline{AM}\) 是對稱軸。</li>
+              <li>\(\overline{AM}\) 同時是<strong>中線、高、\(\angle A\) 的角平分線、\(BC\) 的中垂線</strong>。</li>
+              <li>所以 \(I,O,G,H\) 都在 \(\overline{AM}\) 上；除非它還是正三角形，否則四點不一定重合。</li>
+            </ol>
+          </div>
+        </article>
+        <article class="card">
+          <span class="tag orange">基礎｜直角三角形</span>
+          <h3>看到斜邊，立刻判外心</h3>
+          <p>\(\triangle ABC\) 中，\(\angle A=90^\circ\)，斜邊 \(BC=10\)。求外接圓半徑，並指出垂心的位置。</p>
+          <div class="example-answer">
+            <strong>解題步驟</strong>
+            <ol>
+              <li>直角三角形的外心是斜邊 \(BC\) 的中點。</li>
+              <li>外接圓半徑等於斜邊的一半：<strong>\(R=\frac{10}{2}=5\)</strong>。</li>
+              <li>兩條直角邊本身就是兩條高，因此垂心 <strong>\(H=A\)</strong>。</li>
+            </ol>
+          </div>
+        </article>
+        <article class="card">
+          <span class="tag green">進階｜重心分比</span>
+          <h3>中線不是被平分</h3>
+          <p>在 \(\triangle ABC\) 中，\(AM\) 是中線，\(G\) 是重心，且 \(AG=12\)。求 \(GM\) 與 \(AM\)。</p>
+          <div class="example-answer">
+            <strong>解題步驟</strong>
+            <ol>
+              <li>重心把中線分成 \(AG:GM=2:1\)。</li>
+              <li>\(AG=12\) 對應 \(2\) 份，所以 \(1\) 份是 \(6\)。</li>
+              <li>\(GM=\) <strong>\(6\)</strong>，\(AM=AG+GM=\) <strong>\(18\)</strong>。</li>
+            </ol>
+          </div>
+        </article>
+        <article class="card">
+          <span class="tag red">挑戰｜辨認作圖線</span>
+          <h3>只有「中點」還不夠</h3>
+          <p>小宇說：「我從每一邊的中點連到對面頂點，交點就是外心。」他的說法正確嗎？</p>
+          <div class="example-answer">
+            <strong>答：</strong>不正確。從頂點連到對邊中點的是<strong>中線</strong>，三條中線的交點是<strong>重心 \(G\)</strong>。外心 \(O\) 要畫的是每一邊的<strong>中垂線</strong>：過中點，且垂直於該邊。
+          </div>
+        </article>
+      </div>
+      <div class="error-note"><strong>最常犯的錯：</strong>等腰三角形只有「頂點連到底邊中點」這一條對稱軸同時兼具多種身分；不能因此推論任何一條中線都是高，也不能推論四心必定重合。</div>
+    </section>
+
+    <section id="check" class="section">
+      <div class="section-head">
+        <h2>自我檢查：先判斷，再看答案</h2>
+        <p>答錯時題目會保留，請回到定義卡或上方圖形重新比對後再試一次。</p>
+      </div>
+      <article class="card quiz-card">
+        <div class="quiz-top">
+          <span class="tag">四題核心判斷</span>
+          <span id="quizProgress" class="progress">第 1 題／共 4 題</span>
+        </div>
+        <div id="quizQuestion" class="question"></div>
+        <div id="quizChoices" class="choice-list"></div>
+        <div class="tools">
+          <button id="checkQuiz" type="button">檢查答案</button>
+          <button id="nextQuiz" class="secondary" type="button">下一題</button>
+        </div>
+        <div id="quizFeedback" class="feedback" aria-live="polite">選一個答案後按「檢查答案」。</div>
+      </article>
+    </section>
+
+    <p class="footer">學習順序建議：作圖線 → 定義 → 特殊三角形 → 分比與圓的題目。</p>
+  </main>
+
+  <script>
+    (function() {
+      "use strict";
+
+      var diagram = document.getElementById("triangleDiagram");
+      var observation = document.getElementById("shapeObservation");
+      var shapeButtons = Array.prototype.slice.call(document.querySelectorAll("[data-shape]"));
+      var centerInputs = Array.prototype.slice.call(document.querySelectorAll("[data-center]"));
+      var activeShape = "scalene";
+      var visible = { i: false, o: true, g: false, h: false };
+
+      var presets = {
+        scalene: {
+          name: "一般銳角三角形",
+          points: [{ x: 80, y: 285 }, { x: 480, y: 285 }, { x: 242, y: 55 }],
+          note: "<strong>一般銳角三角形：</strong>四個心通常彼此分開；因為三個角都是銳角，外心 O 與垂心 H 都在三角形內部。"
+        },
+        equilateral: {
+          name: "正三角形",
+          points: [{ x: 120, y: 305 }, { x: 420, y: 305 }, { x: 270, y: 45.2 }],
+          note: "<strong>正三角形：</strong>每一條中線同時是高、角平分線與中垂線，所以 <strong>I = O = G = H</strong>。四色標記與四種作圖線都重合；想看某一種線時，可先取消其他三項勾選。"
+        },
+        isosceles: {
+          name: "等腰三角形",
+          points: [{ x: 95, y: 300 }, { x: 445, y: 300 }, { x: 270, y: 88 }],
+          note: "<strong>等腰三角形：</strong>四色點都落在通過頂點與底邊中點的對稱軸上，但通常是不同的位置；只有正三角形才會四心重合。"
+        },
+        right: {
+          name: "直角三角形",
+          points: [{ x: 95, y: 265 }, { x: 395, y: 265 }, { x: 95, y: 105 }],
+          note: "<strong>直角三角形：</strong>直角頂點 A 就是垂心 H；外心 O 是斜邊 BC 的中點。請比較紅點與橘點的位置。"
+        }
+      };
+
+      function add(a, b) { return { x: a.x + b.x, y: a.y + b.y }; }
+      function subtract(a, b) { return { x: a.x - b.x, y: a.y - b.y }; }
+      function multiply(a, k) { return { x: a.x * k, y: a.y * k }; }
+      function midpoint(a, b) { return multiply(add(a, b), .5); }
+      function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+      function dot(a, b) { return a.x * b.x + a.y * b.y; }
+      function format(n) { return Number(n).toFixed(1); }
+      function pointText(p) { return format(p.x) + "," + format(p.y); }
+
+      function projection(point, lineStart, lineEnd) {
+        var direction = subtract(lineEnd, lineStart);
+        var factor = dot(subtract(point, lineStart), direction) / dot(direction, direction);
+        return add(lineStart, multiply(direction, factor));
+      }
+
+      function incenter(a, b, c) {
+        var sideA = distance(b, c);
+        var sideB = distance(a, c);
+        var sideC = distance(a, b);
+        var total = sideA + sideB + sideC;
+        return {
+          x: (sideA * a.x + sideB * b.x + sideC * c.x) / total,
+          y: (sideA * a.y + sideB * b.y + sideC * c.y) / total
+        };
+      }
+
+      function circumcenter(a, b, c) {
+        var denominator = 2 * (a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
+        return {
+          x: ((a.x * a.x + a.y * a.y) * (b.y - c.y) + (b.x * b.x + b.y * b.y) * (c.y - a.y) + (c.x * c.x + c.y * c.y) * (a.y - b.y)) / denominator,
+          y: ((a.x * a.x + a.y * a.y) * (c.x - b.x) + (b.x * b.x + b.y * b.y) * (a.x - c.x) + (c.x * c.x + c.y * c.y) * (b.x - a.x)) / denominator
+        };
+      }
+
+      function centroid(a, b, c) {
+        return { x: (a.x + b.x + c.x) / 3, y: (a.y + b.y + c.y) / 3 };
+      }
+
+      function angleBisectorFoot(vertex, left, right) {
+        var fromVertexToLeft = distance(vertex, left);
+        var fromVertexToRight = distance(vertex, right);
+        var fraction = fromVertexToLeft / (fromVertexToLeft + fromVertexToRight);
+        return add(left, multiply(subtract(right, left), fraction));
+      }
+
+      function perpendicularBisectorEnds(a, b) {
+        var middle = midpoint(a, b);
+        var side = subtract(b, a);
+        var length = Math.hypot(side.x, side.y);
+        var normal = { x: -side.y / length, y: side.x / length };
+        return { first: add(middle, multiply(normal, 215)), second: add(middle, multiply(normal, -215)) };
+      }
+
+      function rightAngleMark(foot, from, sideStart, sideEnd) {
+        var along = subtract(sideEnd, sideStart);
+        var alongLength = Math.hypot(along.x, along.y);
+        var unitAlong = { x: along.x / alongLength, y: along.y / alongLength };
+        var height = subtract(from, foot);
+        var heightLength = Math.hypot(height.x, height.y);
+        if (heightLength < .01) return "";
+        var unitHeight = { x: height.x / heightLength, y: height.y / heightLength };
+        var size = 10;
+        var first = add(foot, multiply(unitAlong, size));
+        var corner = add(first, multiply(unitHeight, size));
+        var last = add(foot, multiply(unitHeight, size));
+        return '<path class="right-mark" d="M ' + pointText(first) + ' L ' + pointText(corner) + ' L ' + pointText(last) + '"></path>';
+      }
+
+      function line(a, b, className) {
+        return '<line class="' + className + '" x1="' + format(a.x) + '" y1="' + format(a.y) + '" x2="' + format(b.x) + '" y2="' + format(b.y) + '"></line>';
+      }
+
+      function circle(point, radius, className) {
+        return '<circle class="' + className + '" cx="' + format(point.x) + '" cy="' + format(point.y) + '" r="' + format(radius) + '"></circle>';
+      }
+
+      function label(text, point, className, dx, dy) {
+        return '<text class="' + className + '" x="' + format(point.x + dx) + '" y="' + format(point.y + dy) + '">' + text + '</text>';
+      }
+
+      function renderDiagram() {
+        var preset = presets[activeShape];
+        var a = preset.points[0];
+        var b = preset.points[1];
+        var c = preset.points[2];
+        var mA = midpoint(b, c);
+        var mB = midpoint(c, a);
+        var mC = midpoint(a, b);
+        var i = incenter(a, b, c);
+        var o = circumcenter(a, b, c);
+        var g = centroid(a, b, c);
+        var h = { x: a.x + b.x + c.x - 2 * o.x, y: a.y + b.y + c.y - 2 * o.y };
+        var iFoot = projection(i, a, b);
+        var iA = angleBisectorFoot(a, b, c);
+        var iB = angleBisectorFoot(b, c, a);
+        var iC = angleBisectorFoot(c, a, b);
+        var footA = projection(a, b, c);
+        var footB = projection(b, c, a);
+        var footC = projection(c, a, b);
+        var pA = perpendicularBisectorEnds(b, c);
+        var pB = perpendicularBisectorEnds(c, a);
+        var pC = perpendicularBisectorEnds(a, b);
+        var radius = distance(o, a);
+        var centerLabels = activeShape === "equilateral"
+          ? { i: [-23, -12], o: [12, -14], g: [-25, 22], h: [13, 23] }
+          : activeShape === "right"
+            ? { i: [11, -13], o: [11, -12], g: [11, 23], h: [13, -20] }
+            : { i: [11, -13], o: [11, -12], g: [-26, 22], h: [11, 23] };
+        var trianglePoints = pointText(a) + ' ' + pointText(b) + ' ' + pointText(c);
+        var output = '<polygon class="triangle-fill" points="' + trianglePoints + '"></polygon>';
+
+        if (visible.o) {
+          output += circle(o, radius, "circumcircle");
+          output += line(pA.first, pA.second, "construction o") + line(pB.first, pB.second, "construction o") + line(pC.first, pC.second, "construction o");
+        }
+        if (visible.i) {
+          output += circle(i, distance(i, iFoot), "incircle");
+          output += line(a, iA, "construction i") + line(b, iB, "construction i") + line(c, iC, "construction i");
+          output += line(i, iFoot, "radius-line") + rightAngleMark(iFoot, i, a, b);
+        }
+        if (visible.g) {
+          output += line(a, mA, "construction g") + line(b, mB, "construction g") + line(c, mC, "construction g");
+        }
+        if (visible.h) {
+          output += line(a, footA, "construction h") + line(b, footB, "construction h") + line(c, footC, "construction h");
+          output += rightAngleMark(footA, a, b, c) + rightAngleMark(footB, b, c, a) + rightAngleMark(footC, c, a, b);
+        }
+
+        output += '<polygon class="triangle-outline" points="' + trianglePoints + '"></polygon>';
+        output += circle(mA, 4.2, "side-midpoint") + circle(mB, 4.2, "side-midpoint") + circle(mC, 4.2, "side-midpoint");
+        output += circle(a, 5.2, "vertex") + circle(b, 5.2, "vertex") + circle(c, 5.2, "vertex");
+        output += label("A", a, "svg-label", -17, 22) + label("B", b, "svg-label", 10, 22) + label("C", c, "svg-label", 9, -8);
+        if (visible.i) output += circle(i, 6.5, "center-dot i") + label("I", i, "center-label i", centerLabels.i[0], centerLabels.i[1]);
+        if (visible.o) output += circle(o, 6.5, "center-dot o") + label("O", o, "center-label o", centerLabels.o[0], centerLabels.o[1]);
+        if (visible.g) output += circle(g, 6.5, "center-dot g") + label("G", g, "center-label g", centerLabels.g[0], centerLabels.g[1]);
+        if (visible.h) output += circle(h, 6.5, "center-dot h") + label("H", h, "center-label h", centerLabels.h[0], centerLabels.h[1]);
+        diagram.innerHTML = output;
+        observation.innerHTML = preset.note;
+      }
+
+      shapeButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+          activeShape = button.getAttribute("data-shape");
+          shapeButtons.forEach(function(item) { item.classList.toggle("active", item === button); });
+          renderDiagram();
+        });
+      });
+
+      centerInputs.forEach(function(input) {
+        input.addEventListener("change", function() {
+          visible[input.getAttribute("data-center")] = input.checked;
+          renderDiagram();
+        });
+      });
+
+      document.getElementById("showAll").addEventListener("click", function() {
+        centerInputs.forEach(function(input) {
+          input.checked = true;
+          visible[input.getAttribute("data-center")] = true;
+        });
+        renderDiagram();
+      });
+
+      var questions = [
+        {
+          prompt: "哪一個心到三條邊的距離相等？",
+          choices: ["內心 I", "外心 O", "重心 G", "垂心 H"],
+          answer: 0,
+          explanation: "內心是角平分線交點，到三條邊等距，因此是內切圓圓心。"
+        },
+        {
+          prompt: "重心 G 將一條中線分成哪一個比？",
+          choices: ["頂點端：中點端 = 1：1", "頂點端：中點端 = 2：1", "頂點端：中點端 = 1：2", "無固定比"],
+          answer: 1,
+          explanation: "重心靠近中點；頂點到重心是整條中線的 2/3，重心到中點是 1/3。"
+        },
+        {
+          prompt: "△ABC 中 ∠A = 90°。垂心 H 在哪裡？",
+          choices: ["A 點", "BC 的中點", "三角形外部", "不一定能判斷"],
+          answer: 0,
+          explanation: "兩條直角邊本身就是兩條高，交在直角頂點 A，因此 H = A。"
+        },
+        {
+          prompt: "直角△的斜邊長是 14。外接圓半徑是多少？",
+          choices: ["7", "14", "28", "無法判斷"],
+          answer: 0,
+          explanation: "直角三角形的外心在斜邊中點，所以外接圓半徑 = 斜邊 ÷ 2 = 7。"
+        }
+      ];
+      var questionIndex = 0;
+      var quizQuestion = document.getElementById("quizQuestion");
+      var quizChoices = document.getElementById("quizChoices");
+      var quizProgress = document.getElementById("quizProgress");
+      var quizFeedback = document.getElementById("quizFeedback");
+
+      function renderQuestion() {
+        var question = questions[questionIndex];
+        quizProgress.textContent = "第 " + (questionIndex + 1) + " 題／共 " + questions.length + " 題";
+        quizQuestion.textContent = question.prompt;
+        quizChoices.innerHTML = question.choices.map(function(choice, index) {
+          return '<label class="choice"><input type="radio" name="center-quiz" value="' + index + '"><span>' + choice + '</span></label>';
+        }).join("");
+        quizFeedback.className = "feedback";
+        quizFeedback.textContent = "選一個答案後按「檢查答案」。";
+      }
+
+      document.getElementById("checkQuiz").addEventListener("click", function() {
+        var selected = document.querySelector('input[name="center-quiz"]:checked');
+        var question = questions[questionIndex];
+        if (!selected) {
+          quizFeedback.className = "feedback bad";
+          quizFeedback.textContent = "先選一個答案，再檢查。";
+          return;
+        }
+        if (Number(selected.value) === question.answer) {
+          quizFeedback.className = "feedback good";
+          quizFeedback.textContent = "答對了！" + question.explanation;
+        } else {
+          quizFeedback.className = "feedback bad";
+          quizFeedback.textContent = "再想一次：" + question.explanation + " 你可以保留題目重新選答。";
+        }
+      });
+
+      document.getElementById("nextQuiz").addEventListener("click", function() {
+        questionIndex = (questionIndex + 1) % questions.length;
+        renderQuestion();
+      });
+
+      renderDiagram();
+      renderQuestion();
+    })();
+  </script>
+</body>
+</html>
