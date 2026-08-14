@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>矩陣的旋轉與鏡射：公式、順序、行列式</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["\\(", "\\)"], ["$", "$"]], displayMath: [["\\[", "\\]"]] },
+      svg: { fontCache: "global" }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #10233f;
+      --muted: #52657d;
+      --line: #d9e3f0;
+      --paper: #ffffff;
+      --sky: #ecf8ff;
+      --navy: #135b94;
+      --teal: #087a70;
+      --purple: #7653b8;
+      --orange: #ca6914;
+      --red: #b74747;
+      --yellow: #fff4ca;
+      --shadow: 0 16px 42px rgba(24, 57, 91, .11);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(145deg, #edf8ff 0, #f9fbff 45%, #f4f0ff 100%);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+    .page { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 64px; }
+    .back {
+      display: inline-flex; gap: 6px; align-items: center; color: var(--navy); font-weight: 800;
+      text-decoration: none; margin: 2px 0 16px;
+    }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      position: relative; overflow: hidden; padding: clamp(24px, 5vw, 50px); border-radius: 26px;
+      color: #fff; background: linear-gradient(125deg, #103c6a, #19678f 58%, #168278);
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: ""; position: absolute; width: 300px; height: 300px; right: -80px; bottom: -160px;
+      border: 34px solid rgba(255,255,255,.12); border-radius: 50%; transform: rotate(-20deg);
+    }
+    .eyebrow { margin: 0 0 8px; font-weight: 800; letter-spacing: .08em; color: #baf4ed; }
+    h1 { position: relative; z-index: 1; margin: 0; font-size: clamp(30px, 5vw, 52px); line-height: 1.25; }
+    .hero p { position: relative; z-index: 1; max-width: 790px; margin: 16px 0 0; font-size: clamp(16px, 2.2vw, 20px); color: #e7f7ff; }
+    .hero-nav { position: relative; z-index: 1; display: flex; gap: 9px; flex-wrap: wrap; margin-top: 22px; }
+    .hero-nav a { color: #fff; text-decoration: none; font-weight: 700; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; padding: 5px 12px; background: rgba(0,0,0,.12); }
+    .hero-nav a:hover { background: rgba(255,255,255,.17); }
+    .section { margin-top: 30px; padding: clamp(20px, 4vw, 34px); background: var(--paper); border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 9px 28px rgba(24,57,91,.06); }
+    h2 { margin: 0 0 12px; font-size: clamp(24px, 3vw, 31px); line-height: 1.35; }
+    h3 { margin: 0 0 7px; font-size: 19px; line-height: 1.45; }
+    p { margin: 8px 0; }
+    .lead { color: var(--muted); margin: 0 0 18px; }
+    .pill-row, .step-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+    .pill, .step-card { border: 1px solid var(--line); border-radius: 15px; padding: 14px 15px; background: #fbfdff; }
+    .pill strong, .step-card strong { display: block; color: var(--navy); font-size: 16px; }
+    .pill p, .step-card p { color: var(--muted); margin: 4px 0 0; font-size: 15px; }
+    .formula { margin: 12px 0; padding: 13px 15px; border-radius: 13px; background: #f3f8fe; border-left: 5px solid #4191c8; overflow-x: auto; }
+    mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+    .formula.warm { background: #fffaf0; border-left-color: #d78828; }
+    .note, .warning, .success {
+      margin: 14px 0 0; border-radius: 14px; padding: 13px 15px;
+    }
+    .note { background: #eafaf6; border: 1px solid #b9e8dd; }
+    .warning { background: #fff7df; border: 1px solid #f0d994; }
+    .success { background: #edf9ef; border: 1px solid #b7ddbd; }
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .two-col > *, .compare-grid > *, .lab-grid > *, .control-grid > *, .point-inputs > *, .summary-grid > *, .teacher-flow > * { min-width: 0; }
+    .derive { height: 100%; padding: 19px; border: 1px solid var(--line); border-radius: 17px; background: linear-gradient(180deg, #fcfeff, #f3f9ff); }
+    .derive.reflect { background: linear-gradient(180deg, #fffcf6, #fff7e8); }
+    .derive .tag { display: inline-block; padding: 2px 9px; border-radius: 999px; background: #dceefb; color: #145a90; font-weight: 800; font-size: 13px; }
+    .derive.reflect .tag { background: #ffe8ba; color: #8a4c00; }
+    .derive ol { margin: 9px 0 0; padding-left: 24px; }
+    .table-scroll { overflow-x: auto; padding-bottom: 4px; }
+    table { width: 100%; border-collapse: collapse; min-width: 690px; }
+    th, td { padding: 11px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #eaf4fb; color: #174e7a; font-size: 15px; }
+    td { font-size: 15px; }
+    tr:nth-child(even) td { background: #fbfdff; }
+    .small { color: var(--muted); font-size: 14px; }
+    .sequence { display: flex; gap: 12px; align-items: stretch; margin: 15px 0; }
+    .sequence-card { flex: 1; min-width: 0; padding: 15px; border-radius: 16px; text-align: center; border: 1px solid var(--line); background: #fbfdff; }
+    .sequence-card strong { display: block; color: var(--navy); font-size: 20px; }
+    .sequence-arrow { display: grid; place-items: center; color: var(--orange); font-size: 28px; font-weight: 900; }
+    .order-box { margin-top: 16px; padding: 18px; border-radius: 16px; background: linear-gradient(100deg, #fff8e8, #fffdf7); border: 1px solid #efd493; }
+    .order-box h3 { color: #91510c; }
+    .compare-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 20px; align-items: start; }
+    .sign-card { padding: 17px; border: 1px solid #cbe2f5; border-radius: 17px; background: #f3faff; }
+    .sign-card h3 { color: #145a90; }
+    .check-list { list-style: none; padding: 0; margin: 10px 0 0; }
+    .check-list li { position: relative; padding: 7px 0 7px 30px; }
+    .check-list li::before { content: "✓"; position: absolute; left: 0; top: 7px; display: grid; place-items: center; width: 21px; height: 21px; border-radius: 50%; background: #c6eee7; color: #06695f; font-weight: 900; }
+    .mistakes { display: grid; gap: 10px; }
+    .mistake { padding: 13px 15px; border-radius: 13px; border-left: 4px solid #d47b37; background: #fffaf0; }
+    .mistake strong { color: #93460e; }
+    .lab { background: linear-gradient(150deg, #f7fcff, #f9f7ff); }
+    .lab-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, .86fr); gap: 20px; align-items: start; }
+    .control-card, .output-card { padding: 18px; border: 1px solid var(--line); border-radius: 17px; background: #fff; }
+    .control-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    label { display: grid; gap: 5px; font-weight: 800; color: #294966; font-size: 14px; }
+    select, input, button { font: inherit; }
+    select, input { width: 100%; padding: 9px 10px; color: var(--ink); background: #fff; border: 1px solid #b9cce0; border-radius: 10px; }
+    select:focus, input:focus, button:focus { outline: 3px solid rgba(22, 118, 176, .25); outline-offset: 2px; }
+    .point-inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 14px; }
+    button { cursor: pointer; border: 1px solid #1772a8; border-radius: 10px; padding: 8px 12px; color: #fff; background: #1672a8; font-weight: 800; }
+    button:hover { background: #105d8b; }
+    button.ghost { color: #165d8b; background: #fff; }
+    button.ghost:hover { background: #edf7ff; }
+    .output-card { min-height: 220px; }
+    .result-title { color: var(--teal); font-size: 18px; font-weight: 900; }
+    .matrix-result { min-height: 78px; padding: 9px 0; overflow-x: auto; }
+    .route { color: var(--muted); font-size: 15px; }
+    .svg-card { grid-column: 1 / -1; padding: 13px; border: 1px solid var(--line); border-radius: 17px; background: #fff; }
+    #matrixSvg { width: 100%; display: block; max-height: 460px; }
+    .legend { display: flex; gap: 13px; flex-wrap: wrap; padding: 5px 7px 0; color: #415873; font-size: 14px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    .summary-card { padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: #fbfdff; }
+    .summary-card strong { display: block; color: #155b88; }
+    .summary-card p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    .quiz-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .quiz-tabs button { color: #3f5c74; background: #edf4fa; border-color: #c3d7e8; }
+    .quiz-tabs button.active { color: #fff; background: #1672a8; border-color: #1672a8; }
+    .quiz-question { padding: 18px; border-radius: 16px; border: 1px solid var(--line); background: #fbfdff; }
+    .quiz-options { display: grid; gap: 9px; margin-top: 13px; }
+    .quiz-option { width: 100%; color: var(--ink); text-align: left; background: #fff; border-color: #c5d5e5; }
+    .quiz-option.selected { color: #0c527e; border-color: #1772a8; background: #e6f4fe; }
+    .quiz-option:hover { background: #f0f8fe; }
+    .quiz-feedback { min-height: 26px; margin: 12px 0 0; font-weight: 800; }
+    .quiz-feedback.good { color: #087a46; }
+    .quiz-feedback.try { color: #ad5a07; }
+    .teacher-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .teacher-flow > div { padding: 13px; border-radius: 14px; border-top: 4px solid #5595c1; background: #f7fbff; }
+    .teacher-flow strong { display: block; color: #155b88; }
+    footer { text-align: center; padding: 24px 10px 4px; color: #607389; font-size: 14px; }
+    @media (max-width: 800px) {
+      .page { width: min(100% - 20px, 1180px); padding-top: 14px; }
+      .two-col, .compare-grid, .lab-grid { grid-template-columns: 1fr; }
+      .svg-card { grid-column: auto; }
+      .teacher-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 540px) {
+      .hero, .section { border-radius: 17px; }
+      .sequence { gap: 6px; }
+      .sequence-card { padding: 10px 6px; font-size: 13px; }
+      .sequence-card strong { font-size: 16px; }
+      .sequence-arrow { font-size: 20px; }
+      .control-grid, .summary-grid { grid-template-columns: 1fr; }
+      .teacher-flow { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back" href="./index.html">← 回數學小遊戲教學首頁</a>
+
+    <header class="hero">
+      <p class="eyebrow">高一先修・向量與矩陣變換</p>
+      <h1>矩陣的旋轉與鏡射</h1>
+      <p>從「一個點怎麼走」出發，推導旋轉矩陣與鏡射矩陣；再用行列式、\(x\) 的係數與矩陣乘法，穩定判讀變換類型和先後順序。</p>
+      <nav class="hero-nav" aria-label="本頁段落">
+        <a href="#derive">公式推導</a>
+        <a href="#identify">判讀矩陣</a>
+        <a href="#compose">複合順序</a>
+        <a href="#lab">互動實驗室</a>
+        <a href="#practice">自我檢查</a>
+      </nav>
+    </header>
+
+    <section class="section" aria-labelledby="start-title">
+      <h2 id="start-title">先記住這四句話</h2>
+      <p class="lead">本頁只討論「以原點為中心」的旋轉與「通過原點的直線」鏡射，因此矩陣不含平移。</p>
+      <div class="pill-row">
+        <article class="pill"><strong>1. 點要寫成直行向量</strong><p>
+          \(\boldsymbol v=\begin{bmatrix}x\\y\end{bmatrix}\)，變換後是 \(A\boldsymbol v\)。
+        </p></article>
+        <article class="pill"><strong>2. 右邊先做</strong><p>
+          \(AB\boldsymbol v=A(B\boldsymbol v)\)：先經過 \(B\)，再經過 \(A\)。
+        </p></article>
+        <article class="pill"><strong>3. \(\det A\) 先分家</strong><p>
+          \(+1\) 是旋轉，\(-1\) 是鏡射；前提是 \(A\) 是保長度的正交矩陣。
+        </p></article>
+        <article class="pill"><strong>4. 面積看絕對值</strong><p>
+          變換後面積 \(=|\det A|\times\) 原面積；旋轉、鏡射的面積都不變。
+        </p></article>
+      </div>
+      <div class="note"><strong>先看圖像的直覺：</strong>把一張透明方格紙放在座標平面上。旋轉是整張紙「轉方向」；鏡射是隔著一條鏡子「翻面」。兩者都不拉長、不壓扁，所以長度與面積不變；但鏡射會把順時針／逆時針的方向翻過來。</div>
+    </section>
+
+    <section class="section" id="derive" aria-labelledby="derive-title">
+      <h2 id="derive-title">一、公式不是背出來的：從座標推導</h2>
+      <p class="lead">先把點 \((x,y)\) 寫成極座標 \((r,\alpha)\)。角度相加公式就是旋轉矩陣的來源。</p>
+      <div class="two-col">
+        <article class="derive">
+          <span class="tag">逆時針旋轉 \(\theta\)</span>
+          <h3>旋轉矩陣 \(R_\theta\)</h3>
+          <ol>
+            <li>原點 \((x,y)=(r\cos\alpha,r\sin\alpha)\)。</li>
+            <li>旋轉後角度變成 \(\alpha+\theta\)。</li>
+            <li>套角和公式：\(\cos(\alpha+\theta)=\cos\alpha\cos\theta-\sin\alpha\sin\theta\)。</li>
+          </ol>
+          <div class="formula">
+            \[\begin{aligned}
+              x'&=x\cos\theta-y\sin\theta\\
+              y'&=x\sin\theta+y\cos\theta
+            \end{aligned}\qquad
+            R_\theta=\begin{bmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{bmatrix}\]
+          </div>
+          <p class="small">快速圖像：\(R_{90^\circ}(1,0)=(0,1)\)，所以 \(x\) 軸的單位向量被轉到正 \(y\) 軸。</p>
+        </article>
+        <article class="derive reflect">
+          <span class="tag">鏡射軸與 \(x\) 軸夾 \(\phi\)</span>
+          <h3>鏡射矩陣 \(H_\phi\)</h3>
+          <ol>
+            <li>先把鏡射軸轉到 \(x\) 軸：\(R_{-\phi}\)。</li>
+            <li>關於 \(x\) 軸鏡射：\(M_0=\begin{bmatrix}1&0\\0&-1\end{bmatrix}\)。</li>
+            <li>再轉回原本方向：\(R_\phi M_0R_{-\phi}\)。</li>
+          </ol>
+          <div class="formula warm">
+            \[H_\phi=R_\phi M_0R_{-\phi}
+            =\begin{bmatrix}\cos2\phi&\sin2\phi\\\sin2\phi&-\cos2\phi\end{bmatrix}\]
+          </div>
+          <p class="small">這裡 \(\phi\) 是「鏡射軸真正的方向角」。例如 \(\phi=45^\circ\) 時，鏡射軸就是 \(y=x\)。</p>
+        </article>
+      </div>
+      <div class="warning"><strong>本頁的記號約定：</strong>為了讓複合矩陣表格更好記，下面把 \(M_\theta\) 定義為 \(H_{\theta/2}\)：
+        \(\displaystyle M_\theta=\begin{bmatrix}\cos\theta&\sin\theta\\\sin\theta&-\cos\theta\end{bmatrix}\)。因此 <strong>\(M_\theta\) 的鏡射軸實際方向是 \(\theta/2\)</strong>。若你想用鏡射軸的實際角度 \(\phi\) 標記，請改看上方的 \(H_\phi=M_{2\phi}\)。</div>
+    </section>
+
+    <section class="section" id="identify" aria-labelledby="identify-title">
+      <h2 id="identify-title">二、看到矩陣，怎麼判斷是旋轉還是鏡射？</h2>
+      <p class="lead">先確認它沒有拉長：欄向量互相垂直、各長為 1，也就是 \(A^\mathsf{T}A=I\)。接著再看行列式和「\(y'\) 中 \(x\) 的係數」。</p>
+      <div class="compare-grid">
+        <div>
+          <div class="formula">
+            \[A=\begin{bmatrix}a&b\\c&d\end{bmatrix},\qquad
+              \begin{bmatrix}x'\\y'\end{bmatrix}=A\begin{bmatrix}x\\y\end{bmatrix}
+              =\begin{bmatrix}ax+by\\cx+dy\end{bmatrix}\]
+          </div>
+          <div class="step-row">
+            <article class="step-card"><strong>第 1 步：看 \(b,c\)</strong><p>若 \(b=-c\)，像旋轉的交叉正負號；若 \(b=c\)，像鏡射的交叉同號。</p></article>
+            <article class="step-card"><strong>第 2 步：算 \(\det A\)</strong><p>\(ad-bc=+1\) 選旋轉；\(ad-bc=-1\) 選鏡射。</p></article>
+            <article class="step-card"><strong>第 3 步：讀方向</strong><p>看 \(y'=cx+dy\) 中 \(x\) 的係數 \(c\)；它告訴 \((1,0)\) 是往上還是往下走。</p></article>
+          </div>
+        </div>
+        <aside class="sign-card">
+          <h3>用 \(x\) 的係數 \(c\) 讀方向</h3>
+          <p>第一欄就是 \(A(1,0)=(a,c)\)。因此 \(c\) 是原本 \(x\) 方向變換後的「上下分量」。</p>
+          <ul class="check-list">
+            <li>\(\det A=1,\ c>0\)：\((1,0)\) 向上轉，為逆時針旋轉（主角在 \(0^\circ\) 到 \(180^\circ\)）。</li>
+            <li>\(\det A=1,\ c<0\)：\((1,0)\) 向下轉，為順時針旋轉。</li>
+            <li>\(\det A=-1,\ c>0\)：鏡射軸是正斜率方向；\(c<0\)：鏡射軸是負斜率方向。</li>
+            <li>\(c=0\) 時要再看對角線：可能是 \(I\)、\(R_{180^\circ}\)，也可能是關於 \(x\) 軸／\(y\) 軸鏡射。</li>
+          </ul>
+        </aside>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>矩陣</th><th>\(y'\) 中 \(x\) 的係數 \(c\)</th><th>行列式</th><th>判讀</th></tr></thead>
+          <tbody>
+            <tr><td>\(\begin{bmatrix}0&-1\\1&0\end{bmatrix}\)</td><td>\(+1\)</td><td>\(+1\)</td><td>\(R_{90^\circ}\)：逆時針 \(90^\circ\)</td></tr>
+            <tr><td>\(\begin{bmatrix}0&1\\-1&0\end{bmatrix}\)</td><td>\(-1\)</td><td>\(+1\)</td><td>\(R_{-90^\circ}\)：順時針 \(90^\circ\)</td></tr>
+            <tr><td>\(\begin{bmatrix}0&1\\1&0\end{bmatrix}\)</td><td>\(+1\)</td><td>\(-1\)</td><td>\(M_{90^\circ}\)：鏡射軸 \(45^\circ\)，即 \(y=x\)</td></tr>
+            <tr><td>\(\begin{bmatrix}0&-1\\-1&0\end{bmatrix}\)</td><td>\(-1\)</td><td>\(-1\)</td><td>\(M_{-90^\circ}\)：鏡射軸 \(-45^\circ\)，即 \(y=-x\)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><strong>重要界線：</strong>只看 \(c\) 的正負不能直接判定「旋轉或鏡射」；一定要搭配 \(\det A\)。例如上表第 1、3 列的 \(c\) 都是正，但一個是旋轉，另一個是鏡射。</div>
+    </section>
+
+    <section class="section" id="compose" aria-labelledby="compose-title">
+      <h2 id="compose-title">三、複合變換：\(AB\) 為什麼要從右往左做？</h2>
+      <p class="lead">矩陣是「對向量做動作」的機器。離向量最近的 \(B\) 先作用，因此 \(AB\) 代表先 \(B\)、後 \(A\)。</p>
+      <div class="sequence" aria-label="AB 變換順序">
+        <div class="sequence-card"><strong>原始點</strong>\(\boldsymbol v\)</div>
+        <div class="sequence-arrow">→</div>
+        <div class="sequence-card"><strong>第 1 步</strong>\(B\boldsymbol v\)</div>
+        <div class="sequence-arrow">→</div>
+        <div class="sequence-card"><strong>第 2 步</strong>\(A(B\boldsymbol v)\)</div>
+        <div class="sequence-arrow">=</div>
+        <div class="sequence-card"><strong>最後</strong>\((AB)\boldsymbol v\)</div>
+      </div>
+      <div class="order-box">
+        <h3>板書例題：\(R_{90^\circ}M_0\) 作用在 \((2,1)\)</h3>
+        <p>右邊的 \(M_0\) 是關於 \(x\) 軸鏡射，所以先做：\((2,1)\to(2,-1)\)。再由 \(R_{90^\circ}\) 逆時針旋轉：\((2,-1)\to(1,2)\)。</p>
+        <div class="formula warm">
+          \[R_{90^\circ}M_0=
+          \begin{bmatrix}0&-1\\1&0\end{bmatrix}
+          \begin{bmatrix}1&0\\0&-1\end{bmatrix}
+          =\begin{bmatrix}0&1\\1&0\end{bmatrix}=M_{90^\circ}\]
+        </div>
+        <p>結果是關於 \(y=x\) 鏡射。<strong>若誤讀成先旋轉再鏡射，結果會不同。</strong></p>
+      </div>
+
+      <h3 style="margin-top:24px;">四種複合公式（採本頁 \(M_\theta\) 記號）</h3>
+      <p class="small">每一格都請從右讀到左：右邊的矩陣先做。角度以 \(360^\circ\) 或 \(2\pi\) 為週期化簡。</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>左矩陣 \(A\)</th><th>右矩陣 \(B\)（先做）</th><th>合成 \(AB\)</th><th>行列式／圖像判斷</th></tr></thead>
+          <tbody>
+            <tr><td>\(R_{\theta_1}\)</td><td>\(R_{\theta_2}\)</td><td>\(R_{\theta_1}R_{\theta_2}=R_{\theta_1+\theta_2}\)</td><td>\((+1)(+1)=+1\)：仍是旋轉</td></tr>
+            <tr><td>\(R_{\theta_1}\)</td><td>\(M_{\theta_2}\)</td><td>\(R_{\theta_1}M_{\theta_2}=M_{\theta_1+\theta_2}\)</td><td>\((+1)(-1)=-1\)：鏡射</td></tr>
+            <tr><td>\(M_{\theta_1}\)</td><td>\(R_{\theta_2}\)</td><td>\(M_{\theta_1}R_{\theta_2}=M_{\theta_1-\theta_2}\)</td><td>\((-1)(+1)=-1\)：鏡射</td></tr>
+            <tr><td>\(M_{\theta_1}\)</td><td>\(M_{\theta_2}\)</td><td>\(M_{\theta_1}M_{\theta_2}=R_{\theta_1-\theta_2}\)</td><td>\((-1)(-1)=+1\)：旋轉</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="formula">
+        \[R_\alpha=\begin{bmatrix}\cos\alpha&-\sin\alpha\\\sin\alpha&\cos\alpha\end{bmatrix},\qquad
+        M_\beta=\begin{bmatrix}\cos\beta&\sin\beta\\\sin\beta&-\cos\beta\end{bmatrix}\]
+        例如 \(R_\alpha M_\beta\) 的第一列是 \(\bigl(\cos(\alpha+\beta),\ \sin(\alpha+\beta)\bigr)\)，所以得到 \(M_{\alpha+\beta}\)。
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="det-title">
+      <h2 id="det-title">四、面積與行列式：一個數看出「保面積」和「翻面」</h2>
+      <div class="two-col">
+        <article class="derive">
+          <h3>面積伸縮公式</h3>
+          <p>任一平行四邊形或多邊形，經 \(A\) 變換後：</p>
+          <div class="formula">\[\text{變換後面積}=|\det A|\times\text{原面積}\]</div>
+          <p>旋轉 \(\det R_\theta=\cos^2\theta+\sin^2\theta=1\)；鏡射 \(\det M_\theta=-\cos^2\theta-\sin^2\theta=-1\)。所以兩者的<strong>面積都不變</strong>。</p>
+        </article>
+        <article class="derive reflect">
+          <h3>正負號在說什麼？</h3>
+          <p>\(\det A\) 的正負記錄「有向面積」的方向。</p>
+          <div class="formula warm">\[\det(AB)=\det A\cdot\det B\]</div>
+          <p>旋轉保留方向（正）；每做一次鏡射就翻一次方向（負）。因此：<strong>鏡射次數偶數次 → 旋轉；奇數次 → 鏡射。</strong></p>
+        </article>
+      </div>
+      <div class="summary-grid">
+        <article class="summary-card"><strong>例 1：兩次鏡射</strong><p>\(M_{30^\circ}M_{110^\circ}=R_{-80^\circ}\)。面積比 \(|(-1)(-1)|=1\)。</p></article>
+        <article class="summary-card"><strong>例 2：旋轉後鏡射</strong><p>\(R_{40^\circ}M_{20^\circ}=M_{60^\circ}\)。面積比 \(|1\cdot(-1)|=1\)。</p></article>
+        <article class="summary-card"><strong>延伸：不是保長度的矩陣</strong><p>若 \(A=\begin{bmatrix}2&0\\0&3\end{bmatrix}\)，\(\det A=6\)，面積變 6 倍；它不是旋轉或鏡射。</p></article>
+      </div>
+    </section>
+
+    <section class="section lab" id="lab" aria-labelledby="lab-title">
+      <h2 id="lab-title">五、互動實驗室：自己操作 \(AB\)</h2>
+      <p class="lead">左邊先選最終做的 \(A\)，右邊選先做的 \(B\)。圖中紫色是經過 \(B\)，橘色是最後經過 \(A\)；同時觀察 \(C=AB\) 的行列式與類型。</p>
+      <div class="lab-grid">
+        <section class="control-card">
+          <h3>設定兩個變換</h3>
+          <div class="control-grid">
+            <label for="aType">最後做的 A
+              <select id="aType"><option value="R">R：旋轉</option><option value="M">M：鏡射</option></select>
+            </label>
+            <label for="aAngle">A 的角度 \(\theta_1\)
+              <select id="aAngle"></select>
+            </label>
+            <label for="bType">先做的 B
+              <select id="bType"><option value="R">R：旋轉</option><option value="M" selected>M：鏡射</option></select>
+            </label>
+            <label for="bAngle">B 的角度 \(\theta_2\)
+              <select id="bAngle"></select>
+            </label>
+          </div>
+          <p class="small">若選 M，角度是本頁的 \(M_\theta\) 參數；真正鏡射軸方向為 \(\theta/2\)。旋轉的正角為逆時針。</p>
+          <div class="point-inputs">
+            <label for="pointX">追蹤點的 \(x\)<input id="pointX" type="number" value="2" min="-5" max="5" step="1"></label>
+            <label for="pointY">追蹤點的 \(y\)<input id="pointY" type="number" value="1" min="-5" max="5" step="1"></label>
+          </div>
+          <div class="button-row"><button type="button" id="resetLab">回到範例 \(R_{90^\circ}M_0\)</button></div>
+        </section>
+        <section class="output-card" aria-live="polite">
+          <div class="result-title" id="labTitle">\(C=AB\) 的判讀</div>
+          <div class="matrix-result" id="labMatrices"></div>
+          <p class="route" id="labRoute"></p>
+          <div class="note" id="labReading"></div>
+        </section>
+        <section class="svg-card">
+          <svg id="matrixSvg" viewBox="0 0 580 430" role="img" aria-label="矩陣變換座標圖"></svg>
+          <div class="legend">
+            <span><i class="dot" style="background:#287db8"></i>原三角形與原點</span>
+            <span><i class="dot" style="background:#7653b8"></i>先經過 B</span>
+            <span><i class="dot" style="background:#ca6914"></i>再經過 A，也就是 AB</span>
+            <span><i class="dot" style="background:#168278"></i>追蹤點的路徑</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="section" id="practice" aria-labelledby="practice-title">
+      <h2 id="practice-title">六、自我檢查：先判類型，再算順序</h2>
+      <p class="lead">每一題先寫出 \(\det\)，再看 \(y'=cx+dy\) 中的 \(c\)，最後才讀角度或做乘法。答錯時可直接重選，不會中斷練習。</p>
+      <div class="quiz-tabs" role="tablist" aria-label="選擇練習層次">
+        <button type="button" class="active" data-quiz-mode="basic">基礎：辨識</button>
+        <button type="button" data-quiz-mode="advanced">進階：順序</button>
+        <button type="button" data-quiz-mode="challenge">挑戰：合成</button>
+      </div>
+      <div class="quiz-question">
+        <div id="quizLabel" class="small"></div>
+        <div id="quizPrompt"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="button-row"><button type="button" id="checkQuiz">檢查答案</button><button type="button" class="ghost" id="nextQuiz">下一題</button></div>
+        <div id="quizFeedback" class="quiz-feedback" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="teacher-title">
+      <h2 id="teacher-title">課堂使用建議：一節課的板書節奏</h2>
+      <div class="teacher-flow">
+        <div><strong>1. 先畫單位向量</strong>追蹤 \((1,0)\)、\((0,1)\) 到哪裡，讓矩陣的兩欄先有圖像。</div>
+        <div><strong>2. 推旋轉、拆鏡射</strong>旋轉用角和；鏡射用「轉到 x 軸 → 翻 → 轉回」。</div>
+        <div><strong>3. 強調 AB 右先左後</strong>用 \((2,1)\) 實際走兩步，避免只背口訣。</div>
+        <div><strong>4. 用 det 收尾</strong>用正負確認方向是否翻面，再用絕對值確認面積不變。</div>
+      </div>
+      <div class="mistakes" style="margin-top:16px;">
+        <div class="mistake"><strong>常見錯誤 1：</strong>把 \(AB\) 當成先 \(A\) 後 \(B\)。請固定寫成 \(A(B\boldsymbol v)\)，向量旁邊的矩陣一定先做。</div>
+        <div class="mistake"><strong>常見錯誤 2：</strong>看到 \(c>0\) 就說是逆時針旋轉。\(c\) 只能讀出 \((1,0)\) 往上或往下；旋轉／鏡射要由 \(\det A\) 的 \(+1/-1\) 決定。</div>
+        <div class="mistake"><strong>常見錯誤 3：</strong>把 \(M_\theta\) 的下標直接當鏡射軸角度。本頁的 \(M_\theta\) 是方便合成的記號，鏡射軸實際方向是 \(\theta/2\)。</div>
+      </div>
+    </section>
+    <footer>矩陣變換教學頁・先看點怎麼走，再看公式怎麼寫。</footer>
+  </main>
+
+  <script>
+    (() => {
+      const degrees = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+      const el = {
+        aType: document.getElementById("aType"), aAngle: document.getElementById("aAngle"),
+        bType: document.getElementById("bType"), bAngle: document.getElementById("bAngle"),
+        pointX: document.getElementById("pointX"), pointY: document.getElementById("pointY"),
+        resetLab: document.getElementById("resetLab"), labMatrices: document.getElementById("labMatrices"),
+        labRoute: document.getElementById("labRoute"), labReading: document.getElementById("labReading"),
+        matrixSvg: document.getElementById("matrixSvg"), quizLabel: document.getElementById("quizLabel"),
+        quizPrompt: document.getElementById("quizPrompt"), quizOptions: document.getElementById("quizOptions"),
+        quizFeedback: document.getElementById("quizFeedback"), checkQuiz: document.getElementById("checkQuiz"),
+        nextQuiz: document.getElementById("nextQuiz"), quizTabs: Array.from(document.querySelectorAll("[data-quiz-mode]"))
+      };
+
+      function populateAngles(select, selected) {
+        select.innerHTML = degrees.map((degree) => `<option value="${degree}"${degree === selected ? " selected" : ""}>${degree}°</option>`).join("");
+      }
+      populateAngles(el.aAngle, 90);
+      populateAngles(el.bAngle, 0);
+
+      const degToRad = (degree) => degree * Math.PI / 180;
+      const clean = (value) => Math.abs(value) < 0.0000001 ? 0 : value;
+      const round = (value) => Math.round(clean(value) * 10000) / 10000;
+      const formatNumber = (value) => {
+        const rounded = round(value);
+        return Number.isInteger(rounded) ? String(rounded) : String(rounded);
+      };
+      const formatPoint = (point) => `(${formatNumber(point[0])}, ${formatNumber(point[1])})`;
+      const normalizeDegree = (value) => {
+        const result = ((round(value) % 360) + 360) % 360;
+        return Math.abs(result - 360) < 0.0001 ? 0 : result;
+      };
+      const matrix = (type, degree) => {
+        const angle = degToRad(degree);
+        const cosine = clean(Math.cos(angle));
+        const sine = clean(Math.sin(angle));
+        return type === "R" ? [[cosine, -sine], [sine, cosine]] : [[cosine, sine], [sine, -cosine]];
+      };
+      const multiply = (left, right) => [
+        [left[0][0] * right[0][0] + left[0][1] * right[1][0], left[0][0] * right[0][1] + left[0][1] * right[1][1]],
+        [left[1][0] * right[0][0] + left[1][1] * right[1][0], left[1][0] * right[0][1] + left[1][1] * right[1][1]]
+      ];
+      const apply = (mat, point) => [mat[0][0] * point[0] + mat[0][1] * point[1], mat[1][0] * point[0] + mat[1][1] * point[1]];
+      const determinant = (mat) => clean(mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]);
+      const matrixTex = (mat) => `\\begin{bmatrix}${formatNumber(mat[0][0])}&${formatNumber(mat[0][1])}\\\\${formatNumber(mat[1][0])}&${formatNumber(mat[1][1])}\\end{bmatrix}`;
+      const operationName = (type, degree) => type === "R" ? `R_{${degree}^\\circ}` : `M_{${degree}^\\circ}`;
+
+      function setTypeset(target) {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetClear([target]);
+          window.MathJax.typesetPromise([target]).catch(() => {});
+        }
+      }
+      function classify(mat) {
+        const det = round(determinant(mat));
+        const param = normalizeDegree(Math.atan2(mat[1][0], mat[0][0]) * 180 / Math.PI);
+        if (det > 0) {
+          const signed = param > 180 ? round(param - 360) : param;
+          const direction = signed === 0 ? "不轉動" : signed === 180 ? "旋轉 180°" : signed > 0 ? "逆時針" : "順時針";
+          return { kind: "rotation", det, param, text: `旋轉 \\(R_{${formatNumber(param)}^\\circ}\\)`, note: `${direction} ${formatNumber(Math.abs(signed))}°` };
+        }
+        const axis = normalizeDegree(param / 2);
+        return { kind: "reflection", det, param, axis, text: `鏡射 \\(M_{${formatNumber(param)}^\\circ}\\)`, note: `鏡射軸實際方向為 ${formatNumber(axis)}°` };
+      }
+      function polygonPoints(points, toScreen) { return points.map((point) => toScreen(point).join(",")).join(" "); }
+      function svgText(x, y, text, color, size = 12, anchor = "start") {
+        return `<text x="${x}" y="${y}" fill="${color}" font-size="${size}" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="${anchor}" font-weight="700">${text}</text>`;
+      }
+      function renderSvg(A, B, point) {
+        const C = multiply(A, B);
+        const width = 580, height = 430, scale = 27, cx = 290, cy = 215;
+        const toScreen = ([x, y]) => [cx + x * scale, cy - y * scale];
+        let grid = "";
+        for (let i = -9; i <= 9; i += 1) {
+          const alpha = i === 0 ? .8 : .34;
+          const vertical = toScreen([i, 0])[0];
+          const horizontal = toScreen([0, i])[1];
+          grid += `<line x1="${vertical}" y1="22" x2="${vertical}" y2="408" stroke="#aac2d7" stroke-opacity="${alpha}" stroke-width="${i === 0 ? 1.7 : 1}"/>`;
+          grid += `<line x1="47" y1="${horizontal}" x2="533" y2="${horizontal}" stroke="#aac2d7" stroke-opacity="${alpha}" stroke-width="${i === 0 ? 1.7 : 1}"/>`;
+          if (i !== 0 && i >= -8 && i <= 8) {
+            grid += svgText(vertical, cy + 15, String(i), "#6b8199", 10, "middle");
+            grid += svgText(cx - 9, horizontal + 3, String(i), "#6b8199", 10, "end");
+          }
+        }
+        const triangle = [[1, 1], [3, 1], [1, 2.5]];
+        const middleTriangle = triangle.map((p) => apply(B, p));
+        const finalTriangle = triangle.map((p) => apply(C, p));
+        const middlePoint = apply(B, point), finalPoint = apply(C, point);
+        const [px, py] = toScreen(point), [mx, my] = toScreen(middlePoint), [fx, fy] = toScreen(finalPoint);
+        const e1 = toScreen(apply(C, [1, 0])), e2 = toScreen(apply(C, [0, 1]));
+        const origin = toScreen([0, 0]);
+        el.matrixSvg.innerHTML = `
+          <title>原三角形先經過 B，再經過 A 的座標圖</title>
+          <defs>
+            <marker id="arrowTeal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#168278"/></marker>
+            <marker id="arrowNavy" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#135b94"/></marker>
+          </defs>
+          <rect x="32" y="8" width="516" height="414" rx="14" fill="#fbfdff" stroke="#d7e4ef"/>
+          ${grid}
+          ${svgText(522, cy - 8, "x", "#34526b", 14)}${svgText(cx + 10, 32, "y", "#34526b", 14)}
+          <polygon points="${polygonPoints(triangle, toScreen)}" fill="#287db8" fill-opacity=".13" stroke="#287db8" stroke-width="2.4"/>
+          <polygon points="${polygonPoints(middleTriangle, toScreen)}" fill="#7653b8" fill-opacity=".12" stroke="#7653b8" stroke-width="2.4" stroke-dasharray="7 4"/>
+          <polygon points="${polygonPoints(finalTriangle, toScreen)}" fill="#ca6914" fill-opacity=".16" stroke="#ca6914" stroke-width="2.8"/>
+          <line x1="${origin[0]}" y1="${origin[1]}" x2="${e1[0]}" y2="${e1[1]}" stroke="#135b94" stroke-width="2.5" marker-end="url(#arrowNavy)"/>
+          <line x1="${origin[0]}" y1="${origin[1]}" x2="${e2[0]}" y2="${e2[1]}" stroke="#ca6914" stroke-width="2.5" marker-end="url(#arrowNavy)"/>
+          ${svgText(e1[0] + 6, e1[1] - 7, "C e₁", "#135b94", 12)}${svgText(e2[0] + 7, e2[1] - 7, "C e₂", "#ca6914", 12)}
+          <path d="M ${px} ${py} L ${mx} ${my} L ${fx} ${fy}" fill="none" stroke="#168278" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrowTeal)"/>
+          <circle cx="${px}" cy="${py}" r="5" fill="#168278"/><circle cx="${mx}" cy="${my}" r="5" fill="#7653b8"/><circle cx="${fx}" cy="${fy}" r="5" fill="#ca6914"/>
+          ${svgText(px + 7, py - 8, "P", "#168278", 12)}${svgText(mx + 7, my - 8, "BP", "#7653b8", 12)}${svgText(fx + 7, fy - 8, "ABP", "#ca6914", 12)}
+          ${svgText(55, 31, "藍：原圖　紫：B 後　橘：AB 後", "#456680", 13)}
+        `;
+      }
+      function updateLab() {
+        const aDegree = Number(el.aAngle.value), bDegree = Number(el.bAngle.value);
+        const A = matrix(el.aType.value, aDegree), B = matrix(el.bType.value, bDegree), C = multiply(A, B);
+        const point = [Number(el.pointX.value) || 0, Number(el.pointY.value) || 0];
+        const afterB = apply(B, point), afterA = apply(C, point), result = classify(C);
+        const detA = round(determinant(A)), detB = round(determinant(B));
+        el.labMatrices.innerHTML = `\\[
+          A=${matrixTex(A)},\\quad B=${matrixTex(B)},\\quad C=AB=${matrixTex(C)}
+        \\]`;
+        el.labRoute.innerHTML = `\\(P=${formatPoint(point)}\\xrightarrow{\\ B\\ }${formatPoint(afterB)}\\xrightarrow{\\ A\\ }${formatPoint(afterA)}\\)。`;
+        const cCoefficient = round(C[1][0]);
+        el.labReading.innerHTML = `<strong>${result.text}</strong>（\\(\\det C=\\det A\\det B=${detA}\\times${detB}=${result.det}\\)）。${result.note}。<br>又 \\(y'=${formatNumber(C[1][0])}x${C[1][1] >= 0 ? "+" : ""}${formatNumber(C[1][1])}y\\)，其中 \\(x\\) 的係數 \\(c=${formatNumber(cCoefficient)}\\)：${cCoefficient > 0 ? "原本的 x 方向往上走" : cCoefficient < 0 ? "原本的 x 方向往下走" : "剛好沒有上下分量，需再看對角線"}。`;
+        setTypeset(el.labMatrices); setTypeset(el.labRoute); setTypeset(el.labReading);
+        renderSvg(A, B, point);
+      }
+      [el.aType, el.aAngle, el.bType, el.bAngle, el.pointX, el.pointY].forEach((control) => control.addEventListener("input", updateLab));
+      el.resetLab.addEventListener("click", () => {
+        el.aType.value = "R"; el.aAngle.value = "90"; el.bType.value = "M"; el.bAngle.value = "0"; el.pointX.value = "2"; el.pointY.value = "1"; updateLab();
+      });
+
+      const quizSets = {
+        basic: [
+          { prompt: "\\(A=\\begin{bmatrix}0&1\\\\1&0\\end{bmatrix}\\)。最正確的判讀是？", options: ["逆時針旋轉 90°", "關於 y=x 鏡射", "順時針旋轉 90°"], answer: 1, hint: "先算 det A=-1，所以不是旋轉；再看它把 (x,y) 變成 (y,x)。", solution: "答對：det A=-1，且 (x,y)→(y,x)，是關於 y=x 鏡射。" },
+          { prompt: "\\(A=\\begin{bmatrix}0&-1\\\\1&0\\end{bmatrix}\\)，在 \\(y'=cx+dy\\) 中，\\(c\\) 是多少？它表示什麼？", options: ["c=1，x 方向往上轉", "c=-1，x 方向往下轉", "c=0，沒有上下分量"], answer: 0, hint: "直接讀第二列：y'=x。", solution: "答對：c=1，(1,0) 會到 (0,1)，所以 x 方向向上。配合 det=1，為逆時針旋轉。" }
+        ],
+        advanced: [
+          { prompt: "\\(R_{90^\\circ}M_0\\) 中，哪一個先做？", options: ["先 R90°，再 M0", "先 M0，再 R90°", "兩個可交換，順序不重要"], answer: 1, hint: "請把它寫成 R90°(M0 v)：離 v 最近者先做。", solution: "答對：先 M0，再 R90°；矩陣乘法由右往左作用。" },
+          { prompt: "點 \\((2,1)\\) 經 \\(R_{90^\\circ}M_0\\) 後，結果為何？", options: ["(1,2)", "(-1,-2)", "(-2,1)"], answer: 0, hint: "先關於 x 軸鏡射：(2,1)→(2,-1)，再逆時針轉 90°。", solution: "答對：(2,1)→(2,-1)→(1,2)。" }
+        ],
+        challenge: [
+          { prompt: "依本頁記號，\\(M_{30^\\circ}M_{110^\\circ}\\) 化簡為何？", options: ["R140°", "R-80°", "M-80°"], answer: 1, hint: "兩次鏡射變旋轉，並用 Mθ1Mθ2=Rθ1-θ2。", solution: "答對：M30°M110°=R(30°-110°)=R-80°。" },
+          { prompt: "一串複合變換含 3 次鏡射與 2 次旋轉，最後必為？", options: ["旋轉，因為共有 5 次變換", "鏡射，因為 det=(-1)^3", "無法判斷，因為角度未知"], answer: 1, hint: "只追 det：旋轉貢獻 +1，鏡射貢獻 -1。", solution: "答對：det=(+1)^2(-1)^3=-1，所以最後是鏡射。" }
+        ]
+      };
+      let quizMode = "basic", quizIndex = 0, quizChoice = null;
+      function renderQuiz() {
+        const questions = quizSets[quizMode], question = questions[quizIndex];
+        el.quizLabel.textContent = `${quizMode === "basic" ? "基礎" : quizMode === "advanced" ? "進階" : "挑戰"}・第 ${quizIndex + 1} / ${questions.length} 題`;
+        el.quizPrompt.innerHTML = `<strong>${question.prompt}</strong>`;
+        el.quizOptions.innerHTML = question.options.map((option, index) => `<button type="button" class="quiz-option${quizChoice === index ? " selected" : ""}" data-choice="${index}">${String.fromCharCode(65 + index)}. ${option}</button>`).join("");
+        el.quizFeedback.textContent = ""; el.quizFeedback.className = "quiz-feedback";
+        Array.from(el.quizOptions.querySelectorAll("button")).forEach((button) => button.addEventListener("click", () => { quizChoice = Number(button.dataset.choice); renderQuiz(); }));
+        setTypeset(el.quizPrompt); setTypeset(el.quizOptions);
+      }
+      el.quizTabs.forEach((tab) => tab.addEventListener("click", () => {
+        quizMode = tab.dataset.quizMode; quizIndex = 0; quizChoice = null;
+        el.quizTabs.forEach((item) => item.classList.toggle("active", item === tab)); renderQuiz();
+      }));
+      el.checkQuiz.addEventListener("click", () => {
+        const question = quizSets[quizMode][quizIndex];
+        if (quizChoice === null) { el.quizFeedback.textContent = "先選一個答案，再檢查。"; el.quizFeedback.className = "quiz-feedback try"; return; }
+        if (quizChoice === question.answer) { el.quizFeedback.textContent = question.solution; el.quizFeedback.className = "quiz-feedback good"; }
+        else { el.quizFeedback.textContent = `還差一步：${question.hint} 請直接重選後再檢查。`; el.quizFeedback.className = "quiz-feedback try"; }
+        setTypeset(el.quizFeedback);
+      });
+      el.nextQuiz.addEventListener("click", () => { quizIndex = (quizIndex + 1) % quizSets[quizMode].length; quizChoice = null; renderQuiz(); });
+      updateLab(); renderQuiz();
+    })();
+  </script>
+</body>
+</html>

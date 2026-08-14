@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>數據分析：平均數、標準差、相關係數與迴歸直線</title>
+  <style>
+    :root {
+      --paper: #ffffff;
+      --page: #f4f8ff;
+      --ink: #162b50;
+      --sub: #52647d;
+      --line: #d8e2f0;
+      --blue: #2563b8;
+      --blue-soft: #edf5ff;
+      --teal: #08756d;
+      --teal-soft: #ecfdfa;
+      --orange: #b85d13;
+      --orange-soft: #fff6eb;
+      --purple: #6e43bb;
+      --purple-soft: #f5f1ff;
+      --red: #b33b4d;
+      --red-soft: #fff1f3;
+      --shadow: 0 12px 30px rgba(20, 48, 93, .08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: linear-gradient(145deg, #eaf3ff 0, var(--page) 48%, #ecfffa 100%);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 26px 18px 46px; }
+    .hero, .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    .hero { padding: clamp(22px, 4vw, 36px); }
+    h1, h2, h3, h4 { color: #112a54; line-height: 1.35; }
+    h1 { margin: 0 0 8px; font-size: clamp(30px, 5vw, 44px); }
+    h2 { margin: 0 0 10px; font-size: clamp(25px, 3.6vw, 31px); }
+    h3 { margin: 0 0 8px; font-size: 20px; }
+    h4 { margin: 0 0 6px; font-size: 17px; }
+    p { margin: 0 0 10px; }
+    .lead { max-width: 830px; margin-bottom: 0; color: var(--sub); font-size: 17px; }
+    .tag-row, .nav, .action-row, .chip-list, .formula-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #1f4e99;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .tag.teal { border-color: #9ae6da; background: var(--teal-soft); color: #08645e; }
+    .tag.orange { border-color: #fed4a6; background: var(--orange-soft); color: #a34d0b; }
+    .nav { margin-top: 18px; }
+    .nav a {
+      color: #1d4f9d;
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 7px 11px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .nav a:hover { background: var(--blue-soft); border-color: #9bc5fa; }
+    .section { margin-top: 28px; }
+    .section-lead { color: var(--sub); }
+    .card { padding: clamp(16px, 3vw, 22px); }
+    .grid { display: grid; gap: 14px; }
+    .grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .concept { border-top: 5px solid var(--blue); }
+    .concept.teal { border-top-color: var(--teal); }
+    .concept.orange { border-top-color: var(--orange); }
+    .concept.purple { border-top-color: var(--purple); }
+    .small { color: var(--sub); font-size: 14px; }
+    .formula {
+      margin: 10px 0;
+      padding: 10px 12px;
+      overflow-x: auto;
+      border: 1px solid #c9daef;
+      border-radius: 11px;
+      background: #f8fbff;
+      color: #162b50;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: 20px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .formula.compact { font-size: 17px; text-align: left; }
+    .callout {
+      margin-top: 12px;
+      padding: 11px 13px;
+      border: 1px solid #a8d9d4;
+      border-radius: 12px;
+      background: var(--teal-soft);
+      color: #075c57;
+    }
+    .callout.warn { border-color: #fdca99; background: var(--orange-soft); color: #87420c; }
+    .callout.danger { border-color: #f5bac3; background: var(--red-soft); color: #8b2837; }
+    .label {
+      display: inline-block;
+      margin-bottom: 7px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #dceaff;
+      color: #1c4c93;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .label.teal { background: #d7f8f0; color: #09655f; }
+    .label.orange { background: #ffead0; color: #9a490d; }
+    .label.purple { background: #ebe2ff; color: #6333ad; }
+    .steps { margin: 0; padding-left: 23px; }
+    .steps li { margin: 8px 0; }
+    .tool { border-top: 6px solid var(--teal); }
+    .tool-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .tool-head p { color: var(--sub); }
+    .tool-layout { display: grid; grid-template-columns: minmax(250px, .85fr) minmax(0, 1.15fr); gap: 18px; margin-top: 14px; }
+    .control-panel, .result-panel {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fbfdff;
+    }
+    .result-panel { background: linear-gradient(145deg, #f1fffb, #f8fbff); }
+    label { display: block; margin-bottom: 5px; color: #294568; font-weight: 800; }
+    .field-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-bottom: 12px; }
+    input[type="number"], input[type="text"], textarea {
+      width: 100%;
+      color: var(--ink);
+      border: 1px solid #b9cbe1;
+      border-radius: 10px;
+      padding: 9px 10px;
+      background: #fff;
+    }
+    textarea { min-height: 76px; resize: vertical; line-height: 1.55; }
+    input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible {
+      outline: 3px solid #51a7ff;
+      outline-offset: 2px;
+    }
+    .button, .ghost-button, .remove-button {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 8px 11px;
+      font-weight: 800;
+    }
+    .button { color: #fff; background: var(--teal); border-color: var(--teal); }
+    .button:hover { background: #05625c; }
+    .ghost-button { color: #16508d; background: #fff; border-color: #abc7e7; }
+    .ghost-button:hover { background: var(--blue-soft); }
+    .ghost-button.warn { color: #9a490d; border-color: #fdc48e; }
+    .remove-button { padding: 0 4px; color: #9d3343; background: transparent; border: 0; line-height: 1; }
+    .data-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 7px 4px 9px;
+      border: 1px solid #a7ddd7;
+      border-radius: 999px;
+      background: #eafff9;
+      color: #075c57;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 14px;
+    }
+    .empty-note { margin: 8px 0 0; color: #74859b; font-size: 14px; }
+    .mode-row { display: flex; flex-wrap: wrap; gap: 9px; margin: 10px 0 12px; }
+    .mode-row label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0;
+      padding: 6px 9px;
+      border: 1px solid #c5d8e9;
+      border-radius: 9px;
+      background: #fff;
+      color: #33536f;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .mode-row input { accent-color: var(--teal); }
+    .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .metric {
+      padding: 10px;
+      border: 1px solid #c4dfdb;
+      border-radius: 11px;
+      background: rgba(255,255,255,.82);
+    }
+    .metric span { display: block; color: #507073; font-size: 13px; font-weight: 700; }
+    .metric strong { display: block; margin-top: 2px; color: #075c57; font-family: Cambria, "Times New Roman", serif; font-size: 24px; line-height: 1.2; }
+    .result-text { margin: 12px 0 0; color: #31576a; }
+    .status { min-height: 1.75em; margin: 10px 0 0; color: #0c675f; font-size: 14px; font-weight: 700; }
+    .status.error { color: #a33343; }
+    .table-scroll { overflow-x: auto; margin-top: 14px; }
+    table { width: 100%; min-width: 520px; border-collapse: collapse; background: #fff; }
+    th, td { padding: 8px 9px; border: 1px solid var(--line); text-align: center; }
+    th { background: #edf5ff; color: #244a78; font-size: 14px; }
+    tbody tr:nth-child(even) { background: #fbfdff; }
+    .plot-card { margin-top: 14px; padding: 14px; border: 1px solid #c6dcef; border-radius: 14px; background: #fbfdff; }
+    .plot-title { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .plot-title h3 { margin: 0; font-size: 18px; }
+    .spread-plot {
+      position: relative;
+      min-height: 130px;
+      margin-top: 12px;
+      overflow: hidden;
+      border: 1px solid #d7e4f1;
+      border-radius: 12px;
+      background: linear-gradient(to bottom, #fbfdff 0 69%, #d9e5f3 69% 70%, #fbfdff 70%);
+    }
+    .spread-band { position: absolute; top: 26px; bottom: 28px; border-radius: 8px; background: rgba(53, 170, 158, .13); }
+    .spread-band.outer { background: rgba(91, 128, 217, .09); }
+    .spread-dot {
+      position: absolute;
+      bottom: 35px;
+      width: 13px;
+      height: 13px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      background: #0d8076;
+      box-shadow: 0 1px 4px rgba(3, 76, 71, .35);
+      transform: translateX(-50%);
+    }
+    .mean-mark { position: absolute; top: 12px; bottom: 22px; width: 2px; background: #b94b52; }
+    .mean-mark span { position: absolute; top: -2px; left: 5px; color: #9a303b; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .axis-label { position: absolute; bottom: 4px; transform: translateX(-50%); color: #637991; font-size: 12px; white-space: nowrap; }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; color: #526b82; font-size: 13px; }
+    .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 4px; border-radius: 2px; background: rgba(53,170,158,.35); }
+    .legend i.outer { background: rgba(91,128,217,.25); }
+    .legend i.mean { width: 3px; border-radius: 0; background: #b94b52; }
+    .comparison { margin-top: 14px; }
+    .compare-line { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px; align-items: center; margin-top: 8px; }
+    .compare-line strong { color: #244a78; font-size: 14px; }
+    .bar-track { height: 14px; overflow: hidden; border-radius: 999px; background: #e5edf5; }
+    .bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1f9f92, #67c9b5); }
+    .bar.orange { background: linear-gradient(90deg, #e47a26, #f2af60); }
+    .calc-result { margin-top: 12px; padding: 12px; border: 1px solid #bfd6ef; border-radius: 12px; background: var(--blue-soft); }
+    .calc-result strong { color: #1d4f9d; }
+    .pair-inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .pair-table td:last-child { width: 48px; }
+    .pair-table .remove-button { font-size: 17px; }
+    .correlation-tool { border-top-color: var(--purple); }
+    .canvas-wrap { margin-top: 14px; overflow: hidden; border: 1px solid #d4c8ed; border-radius: 14px; background: #fcfbff; }
+    canvas { display: block; width: 100%; height: 330px; }
+    .fit-summary { margin-top: 12px; padding: 12px; border: 1px solid #d5c7ef; border-radius: 12px; background: var(--purple-soft); }
+    .fit-summary .formula { margin: 8px 0; border-color: #d3c3f2; background: rgba(255,255,255,.72); }
+    .mistake-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .mistake { padding: 13px; border: 1px solid #f2cad0; border-radius: 13px; background: #fffafb; }
+    .mistake h3 { color: #993244; font-size: 18px; }
+    details { border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    details + details { margin-top: 9px; }
+    summary { padding: 10px 12px; color: #254b78; cursor: pointer; font-weight: 800; }
+    details p, details ol { margin: 0; padding: 0 12px 12px; }
+    details ol { padding-left: 34px; }
+    .back { display: inline-block; margin-top: 24px; color: #1f519b; font-weight: 800; text-decoration: none; }
+    @media (max-width: 760px) {
+      .wrap { padding: 14px 10px 34px; }
+      .hero, .card { border-radius: 14px; }
+      .two, .three, .tool-layout, .mistake-grid { grid-template-columns: minmax(0, 1fr); }
+      .field-row { grid-template-columns: minmax(0, 1fr); }
+      .field-row .button { width: 100%; }
+      .formula { font-size: 18px; text-align: left; }
+      .metric strong { font-size: 22px; }
+      .compare-line { grid-template-columns: 78px minmax(0, 1fr); }
+      canvas { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="tag-row">
+        <span class="tag">高三・數據分析</span>
+        <span class="tag teal">核心工具：逐筆加入資料算標準差</span>
+        <span class="tag orange">相關不等於因果</span>
+      </div>
+      <h1>數據分析：從「中心」讀到「分散」</h1>
+      <p class="lead">平均數告訴我們資料大約落在哪裡；標準差告訴我們資料有多整齊；相關係數與迴歸直線則用成對資料描述「一起變動」的趨勢。這一頁先讓學生看見資料，再把公式當成整理觀察的語言。</p>
+      <nav class="nav" aria-label="本頁段落">
+        <a href="#means">平均數</a>
+        <a href="#standard-deviation">標準差工具</a>
+        <a href="#correlation">相關與迴歸</a>
+        <a href="#check">自我檢查</a>
+      </nav>
+    </header>
+
+    <section class="section" aria-labelledby="map-title">
+      <h2 id="map-title">先分清楚：你想回答哪一個問題？</h2>
+      <div class="grid three">
+        <article class="card concept">
+          <span class="label">中心位置</span>
+          <h3>算術平均</h3>
+          <p>把每個數值公平地放在一起，問「平均一筆是多少？」適合成績、身高、每日用量等可直接相加的資料。</p>
+          <div class="formula">x̄ = (x₁ + x₂ + ⋯ + xₙ) ÷ n</div>
+        </article>
+        <article class="card concept teal">
+          <span class="label teal">倍數變化</span>
+          <h3>幾何平均</h3>
+          <p>當資料是「連續乘上去」的倍率時，問「每一期等效乘多少倍？」例如投資成長因子、倍數或比率。</p>
+          <div class="formula">G = ⁿ√(x₁x₂⋯xₙ)</div>
+        </article>
+        <article class="card concept purple">
+          <span class="label purple">一起變動</span>
+          <h3>相關與迴歸</h3>
+          <p>先看散布圖，再問兩個變數是否有線性趨勢；若有，迴歸直線可用來做「在資料範圍內」的估計。</p>
+          <div class="formula">ŷ = a + bx</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="means" aria-labelledby="means-title">
+      <h2 id="means-title">一、平均數：先看「怎麼合併資料」</h2>
+      <p class="section-lead">算術平均與幾何平均不是誰比較進階，而是資料的合併方式不同。先問：這些數是要<strong>相加</strong>，還是要<strong>連續相乘</strong>？</p>
+      <div class="grid two" style="margin-top:14px">
+        <article class="card concept">
+          <span class="label">可加的量</span>
+          <h3>算術平均：每一筆都平分</h3>
+          <p>例如 4 次小考為 70、82、86、90 分，總分 328 分平均分給 4 次，所以平均是 82 分。</p>
+          <div class="formula">(70 + 82 + 86 + 90) ÷ 4 = 82</div>
+          <div class="callout warn"><strong>常見錯誤：</strong>不同權重不能直接平均。若期中占 40%、期末占 60%，要算加權平均，不是把兩個分數直接除以 2。</div>
+        </article>
+        <article class="card concept teal">
+          <span class="label teal">可乘的倍率</span>
+          <h3>幾何平均：找等效倍率</h3>
+          <p>一筆金額先變成 1.2 倍，再變成 0.8 倍；兩期合起來是 0.96 倍，所以每期的等效倍率為 √0.96。</p>
+          <div class="formula">G = √(1.2 × 0.8) ≈ 0.980</div>
+          <p class="small">也就是平均每期約乘上 0.980，約下降 2.0%。幾何平均的每筆資料必須是正數；談漲跌百分比時，先改寫成成長因子。</p>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:14px" aria-labelledby="mean-tool-title">
+        <h3 id="mean-tool-title">快速檢查：同一串資料的兩種平均</h3>
+        <p class="small">輸入以逗號、頓號、空白或換行分隔的正數。例：<code>2, 8, 18</code>。算術平均一定可算；幾何平均只在全部為正數時顯示。</p>
+        <div class="field-row" style="margin-top:10px">
+          <input id="mean-data-input" type="text" inputmode="decimal" value="2, 8, 18" aria-label="平均數資料輸入">
+          <button class="button" id="calculate-means" type="button">計算兩種平均</button>
+        </div>
+        <div class="calc-result" id="mean-result" aria-live="polite"></div>
+      </article>
+    </section>
+
+    <section class="section" id="standard-deviation" aria-labelledby="sd-title">
+      <h2 id="sd-title">二、標準差：平均數一樣，資料可能很不一樣</h2>
+      <p class="section-lead">標準差把「每筆資料離平均數多遠」先平方、加總、平均，再開根號。平方會讓正負距離都變成正數，也會讓較遠的資料更明顯。</p>
+      <div class="grid two" style="margin-top:14px">
+        <article class="card concept teal">
+          <span class="label teal">母體標準差</span>
+          <h3>這一整組資料就是研究對象</h3>
+          <div class="formula">σ = √[Σ(xᵢ − x̄)² ÷ n]</div>
+          <p>例如「這個班全體同學」的成績，若資料已收齊，通常用除以 <em>n</em> 的母體標準差。</p>
+        </article>
+        <article class="card concept orange">
+          <span class="label orange">樣本標準差</span>
+          <h3>用部分資料估計更大的母體</h3>
+          <div class="formula">s = √[Σ(xᵢ − x̄)² ÷ (n − 1)]</div>
+          <p>若只抽一些人來估計全校或全國，常用除以 <em>n − 1</em> 的樣本標準差。工具會同時列出兩者，避免把分母混在一起。</p>
+        </article>
+      </div>
+
+      <article class="card tool" style="margin-top:14px" aria-labelledby="sd-tool-title">
+        <div class="tool-head">
+          <div>
+            <span class="label teal">重點互動工具</span>
+            <h3 id="sd-tool-title">逐筆加入資料，算出標準差</h3>
+            <p>先從同平均數的兩組範例比較，再自行加資料。刪掉某筆資料後，表格、數線與結果會一起更新。</p>
+          </div>
+          <div class="action-row" aria-label="標準差範例資料">
+            <button class="ghost-button" id="load-compact" type="button">平均相同・很集中</button>
+            <button class="ghost-button" id="load-spread" type="button">平均相同・很分散</button>
+          </div>
+        </div>
+
+        <div class="tool-layout">
+          <section class="control-panel" aria-labelledby="sd-input-title">
+            <h4 id="sd-input-title">建立資料組</h4>
+            <form id="single-data-form">
+              <label for="std-value-input">加入一筆數據</label>
+              <div class="field-row">
+                <input id="std-value-input" type="number" step="any" inputmode="decimal" placeholder="例如：72">
+                <button class="button" type="submit">加入</button>
+              </div>
+            </form>
+            <label for="std-bulk-input">一次加入多筆（逗號、空白或換行分隔）</label>
+            <textarea id="std-bulk-input" inputmode="decimal" placeholder="例如：65, 70, 74"></textarea>
+            <div class="action-row" style="margin-top:8px">
+              <button class="ghost-button" id="add-bulk-data" type="button">加入這些資料</button>
+              <button class="ghost-button warn" id="clear-std-data" type="button">清空資料</button>
+            </div>
+            <p class="status" id="std-status" aria-live="polite"></p>
+            <div style="margin-top:12px">
+              <h4>目前資料</h4>
+              <div class="chip-list" id="std-data-list" aria-label="目前的標準差資料"></div>
+              <p class="empty-note" id="std-empty-note">尚未加入資料。</p>
+            </div>
+          </section>
+
+          <section class="result-panel" aria-labelledby="sd-result-title">
+            <h4 id="sd-result-title">計算結果</h4>
+            <div class="mode-row" aria-label="標準差類型">
+              <label><input name="std-mode" type="radio" value="population" checked> 全體資料：除以 n</label>
+              <label><input name="std-mode" type="radio" value="sample"> 抽樣估計：除以 n − 1</label>
+            </div>
+            <div class="metric-grid" id="std-metrics"></div>
+            <p class="result-text" id="std-result-text">請至少加入一筆資料。</p>
+            <p class="small" id="std-formula-live"></p>
+          </section>
+        </div>
+
+        <div class="table-scroll">
+          <table aria-label="標準差逐步計算表">
+            <thead><tr><th>第幾筆</th><th>xᵢ</th><th>xᵢ − x̄</th><th>(xᵢ − x̄)²</th></tr></thead>
+            <tbody id="std-work-table"></tbody>
+          </table>
+        </div>
+
+        <section class="plot-card" aria-labelledby="spread-title">
+          <div class="plot-title">
+            <h3 id="spread-title">資料在數線上的位置</h3>
+            <span class="small" id="spread-caption">加入資料後顯示。</span>
+          </div>
+          <div class="spread-plot" id="spread-plot" aria-label="資料分散數線圖"></div>
+          <div class="legend"><span><i></i>平均數左右 1 個標準差</span><span><i class="outer"></i>平均數左右 2 個標準差</span><span><i class="mean"></i>平均數</span></div>
+          <p class="small" style="margin-top:8px">色帶是用來幫你比較距離，不代表每一組資料都必定有固定比例落在色帶內；只有資料近似鐘形時，才常用「約 68%、約 95%」的經驗法則。</p>
+        </section>
+      </article>
+
+      <article class="card comparison" aria-labelledby="compare-title">
+        <span class="label">課堂投影建議</span>
+        <h3 id="compare-title">用同一個平均數，讓學生看見標準差的意義</h3>
+        <p>按上方的「很集中」與「很分散」輪流載入：兩組平均數都是 70，但離 70 的距離完全不同。標準差不是「資料有多大」，而是「資料離中心有多散」。</p>
+        <div id="sd-comparison" class="small">載入範例後，這裡會顯示比較。</div>
+      </article>
+    </section>
+
+    <section class="section" id="correlation" aria-labelledby="correlation-title">
+      <h2 id="correlation-title">三、相關係數與迴歸直線：先畫點，再說趨勢</h2>
+      <p class="section-lead">每一筆資料是 <strong>(x, y)</strong> 的一對。散布圖向右上排列時常見正相關，向右下排列時常見負相關；相關係數 <em>r</em> 只描述<strong>線性</strong>關係的方向與緊密程度。</p>
+      <div class="grid two" style="margin-top:14px">
+        <article class="card concept purple">
+          <span class="label purple">相關係數 r</span>
+          <h3>方向與線性緊密程度</h3>
+          <div class="formula">−1 ≤ r ≤ 1</div>
+          <ul class="steps">
+            <li><strong>r &gt; 0：</strong>x 增加時，y 傾向增加。</li>
+            <li><strong>r &lt; 0：</strong>x 增加時，y 傾向減少。</li>
+            <li><strong>|r| 越接近 1：</strong>點越貼近一條直線。</li>
+          </ul>
+        </article>
+        <article class="card concept orange">
+          <span class="label orange">最小平方法直線</span>
+          <h3>用 ŷ = a + bx 做估計</h3>
+          <p>斜率 <em>b</em> 表示 x 每增加 1，預測值 ŷ 平均改變多少；截距 <em>a</em> 是 x = 0 時的直線值。這條線會通過 (x̄, ȳ)。</p>
+          <div class="formula">b = Sxy ÷ Sxx，a = ȳ − bx̄</div>
+          <p class="small">若 x = 0 不在原始資料範圍內，截距可能只有代數意義，不一定適合做現實解釋。</p>
+        </article>
+      </div>
+
+      <article class="card tool correlation-tool" style="margin-top:14px" aria-labelledby="pair-tool-title">
+        <div class="tool-head">
+          <div>
+            <span class="label purple">成對資料工具</span>
+            <h3 id="pair-tool-title">加點、看 r、畫出迴歸直線</h3>
+            <p>可以逐筆新增 (x, y)，或一次貼上多行。例如：<code>1, 52</code> 換行後再輸入 <code>2, 57</code>。</p>
+          </div>
+          <div class="action-row" aria-label="相關係數範例資料">
+            <button class="ghost-button" id="load-positive" type="button">正相關範例</button>
+            <button class="ghost-button" id="load-negative" type="button">負相關範例</button>
+            <button class="ghost-button" id="load-weak" type="button">弱線性範例</button>
+          </div>
+        </div>
+
+        <div class="tool-layout">
+          <section class="control-panel" aria-labelledby="pair-input-title">
+            <h4 id="pair-input-title">加入一組 (x, y)</h4>
+            <div class="pair-inputs">
+              <div><label for="pair-x-input">x</label><input id="pair-x-input" type="number" step="any" inputmode="decimal" placeholder="例如：3"></div>
+              <div><label for="pair-y-input">y</label><input id="pair-y-input" type="number" step="any" inputmode="decimal" placeholder="例如：61"></div>
+            </div>
+            <div class="action-row" style="margin-top:8px">
+              <button class="button" id="add-pair" type="button">加入這一點</button>
+              <button class="ghost-button warn" id="clear-pairs" type="button">清空</button>
+            </div>
+            <label for="pair-bulk-input" style="margin-top:13px">一次加入多組</label>
+            <textarea id="pair-bulk-input" inputmode="decimal" placeholder="1, 52&#10;2, 57&#10;3, 61"></textarea>
+            <button class="ghost-button" id="add-bulk-pairs" type="button" style="margin-top:8px">加入成對資料</button>
+            <p class="status" id="pair-status" aria-live="polite"></p>
+          </section>
+          <section class="result-panel" aria-labelledby="fit-title">
+            <h4 id="fit-title">相關與迴歸結果</h4>
+            <div class="metric-grid" id="pair-metrics"></div>
+            <div class="fit-summary" id="fit-summary" aria-live="polite">請先加入至少兩組成對資料。</div>
+          </section>
+        </div>
+
+        <div class="table-scroll">
+          <table class="pair-table" aria-label="成對資料表">
+            <thead><tr><th>第幾組</th><th>x</th><th>y</th><th>移除</th></tr></thead>
+            <tbody id="pair-table-body"></tbody>
+          </table>
+        </div>
+        <section class="canvas-wrap" aria-label="散布圖與迴歸直線"><canvas id="scatter-canvas" aria-label="成對資料散布圖"></canvas></section>
+        <p class="small" id="scatter-caption" style="margin-top:8px">散布圖會在加入資料後顯示。請先看點的形狀，再讀相關係數。</p>
+      </article>
+
+      <div class="callout danger"><strong>最重要的提醒：</strong>有相關，不等於有因果。冰品銷量與溺水事件可能同時上升，但不能因此說冰品造成溺水；共同原因可能是炎熱的天氣。迴歸直線適合描述與估計，不是自動找到原因。</div>
+    </section>
+
+    <section class="section" id="check" aria-labelledby="check-title">
+      <h2 id="check-title">四、上課收尾：常見錯誤與自我檢查</h2>
+      <div class="mistake-grid">
+        <article class="mistake">
+          <h3>把平均數當成全部</h3>
+          <p>兩班平均都 70 分，不代表表現一樣。再看標準差，才能知道一班是否整齊、另一班是否差距很大。</p>
+        </article>
+        <article class="mistake">
+          <h3>百分比直接做幾何平均</h3>
+          <p>漲 20% 與跌 20% 要先寫成 1.2 與 0.8，再做幾何平均；不要直接把 20 與 −20 相乘。</p>
+        </article>
+        <article class="mistake">
+          <h3>把相關當因果</h3>
+          <p>先檢查是否有共同原因、反向因果或資料範圍限制。r 很高也不能跳過這一步。</p>
+        </article>
+      </div>
+      <div style="margin-top:14px">
+        <details>
+          <summary>基礎：資料 4、6、8 的算術平均與母體標準差是多少？</summary>
+          <p>平均數 x̄ = 6。離平均數的距離為 −2、0、2；平方後為 4、0、4，平方離差和為 8。母體變異數為 8 ÷ 3，所以母體標準差 σ = √(8/3) ≈ 1.633。</p>
+        </details>
+        <details>
+          <summary>進階：哪一組標準差較大？A：68、69、70、71、72；B：50、60、70、80、90。</summary>
+          <p>兩組平均都是 70，但 B 的每筆資料離 70 更遠，所以 B 的標準差較大。請用上方工具載入兩組資料，從數線色帶與逐筆平方離差確認。</p>
+        </details>
+        <details>
+          <summary>挑戰：若 r 接近 0，是否代表 x 與 y 完全沒有關係？</summary>
+          <p>不一定。r 接近 0 只表示<strong>線性</strong>關係弱；資料可能呈 U 形、倒 U 形或其他非線性關係。先看散布圖的形狀，不能只看一個數字。</p>
+        </details>
+      </div>
+    </section>
+
+    <a class="back" href="./index.html#s3">← 回教學首頁的高三入口</a>
+  </main>
+
+  <script>
+    (() => {
+      const numberFormat = new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 4 });
+      const preciseFormat = new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 6 });
+      const format = (value, precise = false) => Number.isFinite(value) ? (precise ? preciseFormat : numberFormat).format(value) : '—';
+      const nearlyZero = (value) => Math.abs(value) < 1e-10;
+      const parseNumbers = (text) => text.trim().split(/[\s,，、;；]+/).filter(Boolean).map(Number);
+
+      const meanInput = document.querySelector('#mean-data-input');
+      const meanResult = document.querySelector('#mean-result');
+      function calculateMeans() {
+        const values = parseNumbers(meanInput.value);
+        if (!values.length || values.some((value) => !Number.isFinite(value))) {
+          meanResult.innerHTML = '<strong>請輸入有效數字。</strong> 可用逗號、空白或換行分隔。';
+          return;
+        }
+        const arithmetic = values.reduce((sum, value) => sum + value, 0) / values.length;
+        const geometric = values.every((value) => value > 0)
+          ? Math.exp(values.reduce((sum, value) => sum + Math.log(value), 0) / values.length)
+          : null;
+        meanResult.innerHTML = `<strong>算術平均 x̄ = ${format(arithmetic, true)}</strong>（${format(values.reduce((sum, value) => sum + value, 0), true)} ÷ ${values.length}）<br>${geometric === null ? '幾何平均：這組資料含有 0 或負數，不能在實數範圍計算。' : `<strong>幾何平均 G = ${format(geometric, true)}</strong>（${values.length} 個正數的等效倍率）`}`;
+      }
+      document.querySelector('#calculate-means').addEventListener('click', calculateMeans);
+      meanInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') calculateMeans(); });
+
+      let stdData = [68, 69, 70, 71, 72];
+      const stdValueInput = document.querySelector('#std-value-input');
+      const stdBulkInput = document.querySelector('#std-bulk-input');
+      const stdStatus = document.querySelector('#std-status');
+      const stdList = document.querySelector('#std-data-list');
+      const stdEmptyNote = document.querySelector('#std-empty-note');
+      const stdMetrics = document.querySelector('#std-metrics');
+      const stdText = document.querySelector('#std-result-text');
+      const stdFormulaLive = document.querySelector('#std-formula-live');
+      const stdTable = document.querySelector('#std-work-table');
+      const spreadPlot = document.querySelector('#spread-plot');
+      const spreadCaption = document.querySelector('#spread-caption');
+      const comparison = document.querySelector('#sd-comparison');
+      let selectedStdMode = 'population';
+
+      const updateStdStatus = (message = '', isError = false) => {
+        stdStatus.textContent = message;
+        stdStatus.classList.toggle('error', isError);
+      };
+      const currentStdMode = () => document.querySelector('input[name="std-mode"]:checked').value;
+      function metric(name, value) { return `<div class="metric"><span>${name}</span><strong>${value}</strong></div>`; }
+      function renderStdPlot(mean, sd) {
+        spreadPlot.replaceChildren();
+        if (!stdData.length || !Number.isFinite(mean)) {
+          spreadCaption.textContent = '加入資料後顯示。';
+          return;
+        }
+        const rawMin = Math.min(...stdData, mean - 2 * sd);
+        const rawMax = Math.max(...stdData, mean + 2 * sd);
+        const fallback = Math.max(1, Math.abs(mean) * .12);
+        const padding = Math.max((rawMax - rawMin) * .16, fallback * .22);
+        const min = rawMin - padding;
+        const max = rawMax + padding;
+        const range = max - min || 1;
+        const percent = (value) => Math.max(2, Math.min(98, ((value - min) / range) * 100));
+        const addBand = (start, end, className) => {
+          const band = document.createElement('div');
+          band.className = `spread-band ${className}`;
+          const left = percent(start);
+          const right = percent(end);
+          band.style.left = `${Math.min(left, right)}%`;
+          band.style.width = `${Math.max(1, Math.abs(right - left))}%`;
+          spreadPlot.appendChild(band);
+        };
+        if (sd > 0) {
+          addBand(mean - 2 * sd, mean + 2 * sd, 'outer');
+          addBand(mean - sd, mean + sd, '');
+        }
+        stdData.forEach((value, index) => {
+          const dot = document.createElement('span');
+          dot.className = 'spread-dot';
+          dot.style.left = `${percent(value)}%`;
+          dot.style.bottom = `${35 + (index % 3) * 17}px`;
+          dot.title = `第 ${index + 1} 筆：${format(value, true)}`;
+          dot.setAttribute('aria-label', dot.title);
+          spreadPlot.appendChild(dot);
+        });
+        const meanMark = document.createElement('div');
+        meanMark.className = 'mean-mark';
+        meanMark.style.left = `${percent(mean)}%`;
+        meanMark.innerHTML = `<span>x̄=${format(mean, true)}</span>`;
+        spreadPlot.appendChild(meanMark);
+        [min, mean, max].forEach((value) => {
+          const label = document.createElement('span');
+          label.className = 'axis-label';
+          label.style.left = `${percent(value)}%`;
+          label.textContent = format(value, true);
+          spreadPlot.appendChild(label);
+        });
+        spreadCaption.textContent = `資料範圍 ${format(Math.min(...stdData), true)} 到 ${format(Math.max(...stdData), true)}；目前採用 ${selectedStdMode === 'population' ? '母體' : '樣本'}標準差。`;
+      }
+      function renderStdComparison(populationSd) {
+        const compact = [68, 69, 70, 71, 72];
+        const spread = [50, 60, 70, 80, 90];
+        const calc = (values) => {
+          const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+          return Math.sqrt(values.reduce((sum, value) => sum + (value - average) ** 2, 0) / values.length);
+        };
+        const compactSd = calc(compact);
+        const spreadSd = calc(spread);
+        const max = Math.max(compactSd, spreadSd, populationSd || 0, 1);
+        comparison.innerHTML = `<div class="compare-line"><strong>集中組 σ=${format(compactSd, true)}</strong><div class="bar-track"><div class="bar" style="width:${(compactSd / max) * 100}%"></div></div></div><div class="compare-line"><strong>分散組 σ=${format(spreadSd, true)}</strong><div class="bar-track"><div class="bar orange" style="width:${(spreadSd / max) * 100}%"></div></div></div><p style="margin-top:9px">目前這組資料的母體標準差是 <strong>${format(populationSd, true)}</strong>。兩個範例的平均數都等於 70。</p>`;
+      }
+      function renderStd() {
+        stdList.replaceChildren();
+        stdEmptyNote.hidden = stdData.length > 0;
+        stdData.forEach((value, index) => {
+          const chip = document.createElement('span');
+          chip.className = 'data-chip';
+          chip.append(document.createTextNode(format(value, true)));
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'remove-button';
+          remove.setAttribute('aria-label', `移除第 ${index + 1} 筆資料 ${format(value, true)}`);
+          remove.textContent = '×';
+          remove.addEventListener('click', () => { stdData.splice(index, 1); updateStdStatus(`已移除第 ${index + 1} 筆資料。`); renderStd(); });
+          chip.append(remove);
+          stdList.appendChild(chip);
+        });
+        stdTable.replaceChildren();
+        if (!stdData.length) {
+          stdMetrics.innerHTML = metric('資料筆數 n', '0') + metric('平均數 x̄', '—') + metric('選用標準差', '—') + metric('平方離差和', '—');
+          stdText.textContent = '請至少加入一筆資料。';
+          stdFormulaLive.textContent = '';
+          renderStdPlot(NaN, NaN);
+          renderStdComparison(0);
+          return;
+        }
+        const n = stdData.length;
+        const sum = stdData.reduce((total, value) => total + value, 0);
+        const mean = sum / n;
+        const squaredDifferences = stdData.map((value) => (value - mean) ** 2);
+        const ss = squaredDifferences.reduce((total, value) => total + value, 0);
+        const populationSd = Math.sqrt(ss / n);
+        const sampleSd = n > 1 ? Math.sqrt(ss / (n - 1)) : NaN;
+        selectedStdMode = currentStdMode();
+        const activeSd = selectedStdMode === 'population' ? populationSd : sampleSd;
+        stdMetrics.innerHTML = metric('資料筆數 n', format(n)) + metric('平均數 x̄', format(mean, true)) + metric(selectedStdMode === 'population' ? '母體標準差 σ' : '樣本標準差 s', format(activeSd, true)) + metric('平方離差和 Σ(xᵢ−x̄)²', format(ss, true));
+        stdText.textContent = Number.isFinite(activeSd)
+          ? (nearlyZero(activeSd) ? '每筆資料都相同，因此每筆離平均數的距離都是 0，標準差也是 0。' : `標準差約為 ${format(activeSd, true)}；數值越大，表示資料離平均數越分散。`)
+          : '樣本標準差需要至少兩筆資料，因為分母是 n − 1。';
+        const divisor = selectedStdMode === 'population' ? n : n - 1;
+        stdFormulaLive.textContent = Number.isFinite(activeSd) ? `${selectedStdMode === 'population' ? 'σ' : 's'} = √(${format(ss, true)} ÷ ${divisor}) = ${format(activeSd, true)}` : '';
+        stdData.forEach((value, index) => {
+          const row = document.createElement('tr');
+          [index + 1, format(value, true), format(value - mean, true), format(squaredDifferences[index], true)].forEach((text) => {
+            const cell = document.createElement('td');
+            cell.textContent = text;
+            row.appendChild(cell);
+          });
+          stdTable.appendChild(row);
+        });
+        renderStdPlot(mean, Number.isFinite(activeSd) ? activeSd : populationSd);
+        renderStdComparison(populationSd);
+      }
+      function addStdValues(values, source) {
+        if (!values.length || values.some((value) => !Number.isFinite(value))) {
+          updateStdStatus('請確認每一筆都是有效數字。', true);
+          return;
+        }
+        stdData.push(...values);
+        updateStdStatus(`已${source} ${values.length} 筆資料。`);
+        renderStd();
+      }
+      document.querySelector('#single-data-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const value = Number(stdValueInput.value);
+        if (!stdValueInput.value.trim() || !Number.isFinite(value)) { updateStdStatus('請先輸入一筆有效數字。', true); return; }
+        addStdValues([value], '加入');
+        stdValueInput.value = '';
+        stdValueInput.focus();
+      });
+      document.querySelector('#add-bulk-data').addEventListener('click', () => {
+        const raw = stdBulkInput.value;
+        const values = parseNumbers(raw);
+        if (!raw.trim()) { updateStdStatus('請先輸入要一次加入的資料。', true); return; }
+        addStdValues(values, '一次加入');
+        if (values.length && values.every(Number.isFinite)) stdBulkInput.value = '';
+      });
+      document.querySelector('#clear-std-data').addEventListener('click', () => { stdData = []; updateStdStatus('已清空資料。'); renderStd(); });
+      document.querySelector('#load-compact').addEventListener('click', () => { stdData = [68, 69, 70, 71, 72]; updateStdStatus('已載入平均數 70 的集中組。'); renderStd(); });
+      document.querySelector('#load-spread').addEventListener('click', () => { stdData = [50, 60, 70, 80, 90]; updateStdStatus('已載入平均數 70 的分散組。'); renderStd(); });
+      document.querySelectorAll('input[name="std-mode"]').forEach((input) => input.addEventListener('change', renderStd));
+
+      let pairData = [[1, 52], [2, 57], [3, 61], [4, 64], [5, 68], [6, 72], [7, 75]];
+      const pairXInput = document.querySelector('#pair-x-input');
+      const pairYInput = document.querySelector('#pair-y-input');
+      const pairBulkInput = document.querySelector('#pair-bulk-input');
+      const pairStatus = document.querySelector('#pair-status');
+      const pairTable = document.querySelector('#pair-table-body');
+      const pairMetrics = document.querySelector('#pair-metrics');
+      const fitSummary = document.querySelector('#fit-summary');
+      const scatterCanvas = document.querySelector('#scatter-canvas');
+      const scatterCaption = document.querySelector('#scatter-caption');
+      let lastPairStats = null;
+      const updatePairStatus = (message = '', isError = false) => { pairStatus.textContent = message; pairStatus.classList.toggle('error', isError); };
+      const lineFormula = (a, b) => `ŷ = ${format(b, true)}x ${a >= 0 ? '+' : '−'} ${format(Math.abs(a), true)}`;
+      function pairStats() {
+        if (pairData.length < 2) return null;
+        const n = pairData.length;
+        const xMean = pairData.reduce((sum, pair) => sum + pair[0], 0) / n;
+        const yMean = pairData.reduce((sum, pair) => sum + pair[1], 0) / n;
+        const sxx = pairData.reduce((sum, pair) => sum + (pair[0] - xMean) ** 2, 0);
+        const syy = pairData.reduce((sum, pair) => sum + (pair[1] - yMean) ** 2, 0);
+        const sxy = pairData.reduce((sum, pair) => sum + (pair[0] - xMean) * (pair[1] - yMean), 0);
+        if (nearlyZero(sxx) || nearlyZero(syy)) return { n, xMean, yMean, sxx, syy, sxy, r: NaN, a: NaN, b: NaN };
+        const b = sxy / sxx;
+        const a = yMean - b * xMean;
+        const r = sxy / Math.sqrt(sxx * syy);
+        return { n, xMean, yMean, sxx, syy, sxy, r, a, b };
+      }
+      function drawScatter(stats) {
+        const rect = scatterCanvas.getBoundingClientRect();
+        const width = Math.max(300, Math.round(rect.width || 680));
+        const height = Math.max(240, Math.round(rect.height || 330));
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        scatterCanvas.width = Math.round(width * dpr);
+        scatterCanvas.height = Math.round(height * dpr);
+        const ctx = scatterCanvas.getContext('2d');
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, width, height);
+        if (!pairData.length) return;
+        const pad = { left: 48, right: 18, top: 20, bottom: 38 };
+        const xs = pairData.map((pair) => pair[0]);
+        const ys = pairData.map((pair) => pair[1]);
+        const xMinRaw = Math.min(...xs), xMaxRaw = Math.max(...xs), yMinRaw = Math.min(...ys), yMaxRaw = Math.max(...ys);
+        const xRange = xMaxRaw - xMinRaw || Math.max(1, Math.abs(xMinRaw) * .2);
+        const yRange = yMaxRaw - yMinRaw || Math.max(1, Math.abs(yMinRaw) * .2);
+        const xMin = xMinRaw - xRange * .14, xMax = xMaxRaw + xRange * .14;
+        const yMin = yMinRaw - yRange * .14, yMax = yMaxRaw + yRange * .14;
+        const innerWidth = width - pad.left - pad.right;
+        const innerHeight = height - pad.top - pad.bottom;
+        const xToPx = (value) => pad.left + ((value - xMin) / (xMax - xMin || 1)) * innerWidth;
+        const yToPx = (value) => height - pad.bottom - ((value - yMin) / (yMax - yMin || 1)) * innerHeight;
+        ctx.fillStyle = '#fcfbff';
+        ctx.fillRect(0, 0, width, height);
+        ctx.strokeStyle = '#e1daf0';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 4]);
+        for (let i = 0; i <= 4; i += 1) {
+          const x = pad.left + innerWidth * (i / 4);
+          const y = pad.top + innerHeight * (i / 4);
+          ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, height - pad.bottom); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(width - pad.right, y); ctx.stroke();
+        }
+        ctx.setLineDash([]);
+        ctx.strokeStyle = '#8091a8';
+        ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, height - pad.bottom); ctx.lineTo(width - pad.right, height - pad.bottom); ctx.stroke();
+        ctx.fillStyle = '#53657e';
+        ctx.font = '12px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+        ctx.textAlign = 'center';
+        for (let i = 0; i <= 4; i += 1) {
+          const value = xMin + (xMax - xMin) * (i / 4);
+          ctx.fillText(format(value), xToPx(value), height - 14);
+        }
+        ctx.textAlign = 'right';
+        for (let i = 0; i <= 4; i += 1) {
+          const value = yMin + (yMax - yMin) * (i / 4);
+          ctx.fillText(format(value), pad.left - 7, yToPx(value) + 4);
+        }
+        ctx.fillStyle = '#35577f';
+        ctx.textAlign = 'center';
+        ctx.fillText('x', width - pad.right, height - 7);
+        ctx.textAlign = 'left';
+        ctx.fillText('y', pad.left + 5, pad.top + 10);
+        if (stats && Number.isFinite(stats.a) && Number.isFinite(stats.b)) {
+          ctx.strokeStyle = '#b56721';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(xToPx(xMin), yToPx(stats.a + stats.b * xMin));
+          ctx.lineTo(xToPx(xMax), yToPx(stats.a + stats.b * xMax));
+          ctx.stroke();
+          ctx.fillStyle = '#a65310';
+          ctx.textAlign = 'left';
+          ctx.fillText('迴歸直線', pad.left + 8, pad.top + 25);
+        }
+        pairData.forEach((pair, index) => {
+          ctx.beginPath();
+          ctx.fillStyle = '#7650be';
+          ctx.arc(xToPx(pair[0]), yToPx(pair[1]), 5.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          if (width > 480) {
+            ctx.fillStyle = '#4b3a72';
+            ctx.font = '11px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(`${index + 1}`, xToPx(pair[0]) + 7, yToPx(pair[1]) - 6);
+          }
+        });
+      }
+      function renderPairs() {
+        pairTable.replaceChildren();
+        pairData.forEach((pair, index) => {
+          const row = document.createElement('tr');
+          [index + 1, format(pair[0], true), format(pair[1], true)].forEach((value) => {
+            const cell = document.createElement('td'); cell.textContent = value; row.appendChild(cell);
+          });
+          const actionCell = document.createElement('td');
+          const remove = document.createElement('button');
+          remove.type = 'button'; remove.className = 'remove-button'; remove.textContent = '×';
+          remove.setAttribute('aria-label', `移除第 ${index + 1} 組資料`);
+          remove.addEventListener('click', () => { pairData.splice(index, 1); updatePairStatus(`已移除第 ${index + 1} 組資料。`); renderPairs(); });
+          actionCell.appendChild(remove); row.appendChild(actionCell); pairTable.appendChild(row);
+        });
+        const stats = pairStats();
+        lastPairStats = stats;
+        if (!pairData.length) {
+          pairMetrics.innerHTML = metric('成對資料數 n', '0') + metric('相關係數 r', '—') + metric('斜率 b', '—') + metric('截距 a', '—');
+          fitSummary.textContent = '請先加入至少兩組成對資料。';
+          scatterCaption.textContent = '散布圖會在加入資料後顯示。';
+          drawScatter(null);
+          return;
+        }
+        if (!stats) {
+          pairMetrics.innerHTML = metric('成對資料數 n', format(pairData.length)) + metric('相關係數 r', '—') + metric('斜率 b', '—') + metric('截距 a', '—');
+          fitSummary.textContent = '還需要至少兩組資料，才能檢查線性趨勢。';
+          scatterCaption.textContent = '再加入一組資料後，即可計算相關係數。';
+          drawScatter(null);
+          return;
+        }
+        pairMetrics.innerHTML = metric('成對資料數 n', format(stats.n)) + metric('相關係數 r', format(stats.r, true)) + metric('斜率 b', format(stats.b, true)) + metric('截距 a', format(stats.a, true));
+        if (!Number.isFinite(stats.r)) {
+          fitSummary.innerHTML = '<strong>目前無法算出 r 或迴歸線。</strong><br>所有 x 都一樣或所有 y 都一樣時，沒有足夠的變化可以描述線性趨勢。';
+          scatterCaption.textContent = '請讓 x 與 y 都至少有兩種不同的值。';
+        } else {
+          const direction = stats.r > 0 ? '正相關：x 增加時，y 傾向增加。' : stats.r < 0 ? '負相關：x 增加時，y 傾向減少。' : '線性相關極弱。';
+          fitSummary.innerHTML = `<strong>${direction}</strong> |r|=${format(Math.abs(stats.r), true)}，表示點和直線趨勢的貼近程度。<div class="formula">${lineFormula(stats.a, stats.b)}</div><p class="small">這條線通過 (x̄, ȳ) = (${format(stats.xMean, true)}, ${format(stats.yMean, true)})；斜率的意思是 x 每增加 1，預測 ŷ 約改變 ${format(stats.b, true)}。</p>`;
+          scatterCaption.textContent = `紫點是原始資料；橘線是最小平方法迴歸直線。請只在 x 的原始範圍 ${format(Math.min(...pairData.map((pair) => pair[0])), true)} 到 ${format(Math.max(...pairData.map((pair) => pair[0])), true)} 附近做估計。`;
+        }
+        drawScatter(stats);
+      }
+      function parsePairs(text) {
+        const lines = text.trim().split(/[\n;；]+/).map((line) => line.trim()).filter(Boolean);
+        if (!lines.length) return [];
+        return lines.map((line) => {
+          const values = line.split(/[\s,，、]+/).filter(Boolean).map(Number);
+          return values.length === 2 ? values : null;
+        });
+      }
+      function addPairs(pairs, source) {
+        if (!pairs.length || pairs.some((pair) => !pair || pair.some((value) => !Number.isFinite(value)))) {
+          updatePairStatus('每一組資料都要剛好有兩個有效數字，例如：3, 61。', true);
+          return false;
+        }
+        pairData.push(...pairs);
+        updatePairStatus(`已${source} ${pairs.length} 組成對資料。`);
+        renderPairs();
+        return true;
+      }
+      document.querySelector('#add-pair').addEventListener('click', () => {
+        const x = Number(pairXInput.value), y = Number(pairYInput.value);
+        if (!pairXInput.value.trim() || !pairYInput.value.trim() || !Number.isFinite(x) || !Number.isFinite(y)) { updatePairStatus('請先完整輸入 x 與 y。', true); return; }
+        if (addPairs([[x, y]], '加入')) { pairXInput.value = ''; pairYInput.value = ''; pairXInput.focus(); }
+      });
+      [pairXInput, pairYInput].forEach((input) => input.addEventListener('keydown', (event) => { if (event.key === 'Enter') document.querySelector('#add-pair').click(); }));
+      document.querySelector('#add-bulk-pairs').addEventListener('click', () => {
+        if (!pairBulkInput.value.trim()) { updatePairStatus('請先輸入要一次加入的成對資料。', true); return; }
+        if (addPairs(parsePairs(pairBulkInput.value), '一次加入')) pairBulkInput.value = '';
+      });
+      document.querySelector('#clear-pairs').addEventListener('click', () => { pairData = []; updatePairStatus('已清空成對資料。'); renderPairs(); });
+      const setPairs = (pairs, label) => { pairData = pairs; updatePairStatus(`已載入${label}。`); renderPairs(); };
+      document.querySelector('#load-positive').addEventListener('click', () => setPairs([[1,52],[2,57],[3,61],[4,64],[5,68],[6,72],[7,75]], '正相關範例'));
+      document.querySelector('#load-negative').addEventListener('click', () => setPairs([[1,89],[2,84],[3,78],[4,73],[5,68],[6,61],[7,57]], '負相關範例'));
+      document.querySelector('#load-weak').addEventListener('click', () => setPairs([[1,68],[2,52],[3,74],[4,58],[5,67],[6,55],[7,71]], '弱線性範例'));
+      window.addEventListener('resize', () => { if (pairData.length) drawScatter(lastPairStats); });
+
+      calculateMeans();
+      renderStd();
+      renderPairs();
+    })();
+  </script>
+</body>
+</html>

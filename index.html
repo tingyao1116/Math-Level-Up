@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
@@ -14,6 +14,7 @@
       --line: #dbe4ef;
       --brand: #0f766e;
       --brand-dark: #115e59;
+      --brand-pale: #ccfbf1;
     }
     * { box-sizing: border-box; }
     body {
@@ -25,7 +26,7 @@
       padding: 24px;
     }
     .wrap {
-      max-width: 1000px;
+      max-width: 1060px;
       margin: 0 auto;
       background: var(--card);
       border: 1px solid var(--line);
@@ -34,187 +35,478 @@
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
     }
     h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 40px); }
-    .lead { margin: 0 0 20px; color: var(--sub); line-height: 1.8; }
-    .section-title { margin: 0 0 12px; font-size: 22px; }
-    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-    .card { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: #fff; }
-    .card h3 { margin: 0 0 8px; font-size: 20px; }
-    .card p { margin: 0 0 10px; line-height: 1.7; color: var(--sub); }
+    .lead { margin: 0; color: var(--sub); line-height: 1.8; }
+    .grade-browser { margin-top: 24px; }
+    .section-title { margin: 0 0 6px; font-size: 22px; }
+    .section-note { margin: 0 0 14px; color: var(--sub); line-height: 1.7; }
+    .grade-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 3px 1px 10px;
+      border-bottom: 1px solid var(--line);
+      scrollbar-width: thin;
+    }
+    .grade-tab,
+    .page-button {
+      appearance: none;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .grade-tab {
+      flex: 0 0 auto;
+      color: #334155;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 14px;
+    }
+    .grade-tab:hover { background: #f0fdfa; border-color: #5eead4; }
+    .grade-tab[aria-selected="true"] {
+      color: #073b35;
+      background: var(--brand-pale);
+      border-color: #5eead4;
+    }
+    .grade-tab:focus-visible,
+    .page-button:focus-visible,
+    .btn:focus-visible {
+      outline: 3px solid #38bdf8;
+      outline-offset: 2px;
+    }
+    .grade-panel { padding-top: 20px; }
+    .grade-panel[hidden] { display: none; }
+    .panel-head {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .panel-head h2 { margin: 0 0 5px; font-size: clamp(24px, 3vw, 30px); }
+    .panel-head p { margin: 0; color: var(--sub); line-height: 1.7; }
+    .entry-count {
+      flex: 0 0 auto;
+      color: #0b3b37;
+      background: var(--brand-pale);
+      border: 1px solid #99f6e4;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    }
+    .grid > * { min-width: 0; }
+    .card,
+    .empty-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+    .card h3,
+    .empty-card h3 { margin: 0 0 8px; font-size: 20px; }
+    .card p,
+    .empty-card p { margin: 0 0 10px; line-height: 1.7; color: var(--sub); }
     .badge {
-      display: inline-block; font-size: 13px; font-weight: 700; color: #0b3b37;
-      background: #ccfbf1; border: 1px solid #99f6e4; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px;
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0b3b37;
+      background: var(--brand-pale);
+      border: 1px solid #99f6e4;
+      border-radius: 999px;
+      padding: 2px 10px;
+      margin-bottom: 8px;
     }
     .btn {
-      display: inline-block; text-decoration: none; color: #fff; background: var(--brand);
-      border: 1px solid var(--brand); border-radius: 10px; padding: 8px 12px; font-weight: 700;
+      display: inline-block;
+      text-decoration: none;
+      color: #fff;
+      background: var(--brand);
+      border: 1px solid var(--brand);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 700;
     }
     .btn:hover { background: var(--brand-dark); }
+    .empty-card { background: #f8fafc; border-style: dashed; }
+    .page-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .page-button {
+      color: #0b3b37;
+      background: #fff;
+      border: 1px solid #5eead4;
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+    .page-button:hover:not(:disabled) { background: #f0fdfa; }
+    .page-button:disabled { color: #94a3b8; border-color: var(--line); cursor: not-allowed; }
+    #view-status { margin: 0; color: var(--sub); font-size: 14px; }
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      .wrap { padding: 18px; border-radius: 14px; }
+      .panel-head { flex-direction: column; gap: 8px; }
+      .entry-count { align-self: flex-start; }
+      .page-controls { align-items: stretch; flex-wrap: wrap; }
+      #view-status { width: 100%; order: -1; }
+      .page-button { flex: 1 1 140px; }
+    }
   </style>
 </head>
 <body>
   <main class="wrap">
     <h1>數學小遊戲教學首頁</h1>
-    <p class="lead">這裡收集可直接上課展示與學生自學使用的互動頁。每一頁都能操作、觀察、驗證，幫助建立觀念與解題連結。</p>
+    <p class="lead">這裡收集可直接上課展示與學生自學使用的互動頁。先依適合開始的年級選入口；若內容有延伸，卡片內會說明可以往哪個觀念繼續學。</p>
 
-    <h2 class="section-title">國一</h2>
-    <section class="grid">
-      <article class="card">
-        <div class="badge">數與式</div>
-        <h3>因數倍數教學工具</h3>
-        <p>練習 9、11 倍數判斷，含餘數、反向求位數、韓信點兵、質數與標準分解式。</p>
-        <a class="btn" href="./factor-multiple-divisibility.html">開啟因數倍數工具</a>
-      </article>
+    <section class="grade-browser" aria-label="依年級選擇教學入口">
+      <h2 class="section-title">依年級找工具</h2>
+      <p class="section-note">老師可先選當前授課年級投影使用；學生則可從自己的年級開始，逐頁完成觀察、練習與自我檢查。</p>
 
-      <article class="card">
-        <div class="badge">函數入門</div>
-        <h3>四種基本函數作圖</h3>
-        <p>切換觀察 <code>y=-x</code>、<code>y=1/x</code>、<code>y=(1/2)^x</code>、<code>y=x^2</code> 的圖形特徵與變化。</p>
-        <a class="btn" href="./function-graphs-basic.html">開啟函數作圖</a>
-      </article>
+      <nav class="grade-tabs" role="tablist" aria-label="年級入口">
+        <button class="grade-tab" id="tab-j1" type="button" role="tab" aria-selected="true" aria-controls="grade-j1" data-grade="j1" data-label="國一" data-count="7">國一</button>
+        <button class="grade-tab" id="tab-j2" type="button" role="tab" aria-selected="false" aria-controls="grade-j2" data-grade="j2" data-label="國二" data-count="4" tabindex="-1">國二</button>
+        <button class="grade-tab" id="tab-j3" type="button" role="tab" aria-selected="false" aria-controls="grade-j3" data-grade="j3" data-label="國三" data-count="4" tabindex="-1">國三</button>
+        <button class="grade-tab" id="tab-s1" type="button" role="tab" aria-selected="false" aria-controls="grade-s1" data-grade="s1" data-label="高一" data-count="5" tabindex="-1">高一</button>
+        <button class="grade-tab" id="tab-s2" type="button" role="tab" aria-selected="false" aria-controls="grade-s2" data-grade="s2" data-label="高二" data-count="5" tabindex="-1">高二</button>
+        <button class="grade-tab" id="tab-s3" type="button" role="tab" aria-selected="false" aria-controls="grade-s3" data-grade="s3" data-label="高三" data-count="0" tabindex="-1">高三</button>
+        <button class="grade-tab" id="tab-other" type="button" role="tab" aria-selected="false" aria-controls="grade-other" data-grade="other" data-label="其他" data-count="2" tabindex="-1">其他</button>
+      </nav>
 
-      <article class="card">
-        <div class="badge">空間概念</div>
-        <h3>3×3×3 三視圖互動</h3>
-        <p>調整各格高度，觀察立體圖與前視圖、俯視圖、右視圖的對應。</p>
-        <a class="btn" href="./three-view-3x3x3.html">開啟三視圖</a>
-      </article>
+      <section class="grade-panel" id="grade-j1" role="tabpanel" aria-labelledby="tab-j1" tabindex="-1">
+        <div class="panel-head">
+          <div>
+            <h2>國一</h2>
+            <p>先把運算順序、數與式、數感心算、數線距離、科學記號與立體表示打穩，後面學方根、函數與幾何會更順。</p>
+          </div>
+          <span class="entry-count">7 個入口</span>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="badge">數與式</div>
+            <h3>因數倍數教學工具</h3>
+            <p>練習 9、11 倍數判斷，含餘數、反向求位數、韓信點兵、質數與標準分解式。</p>
+            <a class="btn" href="./factor-multiple-divisibility.html">開啟因數倍數工具</a>
+          </article>
+          <article class="card">
+            <div class="badge">數感心算</div>
+            <h3>重要數字與心算規則</h3>
+            <p>整理平方數、2 的冪次、分數小數百分率、合數因數與心算規律，含二位與三位減法分級練習。</p>
+            <a class="btn" href="./important-numbers-memory.html">開啟數字記憶頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">數與式・數線</div>
+            <h3>絕對值：距離、不等式與最小值</h3>
+            <p>從 |x|、|x-y| 的距離概念出發，練習去絕對值、端點數線、三角不等式，以及中位數與平均數的最小值比較。</p>
+            <a class="btn" href="./absolute-value-learning.html">開啟絕對值學習頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">數與式</div>
+            <h3>加減乘除次方金字塔</h3>
+            <p>用三層金字塔建立運算順序，搭配按鈕切換重點、常見錯誤對照與分層練習。</p>
+            <a class="btn" href="./operation-pyramid.html">開啟金字塔教學頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">代數概念</div>
+            <h3>未知數、變數、常數分辨</h3>
+            <p>用對照表與按鈕判斷練習，快速釐清未知數、變數、常數與參數的差異。</p>
+            <a class="btn" href="./unknown-variable-constant.html">開啟分辨教學頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">空間概念</div>
+            <h3>3×3×3 三視圖互動</h3>
+            <p>調整各格高度，觀察立體圖與前視圖、俯視圖、右視圖的對應。</p>
+            <a class="btn" href="./three-view-3x3x3.html">開啟三視圖</a>
+          </article>
+          <article class="card">
+            <div class="badge">指數與科學記號</div>
+            <h3>指數與科學記號（國中到高中）</h3>
+            <p>國中先學指數規則與科學記號；高中再接分數次方、指數方程式／不等式，以及用對數反推數量級。</p>
+            <a class="btn" href="./exponent-scientific-notation-learning.html">開啟指數學習頁</a>
+          </article>
+        </div>
+      </section>
 
-    </section>
+      <section class="grade-panel" id="grade-j2" role="tabpanel" aria-labelledby="tab-j2" tabindex="-1" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>國二</h2>
+            <p>以根號、直角三角形與四邊形性質為主，適合把圖形觀察、作圖步驟與計算練習連在一起。</p>
+          </div>
+          <span class="entry-count">4 個入口</span>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="badge">幾何配對</div>
+            <h3>平行四邊形卡片（四邊形性質翻牌）</h3>
+            <p>用翻牌配對方式整理平行四邊形與常見四邊形的性質，適合課堂複習與自我檢查。</p>
+            <a class="btn" href="./geometry-memory-game-v1.html">開啟卡片練習</a>
+          </article>
+          <article class="card">
+            <div class="badge">幾何作圖</div>
+            <h3>尺規作圖：先做草稿</h3>
+            <p>用逐步圖解整理複製長度與角度、中垂線、角平分線、兩種垂線、對稱點、圓的切線與最短路徑。</p>
+            <a class="btn" href="./straightedge-compass-constructions.html">開啟尺規作圖頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">直角三角形</div>
+            <h3>畢氏數與特殊直角三角形</h3>
+            <p>從 3–4–5、奇偶直角邊規律與 m、n 公式記住畢氏數，再練習隨機旋轉的 30°–60°–90°、45°–45°–90° 圖形。</p>
+            <a class="btn" href="./pythagorean-triples-special-triangles.html">開啟畢氏數記憶與練習</a>
+          </article>
+          <article class="card">
+            <div class="badge">數與式・根號</div>
+            <h3>根號估計與直式開根號</h3>
+            <p>先用平方數找位置，再用二分法、十分法與乘法公式縮小範圍；最後把直式開根號拆成一個動作一個動作練習。</p>
+            <a class="btn" href="./square-root-estimation.html">開啟根號估計教學頁</a>
+          </article>
+        </div>
+      </section>
 
-    <h2 class="section-title">國二</h2>
-    <section class="grid">
-      <article class="card">
-        <div class="badge">數與式・數線</div>
-        <h3>絕對值：距離、不等式與最小值</h3>
-        <p>從 |x|、|x-y| 的距離概念出發，練習去絕對值、端點數線、三角不等式，以及中位數與平均數的最小值比較。</p>
-        <a class="btn" href="./absolute-value-learning.html">開啟絕對值學習頁</a>
-      </article>
+      <section class="grade-panel" id="grade-j3" role="tabpanel" aria-labelledby="tab-j3" tabindex="-1" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>國三</h2>
+            <p>從函數圖形、座標直線與三角形比例建立國中與高中的銜接；部分工具有高中延伸，可先完成基礎操作再往後探索。</p>
+          </div>
+          <span class="entry-count">4 個入口</span>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="badge">函數入門</div>
+            <h3>四種基本函數作圖</h3>
+            <p>切換觀察 <code>y=-x</code>、<code>y=1/x</code>、<code>y=(1/2)^x</code>、<code>y=x^2</code> 的圖形特徵與變化。</p>
+            <a class="btn" href="./function-graphs-basic.html">開啟函數作圖</a>
+          </article>
+          <article class="card">
+            <div class="badge">解析幾何</div>
+            <h3>直線方程式：國中到高中完整整理</h3>
+            <p>從兩點求線、斜率與截距，延伸到二點式、點斜式、一般式、參數式、截距式，以及投影、角平分線與直線系。</p>
+            <a class="btn" href="./line-from-points.html">開啟直線方程式工具</a>
+          </article>
+          <article class="card">
+            <div class="badge">平面幾何・比例</div>
+            <h3>三角形與平行四邊形分段比</h3>
+            <p>從同高三角形的面積比出發，整理孟氏、帥式（西瓦）定理，以及平行四邊形同方向／不同方向二截線的分段比。</p>
+            <a class="btn" href="./triangle-parallelogram-segment-ratios.html">開啟分段比教學頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">平面幾何・面積比</div>
+            <h3>三角形內點：面積比與線段比</h3>
+            <p>拖曳三角形內點 K，從三塊面積 p：q：r 讀出邊上六小段與三條中線的分段比，並延伸到三分點座標公式。</p>
+            <a class="btn" href="./triangle-area-segment-ratios.html">開啟面積比互動教學頁</a>
+          </article>
+        </div>
+      </section>
 
-      <article class="card">
-        <div class="badge">幾何配對</div>
-        <h3>平行四邊形卡片（四邊形性質翻牌）</h3>
-        <p>用翻牌配對方式整理平行四邊形與常見四邊形的性質，適合課堂複習與自我檢查。</p>
-        <a class="btn" href="./geometry-memory-game-v1.html">開啟卡片練習</a>
-      </article>
+      <section class="grade-panel" id="grade-s1" role="tabpanel" aria-labelledby="tab-s1" tabindex="-1" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>高一</h2>
+            <p>以函數、三角比、多項式、排列組合與資料分析為主；每一頁都先給可觀察的圖像或步驟，再連到計算與證明。</p>
+          </div>
+          <span class="entry-count">5 個入口</span>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="badge">函數變換</div>
+            <h3>x→x'、y→y' 平移縮放旋轉鏡射</h3>
+            <p>整合二次、圓、三角、指數、對數的平移與縮放，並補上旋轉、鏡射前後對照與分層練習。</p>
+            <a class="btn" href="./function-transformations-x-y-prime.html">開啟函數變換教學頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">三角比</div>
+            <h3>三角比完整學習（含 θ 化簡）</h3>
+            <p>從直角三角形 sin/cos/tan 到廣義三角比、象限正負、角度化簡流程，並提供三層無限練習。</p>
+            <a class="btn" href="./trigonometric-ratios-learning.html">開啟三角比學習頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">多項式・除法</div>
+            <h3>多項式長除法與綜合除法</h3>
+        <p>用同一題對照長除法的「乘回相減」與綜合除法的「乘後相加」，再接二次與高次不等式的判別式、號誌表。</p>
+            <a class="btn" href="./polynomial-division-learning.html">開啟多項式除法教學頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">排列組合・機率前置</div>
+            <h3>排列組合：判斷、分組與條件排列</h3>
+            <p>從排列、組合、重複選取到分組分堆、有相同物排列與錯排；再用「相鄰綁一起、不相鄰插空隙」整理常見題型，附互動計算器與自我檢查。</p>
+            <a class="btn" href="./permutations-combinations-tool.html">開啟排列組合工具</a>
+          </article>
+          <article class="card">
+            <div class="badge">數據分析・統計</div>
+            <h3>平均數、標準差、相關與迴歸直線</h3>
+            <p>逐筆加入資料計算標準差並看數線分散；再用成對資料畫散布圖、讀相關係數與迴歸直線，特別釐清「相關不等於因果」。</p>
+            <a class="btn" href="./data-analysis-learning.html">開啟數據分析教學頁</a>
+          </article>
+        </div>
+      </section>
 
-      <article class="card">
-        <div class="badge">幾何作圖</div>
-        <h3>尺規作圖：先做草稿</h3>
-        <p>用逐步圖解整理複製長度與角度、中垂線、角平分線、兩種垂線、對稱點、圓的切線與最短路徑。</p>
-        <a class="btn" href="./straightedge-compass-constructions.html">開啟尺規作圖頁</a>
-      </article>
+      <section class="grade-panel" id="grade-s2" role="tabpanel" aria-labelledby="tab-s2" tabindex="-1" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>高二</h2>
+            <p>延伸到空間關係、向量、矩陣與較完整的最值方法，適合先在圖形中判讀，再回到式子與證明。</p>
+          </div>
+          <span class="entry-count">5 個入口</span>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="badge">函數・不等式</div>
+            <h3>函數最大最小值：條件、選法、例題</h3>
+            <p>先整理指數、對數、三角與整數的天然條件，再用配方法、算幾、柯西、判別式、三角與微分等方法完成最值題。</p>
+            <a class="btn" href="./maximum-minimum-methods.html">開啟最大最小值整理</a>
+          </article>
+          <article class="card">
+            <div class="badge">空間解析幾何</div>
+            <h3>三平面與三元一次方程式</h3>
+            <p>先用重合、平行整理三平面的關係，再聚焦「共點、共線、兩兩相交卻無公共點」三種最關鍵情況，連結 Δ 與方程組的解。</p>
+            <a class="btn" href="./three-planes-three-equations.html">開啟三平面判別頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">空間向量・立體幾何</div>
+            <h3>空間向量與立體幾何：關係判定</h3>
+            <p>切換四面體、立方體、八面體、正四角錐與三直角三角錐；從交線、投影、三垂線到體積與二面角，練習把立體圖說成可證明的關係。</p>
+            <a class="btn" href="./spatial-vectors-solid-geometry.html">開啟空間向量教學頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">矩陣・線性變換</div>
+            <h3>矩陣的旋轉與鏡射</h3>
+            <p>從座標推導旋轉、鏡射矩陣，整理 x 係數與行列式的判讀法，並用互動圖像理解 AB 要先做 B、再做 A。</p>
+            <a class="btn" href="./matrix-rotation-reflection.html">開啟矩陣變換教學頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">矩陣・高一選修</div>
+            <h3>矩陣常見錯誤與高次乘法</h3>
+            <p>用六個反例釐清交換、消去、零乘積與轉置陷阱，再依矩陣結構選擇高次乘法的五種方法。</p>
+            <a class="btn" href="./matrix-common-errors-powers.html">開啟矩陣教學頁</a>
+          </article>
+        </div>
+      </section>
 
-      <article class="card">
-        <div class="badge">數感心算</div>
-        <h3>重要數字與心算規則</h3>
-        <p>整理平方數、2 的冪次、分數小數百分率、合數因數與心算規律，含二位與三位減法分級練習。</p>
-        <a class="btn" href="./important-numbers-memory.html">開啟數字記憶頁</a>
-      </article>
+      <section class="grade-panel" id="grade-s3" role="tabpanel" aria-labelledby="tab-s3" tabindex="-1" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>高三</h2>
+            <p>這一區會放入高三統整、複習與選修延伸工具；目前可先從高二的空間、矩陣與最值內容銜接。</p>
+          </div>
+          <span class="entry-count">整理中</span>
+        </div>
+        <article class="empty-card">
+          <h3>高三入口正在整理</h3>
+          <p>目前尚未有專屬頁面。保留此入口後，新增高三複習工具時不必再調整首頁結構。</p>
+        </article>
+      </section>
 
-      <article class="card">
-        <div class="badge">直角三角形</div>
-        <h3>畢氏數與特殊直角三角形</h3>
-        <p>從 3–4–5、奇偶直角邊規律與 m、n 公式記住畢氏數，再練習隨機旋轉的 30°–60°–90°、45°–45°–90° 圖形。</p>
-        <a class="btn" href="./pythagorean-triples-special-triangles.html">開啟畢氏數記憶與練習</a>
-      </article>
+      <section class="grade-panel" id="grade-other" role="tabpanel" aria-labelledby="tab-other" tabindex="-1" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>其他</h2>
+            <p>不綁定單一年級的暖身與遊戲工具，適合課堂開場、分組活動或課後放鬆。</p>
+          </div>
+          <span class="entry-count">2 個入口</span>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="badge">路徑規劃</div>
+            <h3>迷宮路徑挑戰（可反向）</h3>
+            <p>可選難易度，支援滑鼠與觸碰操作，並可切換成從出口回到入口的逆向挑戰。</p>
+            <a class="btn" href="./maze-game.html">開啟迷宮遊戲</a>
+          </article>
+          <article class="card">
+            <div class="badge">記憶訓練</div>
+            <h3>記憶翻牌遊戲</h3>
+            <p>訓練專注與短期記憶，適合課堂暖身或課後放鬆。</p>
+            <a class="btn" href="./memory-game.html">開始遊戲</a>
+          </article>
+        </div>
+      </section>
 
-      <article class="card">
-        <div class="badge">數與式・根號</div>
-        <h3>根號估計與直式開根號</h3>
-        <p>先用平方數找位置，再用二分法、十分法與乘法公式縮小範圍；最後把直式開根號拆成一個動作一個動作練習。</p>
-        <a class="btn" href="./square-root-estimation.html">開啟根號估計教學頁</a>
-      </article>
-    </section>
-
-    <h2 class="section-title">高一先修</h2>
-    <section class="grid">
-      <article class="card">
-        <div class="badge">函數變換</div>
-        <h3>x→x'、y→y' 平移縮放旋轉鏡射</h3>
-        <p>整合二次、圓、三角、指數、對數的平移與縮放，並補上旋轉、鏡射前後對照與分層練習。</p>
-        <a class="btn" href="./function-transformations-x-y-prime.html">開啟函數變換教學頁</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">函數・不等式</div>
-        <h3>函數最大最小值：條件、選法、例題</h3>
-        <p>先整理指數、對數、三角與整數的天然條件，再用配方法、算幾、柯西、判別式、三角與微分等方法完成最值題。</p>
-        <a class="btn" href="./maximum-minimum-methods.html">開啟最大最小值整理</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">解析幾何</div>
-        <h3>直線方程式：國中到高中完整整理</h3>
-        <p>從兩點求線、斜率與截距，延伸到二點式、點斜式、一般式、參數式、截距式，以及投影、角平分線與直線系。</p>
-        <a class="btn" href="./line-from-points.html">開啟直線方程式工具</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">三角比</div>
-        <h3>三角比完整學習（含 θ 化簡）</h3>
-        <p>從直角三角形 sin/cos/tan 到廣義三角比、象限正負、角度化簡流程，並提供三層無限練習。</p>
-        <a class="btn" href="./trigonometric-ratios-learning.html">開啟三角比學習頁</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">平面幾何・比例</div>
-        <h3>三角形與平行四邊形分段比</h3>
-        <p>從同高三角形的面積比出發，整理孟氏、帥式（西瓦）定理，以及平行四邊形同方向／不同方向二截線的分段比。</p>
-        <a class="btn" href="./triangle-parallelogram-segment-ratios.html">開啟分段比教學頁</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">平面幾何・面積比</div>
-        <h3>三角形內點：面積比與線段比</h3>
-        <p>拖曳三角形內點 K，從三塊面積 p：q：r 讀出邊上六小段與三條中線的分段比，並延伸到三分點座標公式。</p>
-        <a class="btn" href="./triangle-area-segment-ratios.html">開啟面積比互動教學頁</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">指數與對數</div>
-        <h3>指數與科學記號（國中到高中）</h3>
-        <p>國中先學指數規則與科學記號；高中再接分數次方、指數方程式／不等式，以及用對數反推數量級。</p>
-        <a class="btn" href="./exponent-scientific-notation-learning.html">開啟指數學習頁</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">數與式</div>
-        <h3>加減乘除次方金字塔</h3>
-        <p>用三層金字塔建立運算順序，搭配按鈕切換重點、常見錯誤對照與分層練習。</p>
-        <a class="btn" href="./operation-pyramid.html">開啟金字塔教學頁</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">多項式・除法</div>
-        <h3>多項式長除法與綜合除法</h3>
-        <p>用同一題對照長除法的「乘回相減」與綜合除法的「乘後相加」，並連到除法原理、餘式定理與因式定理。</p>
-        <a class="btn" href="./polynomial-division-learning.html">開啟多項式除法教學頁</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">代數概念</div>
-        <h3>未知數、變數、常數分辨</h3>
-        <p>用對照表與按鈕判斷練習，快速釐清未知數、變數、常數與參數的差異。</p>
-        <a class="btn" href="./unknown-variable-constant.html">開啟分辨教學頁</a>
-      </article>
-    </section>
-
-    <h2 class="section-title">其他</h2>
-    <section class="grid">
-      <article class="card">
-        <div class="badge">路徑規劃</div>
-        <h3>迷宮路徑挑戰（可反向）</h3>
-        <p>可選難易度，支援滑鼠與觸碰操作，並可切換成從出口回到入口的逆向挑戰。</p>
-        <a class="btn" href="./maze-game.html">開啟迷宮遊戲</a>
-      </article>
-
-      <article class="card">
-        <div class="badge">記憶訓練</div>
-        <h3>記憶翻牌遊戲</h3>
-        <p>訓練專注與短期記憶，適合課堂暖身或課後放鬆。</p>
-        <a class="btn" href="./memory-game.html">開始遊戲</a>
-      </article>
+      <div class="page-controls" aria-label="切換前後年級">
+        <button class="page-button" id="previous-grade" type="button">← 上一個年級</button>
+        <p id="view-status" aria-live="polite">正在瀏覽：國一，共 6 個入口。</p>
+        <button class="page-button" id="next-grade" type="button">下一個年級 →</button>
+      </div>
     </section>
   </main>
+
+  <script>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('.grade-tab'));
+      const panels = Array.from(document.querySelectorAll('.grade-panel'));
+      const previousButton = document.querySelector('#previous-grade');
+      const nextButton = document.querySelector('#next-grade');
+      const viewStatus = document.querySelector('#view-status');
+      let activeIndex = 0;
+
+      function selectGrade(grade, shouldFocus = false, shouldUpdateHash = true) {
+        const nextIndex = tabs.findIndex((tab) => tab.dataset.grade === grade);
+        if (nextIndex === -1) return;
+
+        activeIndex = nextIndex;
+        tabs.forEach((tab, index) => {
+          const selected = index === activeIndex;
+          tab.setAttribute('aria-selected', String(selected));
+          tab.tabIndex = selected ? 0 : -1;
+        });
+        panels.forEach((panel) => {
+          panel.hidden = panel.id !== `grade-${grade}`;
+        });
+
+        const activeTab = tabs[activeIndex];
+        const count = Number(activeTab.dataset.count);
+        viewStatus.textContent = count === 0
+          ? `正在瀏覽：${activeTab.dataset.label}，專屬入口整理中。`
+          : `正在瀏覽：${activeTab.dataset.label}，共 ${count} 個入口。`;
+        previousButton.disabled = activeIndex === 0;
+        nextButton.disabled = activeIndex === tabs.length - 1;
+
+        if (shouldUpdateHash && window.location.hash !== `#${grade}`) {
+          history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${grade}`);
+        }
+        if (shouldFocus) activeTab.focus();
+      }
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectGrade(tab.dataset.grade));
+        tab.addEventListener('keydown', (event) => {
+          const keyMap = {
+            ArrowLeft: index - 1,
+            ArrowRight: index + 1,
+            Home: 0,
+            End: tabs.length - 1
+          };
+          if (!(event.key in keyMap)) return;
+          event.preventDefault();
+          const targetIndex = Math.max(0, Math.min(tabs.length - 1, keyMap[event.key]));
+          selectGrade(tabs[targetIndex].dataset.grade, true);
+        });
+      });
+
+      previousButton.addEventListener('click', () => {
+        if (activeIndex > 0) selectGrade(tabs[activeIndex - 1].dataset.grade, true);
+      });
+      nextButton.addEventListener('click', () => {
+        if (activeIndex < tabs.length - 1) selectGrade(tabs[activeIndex + 1].dataset.grade, true);
+      });
+      window.addEventListener('hashchange', () => {
+        const grade = window.location.hash.slice(1);
+        if (tabs.some((tab) => tab.dataset.grade === grade)) selectGrade(grade, false, false);
+      });
+
+      const initialGrade = window.location.hash.slice(1);
+      selectGrade(tabs.some((tab) => tab.dataset.grade === initialGrade) ? initialGrade : 'j1', false, false);
+    })();
+  </script>
 </body>
 </html>

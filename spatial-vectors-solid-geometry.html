@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>空間向量與立體幾何｜關係判定互動教學</title>
+  <style>
+    :root {
+      --ink: #13233f;
+      --muted: #53647d;
+      --line: #d7e2ef;
+      --paper: #fff;
+      --navy: #155b91;
+      --teal: #08796f;
+      --teal-soft: #e9faf5;
+      --sky: #edf8ff;
+      --orange: #c96918;
+      --orange-soft: #fff6e8;
+      --violet: #7452ad;
+      --danger: #ab4d42;
+      --shadow: 0 15px 42px rgba(29, 64, 105, .11);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(145deg, #edf9ff 0%, #f9fbff 45%, #f2efff 100%);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.76;
+    }
+    .page { width: min(1180px, calc(100% - 30px)); margin: 0 auto; padding: 22px 0 64px; }
+    .back { display: inline-flex; gap: 6px; align-items: center; color: var(--navy); text-decoration: none; font-weight: 800; margin: 0 0 15px; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      position: relative; overflow: hidden; padding: clamp(25px, 5vw, 52px); border-radius: 26px;
+      color: #fff; background: linear-gradient(128deg, #143d6d, #1e6c97 58%, #118379); box-shadow: var(--shadow);
+    }
+    .hero::after { content: ""; position: absolute; right: -78px; bottom: -142px; width: 310px; height: 310px; border: 34px solid rgba(255,255,255,.12); border-radius: 50%; transform: rotate(-20deg); }
+    .eyebrow { position: relative; z-index: 1; margin: 0 0 7px; color: #bdf6ed; font-weight: 900; letter-spacing: .08em; }
+    h1 { position: relative; z-index: 1; margin: 0; font-size: clamp(31px, 5vw, 51px); line-height: 1.24; }
+    .hero .lead { position: relative; z-index: 1; max-width: 790px; margin: 15px 0 0; color: #e8f7ff; font-size: clamp(16px, 2.2vw, 20px); }
+    .hero-nav { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .hero-nav a { color: #fff; text-decoration: none; font-weight: 800; border: 1px solid rgba(255,255,255,.46); border-radius: 999px; padding: 5px 12px; background: rgba(0,0,0,.12); }
+    .hero-nav a:hover { background: rgba(255,255,255,.18); }
+    .section { margin-top: 28px; padding: clamp(20px, 4vw, 33px); border: 1px solid var(--line); border-radius: 22px; background: var(--paper); box-shadow: 0 8px 27px rgba(28, 66, 108, .06); }
+    h2 { margin: 0 0 9px; font-size: clamp(24px, 3vw, 31px); line-height: 1.36; }
+    h3 { margin: 0 0 7px; font-size: 19px; line-height: 1.45; }
+    p { margin: 8px 0; }
+    .lead { color: var(--muted); }
+    .section-kicker { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 7px; padding: 3px 10px; border-radius: 999px; color: #075e57; background: #d8f5ed; font-size: 13px; font-weight: 900; }
+    .callout, .warning, .tip { margin-top: 15px; padding: 14px 16px; border-radius: 15px; }
+    .callout { border: 1px solid #bce5da; background: var(--teal-soft); }
+    .warning { border: 1px solid #f0d599; background: #fff8e8; }
+    .tip { border: 1px solid #c7deef; background: #f1f8fe; }
+    .callout strong, .tip strong { color: #087168; }
+    .warning strong { color: #9a560f; }
+    .two-col, .relation-grid, .volume-grid, .practice-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { height: 100%; padding: 17px; border: 1px solid var(--line); border-radius: 17px; background: #fcfeff; }
+    .card p { color: var(--muted); }
+    .icon-title { display: flex; align-items: center; gap: 9px; }
+    .icon { display: grid; place-items: center; flex: 0 0 auto; width: 34px; height: 34px; border-radius: 11px; background: #e7f3fc; color: var(--navy); font-size: 20px; }
+    .rule-list { display: grid; gap: 10px; margin-top: 13px; }
+    .rule { padding: 13px 14px; border-left: 4px solid #4b97c6; border-radius: 0 13px 13px 0; background: #f5faff; }
+    .rule strong { color: var(--navy); }
+    .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .step { padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .step b { display: inline-grid; place-items: center; width: 25px; height: 25px; margin-right: 5px; border-radius: 50%; color: #fff; background: var(--navy); }
+    .model-lab { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr); gap: 18px; align-items: start; margin-top: 17px; }
+    .stage { position: relative; min-height: 405px; overflow: hidden; border: 1px solid #c9ddeb; border-radius: 19px; background: radial-gradient(circle at 50% 18%, #fff 0 13%, #eef8ff 56%, #e7eefc 100%); }
+    #solidSvg { width: 100%; height: 405px; display: block; }
+    .stage-note { position: absolute; right: 12px; bottom: 11px; margin: 0; padding: 4px 9px; border-radius: 999px; color: #4a6683; background: rgba(255,255,255,.86); font-size: 12px; }
+    .control-card { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+    .control-card h3 { color: var(--navy); }
+    .shape-tabs, .choice-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    button { font: inherit; cursor: pointer; border: 1px solid #b8cddd; border-radius: 10px; padding: 8px 11px; color: #34526c; background: #f9fcff; font-weight: 800; }
+    button:hover { background: #edf7ff; }
+    button:focus { outline: 3px solid rgba(25, 115, 173, .26); outline-offset: 2px; }
+    button.active { color: #fff; border-color: var(--navy); background: var(--navy); }
+    button.secondary.active { border-color: var(--teal); background: var(--teal); }
+    .model-result { min-height: 153px; padding: 14px; border: 1px solid #c5e4dc; border-radius: 14px; background: #f1fbf8; }
+    .model-result h4 { margin: 0 0 6px; color: #087168; font-size: 18px; }
+    .model-result p { margin: 5px 0; color: #3d5e69; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 11px; color: #4d657c; font-size: 13px; }
+    .legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .swatch { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+    .formula { margin: 11px 0; padding: 11px 13px; overflow-x: auto; border-left: 5px solid #438db9; border-radius: 0 12px 12px 0; background: #f3f9fe; color: #183e61; font-family: "Cambria Math", "Times New Roman", serif; font-size: 18px; }
+    .formula.warm { border-color: #d4822b; background: var(--orange-soft); }
+    .formula.violet { border-color: #8766bf; background: #f6f2ff; }
+    .relation-grid { margin-top: 15px; }
+    .relation-card { padding: 17px; border: 1px solid var(--line); border-radius: 17px; }
+    .relation-card h3 { color: var(--navy); }
+    .relation-card ul { margin: 8px 0 0; padding-left: 23px; }
+    .relation-card li { margin: 6px 0; }
+    .vector-table { width: 100%; border-collapse: collapse; margin-top: 15px; overflow: hidden; border: 1px solid var(--line); border-radius: 15px; }
+    .vector-table th, .vector-table td { padding: 11px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .vector-table th { color: #165887; background: #eaf5fc; }
+    .vector-table td { color: #475e74; }
+    .table-scroll { overflow-x: auto; }
+    .scene-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    .scene { padding: 14px; border: 1px solid var(--line); border-radius: 15px; background: #fbfdff; }
+    .scene-visual { height: 98px; margin-bottom: 9px; border-radius: 12px; background: #f0f8fd; display: grid; place-items: center; }
+    .scene-visual svg { width: 100%; height: 98px; }
+    .scene h3 { font-size: 17px; color: var(--navy); }
+    .scene p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    .fold { margin-top: 12px; border: 1px solid var(--line); border-radius: 15px; overflow: hidden; background: #fbfdff; }
+    .fold summary { cursor: pointer; padding: 13px 15px; color: #25516f; font-weight: 900; }
+    .fold > div { padding: 0 15px 14px; color: var(--muted); }
+    .dihedral { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 20px; align-items: center; margin-top: 15px; padding: 16px; border: 1px solid #e3d4f2; border-radius: 17px; background: #fcfaff; }
+    .dihedral svg { width: 100%; max-height: 180px; }
+    .quiz-panel { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(135deg, #f8fcff, #f7f5ff); }
+    .level { display: inline-block; margin-bottom: 5px; padding: 2px 9px; border-radius: 999px; color: #0a655d; background: #d9f5ee; font-size: 13px; font-weight: 900; }
+    .quiz-question { padding: 15px; border: 1px solid #cbdcea; border-radius: 14px; background: #fff; font-size: 17px; font-weight: 800; }
+    .quiz-options { display: grid; gap: 8px; margin-top: 12px; }
+    .quiz-options button { width: 100%; text-align: left; }
+    .quiz-options button.good { color: #086c42; border-color: #70c99a; background: #ecfaf1; }
+    .quiz-options button.wrong { color: #9b4b1b; border-color: #efba79; background: #fff4e8; }
+    .quiz-feedback { min-height: 30px; margin: 12px 0 0; font-weight: 800; }
+    .quiz-feedback.good { color: #087449; }
+    .quiz-feedback.try { color: #a45b14; }
+    .answer-flow { padding: 17px; border-radius: 17px; background: #f2faf8; border: 1px solid #c8e9df; }
+    .answer-flow h3 { color: #087168; }
+    footer { padding: 25px 4px 3px; color: #667990; text-align: center; font-size: 14px; }
+    @media (max-width: 850px) {
+      .model-lab, .two-col, .relation-grid, .volume-grid, .practice-layout { grid-template-columns: 1fr; }
+      .scene-grid { grid-template-columns: 1fr; }
+      .dihedral { grid-template-columns: 1fr; }
+      .dihedral svg { max-width: 240px; }
+    }
+    @media (max-width: 580px) {
+      .page { width: min(100% - 18px, 1180px); padding-top: 14px; }
+      .hero, .section { border-radius: 17px; }
+      .steps { grid-template-columns: 1fr; }
+      .stage, #solidSvg { min-height: 330px; height: 330px; }
+      .shape-tabs button { flex: 1 1 43%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back" href="./index.html">← 回到數學小遊戲首頁</a>
+
+    <header class="hero">
+      <p class="eyebrow">高一數學｜空間向量與立體幾何</p>
+      <h1>先找「誰在同一平面」<br>再判平行、垂直與距離</h1>
+      <p class="lead">空間題不是靠眼力猜。把桌面想成平面、把打開的書想成兩個平面，再用方向向量、法向量、投影與截面，把立體關係一步一步說清楚。</p>
+      <nav class="hero-nav" aria-label="頁內導覽">
+        <a href="#solids">立體模型</a>
+        <a href="#relations">位置關係</a>
+        <a href="#perpendicular">垂直與投影</a>
+        <a href="#volume">體積與二面角</a>
+        <a href="#practice">自我檢查</a>
+      </nav>
+    </header>
+
+    <section class="section">
+      <span class="section-kicker">🧭 解空間題的固定流程</span>
+      <h2>不要急著量角；先把「角色」講完整</h2>
+      <p class="lead">每一個敘述都先標出：它是<strong>線</strong>、<strong>面</strong>，還是兩面的<strong>交線</strong>。接著再決定可不可以平行、垂直或相交。</p>
+      <div class="steps">
+        <article class="step"><b>1</b><strong>找共面</strong><br>兩直線若不相交也不平行，先問：它們是否在同一平面？</article>
+        <article class="step"><b>2</b><strong>找交線／交點</strong><br>兩面相交必有一條交線；線與面相交才有交點。</article>
+        <article class="step"><b>3</b><strong>找垂線與投影</strong><br>距離、線面角、二面角，最後都要轉成平面內的直角三角形。</article>
+      </div>
+      <div class="warning"><strong>最常犯的錯：</strong>在立體圖上看起來沒有交點，不能立刻說是歪斜線；必須先確認兩線<strong>不共面</strong>。</div>
+    </section>
+
+    <section class="section" id="solids">
+      <span class="section-kicker">🧊 立體模型實驗室</span>
+      <h2>四面體、六面體、八面體：用同一組頂點看關係</h2>
+      <p class="lead">點選模型，再點選要觀察的重點。圖中的實線、半透明面與紅色標記會一起改變；先說出它代表的線或面，再讀旁邊的提示。</p>
+      <div class="model-lab">
+        <div class="stage">
+          <svg id="solidSvg" viewBox="0 0 620 405" role="img" aria-label="可切換的立體幾何模型"></svg>
+          <p class="stage-note">示意圖：不以視覺長短判斷真正的平行或垂直</p>
+        </div>
+        <aside class="control-card">
+          <h3>選一個立體</h3>
+          <div class="shape-tabs" id="shapeTabs" aria-label="選擇立體模型">
+            <button class="active" type="button" data-shape="tetra">正四面體</button>
+            <button type="button" data-shape="cube">正六面體</button>
+            <button type="button" data-shape="octa">正八面體</button>
+            <button type="button" data-shape="pyramid">正四角錐</button>
+            <button type="button" data-shape="rightTetra">三直角三角錐</button>
+          </div>
+          <h3>觀察重點</h3>
+          <div class="choice-row" id="focusTabs" aria-label="選擇觀察重點">
+            <button class="secondary active" type="button" data-focus="structure">面、邊、頂點</button>
+            <button class="secondary" type="button" data-focus="height">高與投影</button>
+            <button class="secondary" type="button" data-focus="volume">體積</button>
+            <button class="secondary" type="button" data-focus="dihedral">兩面交</button>
+          </div>
+          <div class="model-result" id="modelResult" aria-live="polite"></div>
+          <div class="legend"><span><i class="swatch" style="background:#66b9d9"></i>立體的面</span><span><i class="swatch" style="background:#e85757"></i>本次標記</span><span><i class="swatch" style="background:#1f4567"></i>邊</span></div>
+        </aside>
+      </div>
+      <div class="relation-grid">
+        <article class="relation-card">
+          <h3>① 正六面體（立方體）與正四面體</h3>
+          <ul>
+            <li>立方體有 <strong>8 個頂點、12 條邊、6 個正方形面</strong>。</li>
+            <li>把立方體八個頂點「交錯分成兩組」，每一組各形成一個正四面體。</li>
+            <li>這兩個正四面體互相交錯，稱為<strong>星形八面體</strong>；它提醒我們：同一個立方體可藏著不同的立體結構。</li>
+          </ul>
+        </article>
+        <article class="relation-card">
+          <h3>② 正六面體與正八面體：對偶關係</h3>
+          <ul>
+            <li>正八面體有 <strong>6 個頂點、12 條邊、8 個正三角形面</strong>。</li>
+            <li>取立方體六個面的<strong>面心</strong>，連接後可得到內接正八面體。</li>
+            <li>反過來，正八面體每一個面的面心，也對應立方體的一個頂點；所以它們互為<strong>對偶多面體</strong>。</li>
+          </ul>
+        </article>
+      </div>
+      <details class="fold">
+        <summary>老師示範問法：如何讓學生自己說出「內接」與「對偶」？</summary>
+        <div>先問：「如果我要做一個頂點都落在立方體表面上的八面體，頂點最自然放在哪裡？」引導到六個面心。再反問：「八面體有幾個面？每個面中心連起來會變成幾個頂點？」讓學生從 6 與 8 的交換，看見對偶並非背誦名詞。</div>
+      </details>
+    </section>
+
+    <section class="section" id="relations">
+      <span class="section-kicker">↔️ 空間中的位置關係</span>
+      <h2>線對線、線對面、面對面：先分類再判定</h2>
+      <div class="relation-grid">
+        <article class="relation-card">
+          <h3>兩直線 ℓ、m</h3>
+          <ul>
+            <li><strong>相交：</strong>有一個共同點。</li>
+            <li><strong>平行：</strong>同一平面內，且沒有共同點。</li>
+            <li><strong>歪斜：</strong>既不相交、也不平行，所以<strong>不共面</strong>。</li>
+          </ul>
+          <div class="tip"><strong>判斷口訣：</strong>「不交」還不夠；還要確認「不同面」，才能說歪斜。</div>
+        </article>
+        <article class="relation-card">
+          <h3>直線 ℓ 與平面 α</h3>
+          <ul>
+            <li><strong>ℓ 在 α 內：</strong>有無限多個共同點。</li>
+            <li><strong>ℓ 與 α 相交：</strong>通常只有一個交點 P。</li>
+            <li><strong>ℓ ∥ α：</strong>沒有共同點。</li>
+            <li><strong>ℓ ⟂ α：</strong>ℓ 通過交點 P，且垂直 α 內過 P 的兩條相交直線。</li>
+          </ul>
+        </article>
+        <article class="relation-card">
+          <h3>兩平面 α、β</h3>
+          <ul>
+            <li><strong>相交：</strong>交集是一條直線，叫做<strong>交線</strong>。</li>
+            <li><strong>平行：</strong>沒有共同點（或兩平面重合）。</li>
+            <li><strong>垂直：</strong>若 α 內有一條直線 ℓ 垂直 β，則 α ⟂ β。</li>
+          </ul>
+        </article>
+        <article class="relation-card">
+          <h3>平面的四種決定方式</h3>
+          <ul>
+            <li>不共線三點。</li>
+            <li>一直線與線外一點。</li>
+            <li>兩相交直線。</li>
+            <li>兩相異平行直線。</li>
+          </ul>
+          <p>這些是畫輔助平面與證明「共面」時最常用的入口。</p>
+        </article>
+      </div>
+      <div class="table-scroll">
+        <table class="vector-table">
+          <thead><tr><th>想判的關係</th><th>向量翻譯</th><th>解題時要補的一句話</th></tr></thead>
+          <tbody>
+            <tr><td>兩線平行</td><td>方向向量 u = k v</td><td>還要注意：若兩線有共同點且方向平行，才是同一直線。</td></tr>
+            <tr><td>兩線垂直</td><td>u · v = 0</td><td>在空間中，方向垂直不保證兩線相交；不相交時仍可能是歪斜線。</td></tr>
+            <tr><td>線 ∥ 面</td><td>方向向量 u · 法向量 n = 0</td><td>再排除直線其實落在平面內的情況。</td></tr>
+            <tr><td>線 ⟂ 面</td><td>u ∥ n</td><td>幾何證明可改成：垂直平面內過交點的兩相交直線。</td></tr>
+            <tr><td>面 ∥ 面／面 ⟂ 面</td><td>n₁ ∥ n₂ ／ n₁ · n₂ = 0</td><td>法向量是把「面」轉成一個可運算的方向。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warning"><strong>易混淆：</strong>「兩線方向向量內積為 0」只說方向成直角；若題目問<strong>兩直線垂直</strong>，還應確認它們有交點。空間裡不相交的兩線可能是歪斜線。</div>
+    </section>
+
+    <section class="section" id="perpendicular">
+      <span class="section-kicker">📐 垂直、投影與三垂線定理</span>
+      <h2>距離與角度，先「放下投影」才有直角三角形</h2>
+      <div class="two-col">
+        <article class="card">
+          <div class="icon-title"><span class="icon">⟂</span><h3>直線垂直平面的判定</h3></div>
+          <p>直線 ℓ 在 P 點與平面 α 相交。若 ℓ 同時垂直 α 內<strong>通過 P 的兩條相交直線</strong>，就可判定 ℓ ⟂ α。</p>
+          <div class="formula">ℓ ⟂ a，ℓ ⟂ b，a、b ⊂ α 且 a、b 交於 P　⇒　ℓ ⟂ α</div>
+          <p><strong>為什麼一定要兩條？</strong>只垂直平面內的一條線，方向還可以繞那條線轉動，不能唯一決定垂直於整個平面。</p>
+        </article>
+        <article class="card">
+          <div class="icon-title"><span class="icon">↘</span><h3>投影、距離與線面角</h3></div>
+          <p>從點 P 向平面 α 作垂線 PA，A 是垂足。<strong>PA 的長</strong>就是 P 到平面 α 的距離。</p>
+          <p>若 X 在 α 上，斜線 PX 在平面 α 上的射影為 AX，因此<strong>線 PX 與平面 α 所成角</strong>，要在直角三角形 PAX 中讀取，是 ∠PXA。</p>
+          <div class="formula warm">sin θ = PA / PX，cos θ = AX / PX，tan θ = PA / AX</div>
+        </article>
+      </div>
+      <div class="two-col" style="margin-top:18px">
+        <article class="card">
+          <div class="icon-title"><span class="icon">Ⅲ</span><h3>三垂線定理</h3></div>
+          <p>設 PA ⟂ 平面 α，A 是 P 的投影；B 在 α 上；直線 m 在 α 內且通過 B。斜線 PB 在 α 上的投影就是 AB。</p>
+          <div class="formula violet">PB ⟂ m　⇔　AB ⟂ m</div>
+          <p>它的工作是把「空間中斜線 PB 的垂直」，轉譯為「平面上投影 AB 的垂直」。</p>
+        </article>
+        <article class="card">
+          <h3>三垂線題的三步驟</h3>
+          <ol>
+            <li>先寫出垂足：PA ⟂ α，找出 A。</li>
+            <li>把斜線 PB 的投影明確標成 AB。</li>
+            <li>在平面 α 內先證 AB ⟂ m，再由三垂線推出 PB ⟂ m。</li>
+          </ol>
+          <div class="warning"><strong>常見錯誤：</strong>把 PA 當成 PB 的投影。PA 是垂線；PB 的投影應連接 P 的投影 A 與 B，所以是 AB。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="volume">
+      <span class="section-kicker">🧮 體積、截面與二面角</span>
+      <h2>三角錐體積都要「底面積 × 對應高 ÷ 3」</h2>
+      <div class="volume-grid">
+        <article class="card">
+          <h3>四面體／三角錐</h3>
+          <p>先選一個三角形面當底面；從對頂點向<strong>底面所在平面</strong>作垂線，垂線長才是高 h。</p>
+          <div class="formula">V = (1 / 3) × 底面積 × h</div>
+          <p>正四面體邊長為 a 時：</p>
+          <div class="formula">h = (√6 / 3)a，　V = (√2 / 12)a³</div>
+          <p class="lead">切勿把任一側邊直接當高；高必須垂直整個底面。</p>
+        </article>
+        <article class="card">
+          <h3>正四角錐</h3>
+          <p>底面是邊長 a 的正方形，頂點投影在底面中心 O；高為 PO。</p>
+          <div class="formula warm">V = (1 / 3)a²h</div>
+          <p>若題目給的是側面斜高 PM，不要直接代 h。先在直角三角形 POM 用畢氏定理求 PO。</p>
+          <div class="formula warm">PM² = PO² + OM²，且 OM = a / 2</div>
+        </article>
+        <article class="card">
+          <h3>三直角三角錐</h3>
+          <p>在同一頂點 O，三條棱 OA、OB、OC 兩兩垂直。可以把 OA、OB 當底面直角邊，OC 就是高。</p>
+          <div class="formula violet">V = (1 / 6) × OA × OB × OC</div>
+          <p>這是「先算直角三角形底面積 1/2 × OA × OB，再乘高、再除 3」的結果。</p>
+        </article>
+        <article class="card">
+          <h3>例題：正四角錐的體積</h3>
+          <p>底面邊長 6，側面斜高 PM = 5。求體積。</p>
+          <ol>
+            <li>OM = 6 ÷ 2 = 3。</li>
+            <li>PO = √(5² − 3²) = 4。</li>
+            <li>V = (1 / 3) × 6² × 4 = <strong>48</strong>。</li>
+          </ol>
+        </article>
+      </div>
+      <div class="dihedral">
+        <svg viewBox="0 0 240 170" role="img" aria-label="兩個平面交於一條線，垂直交線的截面可讀出二面角">
+          <path d="M22 142 L122 87 L220 142 L122 157 Z" fill="#dff4ff" stroke="#367aab" stroke-width="2"/>
+          <path d="M22 142 L122 87 L122 22 L72 105 Z" fill="#e8def8" stroke="#7a55ac" stroke-width="2"/>
+          <path d="M122 87 L122 157" stroke="#d65353" stroke-width="5"/>
+          <path d="M122 87 L152 56" stroke="#172f4b" stroke-width="3" stroke-dasharray="6 5"/>
+          <path d="M122 87 L158 116" stroke="#172f4b" stroke-width="3" stroke-dasharray="6 5"/>
+          <path d="M145 84 A30 30 0 0 1 148 106" fill="none" stroke="#d08424" stroke-width="3"/>
+          <text x="127" y="150" fill="#b53838" font-weight="700">交線 ℓ</text>
+          <text x="151" y="91" fill="#a75c0b" font-weight="700">θ</text>
+          <text x="20" y="165" fill="#367aab" font-size="13">平面 α</text>
+          <text x="77" y="35" fill="#7653a8" font-size="13">平面 β</text>
+        </svg>
+        <div>
+          <h3>二面角：不要直接在立體圖上量</h3>
+          <p>兩個平面 α、β 相交於交線 ℓ。要量二面角，請取一個<strong>垂直於交線 ℓ 的截面</strong>；截面與 α、β 分別交出兩條射線，這兩條射線形成的平面角 θ，才是二面角。</p>
+          <div class="formula">正四面體的二面角 θ：cos θ = 1 / 3</div>
+          <p class="lead">看到「兩面交」的題目，先說交線，再想「作垂直交線的截面」。這是把立體角度轉成平面角度的核心。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="life">
+      <span class="section-kicker">🏠 用生活物品建立空間感</span>
+      <h2>把抽象的線與面，先拿身邊物品演出來</h2>
+      <div class="scene-grid">
+        <article class="scene">
+          <div class="scene-visual">
+            <svg viewBox="0 0 250 100" aria-hidden="true">
+              <path d="M32 78 L124 42 L217 78 L124 91 Z" fill="#d9f1ff" stroke="#3176a4" stroke-width="2"/>
+              <path d="M32 78 L124 42 L124 18 L81 57 Z" fill="#eee2fa" stroke="#7550a7" stroke-width="2"/>
+              <path d="M124 42 L124 91" stroke="#d44d50" stroke-width="5"/>
+              <text x="130" y="77" fill="#b5373b" font-size="13" font-weight="700">書背＝交線</text>
+            </svg>
+          </div>
+          <h3>打開的書</h3>
+          <p>左右兩頁是兩個平面；書背是兩平面的交線。把書越打越開，就在改變二面角。</p>
+        </article>
+        <article class="scene">
+          <div class="scene-visual">
+            <svg viewBox="0 0 250 100" aria-hidden="true">
+              <path d="M42 38 L176 38 L219 59 L84 59 Z" fill="#d8f1ff" stroke="#3176a4" stroke-width="2"/>
+              <path d="M84 59 L84 91 M208 54 L208 86" stroke="#6d4a2b" stroke-width="6"/>
+              <path d="M78 70 L91 70 L91 59" fill="none" stroke="#d28423" stroke-width="2"/>
+              <text x="94" y="88" fill="#784d2d" font-size="13" font-weight="700">桌腳 ⟂ 桌面</text>
+            </svg>
+          </div>
+          <h3>桌面與桌腳</h3>
+          <p>把桌面當平面 α，垂直站立的桌腳可當作線 ℓ。它和桌面相交於一點，且 ℓ ⟂ α。</p>
+        </article>
+        <article class="scene">
+          <div class="scene-visual">
+            <svg viewBox="0 0 250 100" aria-hidden="true">
+              <path d="M59 75 L126 27 L194 75 L126 91 Z" fill="#dff3ff" stroke="#2f79a8" stroke-width="2"/>
+              <path d="M126 27 L126 91" stroke="#d85050" stroke-width="4" stroke-dasharray="7 5"/>
+              <circle cx="126" cy="91" r="4" fill="#d85050"/>
+              <text x="137" y="52" fill="#b43b3b" font-size="13" font-weight="700">垂線＝最短</text>
+            </svg>
+          </div>
+          <h3>吊燈與桌面</h3>
+          <p>從燈泡到桌面的最短距離，一定是垂線段。垂足就是投影點，也是距離與線面角題目的起點。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="practice">
+      <span class="section-kicker">✅ 課堂收束與自我檢查</span>
+      <h2>先判斷，再看解析；答錯可立刻重試</h2>
+      <div class="practice-layout">
+        <div class="quiz-panel">
+          <span class="level" id="quizLevel">基礎</span>
+          <div class="quiz-question" id="quizQuestion"></div>
+          <div class="quiz-options" id="quizOptions"></div>
+          <p class="quiz-feedback" id="quizFeedback" aria-live="polite"></p>
+          <div class="choice-row">
+            <button type="button" id="nextQuestion">下一題 →</button>
+            <button type="button" id="resetQuestion">重作這一題</button>
+          </div>
+        </div>
+        <aside class="answer-flow">
+          <h3>每題都用這張檢查單</h3>
+          <ol>
+            <li>題目在問線、面，還是體積／角度？</li>
+            <li>若是關係題：先找共同點或交線，再查是否共面。</li>
+            <li>若是垂直題：找出「過交點的兩條相交線」或投影。</li>
+            <li>若是體積／二面角：先選底面或作垂直交線的截面。</li>
+          </ol>
+          <div class="callout"><strong>下課前一句話：</strong>空間幾何的圖是提示，不是證明；證明要回到交點、交線、投影、垂直與向量條件。</div>
+        </aside>
+      </div>
+    </section>
+
+    <footer>適合：老師投影引導、學生課前預習、課後複習與題型判讀練習。</footer>
+  </main>
+
+  <script>
+    (() => {
+      const NS = "http://www.w3.org/2000/svg";
+      const svg = document.getElementById("solidSvg");
+      const result = document.getElementById("modelResult");
+      const state = { shape: "tetra", focus: "structure" };
+
+      const models = {
+        tetra: {
+          name: "正四面體", stats: "4 個正三角形面、6 條邊、4 個頂點",
+          points: { A: [0, 0, 0], B: [3.1, 0, 0], C: [.7, 2.6, 0], D: [1, .8, 3.1] },
+          faces: [["A", "B", "C"], ["A", "B", "D"], ["A", "C", "D"], ["B", "C", "D"]],
+          edges: [["A", "B"], ["B", "C"], ["C", "A"], ["A", "D"], ["B", "D"], ["C", "D"]],
+          height: ["D", [1, .87, 0]], dihedral: [["A", "B", "C"], ["A", "B", "D"], ["A", "B"]],
+          facts: {
+            structure: "四個面都是正三角形。任選一面當底面，對頂點到這個底面所在平面的垂線，就是高。",
+            height: "紅色虛線是從 D 向底面 ABC 作的高。正四面體的高不會落在任一條底邊上，而是落在底面中心。",
+            volume: "選 △ABC 為底面：V = (1 / 3) × [ABC] × h。邊長 a 時，V = (√2 / 12)a³。",
+            dihedral: "面 ABC 與面 ABD 的交線是 AB。二面角要以 AB 為軸，作垂直 AB 的截面來讀取。"
+          }
+        },
+        cube: {
+          name: "正六面體（立方體）", stats: "6 個正方形面、12 條邊、8 個頂點",
+          points: { A: [0, 0, 0], B: [2.5, 0, 0], C: [2.5, 2.5, 0], D: [0, 2.5, 0], E: [0, 0, 2.5], F: [2.5, 0, 2.5], G: [2.5, 2.5, 2.5], H: [0, 2.5, 2.5] },
+          faces: [["A", "B", "C", "D"], ["E", "F", "G", "H"], ["A", "B", "F", "E"], ["B", "C", "G", "F"], ["C", "D", "H", "G"], ["D", "A", "E", "H"]],
+          edges: [["A", "B"], ["B", "C"], ["C", "D"], ["D", "A"], ["E", "F"], ["F", "G"], ["G", "H"], ["H", "E"], ["A", "E"], ["B", "F"], ["C", "G"], ["D", "H"]],
+          height: ["E", "A"], dihedral: [["A", "B", "C", "D"], ["A", "B", "F", "E"], ["A", "B"]],
+          facts: {
+            structure: "立方體的八個頂點可交錯分成兩組；每一組的四點各形成一個正四面體。六個面心則可形成正八面體。",
+            height: "以底面 ABCD 為底面時，EA 垂直底面，是高。立方體中同方向的 4 條邊互相平行。",
+            volume: "立方體邊長為 a 時，V = a³。若內接正八面體，八面體的六個頂點在立方體六個面心。",
+            dihedral: "底面 ABCD 與側面 ABEF 相交於 AB；它們的二面角為 90°。"
+          }
+        },
+        octa: {
+          name: "正八面體", stats: "8 個正三角形面、12 條邊、6 個頂點",
+          points: { U: [1.3, 1.3, 3.1], L: [1.3, 1.3, 0], A: [0, 1.3, 1.5], B: [1.3, 0, 1.5], C: [2.6, 1.3, 1.5], D: [1.3, 2.6, 1.5] },
+          faces: [["U", "A", "B"], ["U", "B", "C"], ["U", "C", "D"], ["U", "D", "A"], ["L", "A", "B"], ["L", "B", "C"], ["L", "C", "D"], ["L", "D", "A"]],
+          edges: [["U", "A"], ["U", "B"], ["U", "C"], ["U", "D"], ["L", "A"], ["L", "B"], ["L", "C"], ["L", "D"], ["A", "B"], ["B", "C"], ["C", "D"], ["D", "A"]],
+          height: ["U", "L"], dihedral: [["U", "A", "B"], ["L", "A", "B"], ["A", "B"]],
+          facts: {
+            structure: "正八面體可想成兩個全等四角錐底對底相接。它的六個頂點正好對應立方體六個面心。",
+            height: "可將中間的正方形 ABCD 當底面，U 到這個平面的垂線是高度的一半；UL 是上下兩錐尖連線。",
+            volume: "把正八面體拆成上下兩個四角錐，再用各自的 (1 / 3)×底面積×高 相加。",
+            dihedral: "面 UAB 與 LAB 相交於 AB。要研究夾角，同樣以 AB 為軸作垂直截面。"
+          }
+        },
+        pyramid: {
+          name: "正四角錐", stats: "1 個正方形底面、4 個全等等腰三角形側面、5 個頂點",
+          points: { A: [0, 0, 0], B: [3, 0, 0], C: [3, 3, 0], D: [0, 3, 0], P: [1.5, 1.5, 3.2], O: [1.5, 1.5, 0] },
+          faces: [["A", "B", "C", "D"], ["A", "B", "P"], ["B", "C", "P"], ["C", "D", "P"], ["D", "A", "P"]],
+          edges: [["A", "B"], ["B", "C"], ["C", "D"], ["D", "A"], ["P", "A"], ["P", "B"], ["P", "C"], ["P", "D"]],
+          height: ["P", "O"], dihedral: [["A", "B", "C", "D"], ["A", "B", "P"], ["A", "B"]],
+          facts: {
+            structure: "頂點 P 的投影 O 是正方形底面的中心。這個「中心投影」是正四角錐的關鍵條件。",
+            height: "紅色 PO 垂直底面 ABCD，因此 PO 才是高 h；側邊 PA 與斜高 PM 都不是高。",
+            volume: "底面邊長 a、高 h：V = (1 / 3)a²h。若給斜高，要先用畢氏定理求 h。",
+            dihedral: "底面 ABCD 與側面 PAB 的交線是 AB。取 AB 中點 M，截面 PMO 可用來讀這條邊上的二面角。"
+          }
+        },
+        rightTetra: {
+          name: "三直角三角錐", stats: "在頂點 O 的三條棱 OA、OB、OC 兩兩垂直",
+          points: { O: [0, 0, 0], A: [3, 0, 0], B: [0, 3, 0], C: [0, 0, 3] },
+          faces: [["O", "A", "B"], ["O", "A", "C"], ["O", "B", "C"], ["A", "B", "C"]],
+          edges: [["O", "A"], ["O", "B"], ["O", "C"], ["A", "B"], ["A", "C"], ["B", "C"]],
+          height: ["C", "O"], dihedral: [["O", "A", "B"], ["O", "A", "C"], ["O", "A"]],
+          facts: {
+            structure: "在 O 點像三條互相垂直的桌角方向。先辨認 OA ⟂ OB、OB ⟂ OC、OC ⟂ OA。",
+            height: "若選直角三角形 OAB 當底面，OC 垂直平面 OAB，所以 OC 直接是高。",
+            volume: "V = (1 / 6)×OA×OB×OC。這是直角三角形底面積再乘高、再除以 3。",
+            dihedral: "面 OAB 與 OAC 相交於 OA；因 OB、OC 都垂直 OA，這是一個容易作截面的基本模型。"
+          }
+        }
+      };
+
+      const project = ([x, y, z]) => [310 + (x - y) * 52, 285 + (x + y) * 25 - z * 62];
+      const make = (tag, attrs = {}) => {
+        const el = document.createElementNS(NS, tag);
+        Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+        return el;
+      };
+      const pointString = (points, labels) => labels.map(label => project(points[label]).join(",")).join(" ");
+      const samePoint = (a, b) => Array.isArray(a) && Array.isArray(b) && a.every((value, index) => Math.abs(value - b[index]) < .001);
+      const addSegment = (start, end, attrs = {}) => {
+        const [x1, y1] = project(start); const [x2, y2] = project(end);
+        svg.appendChild(make("line", { x1, y1, x2, y2, ...attrs }));
+      };
+      function interpolation(a, b, t) { return a.map((value, index) => value + (b[index] - value) * t); }
+      function focusMark(model) {
+        if (state.focus === "height") {
+          const [from, to] = model.height;
+          const start = model.points[from];
+          const end = typeof to === "string" ? model.points[to] : to;
+          addSegment(start, end, { stroke: "#df4e50", "stroke-width": 5, "stroke-dasharray": "9 6" });
+          const labelAt = interpolation(start, end, .5); const [x, y] = project(labelAt);
+          const t = make("text", { x: x + 7, y: y - 7, fill: "#b73338", "font-size": 17, "font-weight": 800 }); t.textContent = "高 h"; svg.appendChild(t);
+          return;
+        }
+        if (state.focus === "dihedral") {
+          const [faceA, faceB, edge] = model.dihedral;
+          [faceA, faceB].forEach((face, index) => svg.appendChild(make("polygon", { points: pointString(model.points, face), fill: index ? "#b886e8" : "#72c7e7", opacity: .42 })));
+          addSegment(model.points[edge[0]], model.points[edge[1]], { stroke: "#df4e50", "stroke-width": 7 });
+          const center = interpolation(model.points[edge[0]], model.points[edge[1]], .5); const [x, y] = project(center);
+          const t = make("text", { x: x + 6, y: y - 8, fill: "#b73338", "font-size": 15, "font-weight": 800 }); t.textContent = "交線"; svg.appendChild(t);
+          return;
+        }
+        if (state.focus === "volume") {
+          const all = Object.values(model.points); const avg = all.reduce((sum, p) => [sum[0] + p[0], sum[1] + p[1], sum[2] + p[2]], [0, 0, 0]).map(value => value / all.length);
+          const [x, y] = project(avg); const label = make("text", { x, y, "text-anchor": "middle", fill: "#b96419", "font-size": 24, "font-weight": 900 }); label.textContent = "V = 底面積 × 高 ÷ 3"; svg.appendChild(label);
+        }
+      }
+      function renderSolid() {
+        const model = models[state.shape];
+        svg.innerHTML = "";
+        const floor = make("ellipse", { cx: 310, cy: 331, rx: 218, ry: 28, fill: "#d6e7ef", opacity: .62 }); svg.appendChild(floor);
+        model.faces.forEach((face, index) => svg.appendChild(make("polygon", { points: pointString(model.points, face), fill: index % 2 ? "#85d1ea" : "#b9e3f1", opacity: .43, stroke: "#5aa4c4", "stroke-width": 1 })));
+        focusMark(model);
+        model.edges.forEach(([a, b]) => addSegment(model.points[a], model.points[b], { stroke: "#1b4668", "stroke-width": 2.5, "stroke-linecap": "round" }));
+        Object.entries(model.points).forEach(([label, point]) => {
+          if (label === "O" && state.shape === "pyramid" && state.focus === "structure") return;
+          const [x, y] = project(point); svg.appendChild(make("circle", { cx: x, cy: y, r: 4.7, fill: "#163b5d" }));
+          const txt = make("text", { x: x + 8, y: y - 7, fill: "#102d49", "font-size": 16, "font-weight": 800 }); txt.textContent = label; svg.appendChild(txt);
+        });
+        result.innerHTML = `<h4>${model.name}</h4><p><strong>${model.stats}</strong></p><p>${model.facts[state.focus]}</p>`;
+      }
+      document.querySelectorAll("#shapeTabs button").forEach(button => button.addEventListener("click", () => {
+        state.shape = button.dataset.shape;
+        document.querySelectorAll("#shapeTabs button").forEach(item => item.classList.toggle("active", item === button));
+        renderSolid();
+      }));
+      document.querySelectorAll("#focusTabs button").forEach(button => button.addEventListener("click", () => {
+        state.focus = button.dataset.focus;
+        document.querySelectorAll("#focusTabs button").forEach(item => item.classList.toggle("active", item === button));
+        renderSolid();
+      }));
+      renderSolid();
+
+      const questions = [
+        { level: "基礎", q: "把一本書打開，左右兩頁分別代表平面 α、β。書背最適合代表什麼？", options: ["兩平面的交線", "兩平面的公垂線", "平面 α 的法向量", "兩平面的距離"], answer: 0, note: "兩個相交平面的共同部分是一條直線；書背正是兩頁共用的交線。" },
+        { level: "基礎", q: "兩直線在空間中沒有交點，且方向不同。還需要確認哪一件事，才能判為歪斜線？", options: ["兩線長度是否相同", "兩線是否不共面", "兩線是否都垂直桌面", "兩線的端點是否可見"], answer: 1, note: "歪斜線的定義是：不相交、不平行，而且不共面。" },
+        { level: "進階", q: "直線 ℓ 在 P 點與平面 α 相交。若要證明 ℓ ⟂ α，最完整的做法是？", options: ["證明 ℓ 垂直 α 內過 P 的兩條相交直線", "證明 ℓ 與 α 內任一線段等長", "證明 ℓ 與 α 不相交", "證明 ℓ 平行 α 內的一條線"], answer: 0, note: "一條線垂直平面內過交點的兩條相交直線，即可垂直該平面。" },
+        { level: "進階", q: "正四角錐底面邊長為 6，斜高為 5。體積為多少？", options: ["36", "48", "60", "75"], answer: 1, note: "底面中心到邊中點為 3，高 = √(5²−3²)=4，所以 V=(1/3)×36×4=48。" },
+        { level: "挑戰", q: "三直角三角錐在 O 點有 OA=3、OB=4、OC=5，三條棱兩兩垂直。體積為多少？", options: ["10", "20", "30", "60"], answer: 0, note: "V=(1/6)×3×4×5=10。" },
+        { level: "挑戰", q: "兩平面 α、β 相交於 ℓ。要取得這兩平面的二面角，應作哪一個截面？", options: ["任意通過 ℓ 的截面", "平行 ℓ 的截面", "垂直 ℓ 的截面", "與 α 平行的截面"], answer: 2, note: "截面必須垂直交線 ℓ；截出的兩條射線所成平面角，才是二面角。" }
+      ];
+      let qIndex = 0; let answered = false;
+      const qLevel = document.getElementById("quizLevel"); const qText = document.getElementById("quizQuestion"); const qOptions = document.getElementById("quizOptions"); const qFeedback = document.getElementById("quizFeedback");
+      function renderQuestion() {
+        const item = questions[qIndex]; answered = false; qLevel.textContent = item.level; qText.textContent = `第 ${qIndex + 1} 題｜${item.q}`; qOptions.innerHTML = ""; qFeedback.textContent = ""; qFeedback.className = "quiz-feedback";
+        item.options.forEach((option, index) => { const button = document.createElement("button"); button.type = "button"; button.textContent = `${String.fromCharCode(65 + index)}. ${option}`; button.addEventListener("click", () => chooseOption(index, button)); qOptions.appendChild(button); });
+      }
+      function chooseOption(index, button) {
+        if (answered) return;
+        const item = questions[qIndex];
+        if (index === item.answer) {
+          answered = true; button.classList.add("good"); qFeedback.className = "quiz-feedback good"; qFeedback.textContent = `答對了！${item.note}`;
+        } else {
+          button.classList.add("wrong"); button.disabled = true; qFeedback.className = "quiz-feedback try"; qFeedback.textContent = "先保留這題，再想一次：" + item.note.replace(/。$/, "") + "。";
+        }
+      }
+      document.getElementById("nextQuestion").addEventListener("click", () => { qIndex = (qIndex + 1) % questions.length; renderQuestion(); });
+      document.getElementById("resetQuestion").addEventListener("click", renderQuestion);
+      renderQuestion();
+    })();
+  </script>
+</body>
+</html>

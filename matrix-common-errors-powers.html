@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>矩陣常見錯誤與高次乘法五種方法</title>
+  <style>
+    :root {
+      --page: #eef4ff;
+      --paper: #ffffff;
+      --ink: #172554;
+      --sub: #52627c;
+      --line: #d9e4f3;
+      --blue: #2457c5;
+      --blue-soft: #eef4ff;
+      --teal: #0f766e;
+      --teal-soft: #ecfdf5;
+      --orange: #b45309;
+      --orange-soft: #fff7ed;
+      --purple: #6d28d9;
+      --purple-soft: #f5f3ff;
+      --red: #be123c;
+      --red-soft: #fff1f2;
+      --shadow: 0 14px 36px rgba(27, 55, 100, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: linear-gradient(145deg, #edf5ff 0%, #f9fbff 47%, #edfdf8 100%);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 26px 18px 48px; }
+    .hero, .card, .method, .mistake, .quiz-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .hero { padding: clamp(22px, 4vw, 38px); overflow: hidden; position: relative; }
+    .hero::after {
+      content: "Aⁿ";
+      position: absolute;
+      right: 5%; bottom: -38px;
+      color: #dbeafe;
+      font: 800 clamp(120px, 22vw, 220px)/1 Georgia, serif;
+      z-index: 0;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    h1, h2, h3 { color: #12264b; line-height: 1.35; }
+    h1 { margin: 0 0 10px; max-width: 780px; font-size: clamp(30px, 5vw, 46px); }
+    h2 { margin: 0 0 8px; font-size: clamp(25px, 3.5vw, 31px); }
+    h3 { margin: 0 0 8px; font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .eyebrows { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .eyebrow, .level, .mistake-no {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .eyebrow { border: 1px solid #bfdbfe; background: var(--blue-soft); color: #1d4ed8; }
+    .eyebrow.green { border-color: #99f6e4; background: var(--teal-soft); color: #0f766e; }
+    .lead { max-width: 790px; color: var(--sub); font-size: 17px; }
+    .nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 19px; }
+    .nav a, .back, .mistake-jump {
+      display: inline-block;
+      border: 1px solid #cbdaf0;
+      border-radius: 10px;
+      padding: 7px 11px;
+      color: #1d4ed8;
+      background: #f8fbff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .nav a:hover, .back:hover, .mistake-jump:hover { background: #e8f0ff; }
+    .section { margin-top: 28px; }
+    .section-intro { color: var(--sub); }
+    .card { padding: 18px; }
+    .grid { display: grid; gap: 14px; }
+    .grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .formula { font-family: Cambria, "Times New Roman", serif; }
+    .equation {
+      margin: 11px 0;
+      padding: 11px 13px;
+      overflow-x: auto;
+      border: 1px solid #cbdaf0;
+      border-radius: 11px;
+      background: #f8fbff;
+      color: #172554;
+      font: 20px/1.55 Cambria, "Times New Roman", serif;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .equation.left { text-align: left; }
+    .matrix {
+      display: inline-grid;
+      grid-auto-rows: minmax(1.35em, auto);
+      gap: 0 12px;
+      padding: 2px 9px;
+      margin: 0 2px;
+      vertical-align: middle;
+      border-left: 2px solid currentColor;
+      border-right: 2px solid currentColor;
+      border-radius: 3px;
+      line-height: 1.25;
+      text-align: center;
+    }
+    .matrix.two-by-two { grid-template-columns: repeat(2, minmax(1.15em, auto)); }
+    .matrix.one-by-two { grid-template-columns: repeat(2, minmax(1.15em, auto)); grid-template-rows: 1fr; }
+    .matrix span { min-width: 1.1em; }
+    .matrix .wide { min-width: 2.4em; }
+    .matrix .zero { color: #64748b; }
+    .matrix.hit { border-color: #0f766e; color: #115e59; background: #f0fdfa; }
+    .operator { padding: 0 3px; }
+    .callout {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid #bfdbfe;
+      border-left: 5px solid var(--blue);
+      border-radius: 12px;
+      background: var(--blue-soft);
+    }
+    .callout.warn { border-color: #fecdd3; border-left-color: var(--red); background: var(--red-soft); color: #881337; }
+    .callout.good { border-color: #99f6e4; border-left-color: var(--teal); background: var(--teal-soft); color: #115e59; }
+    .callout strong { color: inherit; }
+    .rule-strip { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: start; margin-top: 14px; }
+    .rule-label { padding: 9px 8px; border-radius: 10px; background: #172554; color: white; font-weight: 800; text-align: center; }
+    .rule-strip p { padding-top: 5px; }
+    .mistake-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .mistake-jump { color: #9f1239; border-color: #fecdd3; background: #fffafb; }
+    .mistakes { display: grid; gap: 14px; margin-top: 14px; }
+    .mistake { padding: 18px; scroll-margin-top: 12px; }
+    .mistake-head { display: flex; gap: 10px; align-items: flex-start; }
+    .mistake-no { flex: 0 0 auto; background: var(--red-soft); color: var(--red); border: 1px solid #fecdd3; }
+    .mistake-head h3 { margin: 0; }
+    .false { color: #be123c; font-weight: 900; }
+    .true { color: #0f766e; font-weight: 900; }
+    details { margin-top: 12px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    summary { padding: 10px 12px; cursor: pointer; font-weight: 800; color: #1e40af; }
+    details > div { padding: 0 12px 12px; }
+    .calc { padding: 10px 11px; border-radius: 9px; background: #f8fbff; font-family: Cambria, "Times New Roman", serif; overflow-x: auto; }
+    .mini-note { color: var(--sub); font-size: 14px; }
+    .method { padding: 18px; border-top: 5px solid var(--blue); }
+    .method:nth-of-type(2) { border-top-color: var(--teal); }
+    .method:nth-of-type(3) { border-top-color: var(--purple); }
+    .method:nth-of-type(4) { border-top-color: var(--orange); }
+    .method:nth-of-type(5) { border-top-color: #db2777; }
+    .method-title { display: flex; gap: 10px; align-items: flex-start; }
+    .method-num {
+      display: grid; place-items: center; flex: 0 0 33px; height: 33px;
+      border-radius: 50%; color: white; background: var(--blue); font-weight: 900;
+    }
+    .method:nth-of-type(2) .method-num { background: var(--teal); }
+    .method:nth-of-type(3) .method-num { background: var(--purple); }
+    .method:nth-of-type(4) .method-num { background: var(--orange); }
+    .method:nth-of-type(5) .method-num { background: #db2777; }
+    .method-title h3 { margin: 2px 0 0; }
+    .when { margin: 10px 0; padding: 8px 10px; border-radius: 9px; background: #f8fafc; color: #334155; font-size: 14px; }
+    .when strong { color: #0f172a; }
+    .steps { margin: 10px 0 0; padding-left: 24px; }
+    .steps li { margin: 6px 0; }
+    .choice-board { display: grid; gap: 12px; grid-template-columns: 1.05fr .95fr; align-items: stretch; }
+    .choice-flow { display: grid; gap: 9px; align-content: start; }
+    .flow-step { padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+    .flow-step strong { color: #1d4ed8; }
+    .flow-arrow { color: #94a3b8; font-size: 20px; line-height: .6; text-align: center; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f8fbff; color: #1e3a8a; }
+    .lesson-plan { background: linear-gradient(135deg, #f5f3ff, #fff 58%); }
+    .lesson-plan ol { margin: 8px 0 0; padding-left: 24px; }
+    .quiz-grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .quiz-card { padding: 16px; }
+    .quiz-card h3 { font-size: 18px; }
+    .quiz-options { display: grid; gap: 7px; margin-top: 10px; }
+    .quiz-option {
+      width: 100%; padding: 8px 9px; cursor: pointer; text-align: left;
+      border: 1px solid #cbdaf0; border-radius: 9px; background: #fff; color: #1e3a8a;
+      font: 700 14px/1.5 "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    }
+    .quiz-option:hover { background: #eef4ff; }
+    .quiz-option.correct { border-color: #6ee7b7; background: #ecfdf5; color: #065f46; }
+    .quiz-option.wrong { border-color: #fda4af; background: #fff1f2; color: #9f1239; }
+    .feedback { min-height: 2.8em; margin-top: 9px; color: var(--sub); font-size: 14px; }
+    .footnote { margin-top: 10px; color: var(--sub); font-size: 14px; }
+    .back { margin-top: 24px; }
+    @media (max-width: 800px) {
+      .wrap { padding: 15px 10px 36px; }
+      .hero, .card, .method, .mistake, .quiz-card { border-radius: 14px; padding: 15px; }
+      .two, .three, .four, .choice-board, .quiz-grid { grid-template-columns: minmax(0, 1fr); }
+      .equation { text-align: left; font-size: 18px; }
+      .rule-strip { grid-template-columns: 1fr; gap: 4px; }
+      .rule-label { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="eyebrows">
+        <span class="eyebrow">高中數學・矩陣</span>
+        <span class="eyebrow green">觀念釐清 × 解題選法</span>
+      </div>
+      <h1>矩陣別憑直覺：常見錯誤與高次乘法五種方法</h1>
+      <p class="lead">矩陣乘法不像一般數字：順序可能改變答案、非零矩陣相乘也可能變成零。遇到 <span class="formula">A<sup>n</sup></span> 時，先找結構再計算，往往比一直乘下去快得多。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#first-rule">先記一條規則</a>
+        <a href="#mistakes">六個常見錯誤</a>
+        <a href="#methods">五種高次方法</a>
+        <a href="#choose">怎麼選方法</a>
+        <a href="#check">自我檢查</a>
+      </nav>
+    </header>
+
+    <section class="section" id="first-rule">
+      <h2>0. 先記一條規則：矩陣乘法是「接續動作」</h2>
+      <p class="section-intro">把矩陣想成「把向量送進某台機器的規則」。在 <span class="formula">AB</span> 中，<strong>先做 <span class="formula">B</span>，再做 <span class="formula">A</span></strong>；就像先穿襪子再穿鞋，反過來通常不是同一件事。</p>
+      <div class="card" style="margin-top:14px;">
+        <div class="rule-strip">
+          <div class="rule-label">維度先行</div>
+          <p>若 <span class="formula">A</span> 是 <span class="formula">m×n</span>，<span class="formula">B</span> 是 <span class="formula">n×p</span>，才可以做 <span class="formula">AB</span>，結果是 <span class="formula">m×p</span>。<strong>內側數字要相同</strong>；不合就不是「算錯」，而是「根本不能算」。</p>
+        </div>
+        <div class="equation">(2×3)(3×4) 可以 → 結果是 2×4；　(2×3)(2×2) 不可以</div>
+        <div class="callout good"><strong>乘法入口檢查：</strong>先看尺寸 → 再決定順序 → 最後才算每一格的「列乘欄」。這三步能擋掉很多失分。</div>
+      </div>
+    </section>
+
+    <section class="section" id="mistakes">
+      <h2>1. 矩陣常見錯誤：每一個都用反例拆穿</h2>
+      <p class="section-intro">反例的功能是：只要找到一個例子讓敘述失敗，就知道它<strong>不是每次都成立的規則</strong>。下列矩陣都可直接逐格驗算。</p>
+      <div class="mistake-nav" aria-label="常見錯誤快速跳轉">
+        <a class="mistake-jump" href="#m1">① 不可交換</a>
+        <a class="mistake-jump" href="#m2">② 不可消去</a>
+        <a class="mistake-jump" href="#m3">③ 零乘積</a>
+        <a class="mistake-jump" href="#m4">④ 平方為零</a>
+        <a class="mistake-jump" href="#m5">⑤ 平方為 I</a>
+        <a class="mistake-jump" href="#m6">⑥ 轉置與反矩陣</a>
+      </div>
+
+      <div class="mistakes">
+        <article class="mistake" id="m1">
+          <div class="mistake-head"><span class="mistake-no">錯誤 ①</span><div><h3>把矩陣當一般數：以為 <span class="formula">AB = BA</span></h3><p><span class="false">錯！</span> 大多數矩陣乘法沒有交換律。</p></div></div>
+          <div class="equation">
+            A = <span class="matrix two-by-two"><span>1</span><span>1</span><span>0</span><span>1</span></span>
+            ， B = <span class="matrix two-by-two"><span>1</span><span>0</span><span>1</span><span>1</span></span>
+          </div>
+          <div class="grid two">
+            <div class="calc">AB = <span class="matrix two-by-two"><span>2</span><span>1</span><span>1</span><span>1</span></span></div>
+            <div class="calc">BA = <span class="matrix two-by-two"><span>1</span><span>1</span><span>1</span><span>2</span></span></div>
+          </div>
+          <div class="callout warn"><strong>記法陷阱：</strong>寫 <span class="formula">A<sup>2</sup></span> 時是 <span class="formula">AA</span>，並不代表你可以任意把不同矩陣對調。只有題目另外證明 <span class="formula">AB=BA</span> 時，才說它們可交換。</div>
+          <details><summary>看第一格怎麼算：為什麼答案不同？</summary><div><div class="calc">(AB)<sub>11</sub> = 1×1 + 1×1 = 2；　(BA)<sub>11</sub> = 1×1 + 0×1 = 1。</div><p class="mini-note">同樣用「第一列乘第一欄」，但第一列、第一欄換了來源，答案自然可能不同。</p></div></details>
+        </article>
+
+        <article class="mistake" id="m2">
+          <div class="mistake-head"><span class="mistake-no">錯誤 ②</span><div><h3>看到 <span class="formula">AB = AC</span> 就消掉 <span class="formula">A</span>，說 <span class="formula">B = C</span></h3><p><span class="false">錯！</span> 左右消去律需要 <span class="formula">A</span> 可逆；若 <span class="formula">A</span> 不可逆，資訊可能被壓掉。</p></div></div>
+          <div class="equation">
+            A = <span class="matrix two-by-two"><span>1</span><span>0</span><span>0</span><span>0</span></span>
+            ， B = <span class="matrix two-by-two"><span>1</span><span>2</span><span>3</span><span>4</span></span>
+            ， C = <span class="matrix two-by-two"><span>1</span><span>2</span><span>9</span><span>−1</span></span>
+          </div>
+          <div class="equation">AB = <span class="matrix two-by-two"><span>1</span><span>2</span><span>0</span><span>0</span></span> = AC，　但是 B ≠ C</div>
+          <div class="callout"><strong>什麼時候可以消？</strong>若 <span class="formula">A<sup>−1</sup></span> 存在，才可在等式左邊同乘 <span class="formula">A<sup>−1</sup></span>：<br><span class="formula">AB=AC ⇒ A<sup>−1</sup>AB=A<sup>−1</sup>AC ⇒ B=C</span>。</div>
+          <details><summary>用「機器」直覺理解</summary><div><p>這個 <span class="formula">A</span> 只保留輸入的第一列，第二列不管原本是什麼都變成 0。因此不同的 <span class="formula">B、C</span> 經過 <span class="formula">A</span> 後，可能留下完全相同的結果。</p></div></details>
+        </article>
+
+        <article class="mistake" id="m3">
+          <div class="mistake-head"><span class="mistake-no">錯誤 ③</span><div><h3>以為 <span class="formula">AB=O</span> 就必有 <span class="formula">A=O</span> 或 <span class="formula">B=O</span></h3><p><span class="false">錯！</span> 矩陣存在「零因子」：兩個非零矩陣相乘可以得到零矩陣。</p></div></div>
+          <div class="equation">
+            A = <span class="matrix two-by-two"><span>1</span><span>0</span><span>0</span><span>0</span></span>
+            ， B = <span class="matrix two-by-two"><span>0</span><span>0</span><span>1</span><span>0</span></span>
+            → AB = <span class="matrix two-by-two hit"><span>0</span><span>0</span><span>0</span><span>0</span></span>
+          </div>
+          <div class="callout warn"><strong>考場判斷：</strong><span class="formula">AB=O</span> 時，若已知 <span class="formula">A</span> 可逆，才可左乘 <span class="formula">A<sup>−1</sup></span> 得 <span class="formula">B=O</span>。沒有「可逆」條件，不能下結論。</div>
+        </article>
+
+        <article class="mistake" id="m4">
+          <div class="mistake-head"><span class="mistake-no">錯誤 ④</span><div><h3>以為 <span class="formula">A<sup>2</sup>=O</span> 就必有 <span class="formula">A=O</span></h3><p><span class="false">錯！</span> 有些非零矩陣平方後會完全消失，這類矩陣稱為冪零矩陣。</p></div></div>
+          <div class="equation">
+            A = <span class="matrix two-by-two"><span>0</span><span>1</span><span>0</span><span>0</span></span>
+            ， A<sup>2</sup> = <span class="matrix two-by-two hit"><span>0</span><span>0</span><span>0</span><span>0</span></span>
+            ，但 A ≠ O
+          </div>
+          <details><summary>逐格驗算 A²</summary><div><div class="calc">A² = <span class="matrix two-by-two"><span>0×0+1×0</span><span>0×1+1×0</span><span>0×0+0×0</span><span>0×1+0×0</span></span> = O。</div></div></details>
+        </article>
+
+        <article class="mistake" id="m5">
+          <div class="mistake-head"><span class="mistake-no">錯誤 ⑤</span><div><h3>以為 <span class="formula">A<sup>2</sup>=I</span> 就必有 <span class="formula">A=I</span> 或 <span class="formula">A=−I</span></h3><p><span class="false">錯！</span> 反射、交換座標等動作，做兩次會回到原處，但做一次不一定沒變。</p></div></div>
+          <div class="equation">
+            A = <span class="matrix two-by-two"><span>0</span><span>1</span><span>1</span><span>0</span></span>
+            ， A<sup>2</sup> = <span class="matrix two-by-two hit"><span>1</span><span>0</span><span>0</span><span>1</span></span> = I
+          </div>
+          <div class="callout good"><strong>圖像直覺：</strong>這個矩陣把 <span class="formula">(x,y)</span> 變成 <span class="formula">(y,x)</span>，也就是對直線 <span class="formula">y=x</span> 鏡射。鏡射兩次當然回到原點，所以平方是 <span class="formula">I</span>。</div>
+        </article>
+
+        <article class="mistake" id="m6">
+          <div class="mistake-head"><span class="mistake-no">錯誤 ⑥</span><div><h3>把乘積的轉置、反矩陣順序照抄</h3><p><span class="false">錯！</span> 兩者都要<strong>反轉順序</strong>。</p></div></div>
+          <div class="grid two">
+            <div class="callout"><strong>轉置：</strong><br><span class="formula">(AB)<sup>T</sup> = B<sup>T</sup>A<sup>T</sup></span><br>不是 <span class="formula">A<sup>T</sup>B<sup>T</sup></span>。</div>
+            <div class="callout"><strong>反矩陣（皆可逆時）：</strong><br><span class="formula">(AB)<sup>−1</sup> = B<sup>−1</sup>A<sup>−1</sup></span><br>不是 <span class="formula">A<sup>−1</sup>B<sup>−1</sup></span>。</div>
+          </div>
+          <div class="callout warn"><strong>最可靠的背法：</strong>要讓相鄰的東西消掉，就從最靠近的開始。例如 <span class="formula">(AB)(B<sup>−1</sup>A<sup>−1</sup>)=A(BB<sup>−1</sup>)A<sup>−1</sup>=I</span>。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="methods">
+      <h2>2. 求 <span class="formula">A<sup>n</sup></span> 的五種常用方法</h2>
+      <p class="section-intro">不是每一題都套同一招。先觀察矩陣的形狀、特殊關係或特徵值，再選最短的路。以下每一招都有「何時用」與可直接模仿的例子。</p>
+      <div class="grid" style="margin-top:14px;">
+        <article class="method">
+          <div class="method-title"><span class="method-num">1</span><div><h3>直接乘幾次，找出規律</h3><p>適合對角矩陣、上下三角矩陣、全列同或全行同等一眼看得出結構的題目。</p></div></div>
+          <div class="when"><strong>觀察重點：</strong>每次相乘後，哪些位置永遠是 0？哪些格子只是在乘固定倍率？</div>
+          <div class="equation">
+            D = <span class="matrix two-by-two"><span>2</span><span>0</span><span>0</span><span>−3</span></span>
+            → D<sup>n</sup> = <span class="matrix two-by-two hit"><span>2<sup>n</sup></span><span>0</span><span>0</span><span>(−3)<sup>n</sup></span></span>
+          </div>
+          <ol class="steps"><li>先算 <span class="formula">D²</span>：對角線變成 <span class="formula">2²、(−3)²</span>，其他位置仍為 0。</li><li>再看 <span class="formula">D³</span>，發現每個對角元素各自連乘。</li><li>寫出 <span class="formula">D<sup>n</sup></span>；不要把對角元素相加或互相交叉相乘。</li></ol>
+          <details><summary>再看一個上三角矩陣的規律</summary><div><div class="equation left">U = <span class="matrix two-by-two"><span>2</span><span>1</span><span>0</span><span>2</span></span>，計算後可猜到 U<sup>n</sup> = <span class="matrix two-by-two"><span>2<sup>n</sup></span><span>n·2<sup>n−1</sup></span><span>0</span><span>2<sup>n</sup></span></span>。</div><p class="mini-note">這題也能改用方法 2；實戰時「看出規律」和「二項式」常互相支援。</p></div></details>
+        </article>
+
+        <article class="method">
+          <div class="method-title"><span class="method-num">2</span><div><h3>拆成 <span class="formula">I + B</span>，使用二項式定理</h3><p>當矩陣可寫成「純量倍的 <span class="formula">I</span> 加上好處理的矩陣」，而且 <span class="formula">B²、B³…</span> 有簡單規律時特別快。</p></div></div>
+          <div class="when"><strong>關鍵理由：</strong><span class="formula">I</span> 與任何同階矩陣都可交換，所以可合法使用二項式展開。</div>
+          <div class="equation">
+            A = <span class="matrix two-by-two"><span>3</span><span>1</span><span>0</span><span>3</span></span>
+            = 3I + N，N = <span class="matrix two-by-two"><span>0</span><span>1</span><span>0</span><span>0</span></span>，N² = O
+          </div>
+          <div class="equation">A<sup>n</sup> = (3I+N)<sup>n</sup> = 3<sup>n</sup>I + n·3<sup>n−1</sup>N</div>
+          <div class="equation">= <span class="matrix two-by-two hit"><span>3<sup>n</sup></span><span>n·3<sup>n−1</sup></span><span>0</span><span>3<sup>n</sup></span></span></div>
+          <div class="callout"><strong>為什麼只剩兩項？</strong>二項式裡所有含 <span class="formula">N²</span> 的項都等於 0；例如 <span class="formula">N³=N²N=O</span>。</div>
+          <details><summary>使用二項式前的安全檢查</summary><div><p>一般矩陣 <span class="formula">(X+Y)²</span> 是 <span class="formula">X²+XY+YX+Y²</span>，不能直接寫成 <span class="formula">X²+2XY+Y²</span>。只有確認 <span class="formula">XY=YX</span> 時，才可合併中間兩項。這一題因為其中一個是 <span class="formula">3I</span>，所以安全。</p></div></details>
+        </article>
+
+        <article class="method">
+          <div class="method-title"><span class="method-num">3</span><div><h3>Cayley–Hamilton 定理：把高次降回低次</h3><p>先由特徵多項式得到矩陣滿足的關係式，再把 <span class="formula">A²、A³…</span> 不斷化成 <span class="formula">I</span> 與 <span class="formula">A</span> 的組合。</p></div></div>
+          <div class="when"><strong>適合：</strong>二階矩陣尤其好用；算出特徵值後，也能順便判斷能否對角化。</div>
+          <div class="equation">A = <span class="matrix two-by-two"><span>1</span><span>1</span><span>1</span><span>0</span></span>，特徵多項式 f(λ)=λ²−λ−1</div>
+          <div class="equation">f(A)=A²−A−I=O　⇒　A²=A+I</div>
+          <ol class="steps"><li><span class="formula">A³=A·A²=A(A+I)=A²+A=2A+I</span></li><li><span class="formula">A⁴=A(2A+I)=2A²+A=3A+2I</span></li><li><span class="formula">A⁵=A(3A+2I)=3A²+2A=5A+3I</span></li></ol>
+          <div class="callout good"><strong>看見遞迴：</strong>因為 <span class="formula">A²=A+I</span>，後面係數會出現費波那契型的遞迴。高次不再需要一格一格硬乘。</div>
+        </article>
+
+        <article class="method">
+          <div class="method-title"><span class="method-num">4</span><div><h3>對角化：<span class="formula">A=P<sup>−1</sup>DP</span></h3><p>若有足夠的線性獨立特徵向量，可把難算的 <span class="formula">A</span> 變成好算的對角矩陣 <span class="formula">D</span>。</p></div></div>
+          <div class="when"><strong>口訣：</strong>先「換座標」到特徵向量的世界，中間只算對角線次方，最後再換回來。</div>
+          <div class="equation">A = <span class="matrix two-by-two"><span>1</span><span>1</span><span>−2</span><span>4</span></span>，P = <span class="matrix two-by-two"><span>2</span><span>−1</span><span>−1</span><span>1</span></span>，PAP<sup>−1</sup> = D = <span class="matrix two-by-two hit"><span>2</span><span>0</span><span>0</span><span>3</span></span></div>
+          <div class="equation">A<sup>n</sup> = P<sup>−1</sup>D<sup>n</sup>P = P<sup>−1</sup><span class="matrix two-by-two"><span>2<sup>n</sup></span><span>0</span><span>0</span><span>3<sup>n</sup></span></span>P</div>
+          <details><summary>這題的完整答案與順序陷阱</summary><div><div class="equation left">A<sup>n</sup> = <span class="matrix two-by-two"><span>2<sup>n+1</sup>−3<sup>n</sup></span><span>3<sup>n</sup>−2<sup>n</sup></span><span>2<sup>n+1</sup>−2·3<sup>n</sup></span><span>2·3<sup>n</sup>−2<sup>n</sup></span></span></div><p><strong>小心：</strong>本例寫的是 <span class="formula">D=PAP<sup>−1</sup></span>，因此要解出 <span class="formula">A=P<sup>−1</sup>DP</span>，高次後仍是 <span class="formula">P<sup>−1</sup>D<sup>n</sup>P</span>。不要把 <span class="formula">P</span> 與 <span class="formula">P<sup>−1</sup></span> 的位置顛倒。</p></div></details>
+        </article>
+
+        <article class="method">
+          <div class="method-title"><span class="method-num">5</span><div><h3>辨認幾何變換：旋轉、鏡射、伸縮、推移</h3><p>有些矩陣本來就是平面上的動作；找「幾次後回到原狀」或「角度累加」最快。</p></div></div>
+          <div class="when"><strong>適合：</strong>題目出現 <span class="formula">cosθ、sinθ</span>，或矩陣長得像旋轉、鏡射、伸縮、推移時。</div>
+          <div class="grid four">
+            <div class="callout"><strong>旋轉 R<sub>θ</sub></strong><br><span class="formula">R<sub>θ</sub><sup>n</sup>=R<sub>nθ</sub></span></div>
+            <div class="callout"><strong>鏡射 S</strong><br><span class="formula">S²=I</span></div>
+            <div class="callout"><strong>伸縮 kI</strong><br><span class="formula">(kI)<sup>n</sup>=k<sup>n</sup>I</span></div>
+            <div class="callout"><strong>推移 T</strong><br><span class="formula">T=<span class="matrix two-by-two"><span>1</span><span>c</span><span>0</span><span>1</span></span> ⇒ T<sup>n</sup>=<span class="matrix two-by-two"><span>1</span><span>nc</span><span>0</span><span>1</span></span></span></div>
+          </div>
+          <div class="equation">R = <span class="matrix two-by-two"><span>0</span><span>−1</span><span>1</span><span>0</span></span>（逆時針轉 90°） → R²=−I，R⁴=I → R<sup>2026</sup>=R²=−I</div>
+          <div class="callout good"><strong>餘數的用處：</strong>碰到 <span class="formula">R<sup>2026</sup></span> 不要乘 2026 次；因為每 4 次重複，只要算 <span class="formula">2026÷4</span> 的餘數 2。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="choose">
+      <h2>3. 考場上怎麼選方法？</h2>
+      <div class="card choice-board">
+        <div class="choice-flow">
+          <div class="flow-step"><strong>第一眼：</strong>它是對角、三角、全列同或週期型嗎？→ 先試<strong>方法 1 或 5</strong>。</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><strong>第二眼：</strong>能寫成 <span class="formula">rI+N</span>，而 <span class="formula">N²=O</span> 或 <span class="formula">N²=N</span> 嗎？→ 用<strong>方法 2</strong>。</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><strong>第三眼：</strong>二階矩陣的特徵多項式好算嗎？→ 用<strong>方法 3</strong>把次方壓低。</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step"><strong>第四眼：</strong>有兩個不同特徵值／足夠特徵向量嗎？→ 用<strong>方法 4</strong>對角化。</div>
+        </div>
+        <div class="lesson-plan card">
+          <h3>老師可直接這樣帶</h3>
+          <ol>
+            <li>先讓學生算錯誤①的 <span class="formula">AB、BA</span>，感受「順序真的有差」。</li>
+            <li>再展示錯誤③，追問：「非零乘非零為什麼會是零？」</li>
+            <li>給一題 <span class="formula">R<sup>2026</sup></span>，要求先說理由、再寫答案。</li>
+            <li>最後比較：同一個上三角矩陣可用觀察或二項式，但哪一種寫法最短？</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <h3>五種方法的一句話總整理</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>方法</th><th>找什麼特徵</th><th>核心動作</th></tr></thead>
+          <tbody>
+            <tr><th>1. 直接找規律</th><td>0 的位置固定、對角或三角結構</td><td>算前 2～3 次，歸納每格的變化</td></tr>
+            <tr><th>2. 二項式</th><td><span class="formula">rI+N</span>，且 <span class="formula">N</span> 的次方簡單</td><td>確認可交換，展開後消去高次項</td></tr>
+            <tr><th>3. Cayley–Hamilton</th><td>特徵多項式容易求</td><td>用 <span class="formula">f(A)=O</span> 將高次降階</td></tr>
+            <tr><th>4. 對角化</th><td>有足夠特徵向量</td><td>把 <span class="formula">A</span> 換成對角矩陣 <span class="formula">D</span></td></tr>
+            <tr><th>5. 幾何變換</th><td>旋轉、鏡射、伸縮、推移</td><td>利用週期、角度累加或固定形狀</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <section class="section" id="check">
+      <h2>4. 自我檢查：先選方法，再看理由</h2>
+      <p class="section-intro">答錯也沒關係；先把理由讀懂，再回到上方找對應方法。這比只背答案更能避免下次選錯工具。</p>
+      <div class="quiz-grid" style="margin-top:14px;">
+        <article class="quiz-card" data-quiz="q1">
+          <h3>Q1. <span class="formula">R=<span class="matrix two-by-two"><span>0</span><span>−1</span><span>1</span><span>0</span></span></span>，求 <span class="formula">R<sup>101</sup></span> 最先想到？</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-correct="false">逐格乘 101 次</button>
+            <button class="quiz-option" data-correct="true">方法 5：利用 R⁴=I 的週期</button>
+            <button class="quiz-option" data-correct="false">方法 4：先硬求反矩陣</button>
+          </div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+        <article class="quiz-card" data-quiz="q2">
+          <h3>Q2. 已知 <span class="formula">A=4I+N</span> 且 <span class="formula">N²=O</span>，最短方法是？</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-correct="false">直接把 4 與 N 當成一般數相加</button>
+            <button class="quiz-option" data-correct="true">方法 2：二項式，只會留下前兩項</button>
+            <button class="quiz-option" data-correct="false">方法 5：一定有週期</button>
+          </div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+        <article class="quiz-card" data-quiz="q3">
+          <h3>Q3. 二階矩陣的特徵多項式是 <span class="formula">λ²−3λ+2</span>，要化簡 <span class="formula">A<sup>8</sup></span>，可先用？</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-correct="true">方法 3：由 A²−3A+2I=O 降階</button>
+            <button class="quiz-option" data-correct="false">看到平方就直接說 A²=I</button>
+            <button class="quiz-option" data-correct="false">把 AB=AC 的 A 消掉</button>
+          </div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+      </div>
+      <div class="callout good"><strong>最後提醒：</strong>矩陣題目最容易失分的不是算術，而是<strong>沒有先檢查條件</strong>：能不能相乘？能不能交換？能不能消去？能不能對角化？每一步先問這一句，答案會穩很多。</div>
+      <a class="back" href="./index.html">← 回到數學教學首頁</a>
+    </section>
+  </main>
+  <script>
+    document.querySelectorAll('.quiz-card').forEach((card) => {
+      const feedback = card.querySelector('.feedback');
+      card.querySelectorAll('.quiz-option').forEach((button) => {
+        button.addEventListener('click', () => {
+          const isCorrect = button.dataset.correct === 'true';
+          card.querySelectorAll('.quiz-option').forEach((option) => {
+            option.classList.remove('correct', 'wrong');
+            option.removeAttribute('aria-pressed');
+          });
+          button.classList.add(isCorrect ? 'correct' : 'wrong');
+          button.setAttribute('aria-pressed', 'true');
+          feedback.textContent = isCorrect
+            ? '答對了。重點是先辨認矩陣結構，再選能縮短計算的工具。'
+            : '先別急著算；回想題目給的結構，選能直接利用它的方法。再試一次。';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

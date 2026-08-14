@@ -131,16 +131,35 @@
     .action-title { min-height: 31px; margin-bottom: 4px; color: var(--ink); font-size: 20px; font-weight: 900; }
     .action-copy { min-height: 82px; margin-bottom: 12px; }
     .action-copy p { margin-bottom: 6px; }
-    .paper { min-height: 400px; background: repeating-linear-gradient(to bottom, #fff 0, #fff 33px, #e0e7ff 34px); overflow-x: auto; }
-    .root-paper { width: min(100%, 510px); margin: 6px auto; color: #172554; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: clamp(15px, 2.2vw, 18px); line-height: 1.85; }
-    .answer-line { display: flex; align-items: flex-end; min-height: 58px; border-bottom: 3px solid #1e3a8a; font-size: 25px; font-weight: 900; }
-    .radical { position: relative; padding: 0 8px 0 3px; border-top: 3px solid #1e3a8a; }
-    .radical::before { content: "√"; position: absolute; left: -18px; top: -7px; font: 34px/1 Georgia, serif; }
-    .work-row { display: grid; grid-template-columns: 118px 1fr; gap: 7px; min-height: 35px; padding-top: 3px; }
-    .work-label { color: #475569; font-size: 13px; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
-    .work-value { min-width: 200px; border-bottom: 1px solid #64748b; text-align: right; font-weight: 800; white-space: pre; }
-    .work-row.new .work-value { color: var(--violet); }
-    .work-row.emphasis .work-value { color: var(--teal-dark); font-size: 1.09em; }
+    .paper { min-height: 455px; padding: 18px 12px; background: linear-gradient(135deg, #fffef9, #fff 60%); overflow-x: auto; }
+    .root-paper { width: min(100%, 560px); min-width: 420px; margin: 4px auto; color: #172554; font-family: "Cambria Math", "Times New Roman", ui-monospace, serif; font-size: clamp(19px, 2.6vw, 27px); font-variant-numeric: tabular-nums; line-height: 1.28; }
+    .paper-answer-row { display: grid; grid-template-columns: 33% 67%; min-height: 50px; }
+    .paper-answer { justify-self: start; display: inline-flex; align-items: flex-end; min-width: 86%; padding: 0 7px 2px; border-bottom: 3px solid #172554; color: #0f172a; font-weight: 800; letter-spacing: .19em; }
+    .paper-answer-label { align-self: end; padding: 0 8px 3px 0; color: #64748b; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0; }
+    .paper-radicand-row { display: grid; grid-template-columns: 33% 67%; min-height: 57px; }
+    .paper-radical-box { grid-column: 2; position: relative; display: flex; align-items: flex-start; min-width: 86%; padding: 5px 10px 0 29px; border-top: 3px solid #172554; font-weight: 800; letter-spacing: .18em; }
+    .paper-radical-box::before { content: "√"; position: absolute; left: 0; top: -10px; font: 58px/.9 "Times New Roman", serif; letter-spacing: 0; }
+    .paper-pair { display: inline-block; min-width: 1.55em; text-align: center; }
+    .paper-pair + .paper-pair::before { content: "′"; position: relative; left: -.17em; top: -.34em; color: #64748b; font-size: .7em; letter-spacing: 0; }
+    .paper-decimal-separator { margin: 0 .08em; color: #64748b; letter-spacing: 0; }
+    .paper-stage { display: grid; grid-template-columns: 31% 69%; gap: 5px; margin-top: 4px; }
+    .trial-lane { padding: 2px 12px 0 0; border-right: 1px dashed #cbd5e1; }
+    .trial-block { min-height: 68px; margin-bottom: 8px; padding: 5px 0 8px; border-bottom: 2px solid #334155; text-align: right; }
+    .trial-kicker { display: block; margin-bottom: 2px; color: #64748b; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0; }
+    .trial-equation { display: block; color: #1e293b; font-weight: 800; letter-spacing: .08em; white-space: nowrap; }
+    .trial-blank { color: #64748b; }
+    .trial-product { display: block; margin-top: 3px; color: #0f766e; font-size: .88em; font-weight: 800; letter-spacing: .08em; }
+    .paper-new-digit { color: #0284c7; }
+    .paper-trial-digit { color: #dc2626; }
+    .calc-lane { min-width: 0; padding-left: 17px; }
+    .calc-group { min-height: 66px; margin: 0 0 8px; padding-bottom: 7px; }
+    .calc-row { min-height: 34px; padding-right: 12px; text-align: right; font-weight: 800; letter-spacing: .16em; white-space: pre; }
+    .calc-row.current { color: #0f172a; }
+    .calc-row.product { color: #0f766e; }
+    .calc-row.remainder { color: #172554; }
+    .calc-row.active { color: #7c3aed; }
+    .calc-rule { width: 86%; height: 3px; margin: 2px 0 4px auto; background: #172554; }
+    .calc-row .minus { display: inline-block; margin-right: .38em; letter-spacing: 0; }
     .group-strip { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 0; }
     .group { padding: 3px 8px; border: 1px solid #93c5fd; border-radius: 8px; color: #1e40af; background: #eff6ff; font: 800 15px ui-monospace, Consolas, monospace; }
     .group.current { color: #115e59; border-color: #5eead4; background: #ccfbf1; box-shadow: 0 0 0 3px #fef3c7; }
@@ -168,7 +187,9 @@
       .digit-track { grid-template-columns: repeat(5, 1fr); }
       .comparison { grid-template-columns: 1fr; }
       .compare-arrow { transform: rotate(90deg); text-align: center; }
-      .work-row { grid-template-columns: 88px 1fr; }
+      .root-paper { min-width: 0; font-size: clamp(16px, 5vw, 19px); }
+      .paper-answer-row, .paper-radicand-row { grid-template-columns: 29% 71%; }
+      .paper-stage { grid-template-columns: 29% 71%; }
     }
   </style>
 </head>
@@ -353,13 +374,13 @@
         <h2>4. 直式開根號：每按一次，只做一個動作</h2>
         <span class="level advanced">逐步算法</span>
       </div>
-      <p class="section-intro">直式法把被開方數<strong>從小數點向左右，每兩位分一組</strong>。每一組決定根號的一位數。請先選例子，再一直按「下一個動作」；右邊會像在紙上書寫一樣逐行顯示。</p>
+      <p class="section-intro">直式法把被開方數<strong>從小數點向左右，每兩位分一組</strong>。每一組決定根號的一位數。先用 <span class="math">√529</span> 看清楚完整的整數流程；再選 <span class="math">√12.25</span>，特別觀察小數點何時要對齊寫進答案。</p>
       <div class="controls" style="margin-bottom:13px">
         <div>
           <label for="long-root-example">範例</label>
           <select id="long-root-example" style="min-height:42px;padding:8px 10px;border:1px solid #94a3b8;border-radius:9px;color:#172554;background:#fff;font:inherit">
-            <option value="12.25">√12.25 = 3.5（含小數點）</option>
             <option value="529">√529 = 23（整數根）</option>
+            <option value="12.25">√12.25 = 3.5（含小數點）</option>
             <option value="2">√2 ≈ 1.414（無限小數）</option>
             <option value="0.04">√0.04 = 0.2（小於 1）</option>
           </select>
@@ -373,21 +394,30 @@
         <div class="step-panel" aria-live="polite">
           <div id="long-root-counter" class="action-counter">準備開始</div>
           <div id="long-root-title" class="action-title">先把數字每兩位分成一組</div>
-          <div id="long-root-copy" class="action-copy"><p>例如 12.25 要分成 <span class="math">12 ｜ 25</span>。小數點不用拿掉，它只是在告訴我們：算到第二組時，根號答案也要點上小數點。</p></div>
+          <div id="long-root-copy" class="action-copy"><p>例如 529 要分成 <span class="math">5 ｜ 29</span>。第一組先找平方數；接著依序「相減、帶下、根號加倍、試填、相減」。</p></div>
           <div class="group-strip" id="group-strip" aria-label="被開方數分組"></div>
           <div class="button-row">
             <button class="btn" id="long-root-next-bottom" type="button">下一個動作</button>
           </div>
-          <div id="long-root-note" class="long-note"><strong>先記住兩個核心：</strong>第一位找 <span class="math">x²</span>；後續每一位找 <span class="math">(20P + x)×x</span> 不超過目前的數。P 是已經寫出的根號部分（先不管小數點）。</div>
+          <div id="long-root-note" class="long-note"><strong>先記住兩個核心：</strong>第一位找 <span class="math">x²</span>；後續先把已得根號加倍，在右邊留一格，再用同一個試填數字填入空格並相乘。</div>
         </div>
         <div class="paper" aria-label="直式開根號算式紙面">
           <div class="root-paper">
-            <div class="answer-line"><span>答案：</span><span id="paper-root" class="radical">＿</span></div>
-            <div id="paper-work"></div>
+            <div class="paper-answer-row">
+              <span class="paper-answer-label">根號答案</span>
+              <span id="paper-root" class="paper-answer">＿</span>
+            </div>
+            <div class="paper-radicand-row">
+              <span id="paper-radicand" class="paper-radical-box">05′29</span>
+            </div>
+            <div class="paper-stage">
+              <div id="paper-trial" class="trial-lane" aria-label="加倍與試填欄"></div>
+              <div id="paper-work" class="calc-lane" aria-label="相減與帶下欄"></div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="notice"><strong>最常卡住的地方：</strong>後續不是只把已得根號乘 2。假如已得到 <span class="math">P = 3</span>，就要用 <span class="math">20P = 60</span>；試 5 時要算 <span class="math">(60 + 5)×5</span>，不是 <span class="math">6×5</span>。這個 0 是因為每次帶下來的是「兩位」＝乘 100。</div>
+      <div class="notice"><strong>最常卡住的地方：</strong>看到已得根號是 <span class="math">3</span>，先寫 <span class="math">3×2=6</span>，再留一格成為 <span class="math">6＿</span>；試 5 時，空格與乘數都填 5，得到 <span class="math">65×5=325</span>。因此不是只算 <span class="math">6×5</span>。每次帶下兩位，正是這個直式規則成立的原因。</div>
     </section>
 
     <section class="card" id="check">
@@ -416,9 +446,9 @@
           </div>
           <p class="quiz-feedback" aria-live="polite"></p>
         </article>
-        <article class="quiz-card" data-answer="a" data-explain="已知根號部分 P=3，下一位要找 (20P+x)x=(60+x)x；x=5 時剛好是 325。">
+        <article class="quiz-card" data-answer="a" data-explain="已得根號 3，先加倍成 6＿；試填 5 時，65×5=325，剛好不超過目前數。">
           <span class="tag">挑戰</span>
-          <p class="quiz-question">直式中 P=3、目前數是 325，下一位應試哪個數？</p>
+          <p class="quiz-question">直式中已得根號 3、目前數是 325；6＿ × ＿的空格應填哪個數？</p>
           <div class="quiz-options">
             <button class="quiz-option" type="button" data-choice="a">5</button>
             <button class="quiz-option" type="button" data-choice="b">4</button>
@@ -566,21 +596,25 @@
       function chooseDecimalDigit(digit, candidate, best) {
         if (!decimalState || decimalState.finished) return;
         const buttons = [...digitTrack.querySelectorAll('.digit')];
-        buttons.forEach((button, index) => {
-          button.disabled = true;
-          if (index === best) button.classList.add('good');
-          if (index > best) button.classList.add('over');
-          if (index === digit) button.classList.add('near');
-        });
         const { n, value, place } = decimalState;
         const unit = 10 ** (-place);
         const candidateSq = square(candidate);
         if (digit !== best) {
-          const direction = digit > best ? '已超過目標，數字要再小一點。' : '還能再大，請看綠色的最大可用數字。';
+          const picked = buttons[digit];
+          picked.disabled = true;
+          picked.classList.add(digit > best ? 'over' : 'near');
+          const direction = digit > best
+            ? '平方已超過目標；請改選較小的數字。'
+            : '平方仍未超過目標；還可以繼續試更大的數字。';
           decimalPrompt.textContent = `${fmt(candidate)}² = ${fmt(candidateSq)} ${candidateSq > n ? '＞' : '＜'} ${fmt(n)}。${direction}`;
           decimalPrompt.className = 'status warn';
           return;
         }
+        buttons.forEach((button, index) => {
+          button.disabled = true;
+          if (index === best) button.classList.add('good');
+          if (index > best) button.classList.add('over');
+        });
         decimalState.value = value + best * unit;
         decimalState.finished = true;
         decimalPrompt.textContent = `對！${fmt(decimalState.value)}² = ${fmt(square(decimalState.value))} ≤ ${fmt(n)}，下一個數字再大就會超過。`;
@@ -651,6 +685,8 @@
       const longRootNote = document.getElementById('long-root-note');
       const groupStrip = document.getElementById('group-strip');
       const paperRoot = document.getElementById('paper-root');
+      const paperRadicand = document.getElementById('paper-radicand');
+      const paperTrial = document.getElementById('paper-trial');
       const paperWork = document.getElementById('paper-work');
       const longRootNext = document.getElementById('long-root-next');
       const longRootNextBottom = document.getElementById('long-root-next-bottom');
@@ -669,9 +705,10 @@
         return { pairs: [...integerPairs, ...decimalPairs], integerPairs: integerPairs.length };
       }
 
-      function rootText(digits, integerPairs) {
+      function rootText(digits, integerPairs, showDecimal = false) {
         if (!digits.length) return '＿';
-        if (digits.length <= integerPairs) return digits.join('');
+        if (digits.length < integerPairs) return digits.join('');
+        if (digits.length === integerPairs) return `${digits.join('')}${showDecimal ? '.' : ''}`;
         return `${digits.slice(0, integerPairs).join('')}.${digits.slice(integerPairs).join('')}`;
       }
 
@@ -688,62 +725,111 @@
         return digit;
       }
 
-      function buildLongRootActions(raw) {
+      function buildLongRootActionsLegacy(raw) {
         const { pairs, integerPairs } = splitPairs(raw, raw === '2' ? 3 : 0);
         const actions = [{
           title: '動作 0：從小數點向兩邊，每兩位分一組',
           copy: `<p><span class="math">${raw}</span> 分成 <span class="math">${pairs.slice(0, integerPairs).join(' ｜ ')}${pairs.length > integerPairs ? ' ． ' + pairs.slice(integerPairs).join(' ｜ ') : ''}</span>。</p><p>每一組會決定根號答案的一位；跨過小數點後，答案也從那裡點上小數點。</p>`,
           currentGroup: -1,
           rootDigits: [],
+          showDecimal: false,
           work: [],
-          note: '<strong>規則：</strong>第一組找最大的 <span class="math">x</span>，使 <span class="math">x²</span> 不超過這一組；從第二組開始，使用 <span class="math">(20P+x)×x</span>。'
+          note: '<strong>規則：</strong>第一組找最大的 <span class="math">x</span>，使 <span class="math">x²</span> 不超過第一組；後面都依序「相減、帶下、根號加倍、試填、相減」。'
         }];
         let remainder = 0n;
         let root = 0n;
         const rootDigits = [];
         const work = [];
         pairs.forEach((pair, index) => {
+          const isFirst = index === 0;
+          const isDecimalPair = index === integerPairs;
+          if (!isFirst && isDecimalPair) {
+            actions.push({
+              title: `動作 ${actions.length}：根號答案對齊寫上小數點`,
+              copy: `<p>下一組 <span class="math">${pair}</span> 已經在被開方數的小數點右邊。</p><p>因此先在根號答案 <span class="math">${rootText(rootDigits, integerPairs)}</span> 後面點上小數點，再帶下這一組。</p>`,
+              currentGroup: index,
+              rootDigits: [...rootDigits],
+              showDecimal: true,
+              work: [...work],
+              note: '<strong>小數點規則：</strong>被開方數跨過小數點時，答案也在同一位置跨過小數點；不必改變後續的試填方法。'
+            });
+          }
           const groupNumber = BigInt(pair);
           const previousRemainder = remainder;
-          remainder = remainder * 100n + groupNumber;
+          const current = remainder * 100n + groupNumber;
           const beforeRoot = root;
-          const digit = largestDigit(remainder, beforeRoot);
+          const digit = largestDigit(current, beforeRoot);
           const product = beforeRoot === 0n ? digit * digit : (20n * beforeRoot + digit) * digit;
-          const divisorText = beforeRoot === 0n ? `${digit}²` : `(${20n * beforeRoot} + ${digit}) × ${digit}`;
-          const baseText = beforeRoot === 0n ? `找最大的 x，使 x² ≤ ${remainder}` : `已得 P = ${beforeRoot}，先算 20P = ${20n * beforeRoot}；找最大的 x，使 (${20n * beforeRoot}+x)×x ≤ ${remainder}`;
-          const broughtText = index === 0 ? `先寫下第一組 ${pair}。` : `餘數 ${previousRemainder} 的右邊帶下下一組 ${pair}，得到 ${remainder}。`;
-          const workAfterBring = [...work, { label: index === 0 ? '第一組' : `帶下第 ${index + 1} 組`, value: `${previousRemainder === 0n && index === 0 ? '' : previousRemainder.toString() + ' → '}${remainder}`, type: 'new' }];
+          const showDecimal = index >= integerPairs;
+          const workAfterBring = [...work, {
+            label: isFirst ? '第一組' : `帶下 ${pair}`,
+            value: isFirst ? `${pair}` : `${previousRemainder} ｜ ${pair} → ${current}`,
+            type: 'new'
+          }];
           actions.push({
-            title: `動作 ${actions.length}：${index === 0 ? '寫下第一組' : '帶下下一組'}`,
-            copy: `<p>${broughtText}</p><p>目前要處理的數是 <span class="math">${remainder}</span>。</p>`,
+            title: `動作 ${actions.length}：${isFirst ? `寫下第一組 ${pair}` : `帶下下一組 ${pair}`}`,
+            copy: isFirst
+              ? `<p>先處理最左邊第一組 <span class="math">${pair}</span>。</p><p>接著只要找最大的個位數，使它的平方不超過 ${pair}。</p>`
+              : `<p>把餘數 <span class="math">${previousRemainder}</span> 的右邊帶下 <span class="math">${pair}</span>，得到 <span class="math">${current}</span>。</p><p>這是本輪要用來試填的數。</p>`,
             currentGroup: index,
             rootDigits: [...rootDigits],
+            showDecimal,
             work: workAfterBring,
-            note: '<strong>注意：</strong>每次帶下的是兩位，所以餘數等於乘 100 後再加上這一組。'
+            note: isFirst
+              ? '<strong>第一組只做平方比較：</strong>它決定根號的第一位。'
+              : '<strong>為什麼每次帶下兩位？</strong>下一位根號會讓平方放大 100 倍，所以被開方數也必須每次帶下兩位。'
           });
-          actions.push({
-            title: `動作 ${actions.length}：選第 ${index + 1} 位數字 ${digit}`,
-            copy: `<p>${baseText}。</p><p>因此選 <span class="math">x = ${digit}</span>；下一位根號先寫上 ${digit}。</p>`,
-            currentGroup: index,
-            rootDigits: [...rootDigits, digit.toString()],
-            work: [...workAfterBring, { label: index === 0 ? '試第一位' : '試下一位', value: `${divisorText} = ${product}`, type: 'emphasis' }],
-            note: index === 0
-              ? '<strong>第一位只比 x²：</strong>這正是用平方數找根號的整數部分。'
-              : `<strong>為什麼是 20P？</strong>原本根號已有 P，新增一位後相當於把它放大 10 倍；平方展開的中間項因此出現 20P。`
-          });
-          remainder -= product;
+          let workBeforeSubtract;
+          if (isFirst) {
+            workBeforeSubtract = [...workAfterBring, { label: `選 ${digit}`, value: `${digit}² = ${product}（不超過 ${current}）`, type: 'emphasis' }];
+            actions.push({
+              title: `動作 ${actions.length}：選第一位 ${digit}，並寫進根號答案`,
+              copy: `<p><span class="math">${digit}² = ${product} ≤ ${current}</span>，而 <span class="math">${digit + 1n}² = ${(digit + 1n) * (digit + 1n)} ＞ ${current}</span>。</p><p>所以第一位選 <span class="math">${digit}</span>，同時把 ${digit} 寫進根號答案。</p>`,
+              currentGroup: index,
+              rootDigits: [...rootDigits, digit.toString()],
+              showDecimal,
+              work: workBeforeSubtract,
+              note: '<strong>選最大但不超過的數：</strong>這和十分法完全相同；只是現在選的是根號的一位數。'
+            });
+          } else {
+            const doubled = 2n * beforeRoot;
+            const trialDivisor = `${doubled}＿`;
+            const workAfterDouble = [...workAfterBring, { label: '根號加倍', value: `${beforeRoot} × 2 = ${doubled}，寫 ${trialDivisor}`, type: 'emphasis' }];
+            actions.push({
+              title: `動作 ${actions.length}：把目前根號 ${rootText(rootDigits, integerPairs)} 加倍，右邊留一格`,
+              copy: `<p>目前根號已得到 <span class="math">${rootText(rootDigits, integerPairs)}</span>。先算 <span class="math">${beforeRoot}×2=${doubled}</span>，並在右邊留一格，寫成 <span class="math">${trialDivisor}</span>。</p><p>下一步的試填數字，要同時填進空格和乘數。</p>`,
+              currentGroup: index,
+              rootDigits: [...rootDigits],
+              showDecimal,
+              work: workAfterDouble,
+              note: '<strong>直式的外觀：</strong>先看到「加倍後的根號＿」，再用同一個數字同時填空格與乘數；這比直接背 20P 更容易操作。'
+            });
+            workBeforeSubtract = [...workAfterDouble, { label: `試填 ${digit}`, value: `${doubled}${digit} × ${digit} = ${product}`, type: 'emphasis' }];
+            actions.push({
+              title: `動作 ${actions.length}：試填 ${digit}，並寫進根號答案`,
+              copy: `<p>試填 <span class="math">${digit}</span>：<span class="math">${doubled}${digit}×${digit}=${product}</span>，不超過 <span class="math">${current}</span>。</p><p>所以把 ${digit} 同時填進 <span class="math">${trialDivisor}</span> 的空格和根號答案的下一位。</p>`,
+              currentGroup: index,
+              rootDigits: [...rootDigits, digit.toString()],
+              showDecimal,
+              work: workBeforeSubtract,
+              note: '<strong>同一個數字填兩處：</strong>這是直式開根號最重要的動作。若再大一位會讓乘積超過目前數，就不能選。'
+            });
+          }
+          const nextRemainder = current - product;
+          remainder = nextRemainder;
           root = beforeRoot * 10n + digit;
           rootDigits.push(digit.toString());
-          const workAfterSubtract = [...workAfterBring, { label: '減去乘積', value: `${remainder + product} − ${product} = ${remainder}`, type: 'emphasis' }];
+          const workAfterSubtract = [...workBeforeSubtract, { label: '相減', value: `${current} − ${product} = ${nextRemainder}`, type: 'emphasis' }];
           work.length = 0;
           work.push(...workAfterSubtract);
           actions.push({
-            title: `動作 ${actions.length}：相減，留下餘數 ${remainder}`,
-            copy: `<p>從目前數 <span class="math">${remainder + product}</span> 減去 <span class="math">${product}</span>，餘數是 <span class="math">${remainder}</span>。</p><p>根號目前已寫成 <span class="math">${rootText(rootDigits, integerPairs)}</span>。${index + 1 < pairs.length ? '接著再帶下下一組。' : '本示範的組數已完成。'}</p>`,
+            title: `動作 ${actions.length}：相減，留下餘數 ${nextRemainder}`,
+            copy: `<p><span class="math">${current} − ${product} = ${nextRemainder}</span>。</p><p>根號目前是 <span class="math">${rootText(rootDigits, integerPairs, showDecimal)}</span>。${index + 1 < pairs.length ? '下一步再帶下下一組。' : '這個範例已完成。'}</p>`,
             currentGroup: index,
             rootDigits: [...rootDigits],
+            showDecimal,
             work: [...work],
-            note: remainder === 0n
+            note: nextRemainder === 0n
               ? '<strong>餘數是 0：</strong>這一組剛好除盡；若後面還有組，仍可照規則繼續。'
               : '<strong>餘數還不是 0：</strong>帶下下一組後，繼續選下一位數字，就能得到更多小數位。'
           });
@@ -753,9 +839,196 @@
           copy: `<p>你已經完成 ${pairs.length} 組的逐位選數字。</p><p>最後平方驗算一次：答案越多位，平方就越接近原來的 <span class="math">${raw}</span>。</p>`,
           currentGroup: pairs.length,
           rootDigits: [...rootDigits],
+          showDecimal: rootDigits.length > integerPairs,
           work: [...work],
-          note: '<strong>回頭連結：</strong>直式法和十分法都在找「平方不超過目標的最大下一位」；只是直式用 (20P+x)×x 把計算整理得更快。'
+          note: '<strong>回頭連結：</strong>直式法和十分法都在找「平方不超過目標的最大下一位」；直式只是把試算排成固定順序，避免每次重做完整平方。'
         });
+        return { pairs, integerPairs, actions };
+      }
+
+      function paperRootHtml(digits, integerPairs, showDecimal) {
+        if (!digits.length) return '＿';
+        const lastIndex = digits.length - 1;
+        const parts = [];
+        digits.forEach((digit, index) => {
+          if (index === integerPairs) parts.push('<span class="paper-decimal-separator">.</span>');
+          const className = index === lastIndex ? 'paper-new-digit' : '';
+          parts.push(`<span class="${className}">${digit}</span>`);
+        });
+        if (showDecimal && digits.length === integerPairs) parts.push('<span class="paper-decimal-separator">.</span>');
+        return parts.join('');
+      }
+
+      function paperRadicandHtml(pairs, integerPairs) {
+        return pairs.map((pair, index) => {
+          const decimal = index === integerPairs ? '<span class="paper-decimal-separator">.</span>' : '';
+          const visiblePair = index === 0 ? String(BigInt(pair)) : pair;
+          return `${decimal}<span class="paper-pair">${visiblePair}</span>`;
+        }).join('');
+      }
+
+      function renderTrialColumn(records) {
+        return records.map(record => {
+          if (record.isFirst) {
+            const equation = record.phase === 'brought'
+              ? `<span class="trial-blank">＿² ≤ ${record.firstPair}</span>`
+              : `<span class="paper-new-digit">${record.digit}</span>² = ${record.product}`;
+            return `<div class="trial-block"><span class="trial-kicker">找第一位</span><span class="trial-equation">${equation}</span></div>`;
+          }
+          const doubled = record.doubled;
+          const equation = record.phase === 'brought'
+            ? ''
+            : record.phase === 'doubled'
+              ? `<span class="trial-blank">${doubled}＿ × ＿</span>`
+              : `${doubled}<span class="paper-trial-digit">${record.digit}</span> × <span class="paper-trial-digit">${record.digit}</span>`;
+          const product = record.phase === 'trial' || record.phase === 'subtracted'
+            ? `<span class="trial-product">= ${record.product}</span>`
+            : '';
+          return `<div class="trial-block"><span class="trial-kicker">${record.rootBefore} × 2 = ${doubled}，右邊留一格</span><span class="trial-equation">${equation || '&nbsp;'}</span>${product}</div>`;
+        }).join('');
+      }
+
+      function renderCalculationColumn(records) {
+        return records.map(record => {
+          const hasProduct = record.phase === 'selected' || record.phase === 'trial' || record.phase === 'subtracted';
+          const hasRemainder = record.phase === 'subtracted';
+          const numberClass = record.phase === 'brought' ? 'active' : 'current';
+          const product = hasProduct
+            ? `<div class="calc-row product"><span class="minus">−</span>${record.product}</div>`
+            : '';
+          const subtraction = hasRemainder
+            ? `<div class="calc-rule"></div><div class="calc-row remainder">${record.remainder}</div>`
+            : '';
+          return `<div class="calc-group"><div class="calc-row ${numberClass}">${record.broughtText}</div>${product}${subtraction}</div>`;
+        }).join('');
+      }
+
+      function buildLongRootActions(raw) {
+        const { pairs, integerPairs } = splitPairs(raw, raw === '2' ? 3 : 0);
+        const actions = [];
+        const records = [];
+        const rootDigits = [];
+        let remainder = 0n;
+        let root = 0n;
+
+        const addAction = ({ title, copy, note, currentGroup, showDecimal = false }) => {
+          actions.push({
+            title,
+            copy,
+            note,
+            currentGroup,
+            showDecimal,
+            rootDigits: [...rootDigits],
+            records: records.map(record => ({ ...record }))
+          });
+        };
+
+        addAction({
+          title: '動作 0：從小數點向兩邊，每兩位分一組',
+          copy: `<p><span class="math">${raw}</span> 分成 <span class="math">${pairs.slice(0, integerPairs).join(' ｜ ')}${pairs.length > integerPairs ? ' ． ' + pairs.slice(integerPairs).join(' ｜ ') : ''}</span>。</p><p>上方的根號答案，一組對應一位；下方右欄才是每次的減法與餘數。</p>`,
+          note: '<strong>先看版面：</strong>右邊由上到下是「目前數、減去的乘積、橫線、餘數」；左邊只負責記錄加倍後的試填式。',
+          currentGroup: -1
+        });
+
+        pairs.forEach((pair, index) => {
+          const isFirst = index === 0;
+          const isDecimalPair = index === integerPairs;
+          const showDecimal = index >= integerPairs;
+          if (!isFirst && isDecimalPair) {
+            addAction({
+              title: `動作 ${actions.length}：答案先對齊點上小數點`,
+              copy: `<p>下一組 <span class="math">${pair}</span> 已在被開方數的小數點右邊。</p><p>所以先把答案寫成 <span class="math">${rootText(rootDigits, integerPairs, true)}</span>，再帶下這一組；後面的試填規則完全不變。</p>`,
+              note: '<strong>位置規則：</strong>被開方數跨過小數點時，根號答案也在同一組的位置跨過小數點。',
+              currentGroup: index,
+              showDecimal: true
+            });
+          }
+
+          const previousRemainder = remainder;
+          const current = previousRemainder * 100n + BigInt(pair);
+          const digit = largestDigit(current, root);
+          const product = isFirst ? digit * digit : (20n * root + digit) * digit;
+          const record = {
+            index,
+            pair,
+            isFirst,
+            rootBefore: root,
+            doubled: isFirst ? null : root * 2n,
+            firstPair: BigInt(pair),
+            previousRemainder,
+            current,
+            broughtText: isFirst ? String(BigInt(pair)) : `${previousRemainder} ${pair}`,
+            digit,
+            product,
+            remainder: current - product,
+            phase: 'brought'
+          };
+          records.push(record);
+
+          addAction({
+            title: `動作 ${actions.length}：${isFirst ? `寫下第一組 ${BigInt(pair)}` : `帶下下一組 ${pair}`}`,
+            copy: isFirst
+              ? `<p>先處理第一組 <span class="math">${BigInt(pair)}</span>。在左欄找最大的個位數，使它的平方不超過 ${BigInt(pair)}。</p>`
+              : `<p>把餘數 <span class="math">${previousRemainder}</span> 的右邊帶下 <span class="math">${pair}</span>，右欄得到 <span class="math">${previousRemainder} ${pair}</span>。</p>`,
+            note: isFirst
+              ? '<strong>第一組只做平方比較：</strong>它決定根號答案的第一位。'
+              : '<strong>帶下兩位：</strong>每新增一位根號，平方的位值會放大 100 倍，因此被開方數要一組一組帶下。',
+            currentGroup: index,
+            showDecimal
+          });
+
+          if (isFirst) {
+            record.phase = 'selected';
+            rootDigits.push(String(digit));
+            addAction({
+              title: `動作 ${actions.length}：選 ${digit}，同時寫到上方答案`,
+              copy: `<p><span class="math">${digit}² = ${product} ≤ ${current}</span>，但 <span class="math">${digit + 1n}² = ${(digit + 1n) * (digit + 1n)} ＞ ${current}</span>。</p><p>所以選 <span class="math">${digit}</span>；它同時出現在上方答案與左欄的平方試算。</p>`,
+              note: '<strong>最大但不超過：</strong>這和十分法選下一位的原則完全相同。',
+              currentGroup: index,
+              showDecimal
+            });
+          } else {
+            record.phase = 'doubled';
+            addAction({
+              title: `動作 ${actions.length}：把目前根號 ${rootText(rootDigits, integerPairs, showDecimal)} 加倍，右邊留一格`,
+              copy: `<p>目前根號是 <span class="math">${rootText(rootDigits, integerPairs)}</span>。左欄先算 <span class="math">${root}×2=${record.doubled}</span>，再在右邊留一格：<span class="math">${record.doubled}＿</span>。</p>`,
+              note: '<strong>紙筆記法：</strong>空格中的數字，下一步要同時填到「加倍數右邊」和「乘數」兩個位置。',
+              currentGroup: index,
+              showDecimal
+            });
+            record.phase = 'trial';
+            rootDigits.push(String(digit));
+            addAction({
+              title: `動作 ${actions.length}：兩個空格都試填 ${digit}`,
+              copy: `<p>試填 <span class="math">${digit}</span>：<span class="math">${record.doubled}${digit} × ${digit} = ${product}</span>，剛好不超過 <span class="math">${current}</span>。</p><p>因此把 ${digit} 同時寫入左欄兩個空格，也寫入上方答案。</p>`,
+              note: '<strong>一個數填兩處：</strong>不是只算 ${record.doubled}×${digit}；要把試填數補在右邊，形成 ${record.doubled}${digit}×${digit}。',
+              currentGroup: index,
+              showDecimal
+            });
+          }
+
+          record.phase = 'subtracted';
+          remainder = record.remainder;
+          root = root * 10n + digit;
+          addAction({
+            title: `動作 ${actions.length}：右欄相減，留下餘數 ${record.remainder}`,
+            copy: `<p>右欄做 <span class="math">${current} − ${product} = ${record.remainder}</span>。</p><p>根號目前是 <span class="math">${rootText(rootDigits, integerPairs, showDecimal)}</span>。${index + 1 < pairs.length ? '下一步再帶下下一組。' : '這個範例已完成。'}</p>`,
+            note: record.remainder === 0n
+              ? '<strong>餘數為 0：</strong>目前已剛好開完；若後面還補 00，仍會得到 0。'
+              : '<strong>保留餘數：</strong>把下一組兩位帶下後，就能繼續算下一位。',
+            currentGroup: index,
+            showDecimal
+          });
+        });
+
+        addAction({
+          title: `完成：√${raw} ≈ ${rootText(rootDigits, integerPairs, rootDigits.length > integerPairs)}`,
+          copy: `<p>已完成 ${pairs.length} 組的逐位開根號。最後可以把答案平方，檢查是否回到原來的 <span class="math">${raw}</span>。</p>`,
+          note: '<strong>把三種方法連起來：</strong>十分法是逐位試平方；直式開根號則把每一次的試平方排成固定紙筆格式。',
+          currentGroup: pairs.length,
+          showDecimal: rootDigits.length > integerPairs
+        });
+
         return { pairs, integerPairs, actions };
       }
 
@@ -768,10 +1041,13 @@
         longRootNote.innerHTML = action.note;
         groupStrip.innerHTML = pairs.map((pair, index) => {
           const separator = index === integerPairs ? '<span aria-hidden="true">．</span>' : '';
-          return `${separator}<span class="group ${index === action.currentGroup ? 'current' : ''}">${pair}</span>`;
+          const visiblePair = index === 0 ? String(BigInt(pair)) : pair;
+          return `${separator}<span class="group ${index === action.currentGroup ? 'current' : ''}">${visiblePair}</span>`;
         }).join('');
-        paperRoot.textContent = rootText(action.rootDigits, integerPairs);
-        paperWork.innerHTML = action.work.map(row => `<div class="work-row ${row.type || ''}"><span class="work-label">${row.label}</span><span class="work-value">${row.value}</span></div>`).join('');
+        paperRoot.innerHTML = paperRootHtml(action.rootDigits, integerPairs, action.showDecimal);
+        paperRadicand.innerHTML = paperRadicandHtml(pairs, integerPairs);
+        paperTrial.innerHTML = renderTrialColumn(action.records);
+        paperWork.innerHTML = renderCalculationColumn(action.records);
         const finished = step >= actions.length - 1;
         longRootNext.disabled = finished;
         longRootNextBottom.disabled = finished;

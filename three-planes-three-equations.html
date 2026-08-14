@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三平面與三元一次方程式｜幾何關係判別</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #172033;
+      --sub: #526175;
+      --line: #d6e0ec;
+      --paper: #ffffff;
+      --sky: #edf7ff;
+      --blue: #1769aa;
+      --blue-dark: #104d83;
+      --teal: #047c78;
+      --purple: #6d4cc1;
+      --orange: #d66a25;
+      --red: #b4233c;
+      --red-pale: #fff2f4;
+      --yellow: #fff8d8;
+      --green: #14744a;
+      --shadow: 0 18px 46px rgba(22, 43, 76, .11);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background: linear-gradient(145deg, #eff8ff 0%, #f8fbff 46%, #f0fbf7 100%);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    }
+    .wrap { width: min(1180px, calc(100% - 28px)); margin: 22px auto 42px; }
+    .page {
+      padding: clamp(18px, 3vw, 34px);
+      border: 1px solid #cfdceb;
+      border-radius: 22px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .back, .jump {
+      display: inline-flex; align-items: center; min-height: 38px; padding: 7px 12px;
+      border: 1px solid var(--blue); border-radius: 10px; color: #fff; background: var(--blue);
+      font-weight: 800; text-decoration: none;
+    }
+    .back:hover, .jump:hover { background: var(--blue-dark); }
+    h1 { margin: 14px 0 8px; font-size: clamp(28px, 4.2vw, 42px); letter-spacing: .02em; }
+    h2 { margin: 0 0 10px; font-size: clamp(22px, 3vw, 30px); }
+    h3 { margin: 0 0 8px; font-size: 19px; }
+    h4 { margin: 0 0 5px; font-size: 16px; }
+    p, li { line-height: 1.8; }
+    .lead { max-width: 880px; margin: 0; color: var(--sub); font-size: 17px; line-height: 1.9; }
+    .tag { display: inline-block; margin-right: 6px; padding: 3px 9px; border-radius: 999px; color: #0a4e82; background: #dff1ff; font-size: 13px; font-weight: 800; }
+    .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 24px; padding: 11px; border: 1px solid #c7e4fb; border-radius: 13px; background: #f1f9ff; }
+    .toc a { padding: 5px 10px; border: 1px solid #d1e6f7; border-radius: 999px; color: #125b95; background: #fff; font-size: 14px; font-weight: 800; text-decoration: none; }
+    .toc a:hover { background: #e1f3ff; }
+    .goal {
+      display: grid; grid-template-columns: auto 1fr; gap: 13px; align-items: center;
+      margin: 0 0 27px; padding: 15px 17px; border-left: 6px solid #1b93c5; border-radius: 0 13px 13px 0; background: var(--sky);
+    }
+    .goal-mark { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; color: #fff; background: var(--blue); font-size: 24px; font-weight: 900; }
+    .goal p { margin: 0; }
+    .section { margin-top: 34px; scroll-margin-top: 14px; }
+    .section-intro { margin: -3px 0 14px; color: var(--sub); }
+    .formula-panel {
+      padding: 16px 18px; border: 1px solid #b9d8ee; border-radius: 15px; background: linear-gradient(135deg, #f6fbff, #fff);
+    }
+    .formula-panel p { margin: 5px 0; }
+    .math-block { overflow-x: auto; padding: 6px 2px; font-size: clamp(15px, 2.1vw, 18px); }
+    .det-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 13px; margin-top: 12px; }
+    .note { padding: 12px 14px; border: 1px solid #f1d18d; border-radius: 11px; background: #fffbea; line-height: 1.75; }
+    .note strong { color: #965c00; }
+    .classification { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.35fr); gap: 14px; align-items: stretch; }
+    .class-group { min-width: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: #fff; }
+    .class-group h3 { margin: 0; padding: 12px 14px; color: #fff; font-size: 18px; }
+    .class-group.co h3 { background: var(--purple); }
+    .class-group.pa h3 { background: var(--orange); }
+    .class-group.key h3 { background: #0b697a; }
+    .class-group > p { min-height: 51px; margin: 0; padding: 10px 14px; color: var(--sub); background: #f8fbfe; border-bottom: 1px solid var(--line); font-size: 14px; }
+    .case-list { padding: 9px; }
+    .case { min-width: 0; margin: 7px 0; padding: 10px 11px; border: 1px solid #e1e8f0; border-radius: 10px; background: #fff; }
+    .case strong { display: block; margin-bottom: 2px; }
+    .case span { color: var(--sub); font-size: 14px; line-height: 1.6; }
+    .case.infinite { border-left: 5px solid var(--green); }
+    .case.none { border-left: 5px solid var(--red); }
+    .case.one { border-left: 5px solid var(--blue); }
+    .case.keycase { border-left: 6px solid #0b697a; background: #f1fdff; }
+    .result { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 12px; font-weight: 900; vertical-align: 1px; }
+    .result.inf { color: #075d38; background: #d9f9e8; }
+    .result.no { color: #941c34; background: #ffe1e7; }
+    .result.one { color: #0b568e; background: #dff2ff; }
+    .important-banner { margin: 18px 0 13px; padding: 12px 15px; border: 1px solid #92d4df; border-radius: 12px; background: #ecfcff; line-height: 1.75; }
+    .important-banner strong { color: #076578; }
+    .key-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
+    .key-card { min-width: 0; display: flex; flex-direction: column; border: 2px solid #b9dbe3; border-radius: 17px; overflow: hidden; background: #fff; }
+    .key-card:nth-child(1) { border-color: #82bee7; }
+    .key-card:nth-child(2) { border-color: #84cfbd; }
+    .key-card:nth-child(3) { border-color: #f0a8a8; }
+    .key-card header { padding: 12px 14px 9px; }
+    .key-card h3 { font-size: 19px; }
+    .key-card p { margin: 0; padding: 0 14px 12px; color: var(--sub); font-size: 14px; }
+    .key-card .key-formula { min-height: 48px; padding: 9px 14px; border-top: 1px solid #e2e8f0; background: #f8fbfd; font-size: 14px; line-height: 1.55; }
+    .plane-figure { margin: 0; padding: 4px 8px 0; background: linear-gradient(#fff, #f7fbfd); }
+    .plane-figure svg { display: block; width: 100%; height: auto; }
+    .plane-fill-a { fill: rgba(110, 76, 193, .2); stroke: #6d4cc1; }
+    .plane-fill-b { fill: rgba(4, 124, 120, .19); stroke: #047c78; }
+    .plane-fill-c { fill: rgba(214, 106, 37, .2); stroke: #d66a25; }
+    .plane-fill-a, .plane-fill-b, .plane-fill-c { stroke-width: 2; }
+    .dash { stroke: #65758b; stroke-dasharray: 5 4; stroke-width: 2; fill: none; }
+    .solid { stroke: #1e293b; stroke-width: 2.6; fill: none; }
+    .svg-label { fill: #24364c; font: 700 13px "Microsoft JhengHei", sans-serif; }
+    .svg-small { fill: #607087; font: 12px "Microsoft JhengHei", sans-serif; }
+    .point { fill: var(--red); stroke: #fff; stroke-width: 2; }
+    .key-action { margin: auto 14px 14px; padding: 8px 10px; border: 1px solid #87bfc9; border-radius: 9px; color: #075d6d; background: #fff; font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
+    .key-action:hover, .key-action.active { color: #fff; background: #087182; border-color: #087182; }
+    .focus-box { display: grid; grid-template-columns: 76px 1fr; gap: 14px; align-items: center; margin-top: 16px; padding: 14px 16px; border: 1px solid #8fd1dc; border-radius: 14px; background: #f0fdff; }
+    .focus-number { display: grid; place-items: center; width: 66px; height: 66px; border-radius: 50%; color: #fff; background: #0a7081; font: 900 30px Georgia, serif; }
+    .focus-box h3 { margin: 0 0 2px; color: #075b69; }
+    .focus-box p { margin: 0; line-height: 1.7; }
+    .decision { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; }
+    .flow { padding: 15px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
+    .flow-step { position: relative; margin: 10px 0; padding: 11px 13px 11px 46px; border: 1px solid #d6e5ee; border-radius: 11px; background: #f8fcff; line-height: 1.65; }
+    .flow-step::before { content: attr(data-step); position: absolute; left: 11px; top: 11px; display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; color: #fff; background: #1672af; font-size: 13px; font-weight: 900; }
+    .arrow { margin: -4px 0 -4px 20px; color: #4d7089; font-weight: 900; }
+    .branch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 0; }
+    .branch > div { padding: 8px 10px; border-radius: 9px; font-size: 14px; line-height: 1.55; }
+    .yes { border: 1px solid #d2c4f1; background: #f7f2ff; }
+    .no { border: 1px solid #c2e6df; background: #effcf9; }
+    .rank-box { padding: 16px; border: 1px solid #b5d6ef; border-radius: 15px; background: #f5fbff; }
+    .rank-box p { margin: 5px 0; }
+    .rank-rule { padding: 8px 0; border-bottom: 1px dashed #b9cfdf; font-size: 15px; }
+    .rank-rule:last-child { border-bottom: 0; }
+    .examples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .example { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    .example h3 { font-size: 17px; }
+    .example .eq { min-height: 74px; padding: 8px 10px; border-radius: 9px; background: #f7fafc; color: #1d344a; font-family: Cambria, "Times New Roman", serif; line-height: 1.7; }
+    .example p { margin: 9px 0 0; font-size: 14px; }
+    .mistakes { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .mistake { padding: 13px 15px; border: 1px solid #f2c4c4; border-radius: 13px; background: #fff8f8; }
+    .mistake strong { color: #9e1d35; }
+    .mistake p { margin: 5px 0 0; font-size: 15px; }
+    .quiz { padding: 18px; border: 1px solid #b7dce9; border-radius: 16px; background: #f5fcff; }
+    .quiz-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .question { min-width: 0; padding: 13px; border: 1px solid #d0e3ec; border-radius: 12px; background: #fff; }
+    .question h3 { font-size: 16px; }
+    .question p { margin: 5px 0 9px; font-size: 14px; }
+    .question label { display: block; margin: 6px 0; padding: 6px 7px; border-radius: 7px; cursor: pointer; font-size: 14px; }
+    .question label:hover { background: #eefaff; }
+    .question input { accent-color: #087182; }
+    .check-row { display: flex; align-items: center; gap: 10px; margin-top: 13px; flex-wrap: wrap; }
+    button.check { padding: 8px 12px; border: 1px solid #087182; border-radius: 9px; color: #fff; background: #087182; font: inherit; font-weight: 800; cursor: pointer; }
+    button.check:hover { background: #065b68; }
+    .quiz-result { min-height: 25px; color: #29465d; font-weight: 700; }
+    .footer-note { margin: 28px 0 0; color: #66768b; text-align: center; font-size: 14px; }
+    @media (max-width: 900px) {
+      .classification { grid-template-columns: 1fr 1fr; }
+      .class-group.key { grid-column: 1 / -1; }
+      .key-grid, .examples, .quiz-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      .wrap { width: min(100% - 16px, 1180px); margin-top: 8px; }
+      .page { padding: 16px; border-radius: 15px; }
+      .goal, .focus-box, .decision, .det-grid, .mistakes { grid-template-columns: 1fr; }
+      .goal-mark { display: none; }
+      .classification { grid-template-columns: 1fr; }
+      .class-group.key { grid-column: auto; }
+      .branch { grid-template-columns: 1fr; }
+      .focus-number { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <article class="page">
+      <div class="topbar">
+        <a class="back" href="./index.html">← 回到教學首頁</a>
+        <a class="jump" href="#three-key-types">先看最重要三種</a>
+      </div>
+      <div style="margin-top:18px"><span class="tag">高一・空間解析幾何</span><span class="tag">三元一次方程組</span></div>
+      <h1>三平面與三個方程式：先看關係，再判斷解</h1>
+      <p class="lead">三個一次方程式各代表一個平面。不要一開始就急著算行列式：先問「有沒有重合？有沒有平行？」；若兩者都沒有，才會進入最值得分辨的三種空間圖形。</p>
+
+      <nav class="toc" aria-label="頁面導覽">
+        <a href="#translation">方程式怎麼變成平面</a>
+        <a href="#classification">先用重合、平行分類</a>
+        <a href="#three-key-types">沒有平行也沒有重合的三型</a>
+        <a href="#determinants">Δ 與解的關係</a>
+        <a href="#examples">三個代表例題</a>
+        <a href="#self-check">自我檢查</a>
+      </nav>
+
+      <section class="goal" aria-label="本頁核心">
+        <div class="goal-mark">◎</div>
+        <p><strong>本頁最重要的一句話：</strong>若三個平面之間<strong>沒有任何一對平行，也沒有任何一對重合</strong>，它們仍可能有三種結果：<strong>共點、共線、兩兩相交卻沒有公共點</strong>。這三種不能只靠直覺猜，應由 \(\Delta\) 與增廣矩陣一起判定。</p>
+      </section>
+
+      <section class="section" id="translation">
+        <h2>一、把三個方程式翻譯成三個平面</h2>
+        <p class="section-intro">每一列係數就是一個平面的法向量；常數項決定平面沿著法向量平移到哪裡。</p>
+        <div class="formula-panel">
+          <div class="math-block">
+            \[
+              E_i: a_i x+b_i y+c_i z=d_i\quad(i=1,2,3),\qquad
+              \mathbf n_i=(a_i,b_i,c_i)
+            \]
+          </div>
+          <p><strong>先看法向量 \(\mathbf n_1,\mathbf n_2,\mathbf n_3\)：</strong>兩個法向量成比例，表示那兩個平面不是重合就是平行；兩個法向量不成比例，表示那兩個平面必交於一直線。</p>
+        </div>
+      </section>
+
+      <section class="section" id="classification">
+        <h2>二、先用「重合、平行」把所有情況收好</h2>
+        <p class="section-intro">這張分類表是老師板書與學生複習都很好用的起點。右欄的三種，是本頁最要緊的主角。</p>
+        <div class="classification">
+          <section class="class-group co" aria-label="有重合的情況">
+            <h3>先發現「重合」</h3>
+            <p>兩式完全成比例時，代表同一平面。</p>
+            <div class="case-list">
+              <div class="case infinite">
+                <strong>三平面重合 <span class="result inf">無限多解</span></strong>
+                <span>其實只剩一個平面；平面上每一點都是解。</span>
+              </div>
+              <div class="case infinite">
+                <strong>兩平面重合，另一平面相交 <span class="result inf">無限多解</span></strong>
+                <span>重合的平面與第三平面交成一直線；線上每一點都是解。</span>
+              </div>
+              <div class="case none">
+                <strong>兩平面重合，另一平面平行 <span class="result no">無解</span></strong>
+                <span>第三平面永遠碰不到那一個重合平面。</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="class-group pa" aria-label="有平行的情況">
+            <h3>沒有重合，但有「平行」</h3>
+            <p>法向量成比例，常數項比例卻對不上。</p>
+            <div class="case-list">
+              <div class="case none">
+                <strong>兩平面平行，第三平面切過它們 <span class="result no">無解</span></strong>
+                <span>第三平面雖與兩者各交一線，但那兩條線不會相遇。</span>
+              </div>
+              <div class="case none">
+                <strong>三平面互相平行 <span class="result no">無解</span></strong>
+                <span>若其中兩個重合，已歸到左欄；這裡指三個都不同。</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="class-group key" aria-label="沒有重合也沒有平行的關鍵情況">
+            <h3>沒有平行，也沒有重合：務必分清三種</h3>
+            <p>此時任兩平面都交一直線；真正要判斷的是三者能否共用同一個點或同一條線。</p>
+            <div class="case-list">
+              <div class="case keycase one">
+                <strong>① 三平面共點 <span class="result one">唯一解</span></strong>
+                <span>三條兩兩交線交在同一點；\(\Delta\ne0\)。</span>
+              </div>
+              <div class="case keycase infinite">
+                <strong>② 三平面共線 <span class="result inf">無限多解</span></strong>
+                <span>三條兩兩交線其實是同一條線；\(\Delta=0\)。</span>
+              </div>
+              <div class="case keycase none">
+                <strong>③ 兩兩相交卻無公共點 <span class="result no">無解</span></strong>
+                <span>三條兩兩交線互相平行，所以湊不出共同交點；\(\Delta=0\)。</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section" id="three-key-types">
+        <h2>三、最重要：沒有平行、也沒有重合的三種圖形</h2>
+        <div class="important-banner"><strong>共同前提：</strong>任兩平面都不平行、也不重合，所以任兩平面一定相交一直線。請比較下面三圖的「兩兩交線」：是共點、同一條線，還是三條平行線？</div>
+        <div class="key-grid">
+          <article class="key-card">
+            <header><h3>① 三平面交於一點</h3></header>
+            <figure class="plane-figure" aria-label="三維座標中，水平的 xy 平面與兩個直立的 xz、yz 平面交於原點；三條兩兩交線為 x 軸、y 軸、z 軸">
+              <svg viewBox="0 0 330 210" role="img">
+                <!-- E₃ 是水平 xy 平面；E₁、E₂ 是互相垂直的直立座標平面。 -->
+                <polygon class="plane-fill-c" points="165,78 304,124 165,170 26,124"/>
+                <polygon class="plane-fill-a" points="75,8 255,68 255,184 75,124"/>
+                <polygon class="plane-fill-b" points="255,8 75,68 75,184 255,124"/>
+                <!-- 三條座標軸同時就是三組兩兩交線。 -->
+                <path class="solid" d="M41 83 L289 165"/>
+                <path class="solid" d="M289 83 L41 165"/>
+                <path class="solid" d="M165 12 L165 197"/>
+                <circle class="point" cx="165" cy="124" r="6"/>
+                <text class="svg-label" x="213" y="111">E₁（xz）</text>
+                <text class="svg-label" x="80" y="111">E₂（yz）</text>
+                <text class="svg-label" x="193" y="159">E₃（xy）</text>
+                <text class="svg-small" x="174" y="118">O=P</text>
+                <text class="svg-small" x="276" y="175">x=L₁₃</text>
+                <text class="svg-small" x="31" y="175">y=L₂₃</text>
+                <text class="svg-small" x="174" y="27">z=L₁₂</text>
+              </svg>
+            </figure>
+            <p>把它直接看成三維座標：\(E_1:y=0\) 是直立的 \(xz\) 平面，\(E_2:x=0\) 是直立的 \(yz\) 平面，\(E_3:z=0\) 是水平的 \(xy\) 平面。三條兩兩交線就是 \(x\)、\(y\)、\(z\) 軸，全部交於原點 \(O\)。</p>
+            <div class="key-formula"><strong>代數訊號：</strong>\(\Delta\ne0\)，因此有唯一解 \((x,y,z)\)。</div>
+            <button class="key-action active" type="button" data-key="point">查看此型判別</button>
+          </article>
+
+          <article class="key-card">
+            <header><h3>② 三平面交於一直線</h3></header>
+            <figure class="plane-figure" aria-label="三個不同的直立平面 x 等於零、y 等於零、x 加 y 等於零都包含同一條 z 軸">
+              <svg viewBox="0 0 330 210" role="img">
+                <polygon class="plane-fill-a" points="165,21 45,79 45,183 165,199"/>
+                <polygon class="plane-fill-b" points="165,21 285,79 285,183 165,199"/>
+                <polygon class="plane-fill-c" points="165,21 231,46 231,150 165,199"/>
+                <path class="solid" d="M165 17 L165 202"/>
+                <text class="svg-label" x="55" y="111">E₁</text><text class="svg-label" x="262" y="111">E₂</text><text class="svg-label" x="204" y="62">E₃</text>
+                <text class="svg-small" x="172" y="37">L：x=y=0</text>
+                <rect x="222" y="151" width="87" height="43" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+                <text class="svg-small" x="237" y="164">俯視圖</text>
+                <circle cx="266" cy="179" r="10" fill="#fff" stroke="#94a3b8"/>
+                <path d="M248 179 L284 179 M254 168 L278 190 M254 190 L278 168" stroke="#1e293b" stroke-width="1.8"/>
+                <text class="svg-small" x="267" y="178">O</text>
+              </svg>
+            </figure>
+            <p>可用 \(E_1:x=0\)、\(E_2:y=0\)、\(E_3:x+y=0\) 作模型。三個不同的平面都含 \(z\) 軸，所以三條兩兩交線完全重疊。</p>
+            <div class="key-formula"><strong>代數訊號：</strong>\(\Delta=0\)，且增廣矩陣不增加秩；解在線上，故有無限多組。</div>
+            <button class="key-action" type="button" data-key="line">查看此型判別</button>
+          </article>
+
+          <article class="key-card">
+            <header><h3>③ 兩兩相交，卻沒有公共點</h3></header>
+            <figure class="plane-figure" aria-label="三個直立平面 x 等於零、y 等於零、x 加 y 等於一形成三角柱的三個側面；三條兩兩交線是三條不同且平行的直線">
+              <svg viewBox="0 0 330 210" role="img">
+                <polygon class="plane-fill-a" points="165,45 66,91 66,204 165,183"/>
+                <polygon class="plane-fill-b" points="165,45 264,91 264,204 165,183"/>
+                <polygon class="plane-fill-c" points="66,91 264,91 264,204 66,204"/>
+                <path class="solid" d="M165 42 L165 186"/>
+                <path class="solid" d="M66 88 L66 207"/>
+                <path class="solid" d="M264 88 L264 207"/>
+                <text class="svg-label" x="79" y="142">E₁</text><text class="svg-label" x="238" y="142">E₂</text><text class="svg-label" x="151" y="113">E₃</text>
+                <text class="svg-small" x="171" y="63">L₁₂</text><text class="svg-small" x="25" y="82">L₁₃</text><text class="svg-small" x="271" y="82">L₂₃</text>
+              </svg>
+            </figure>
+            <p>可用 \(E_1:x=0\)、\(E_2:y=0\)、\(E_3:x+y=1\) 作模型。三條兩兩交線都是直立線，彼此平行而且不同，因此沒有共同點。</p>
+            <div class="key-formula"><strong>代數訊號：</strong>\(\Delta=0\)，但增廣矩陣的秩較大；三式互相矛盾，故無解。</div>
+            <button class="key-action" type="button" data-key="none">查看此型判別</button>
+          </article>
+        </div>
+        <aside class="focus-box" aria-live="polite">
+          <div class="focus-number" id="focus-number">①</div>
+          <div>
+            <h3 id="focus-title">① 共點：三個限制剛好鎖定一個位置</h3>
+            <p id="focus-text">檢查 \(\Delta\)。只要 \(\Delta\ne0\)，三個法向量線性獨立，三平面必交於唯一一點；此時既不可能有平行對，也不可能有重合對。</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section" id="determinants">
+        <h2>四、\(\Delta\)、\(\Delta_x\)、\(\Delta_y\)、\(\Delta_z\) 怎麼讀？</h2>
+        <p class="section-intro">行列式負責告訴我們「三個法向量是否獨立」；遇到全為 0 時，要再看增廣矩陣才能分出無限多解或無解。</p>
+        <div class="formula-panel">
+          <div class="math-block">
+            \[
+            \Delta=\begin{vmatrix}a_1&b_1&c_1\\a_2&b_2&c_2\\a_3&b_3&c_3\end{vmatrix},\quad
+            \Delta_x=\begin{vmatrix}d_1&b_1&c_1\\d_2&b_2&c_2\\d_3&b_3&c_3\end{vmatrix},\quad
+            \Delta_y=\begin{vmatrix}a_1&d_1&c_1\\a_2&d_2&c_2\\a_3&d_3&c_3\end{vmatrix},\quad
+            \Delta_z=\begin{vmatrix}a_1&b_1&d_1\\a_2&b_2&d_2\\a_3&b_3&d_3\end{vmatrix}.
+            \]
+          </div>
+          <div class="det-grid">
+            <div>
+              <p><strong>若 \(\Delta\ne0\)：</strong>三個法向量不共平面，三平面有唯一交點，且</p>
+              <div class="math-block">\[x=\frac{\Delta_x}{\Delta},\qquad y=\frac{\Delta_y}{\Delta},\qquad z=\frac{\Delta_z}{\Delta}.\]</div>
+            </div>
+            <div class="note"><strong>千萬別背成「\(\Delta=0\) 就無解」：</strong>\(\Delta=0\) 只表示沒有唯一解。它可能是無限多解，也可能是無解；必須繼續看 \(\Delta_x,\Delta_y,\Delta_z\) 或直接做列運算。</div>
+          </div>
+        </div>
+
+        <div class="decision" style="margin-top:16px">
+          <section class="flow">
+            <h3>考場上的判別順序</h3>
+            <div class="flow-step" data-step="1"><strong>先算 \(\Delta\)</strong><br>\(\Delta\ne0\) 立刻停止：唯一解，三平面共點。</div>
+            <div class="arrow">↓ \(\Delta=0\)</div>
+            <div class="flow-step" data-step="2"><strong>再看 \(\Delta_x,\Delta_y,\Delta_z\)</strong>
+              <div class="branch"><div class="yes"><strong>至少一個不為 0</strong><br>無解。幾何上可能有平行面，也可能是「兩兩相交卻無公共點」。</div><div class="no"><strong>全部為 0</strong><br>不能再下結論！請做列運算／比較平面關係。</div></div>
+            </div>
+            <div class="arrow">↓</div>
+            <div class="flow-step" data-step="3"><strong>全為 0 時看秩</strong><br>若增廣矩陣沒有多出新的限制，無限多解；若常數欄造成矛盾，仍是無解。</div>
+          </section>
+          <aside class="rank-box">
+            <h3>最穩的總判斷：看秩</h3>
+            <p>令 \(A\) 是係數矩陣，\([A\mid d]\) 是增廣矩陣。</p>
+            <div class="rank-rule">\(\operatorname{rank}(A)\ne\operatorname{rank}([A\mid d])\) → <strong>無解</strong></div>
+            <div class="rank-rule">兩者同為 \(3\) → <strong>唯一解</strong></div>
+            <div class="rank-rule">兩者相同但小於 \(3\) → <strong>無限多解</strong></div>
+            <p class="section-intro">幾何翻譯：列運算是在檢查第三個平面帶來的是「新限制」、是「重複限制」，還是「矛盾限制」。</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="examples">
+        <h2>五、三個代表例題：剛好對應關鍵三型</h2>
+        <p class="section-intro">三題都沒有平行面，也沒有重合面；差別只在三個限制合起來後，留下的是點、線，還是矛盾。</p>
+        <div class="examples">
+          <article class="example">
+            <h3>例 1｜共點：唯一解</h3>
+            <div class="eq">\(x+y+z=1\)<br>\(x-y+z=2\)<br>\(x+y-z=3\)</div>
+            <p>\(\Delta=4\ne0\)，所以三平面共點。聯立可得 \(\left(\frac52,-\frac12,-1\right)\)。</p>
+          </article>
+          <article class="example">
+            <h3>例 2｜共線：無限多解</h3>
+            <div class="eq">\(x=0\)<br>\(y=0\)<br>\(x+y=0\)</div>
+            <p>第三式是前兩式相加，沒有新增限制。三平面共同交於 \(z\) 軸：\((0,0,z)\)。</p>
+          </article>
+          <article class="example">
+            <h3>例 3｜兩兩相交卻無解</h3>
+            <div class="eq">\(x=0\)<br>\(y=0\)<br>\(x+y=1\)</div>
+            <p>前兩式強迫 \(x+y=0\)，卻與第三式 \(x+y=1\) 衝突；所以沒有任何共同點。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>六、學生最常犯的兩個錯</h2>
+        <div class="mistakes">
+          <article class="mistake"><strong>錯誤 1：\(\Delta=0\) 就寫「無解」</strong><p>不對。\(\Delta=0\) 只排除了「唯一解」。例如例 2 的三平面共線，明明有無限多解。</p></article>
+          <article class="mistake"><strong>錯誤 2：任兩平面相交，就以為三平面一定有共同點</strong><p>不對。例 3 正是反例：每一對都相交，但三條交線平行，三平面沒有共同點。</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="self-check">
+        <h2>七、30 秒自我檢查</h2>
+        <div class="quiz">
+          <div class="quiz-grid">
+            <section class="question">
+              <h3>1. \(\Delta\ne0\) 時？</h3>
+              <p>三平面不平行、不重合時的第一個判別。</p>
+              <label><input type="radio" name="q1" value="a"> 有唯一共同交點</label>
+              <label><input type="radio" name="q1" value="b"> 一定無解</label>
+              <label><input type="radio" name="q1" value="c"> 一定共線</label>
+            </section>
+            <section class="question">
+              <h3>2. 三平面共用同一條線？</h3>
+              <p>若沒有平行也沒有重合，這代表什麼？</p>
+              <label><input type="radio" name="q2" value="a"> 唯一解</label>
+              <label><input type="radio" name="q2" value="b"> 無限多解</label>
+              <label><input type="radio" name="q2" value="c"> 無解</label>
+            </section>
+            <section class="question">
+              <h3>3. 每兩平面都相交，仍可能？</h3>
+              <p>請選出不能忽略的空間情況。</p>
+              <label><input type="radio" name="q3" value="a"> 三平面一定共點</label>
+              <label><input type="radio" name="q3" value="b"> 三平面一定共線</label>
+              <label><input type="radio" name="q3" value="c"> 三平面無公共點</label>
+            </section>
+          </div>
+          <div class="check-row"><button type="button" class="check" id="check-quiz">核對答案</button><output class="quiz-result" id="quiz-result" aria-live="polite"></output></div>
+        </div>
+      </section>
+
+      <p class="footer-note">教學口訣：先看重合與平行；若都沒有，就辨別「點、線、無共同點」。</p>
+    </article>
+  </main>
+  <script>
+    (() => {
+      const details = {
+        point: {
+          number: '①',
+          title: '① 共點：三個限制剛好鎖定一個位置',
+          text: '檢查 \\(\\Delta\\)。只要 \\(\\Delta\\ne0\\)，三個法向量線性獨立，三平面必交於唯一一點；此時既不可能有平行對，也不可能有重合對。'
+        },
+        line: {
+          number: '②',
+          title: '② 共線：第三個平面沒有帶來新的獨立限制',
+          text: '此時 \\(\\Delta=0\\)，但不是矛盾。三個平面都包含同一條線，因此那條線上的每一點都同時滿足三式；解有無限多組。'
+        },
+        none: {
+          number: '③',
+          title: '③ 兩兩相交卻無公共點：最容易漏掉的無解',
+          text: '雖然任兩平面都有交線，但三條交線互相平行，找不到共同點。列運算會出現像 \\(0=1\\) 的矛盾；所以這一型是無解。'
+        }
+      };
+      const buttons = document.querySelectorAll('[data-key]');
+      const focusNumber = document.querySelector('#focus-number');
+      const focusTitle = document.querySelector('#focus-title');
+      const focusText = document.querySelector('#focus-text');
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const detail = details[button.dataset.key];
+          focusNumber.textContent = detail.number;
+          focusTitle.textContent = detail.title;
+          buttons.forEach((item) => item.classList.toggle('active', item === button));
+          focusText.innerHTML = detail.text;
+          if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([focusText]);
+        });
+      });
+
+      document.querySelector('#check-quiz').addEventListener('click', () => {
+        const answers = { q1: 'a', q2: 'b', q3: 'c' };
+        const feedback = [];
+        let score = 0;
+        Object.entries(answers).forEach(([name, answer]) => {
+          const chosen = document.querySelector(`input[name="${name}"]:checked`);
+          if (chosen?.value === answer) score += 1;
+          else feedback.push(name === 'q1' ? '第 1 題：\\(\\Delta\\ne0\\) 是唯一解。' : name === 'q2' ? '第 2 題：共用一條線，所以有無限多解。' : '第 3 題：兩兩相交仍可能沒有公共點。');
+        });
+        const result = document.querySelector('#quiz-result');
+        if (score === 3) result.textContent = '答對 3 / 3！你已分清「點、線、無共同點」。';
+        else result.innerHTML = `答對 ${score} / 3。${feedback.join('　')}`;
+        if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([result]);
+      });
+    })();
+  </script>
+</body>
+</html>

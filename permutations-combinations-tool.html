@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>排列組合工具｜判斷、計算與常用技巧</title>
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --card: #ffffff;
+      --ink: #172033;
+      --sub: #526077;
+      --line: #d7e0eb;
+      --brand: #0f766e;
+      --brand-dark: #115e59;
+      --teal-bg: #f0fdfa;
+      --blue: #075985;
+      --blue-bg: #e0f2fe;
+      --orange: #9a3412;
+      --orange-bg: #fff7ed;
+      --purple: #6b21a8;
+      --purple-bg: #f3e8ff;
+      --green: #166534;
+      --green-bg: #dcfce7;
+      --red: #9f1239;
+      --red-bg: #fff1f2;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at 92% 0%, #d9f5f0 0, transparent 28%), var(--bg);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.78;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 44px; }
+    .hero, .section, .teacher-note {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .055);
+    }
+    .hero { padding: clamp(25px, 5vw, 44px); margin-bottom: 16px; overflow: hidden; position: relative; }
+    .hero::after {
+      content: "nPr · nCr";
+      position: absolute;
+      right: 16px;
+      bottom: -28px;
+      color: rgba(15, 118, 110, .075);
+      font-family: Georgia, serif;
+      font-size: clamp(48px, 11vw, 116px);
+      font-weight: 900;
+      letter-spacing: -5px;
+      pointer-events: none;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { position: relative; z-index: 1; font-size: clamp(29px, 5vw, 45px); line-height: 1.25; letter-spacing: .02em; margin-bottom: 10px; }
+    h2 { font-size: clamp(23px, 3vw, 30px); line-height: 1.35; margin-bottom: 9px; }
+    h3 { font-size: 19px; line-height: 1.45; margin-bottom: 7px; }
+    h4 { font-size: 16px; margin-bottom: 5px; }
+    p, li, td { color: var(--sub); }
+    .lead { max-width: 780px; position: relative; z-index: 1; font-size: 17px; margin-bottom: 15px; }
+    .chip, .tag {
+      display: inline-block;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 3px 10px;
+      margin: 2px 5px 2px 0;
+    }
+    .chip { color: #134e4a; background: #ccfbf1; border: 1px solid #99f6e4; }
+    .tag { color: var(--blue); background: var(--blue-bg); border: 1px solid #a5dff8; font-size: 12px; margin-bottom: 6px; }
+    .tag.green { color: var(--green); background: var(--green-bg); border-color: #86efac; }
+    .tag.orange { color: var(--orange); background: var(--orange-bg); border-color: #fdba74; }
+    .tag.purple { color: var(--purple); background: var(--purple-bg); border-color: #d8b4fe; }
+    .section { padding: clamp(18px, 3.5vw, 28px); margin-bottom: 16px; }
+    .section > p:last-child { margin-bottom: 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+    .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+    .three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .card, .choice-card, .example, .check, .calc-panel, .technique, .quiz-box {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 14px;
+      background: #fff;
+    }
+    .choice-card { background: #fbfdff; }
+    .card p:last-child, .choice-card p:last-child, .example p:last-child, .check p:last-child { margin-bottom: 0; }
+    .math { font-family: Cambria, "Times New Roman", serif; font-size: 1.08em; color: #172033; white-space: nowrap; }
+    .formula {
+      margin: 10px 0;
+      padding: 10px 12px;
+      border-left: 4px solid var(--brand);
+      border-radius: 0 9px 9px 0;
+      background: var(--teal-bg);
+      color: #134e4a;
+      overflow-x: auto;
+    }
+    .formula strong { color: var(--brand-dark); }
+    .notice, .answer, .mistake, .result-message {
+      margin-top: 12px;
+      border-radius: 11px;
+      padding: 11px 13px;
+    }
+    .notice { color: var(--orange); border: 1px solid #fdba74; background: var(--orange-bg); }
+    .answer { color: var(--green); border: 1px solid #86efac; background: var(--green-bg); }
+    .mistake { color: var(--red); border: 1px solid #fecdd3; background: var(--red-bg); }
+    .notice strong, .answer strong, .mistake strong { color: inherit; }
+    .rule-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .rule-table th, .rule-table td { border: 1px solid var(--line); padding: 10px; vertical-align: top; text-align: left; }
+    .rule-table th { color: #334155; background: #f1f5f9; }
+    .rule-table td:first-child { color: #134e4a; font-weight: 800; width: 19%; }
+    .path { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .path-item { border: 1px solid var(--line); border-radius: 12px; padding: 13px; background: #fff; }
+    .path-num {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 7px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--brand);
+      font-weight: 900;
+    }
+    .path-item p { margin-bottom: 0; font-size: 14px; }
+    .jump-nav { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 17px; position: relative; z-index: 1; }
+    .jump-nav a, .scenario-button, .type-button, .primary-button, .secondary-button {
+      border: 1px solid #99f6e4;
+      border-radius: 10px;
+      color: var(--brand-dark);
+      background: var(--teal-bg);
+      padding: 7px 10px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .jump-nav a:hover, .scenario-button:hover, .type-button:hover, .secondary-button:hover { background: #ccfbf1; }
+    .scenario-buttons, .type-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+    .scenario-button, .type-button { text-align: left; }
+    .scenario-button[aria-pressed="true"], .type-button[aria-pressed="true"] { color: #fff; background: var(--brand); border-color: var(--brand); }
+    .scenario-result { min-height: 150px; border: 1px solid #b9e4dc; border-radius: 12px; padding: 14px; background: #f8fffe; }
+    .scenario-result h3 { color: #115e59; }
+    .calc-shell { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr); gap: 14px; }
+    .type-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; margin: 0; }
+    .type-button { min-height: 50px; }
+    .type-button small { display: block; color: inherit; opacity: .86; font-weight: 600; }
+    .calc-panel { background: #fbfdff; }
+    .calc-panel h3 { color: #115e59; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+    .field { display: grid; gap: 4px; }
+    .field.wide { grid-column: 1 / -1; }
+    label { color: #334155; font-size: 14px; font-weight: 800; }
+    input, select {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #b8c7d9;
+      border-radius: 9px;
+      padding: 9px 10px;
+      color: var(--ink);
+      background: #fff;
+    }
+    input:focus, select:focus, button:focus-visible, a:focus-visible {
+      outline: 3px solid #38bdf8;
+      outline-offset: 2px;
+    }
+    .field-help { grid-column: 1 / -1; margin: 0; font-size: 13px; }
+    .primary-button { margin-top: 13px; color: #fff; background: var(--brand); border-color: var(--brand); }
+    .primary-button:hover { background: var(--brand-dark); }
+    .secondary-button { margin-top: 12px; }
+    .calc-result { margin-top: 13px; min-height: 132px; border: 1px solid #b9e4dc; border-radius: 12px; padding: 14px; background: #f8fffe; }
+    .calc-result h4 { color: #115e59; }
+    .number-answer { color: #0f766e; font-size: clamp(24px, 4vw, 34px); font-weight: 900; line-height: 1.25; word-break: break-word; }
+    .formula-line { color: #134e4a; font-family: Cambria, "Times New Roman", serif; font-size: 18px; }
+    .technique { height: 100%; }
+    .technique h3 { color: #115e59; }
+    .steps { margin: 8px 0 0; padding-left: 23px; }
+    .steps li { margin: 5px 0; }
+    .gap-row { display: flex; gap: 5px; flex-wrap: wrap; margin: 11px 0 7px; }
+    .person, .gap {
+      display: grid;
+      min-width: 36px;
+      height: 34px;
+      place-items: center;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .person { color: #134e4a; border: 1px solid #99f6e4; background: #ccfbf1; }
+    .person.marked { color: #7e22ce; border-color: #d8b4fe; background: #f3e8ff; }
+    .gap { color: #475569; border: 1px dashed #94a3b8; background: #f8fafc; }
+    details { margin-top: 10px; padding: 8px 10px; border: 1px solid #bfdbfe; border-radius: 9px; background: #eff6ff; }
+    summary { color: #1d4ed8; cursor: pointer; font-weight: 800; }
+    details p { margin: 7px 0 0; color: #1e3a8a; }
+    .quiz-box { background: #fbfdff; }
+    .quiz-progress { color: #0f766e; font-size: 14px; font-weight: 800; }
+    .quiz-question { color: var(--ink); font-size: 18px; font-weight: 800; }
+    .options { display: grid; gap: 8px; margin-top: 12px; }
+    .option {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 10px;
+      color: var(--sub);
+      cursor: pointer;
+    }
+    .option:hover { background: #f0fdfa; border-color: #99f6e4; }
+    .option input { width: auto; margin-top: 5px; }
+    .result-message { display: none; }
+    .result-message.good { display: block; color: var(--green); border: 1px solid #86efac; background: var(--green-bg); }
+    .result-message.try { display: block; color: var(--orange); border: 1px solid #fdba74; background: var(--orange-bg); }
+    .teacher-note { padding: 20px; background: linear-gradient(130deg, var(--teal-bg), #fff); }
+    .teacher-note h2 { margin-bottom: 6px; }
+    .foot { margin: 18px 0 0; text-align: center; color: #64748b; font-size: 13px; }
+    @media (max-width: 860px) {
+      .three, .path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .calc-shell { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 580px) {
+      .wrap { padding: 12px 10px 30px; }
+      .hero, .section, .teacher-note { border-radius: 14px; }
+      .two, .three, .path, .field-grid, .type-buttons { grid-template-columns: 1fr; }
+      .rule-table { font-size: 14px; }
+      .rule-table th, .rule-table td { padding: 8px; }
+      .rule-table td:first-child { width: auto; }
+      .math { white-space: normal; }
+      .field.wide { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>排列組合工具：先判斷，再計算</h1>
+      <p class="lead">排列組合最容易錯的地方，通常不是階乘算錯，而是<strong>還沒看清楚題目就套公式</strong>。先判斷「順序算不算不同？物件有沒有相同？分出去的組有沒有名字？可不可以重複？」；公式自然會浮出來。</p>
+      <span class="chip">先分辨，後代入</span>
+      <span class="chip">相鄰：綁成一塊</span>
+      <span class="chip">不相鄰：排別人、插空隙</span>
+      <span class="chip">分組先看標籤與空組</span>
+      <nav class="jump-nav" aria-label="頁面快速導覽">
+        <a href="#map">選法地圖</a>
+        <a href="#calculator">互動計算器</a>
+        <a href="#techniques">相鄰與插空隙</a>
+        <a href="#practice">自我檢查</a>
+      </nav>
+    </section>
+
+    <section class="section" id="map">
+      <h2>一、起手四問：一題只要先回答這四句</h2>
+      <p>不要把「選人」「排座位」「分組」當成公式名稱；它們只是情境。真正關鍵是下面四個判斷。</p>
+      <div class="path">
+        <article class="path-item"><div class="path-num">1</div><h3>物件相同嗎？</h3><p>人、不同顏色卡片通常可區分；相同的 A、A、A 不能再互換。</p></article>
+        <article class="path-item"><div class="path-num">2</div><h3>順序重要嗎？</h3><p>班長／副班長不同，順序重要；只選三位代表，順序不重要。</p></article>
+        <article class="path-item"><div class="path-num">3</div><h3>能重複選嗎？</h3><p>密碼的數字可重複；從一盒不放回抽球，通常不可重複。</p></article>
+        <article class="path-item"><div class="path-num">4</div><h3>組或盒子有名字嗎？</h3><p>甲、乙兩隊有標籤；把人「分成兩隊」但兩隊沒名稱，要小心重複計數。</p></article>
+      </div>
+      <div class="notice"><strong>最重要的翻譯：</strong>「先選再排」是組合乘排列；「排完後換位置不算新方法」就要除掉重複；「同一類可以一直拿」才是重複排列／重複組合。</div>
+    </section>
+
+    <section class="section">
+      <h2>二、公式不是背成一排：看見哪一種結構？</h2>
+      <div class="grid">
+        <article class="choice-card">
+          <span class="tag">順序重要</span>
+          <h3>排列 <span class="math">P(n,r)</span></h3>
+          <p>從 n 個不同物件取 r 個排到 r 個位置；第一格、第二格不同就算不同方法。</p>
+          <div class="formula"><strong>公式：</strong><span class="math">P(n,r)=n(n−1)…(n−r+1)=n!/(n−r)!</span></div>
+          <p>例：8 人選班長、副班長、風紀，共 <span class="math">P(8,3)</span> 種。</p>
+        </article>
+        <article class="choice-card">
+          <span class="tag green">順序不重要</span>
+          <h3>組合 <span class="math">C(n,r)</span></h3>
+          <p>從 n 個不同物件取 r 個成一組；甲乙丙與乙甲丙是同一組。</p>
+          <div class="formula"><strong>公式：</strong><span class="math">C(n,r)=n!/[r!(n−r)!]</span></div>
+          <p>例：8 人選 3 位代表，共 <span class="math">C(8,3)</span> 種。</p>
+        </article>
+        <article class="choice-card">
+          <span class="tag purple">位置可重複</span>
+          <h3>重複排列</h3>
+          <p>有 n 種符號，要填 r 格；每一格都可再用同一種符號。</p>
+          <div class="formula"><strong>公式：</strong><span class="math">n<sup>r</sup></span></div>
+          <p>例：4 位數密碼，每位可用 0–9，為 <span class="math">10<sup>4</sup></span> 種。</p>
+        </article>
+        <article class="choice-card">
+          <span class="tag orange">選取可重複</span>
+          <h3>重複組合</h3>
+          <p>從 n 種種類中拿 r 個，同類可多拿，且不管拿取順序。</p>
+          <div class="formula"><strong>公式：</strong><span class="math">C(n+r−1,r)</span></div>
+          <p>例：3 種甜甜圈選 5 個，可同口味重複，為 <span class="math">C(7,5)</span> 種。</p>
+        </article>
+      </div>
+      <div class="two" style="margin-top:12px">
+        <article class="example">
+          <h3>最常混淆：排列和組合只差「順序」</h3>
+          <p>從甲、乙、丙中挑兩人：</p>
+          <ul class="steps">
+            <li>選「正、副班長」：甲乙與乙甲職務互換，<strong>不同</strong>，用排列 <span class="math">P(3,2)=6</span>。</li>
+            <li>選「兩位衛生股長」：甲乙與乙甲是同一組，<strong>相同</strong>，用組合 <span class="math">C(3,2)=3</span>。</li>
+          </ul>
+        </article>
+        <article class="example">
+          <h3>先選再排：不是二選一</h3>
+          <p>從 10 人選 3 人，再指定班長、副班長、風紀：</p>
+          <ol class="steps">
+            <li>先選 3 人：<span class="math">C(10,3)</span>。</li>
+            <li>再把 3 個職務分給這 3 人：<span class="math">3!</span>。</li>
+            <li>合起來：<span class="math">C(10,3)×3!=P(10,3)</span>。</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="scenario-heading">
+      <h2 id="scenario-heading">三、情境判斷器：先點題目，再說理由</h2>
+      <p>點選一個情境，檢查自己是否真的知道「為什麼」該用這個方法。</p>
+      <div class="scenario-buttons" id="scenario-buttons" aria-label="選擇情境"></div>
+      <article class="scenario-result" id="scenario-result" aria-live="polite"></article>
+    </section>
+
+    <section class="section" id="calculator">
+      <h2>四、排列組合計算器</h2>
+      <p>先在左側選題型，再填入題目的數字。結果會同時給出公式與計數理由；數字輸入範圍先限制在 0 到 60，避免畫面塞進不易閱讀的超大數字。</p>
+      <div class="calc-shell">
+        <div class="type-buttons" id="type-buttons" aria-label="選擇計算器題型"></div>
+        <div class="calc-panel">
+          <h3 id="calc-title">排列</h3>
+          <p id="calc-intro">從不同物件中取出若干個，並安排到有順序的位置。</p>
+          <div class="field-grid" id="calc-fields"></div>
+          <button class="primary-button" id="calculate" type="button">計算並看理由</button>
+          <article class="calc-result" id="calc-result" aria-live="polite"></article>
+        </div>
+      </div>
+      <div class="notice"><strong>計算器能算，題意仍要你判斷：</strong>例如「分成三組」若沒有說每組幾人、有沒有組名、能不能空組，答案可能完全不同；先補齊條件再按計算。</div>
+    </section>
+
+    <section class="section">
+      <h2>五、分組、分堆：名稱不是關鍵，標籤與空組才是</h2>
+      <p>同樣是把物品分出去，題目中的「組」「堆」「盒子」不會自動決定公式。請把題意改寫成下面的句子，再選方法。</p>
+      <table class="rule-table">
+        <thead><tr><th>情況</th><th>要問的條件</th><th>不同物件時的典型方法</th></tr></thead>
+        <tbody>
+          <tr><td>固定人數分組</td><td>每組幾人？各組有名字嗎？</td><td>有名字：<span class="math">n!/(a!b!…)</span>。沒名字且同大小組可互換：再除以那些相同大小組的階乘。</td></tr>
+          <tr><td>分到有標籤的盒／堆</td><td>每個物件可選哪一堆？允許空堆嗎？</td><td>n 個不同物件，各自選 k 個有名字的盒：<span class="math">k<sup>n</sup></span>。若每盒都非空，用容斥原理。</td></tr>
+          <tr><td>分成不標號的非空組</td><td>只在乎分組結果，不在乎叫第幾組嗎？</td><td>恰分成 k 個非空、不標號組：第二類 Stirling 數 <span class="math">S(n,k)</span>。計算器可用遞迴算出它。</td></tr>
+          <tr><td>相同物品分堆</td><td>物品是否同類？每堆至少幾個？</td><td>若是 n 個相同球分到 k 個有標籤盒，且每盒可空，才是隔板法：<span class="math">C(n+k−1,k−1)</span>。</td></tr>
+        </tbody>
+      </table>
+      <div class="mistake"><strong>常見誤會：</strong>「8 人分成 4 組，每組 2 人」不是 <span class="math">4<sup>8</sup></span>；因為人數已固定、組也沒標號。正確是 <span class="math">8!/(2!<sup>4</sup>·4!)</span>。而「8 人各自選甲乙丙丁一隊」才是 <span class="math">4<sup>8</sup></span>，還允許空隊。</div>
+    </section>
+
+    <section class="section" id="techniques">
+      <h2>六、條件排列的兩把鑰匙：相鄰綁一起；不相鄰插空隙</h2>
+      <div class="two">
+        <article class="technique">
+          <span class="tag">相鄰</span>
+          <h3>指定的人／物一定要相鄰：把它們先綁成一大塊</h3>
+          <p>5 個不同人排成一列，其中 A、B 必相鄰。先把 AB 當作一個「大物件」，就剩下 4 個物件可排；而大物件內 AB、BA 又有 2 種。</p>
+          <div class="gap-row" aria-label="把 A 與 B 綁成一塊的示意"><span class="person marked">AB</span><span class="person">C</span><span class="person">D</span><span class="person">E</span></div>
+          <ol class="steps">
+            <li>外部排列：<span class="math">4!</span>。</li>
+            <li>區塊內部：<span class="math">2!</span>。</li>
+            <li>答案：<span class="math">4!×2!=48</span>。</li>
+          </ol>
+          <div class="formula"><strong>一般式：</strong>n 個不同物件中，指定 m 個要連成一塊：<span class="math">(n−m+1)!·m!</span></div>
+          <details><summary>什麼時候不能只綁一塊？</summary><p>「A 與 B 相鄰，B 與 C 也相鄰」不一定等於 ABC 當一塊後乘 <span class="math">3!</span>；還要檢查是否允許 A–B–C 或 C–B–A 以外的順序。多重條件可用分類、容斥或先固定中間人。</p></details>
+        </article>
+        <article class="technique">
+          <span class="tag purple">不相鄰</span>
+          <h3>指定的人／物互不相鄰：先排別人，再插空隙</h3>
+          <p>4 位男生、3 位女生排成一列，女生彼此不能相鄰。先排男生，男生前後與中間會形成 5 個空隙；再選 3 個空隙放女生。</p>
+          <div class="gap-row" aria-label="四位男生形成五個空隙的示意"><span class="gap">□</span><span class="person">男</span><span class="gap">□</span><span class="person">男</span><span class="gap">□</span><span class="person">男</span><span class="gap">□</span><span class="person">男</span><span class="gap">□</span></div>
+          <ol class="steps">
+            <li>先排 4 位男生：<span class="math">4!</span>。</li>
+            <li>從 5 個空隙選 3 個：<span class="math">C(5,3)</span>。</li>
+            <li>3 位女生在選到的空隙排位置：<span class="math">3!</span>。</li>
+            <li>答案：<span class="math">4!×C(5,3)×3!=1440</span>。</li>
+          </ol>
+          <div class="formula"><strong>一般式：</strong>q 個其他物件、r 個指定物件互不相鄰：<span class="math">q!·C(q+1,r)·r!</span>，但必須 <span class="math">r≤q+1</span>。</div>
+          <div class="mistake"><strong>別漏掉：</strong>空隙有「最左、最右」兩個，q 個人會形成 <span class="math">q+1</span> 個空隙，不是 <span class="math">q−1</span> 個。</div>
+        </article>
+      </div>
+      <div class="three" style="margin-top:12px">
+        <article class="example"><h3>有相同物排列</h3><p>5 個 A、3 個 B、2 個 C 排成一列：先當 10 個不同位置，A 之間交換、B 之間交換、C 之間交換都不產生新排法。</p><div class="formula"><span class="math">10!/(5!·3!·2!)=2520</span></div></article>
+        <article class="example"><h3>錯排：全部不能回原位</h3><p>n 封不同信、n 個不同信封，沒有任何一封放對。這是「全部不對」；不是只把某兩封交換。</p><div class="formula"><span class="math">!n=(n−1)[!(n−1)+!(n−2)]</span></div><p>例如 <span class="math">!4=9</span>。</p></article>
+        <article class="example"><h3>至少一個相鄰／至少一個回原位</h3><p>看到「至少」通常不要直接把一塊綁起來；常改算總數減去「完全不相鄰」或「完全錯排」的補集。</p><div class="formula"><span class="math">至少一個回原位 = n!−!n</span></div></article>
+      </div>
+    </section>
+
+    <section class="section" id="practice">
+      <h2>七、自我檢查：先選方法，不急著算</h2>
+      <p>每題先在心裡講一句理由；答錯後仍可直接重選，讓你把判斷修正過來。</p>
+      <article class="quiz-box">
+        <p class="quiz-progress" id="quiz-progress"></p>
+        <div class="quiz-question" id="quiz-question"></div>
+        <div class="options" id="quiz-options"></div>
+        <button class="primary-button" id="check-quiz" type="button">檢查我的判斷</button>
+        <button class="secondary-button" id="next-quiz" type="button" hidden>下一題</button>
+        <div class="result-message" id="quiz-result" aria-live="polite"></div>
+      </article>
+    </section>
+
+    <section class="teacher-note">
+      <h2>給老師：一節課可以這樣帶</h2>
+      <ol class="steps">
+        <li><strong>先用職務題對比：</strong>「選兩個幹部」和「選班長、副班長」只改一句話，讓學生親自說出順序差異。</li>
+        <li><strong>再用實物排座位：</strong>拿兩張不同色卡片示範「綁一起」；把另一色卡先排好，用空白紙條指出「插空隙」。</li>
+        <li><strong>最後才開計算器：</strong>學生先口頭說題型與理由，再輸入數字核對；避免把工具誤當成公式抽籤機。</li>
+        <li><strong>收尾問題：</strong>把「4 人分兩組」改成「分甲乙兩隊」與「兩隊都要兩人」，請學生列出少了哪些條件。</li>
+      </ol>
+    </section>
+    <p class="foot">排列組合工具｜先辨識結構，再放心計數</p>
+  </main>
+
+  <script>
+    (() => {
+      const scenarioData = [
+        {
+          label: '職務分配',
+          title: '8 人選班長、副班長、風紀',
+          type: '排列 P(8,3)',
+          reason: '三個職務不同；甲當班長、乙當副班長，和甲乙職務對調是不同分配。',
+          formula: 'P(8,3)=8×7×6=336',
+          note: '題目若只說「選出 3 位幹部」，沒有指定職務，才改用 C(8,3)。'
+        },
+        {
+          label: '口味挑選',
+          title: '3 種甜甜圈選 5 個，同口味可重複',
+          type: '重複組合 C(3+5−1,5)',
+          reason: '選到巧克力、草莓、原味各幾個才重要；拿取順序不重要，而且同口味可以重複。',
+          formula: 'C(7,5)=21',
+          note: '不要寫成 3⁵；3⁵ 是把第 1、2、3、4、5 個位置視為有順序時才用。'
+        },
+        {
+          label: '固定分組',
+          title: '8 人分成 4 組，每組 2 人，組沒有名稱',
+          type: '固定大小的不標號分組',
+          reason: '先把 8 人排好後每 2 人切一組，但四個二人組的前後對調不算新分法。',
+          formula: '8!/(2!⁴·4!)=105',
+          note: '若四組有「第 1 組到第 4 組」的名稱，就不除 4!。'
+        },
+        {
+          label: '相鄰座位',
+          title: '6 人排座位，A、B 必須相鄰',
+          type: '相鄰綁一起',
+          reason: '把 A、B 先看成一個區塊，外面有 5 個物件排；區塊內還有 AB、BA 兩種。',
+          formula: '5!×2!=240',
+          note: '「至少其中兩人相鄰」這類有重疊的條件，要另外分類或用補集／容斥。'
+        },
+        {
+          label: '不相鄰座位',
+          title: '4 位男生、3 位女生排成一列，女生互不相鄰',
+          type: '不相鄰插空隙',
+          reason: '先排男生形成 5 個空隙，三位女生要放在三個不同空隙。',
+          formula: '4!×C(5,3)×3!=1440',
+          note: '空隙包括最左與最右，總數是 4+1=5。'
+        },
+        {
+          label: '信封錯配',
+          title: '4 封不同信放入 4 個不同信封，全部都不能放對',
+          type: '錯排 !4',
+          reason: '每一封都要離開自己的信封，正是錯排的定義。',
+          formula: '!4=9',
+          note: '若只要求「至少一封放錯」，應改算 4!−1。'
+        }
+      ];
+
+      const scenarioButtons = document.querySelector('#scenario-buttons');
+      const scenarioResult = document.querySelector('#scenario-result');
+      let activeScenario = 0;
+
+      function renderScenario(index) {
+        activeScenario = index;
+        scenarioButtons.querySelectorAll('button').forEach((button, buttonIndex) => {
+          button.setAttribute('aria-pressed', String(buttonIndex === index));
+        });
+        const item = scenarioData[index];
+        scenarioResult.innerHTML = `
+          <span class="tag">${item.type}</span>
+          <h3>${item.title}</h3>
+          <p><strong>為什麼：</strong>${item.reason}</p>
+          <div class="formula"><strong>計數：</strong><span class="math">${item.formula}</span></div>
+          <p><strong>再想一步：</strong>${item.note}</p>`;
+      }
+
+      scenarioData.forEach((item, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'scenario-button';
+        button.textContent = item.label;
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', () => renderScenario(index));
+        scenarioButtons.append(button);
+      });
+      renderScenario(0);
+
+      const calculatorTypes = {
+        permutation: {
+          button: '排列 P(n,r)', short: '順序重要、不可重複', title: '排列 P(n,r)',
+          intro: '從 n 個不同物件中取 r 個，排在有順序的位置。',
+          fields: [field('n', '不同物件總數 n', 8), field('r', '取出／安排的數量 r', 3)],
+          calculate(values) {
+            const { n, r } = values;
+            if (r > n) throw new Error('r 不能大於 n；不可重複選取時，位置數不能超過物件數。');
+            const answer = factorial(n) / factorial(n - r);
+            return result(answer, `P(${n},${r}) = ${n}! / (${n}−${r})!`, `依序填入 ${r} 個位置：第一格有 ${n} 種，之後每格少一種。`);
+          }
+        },
+        combination: {
+          button: '組合 C(n,r)', short: '順序不重要、不可重複', title: '組合 C(n,r)',
+          intro: '從 n 個不同物件中取 r 個成一組，組內交換不算新選法。',
+          fields: [field('n', '不同物件總數 n', 8), field('r', '選出的數量 r', 3)],
+          calculate(values) {
+            const { n, r } = values;
+            if (r > n) throw new Error('r 不能大於 n；不能從 n 個不同物件中選出更多個。');
+            return result(combination(n, r), `C(${n},${r}) = ${n}! / [${r}!(${n}−${r})!]`, `排列會把同一組的 ${r}! 種內部順序重複算到，因此要除以 ${r}!。`);
+          }
+        },
+        repeatedPermutation: {
+          button: '重複排列', short: '每個位置可重複使用', title: '重複排列 nʳ',
+          intro: '有 n 種符號填 r 個有順序的位置；每個位置都能使用同一種符號。',
+          fields: [field('n', '可用符號／種類數 n', 10), field('r', '位置數 r', 4)],
+          calculate(values) {
+            const { n, r } = values;
+            return result(power(BigInt(n), r), `${n}<sup>${r}</sup>`, `${r} 個位置各自都有 ${n} 種選擇，所以相乘 ${r} 次。`);
+          }
+        },
+        repeatedCombination: {
+          button: '重複組合', short: '可重複選、順序不重要', title: '重複組合',
+          intro: '從 n 種類別中選 r 個，同類可重複，且只在乎各類各拿幾個。',
+          fields: [field('n', '種類數 n', 3), field('r', '共選幾個 r', 5)],
+          calculate(values) {
+            const { n, r } = values;
+            return result(combination(n + r - 1, r), `C(${n}+${r}−1,${r}) = C(${n + r - 1},${r})`, `可視為 ${r} 個相同物品與 ${n - 1} 個隔板排成一列。`);
+          }
+        },
+        identical: {
+          button: '相同物排列', short: '同類互換不產生新排法', title: '有相同物的排列',
+          intro: '輸入每一類相同物件的數量，例如 5,3,2 代表 5 個 A、3 個 B、2 個 C。',
+          fields: [textField('counts', '各類數量（逗號分隔）', '5,3,2')],
+          calculate(values) {
+            const counts = parseCounts(values.counts);
+            const total = counts.reduce((sum, count) => sum + count, 0);
+            let divisor = 1n;
+            counts.forEach((count) => { divisor *= factorial(count); });
+            return result(factorial(total) / divisor, `${total}! / (${counts.map((count) => `${count}!`).join('·')})`, `同一類物件彼此互換不會產生新排法，因此每一類都要除以自己的階乘。`);
+          }
+        },
+        fixedGroups: {
+          button: '固定大小分組', short: '可選標號／不標號組', title: '固定人數的分組',
+          intro: '輸入各組人數。例如 3,3,2；並判斷這些組是否有甲組、乙組等名稱。',
+          fields: [
+            textField('sizes', '各組人數（逗號分隔）', '2,2,2,2'),
+            selectField('labeled', '各組是否有名稱？', [['yes', '有名稱（甲組、乙組…）'], ['no', '無名稱（相同大小組可互換）']])
+          ],
+          calculate(values) {
+            const sizes = parseCounts(values.sizes);
+            const total = sizes.reduce((sum, size) => sum + size, 0);
+            let divisor = 1n;
+            sizes.forEach((size) => { divisor *= factorial(size); });
+            let explanation = `先把 ${total} 位不同的人排好，再把每 ${sizes.join('、')} 人切成一組；每一組內部順序不重要。`;
+            let formula = `${total}! / (${sizes.map((size) => `${size}!`).join('·')})`;
+            if (values.labeled === 'no') {
+              const frequencies = {};
+              sizes.forEach((size) => { frequencies[size] = (frequencies[size] || 0) + 1; });
+              Object.values(frequencies).forEach((frequency) => { divisor *= factorial(frequency); });
+              const repeatedGroupFactors = Object.entries(frequencies).filter(([, frequency]) => frequency > 1).map(([size, frequency]) => `${frequency}!（${size}人組互換）`);
+              formula += repeatedGroupFactors.length ? ` / ${repeatedGroupFactors.join('·')}` : '（各組大小皆不同，不需再除）';
+              explanation += repeatedGroupFactors.length ? ` 這些組沒有名字，${repeatedGroupFactors.join('、')}不算新分法。` : ' 因為各組大小都不同，大小本身已能分辨組別。';
+            }
+            return result(factorial(total) / divisor, formula, explanation);
+          }
+        },
+        labeledPiles: {
+          button: '分到有標籤堆', short: '每物件選盒子／隊伍', title: '分到有標籤的堆或盒子',
+          intro: 'n 個不同物件各自選一個有名字的盒。可設定是否要求每一盒都至少一個。',
+          fields: [
+            field('n', '不同物件數 n', 8), field('k', '有名稱的堆／盒數 k', 4),
+            selectField('nonempty', '是否每一堆都非空？', [['no', '允許空堆'], ['yes', '每堆至少 1 個']])
+          ],
+          calculate(values) {
+            const { n, k, nonempty } = values;
+            if (nonempty === 'no') return result(power(BigInt(k), n), `${k}<sup>${n}</sup>`, `${n} 個不同物件各自有 ${k} 個有名稱的堆可以選，空堆也允許。`);
+            if (k > n) return result(0n, '0（k > n）', `要讓 ${k} 個堆都非空，至少需要 ${k} 個物件；現在只有 ${n} 個。`);
+            let answer = 0n;
+            const terms = [];
+            for (let i = 0; i <= k; i += 1) {
+              const value = combination(k, i) * power(BigInt(k - i), n);
+              answer += i % 2 === 0 ? value : -value;
+              terms.push(`${i % 2 === 0 && i > 0 ? '+' : i % 2 === 1 ? '−' : ''}C(${k},${i})·${k - i}<sup>${n}</sup>`);
+            }
+            return result(answer, terms.join(' '), `先算所有分法，再用容斥排除「至少有一個指定堆是空的」情形。`);
+          }
+        },
+        unlabeledGroups: {
+          button: '不標號非空分組', short: '恰分成 k 個不命名組', title: '分成不標號的非空組',
+          intro: 'n 個不同物件恰分成 k 組，組沒有名字、每組至少一個。這是第二類 Stirling 數。',
+          fields: [field('n', '不同物件數 n', 6), field('k', '非空組數 k', 3)],
+          calculate(values) {
+            const { n, k } = values;
+            const answer = stirlingSecond(n, k);
+            return result(answer, `S(${n},${k}) = ${k}·S(${n - 1},${k}) + S(${n - 1},${k - 1})`, `把第 ${n} 個物件放進既有 ${k} 組之一，或讓它自己成為一個新組。組沒有名字，因此不是 ${k}<sup>${n}</sup>。`);
+          }
+        },
+        derangement: {
+          button: '錯排 !n', short: '每一個都不能回原位', title: '錯排',
+          intro: 'n 個不同物件排列到 n 個原位，要求每一個都不在自己的位置。',
+          fields: [field('n', '物件與位置數 n', 4)],
+          calculate(values) {
+            const { n } = values;
+            const answer = derangement(n);
+            return result(answer, `!${n} = (${n}−1)[!${n - 1} + !${n - 2}]`, `把第一個物件放到某個錯位後，依那個位置的原主人是否回到第一個位置，分成兩種遞迴情況。`);
+          }
+        },
+        adjacent: {
+          button: '相鄰綁一起', short: '指定 m 個連成一塊', title: '指定物件相鄰',
+          intro: 'n 個不同物件排成一列，其中指定 m 個必須連成同一塊。',
+          fields: [field('n', '不同物件總數 n', 6), field('m', '指定要相鄰的數量 m', 2)],
+          calculate(values) {
+            const { n, m } = values;
+            if (m > n) throw new Error('m 不能大於 n。');
+            const answer = factorial(n - m + 1) * factorial(m);
+            return result(answer, `(${n}−${m}+1)!·${m}! = ${n - m + 1}!·${m}!`, `把指定的 ${m} 個物件綁成 1 塊，外部共有 ${n - m + 1} 個物件可排；區塊內再排列。`);
+          }
+        },
+        nonAdjacent: {
+          button: '不相鄰插空隙', short: '指定物件彼此不能相鄰', title: '指定物件互不相鄰',
+          intro: 'q 個其他物件與 r 個指定物件都不同；要求 r 個指定物件彼此不能相鄰。',
+          fields: [field('q', '其他物件數 q', 4), field('r', '指定物件數 r', 3)],
+          calculate(values) {
+            const { q, r } = values;
+            if (r > q + 1) return result(0n, '0（指定物件比空隙多）', `先排 ${q} 個其他物件只有 ${q + 1} 個空隙，放不下 ${r} 個互不相鄰的指定物件。`);
+            const answer = factorial(q) * combination(q + 1, r) * factorial(r);
+            return result(answer, `${q}!·C(${q + 1},${r})·${r}!`, `先排其他 ${q} 個物件形成 ${q + 1} 個空隙；選 ${r} 個空隙，再把指定物件排列進去。`);
+          }
+        }
+      };
+
+      function field(name, label, value) { return { kind: 'number', name, label, value }; }
+      function textField(name, label, value) { return { kind: 'text', name, label, value, wide: true }; }
+      function selectField(name, label, options) { return { kind: 'select', name, label, options, wide: true }; }
+      function factorial(n) {
+        let value = 1n;
+        for (let i = 2; i <= n; i += 1) value *= BigInt(i);
+        return value;
+      }
+      function power(base, exponent) {
+        let value = 1n;
+        for (let i = 0; i < exponent; i += 1) value *= base;
+        return value;
+      }
+      function combination(n, r) {
+        if (r < 0 || r > n) return 0n;
+        const pick = Math.min(r, n - r);
+        let value = 1n;
+        for (let i = 1; i <= pick; i += 1) value = value * BigInt(n - pick + i) / BigInt(i);
+        return value;
+      }
+      function derangement(n) {
+        if (n === 0) return 1n;
+        if (n === 1) return 0n;
+        let previousTwo = 1n;
+        let previousOne = 0n;
+        for (let i = 2; i <= n; i += 1) {
+          const current = BigInt(i - 1) * (previousOne + previousTwo);
+          previousTwo = previousOne;
+          previousOne = current;
+        }
+        return previousOne;
+      }
+      function stirlingSecond(n, k) {
+        if (k < 0 || k > n) return 0n;
+        const table = Array.from({ length: n + 1 }, () => Array(k + 1).fill(0n));
+        table[0][0] = 1n;
+        for (let i = 1; i <= n; i += 1) {
+          for (let groups = 1; groups <= Math.min(i, k); groups += 1) {
+            table[i][groups] = BigInt(groups) * table[i - 1][groups] + table[i - 1][groups - 1];
+          }
+        }
+        return table[n][k];
+      }
+      function formatInteger(value) {
+        const text = value.toString();
+        const sign = text.startsWith('-') ? '−' : '';
+        const digits = text.replace('-', '');
+        return sign + digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      function parseCounts(raw) {
+        const values = raw.split(',').map((part) => Number(part.trim()));
+        if (!values.length || values.some((value) => !Number.isInteger(value) || value <= 0 || value > 60)) throw new Error('請輸入以逗號分隔的正整數，例如 5,3,2；每個數量限 1 到 60。');
+        return values;
+      }
+      function result(answer, formula, explanation) { return { answer, formula, explanation }; }
+
+      const typeButtons = document.querySelector('#type-buttons');
+      const calcTitle = document.querySelector('#calc-title');
+      const calcIntro = document.querySelector('#calc-intro');
+      const calcFields = document.querySelector('#calc-fields');
+      const calcResult = document.querySelector('#calc-result');
+      const calculateButton = document.querySelector('#calculate');
+      let activeType = 'permutation';
+
+      function renderType(type) {
+        activeType = type;
+        const item = calculatorTypes[type];
+        typeButtons.querySelectorAll('button').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.type === type)));
+        calcTitle.textContent = item.title;
+        calcIntro.textContent = item.intro;
+        calcFields.innerHTML = item.fields.map((config) => {
+          const className = config.wide ? 'field wide' : 'field';
+          if (config.kind === 'select') {
+            return `<div class="${className}"><label for="field-${config.name}">${config.label}</label><select id="field-${config.name}" name="${config.name}">${config.options.map(([value, text]) => `<option value="${value}">${text}</option>`).join('')}</select></div>`;
+          }
+          const typeName = config.kind === 'number' ? 'number' : 'text';
+          const attributes = config.kind === 'number' ? 'min="0" max="60" step="1" inputmode="numeric"' : '';
+          return `<div class="${className}"><label for="field-${config.name}">${config.label}</label><input id="field-${config.name}" name="${config.name}" type="${typeName}" value="${config.value}" ${attributes}></div>`;
+        }).join('');
+        calcResult.innerHTML = '<h4>結果會顯示在這裡</h4><p>輸入條件後，按「計算並看理由」。</p>';
+      }
+
+      Object.entries(calculatorTypes).forEach(([type, item]) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'type-button';
+        button.dataset.type = type;
+        button.innerHTML = `${item.button}<small>${item.short}</small>`;
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', () => renderType(type));
+        typeButtons.append(button);
+      });
+
+      calculateButton.addEventListener('click', () => {
+        const item = calculatorTypes[activeType];
+        try {
+          const values = {};
+          item.fields.forEach((config) => {
+            const control = document.querySelector(`#field-${config.name}`);
+            if (config.kind === 'number') {
+              const value = Number(control.value);
+              if (!Number.isInteger(value) || value < 0 || value > 60) throw new Error(`${config.label}請輸入 0 到 60 的整數。`);
+              values[config.name] = value;
+            } else {
+              values[config.name] = control.value;
+            }
+          });
+          const output = item.calculate(values);
+          calcResult.innerHTML = `<h4>共有</h4><div class="number-answer">${formatInteger(output.answer)} 種</div><p class="formula-line">${output.formula}</p><p>${output.explanation}</p>`;
+        } catch (error) {
+          calcResult.innerHTML = `<h4>先修正條件</h4><p class="mistake" style="margin-top:0">${error.message}</p>`;
+        }
+      });
+      renderType(activeType);
+
+      const quizData = [
+        {
+          question: '從 9 位同學中選 3 位當「沒有職務差別」的代表，應先選哪一個方法？',
+          options: ['P(9,3)，因為有 3 個人', 'C(9,3)，因為代表組內交換不算新選法', '9³，因為每人有 9 種選擇', 'C(11,3)，因為可以重複選'],
+          correct: 1,
+          explanation: '三位代表沒有角色差別，甲乙丙與乙甲丙是同一組，所以用組合 C(9,3)。'
+        },
+        {
+          question: '有 5 種飲料，買 4 杯，可重複口味且只在乎各口味杯數，應用什麼？',
+          options: ['重複排列 5⁴', '重複組合 C(5+4−1,4)', '排列 P(5,4)', '組合 C(5,4)'],
+          correct: 1,
+          explanation: '可重複選且拿取順序不重要，是重複組合；可用隔板想成 4 杯飲料與 4 個隔板。'
+        },
+        {
+          question: '6 位不同同學排成一列，A、B、C 三人必須連在一起，外部要先排幾個物件？',
+          options: ['6 個，直接排 6!', '4 個，把 ABC 綁成一塊', '3 個，只排 A、B、C', '9 個，把三人各複製一次'],
+          correct: 1,
+          explanation: '把 A、B、C 視為一個區塊，加上其餘 3 人，外部共有 4 個物件；最後還要乘區塊內的 3!。'
+        },
+        {
+          question: '5 位男生先排好後，要讓 4 位女生彼此不相鄰，有幾個可放女生的空隙？',
+          options: ['4 個', '5 個', '6 個', '9 個'],
+          correct: 2,
+          explanation: '5 位男生的前、中間、後面共有 5+1=6 個空隙；最左、最右兩端也要算。'
+        },
+        {
+          question: '7 人分成 3 組，組沒有名字且每組都至少一人，最適合的描述是？',
+          options: ['每人選一組，所以一定是 3⁷', '固定大小分組，因為一定知道每組人數', '不標號非空分組，使用第二類 Stirling 數 S(7,3)', '錯排，因為不能回原位'],
+          correct: 2,
+          explanation: '題目只指定組數，沒有指定每組大小，而且組沒有名稱、也不可空，所以是 S(7,3)。'
+        }
+      ];
+      const quizProgress = document.querySelector('#quiz-progress');
+      const quizQuestion = document.querySelector('#quiz-question');
+      const quizOptions = document.querySelector('#quiz-options');
+      const checkQuiz = document.querySelector('#check-quiz');
+      const nextQuiz = document.querySelector('#next-quiz');
+      const quizResult = document.querySelector('#quiz-result');
+      let quizIndex = 0;
+      let quizSolved = false;
+
+      function renderQuiz() {
+        const item = quizData[quizIndex];
+        quizSolved = false;
+        quizProgress.textContent = `第 ${quizIndex + 1} 題／${quizData.length} 題`;
+        quizQuestion.textContent = item.question;
+        quizOptions.innerHTML = item.options.map((option, index) => `<label class="option"><input type="radio" name="quiz-choice" value="${index}"><span>${String.fromCharCode(65 + index)}. ${option}</span></label>`).join('');
+        quizResult.className = 'result-message';
+        quizResult.textContent = '';
+        nextQuiz.hidden = true;
+        checkQuiz.hidden = false;
+      }
+      checkQuiz.addEventListener('click', () => {
+        const selected = document.querySelector('input[name="quiz-choice"]:checked');
+        if (!selected) {
+          quizResult.className = 'result-message try';
+          quizResult.textContent = '先選一個方法，再檢查理由。';
+          return;
+        }
+        const item = quizData[quizIndex];
+        if (Number(selected.value) === item.correct) {
+          quizSolved = true;
+          quizResult.className = 'result-message good';
+          quizResult.innerHTML = `<strong>判斷正確！</strong>${item.explanation}`;
+          checkQuiz.hidden = true;
+          nextQuiz.hidden = false;
+        } else {
+          quizResult.className = 'result-message try';
+          quizResult.innerHTML = '<strong>還可以再想一次。</strong>先回到四個問題：順序是否重要？可否重複？組是否有名稱？請重選，不會扣分。';
+        }
+      });
+      nextQuiz.addEventListener('click', () => {
+        if (!quizSolved) return;
+        quizIndex = (quizIndex + 1) % quizData.length;
+        renderQuiz();
+      });
+      renderQuiz();
+    })();
+  </script>
+</body>
+</html>
