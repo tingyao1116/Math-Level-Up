@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>數據分析：平均數、標準差、相關係數與迴歸直線</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       --paper: #ffffff;
@@ -101,6 +108,7 @@
       white-space: nowrap;
     }
     .formula.compact { font-size: 17px; text-align: left; }
+    .formula mjx-container, .formula-line mjx-container, .metric mjx-container { margin: 0 !important; }
     .formula-toolbox {
       margin-top: 14px;
       padding: clamp(16px, 3vw, 22px);
@@ -307,7 +315,7 @@
     .bar-track { height: 14px; overflow: hidden; border-radius: 999px; background: #e5edf5; }
     .bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1f9f92, #67c9b5); }
     .bar.orange { background: linear-gradient(90deg, #e47a26, #f2af60); }
-    .calc-result { margin-top: 12px; padding: 12px; border: 1px solid #bfd6ef; border-radius: 12px; background: var(--blue-soft); }
+    .calc-result { margin-top: 12px; padding: 12px; overflow-x: auto; border: 1px solid #bfd6ef; border-radius: 12px; background: var(--blue-soft); }
     .calc-result strong { color: #1d4f9d; }
     .pair-inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .pair-table td:last-child { width: 48px; }
@@ -333,6 +341,15 @@
       .field-row { grid-template-columns: minmax(0, 1fr); }
       .field-row .button { width: 100%; }
       .formula { font-size: 18px; text-align: left; }
+      .formula, .formula-line { white-space: normal; }
+      .formula-line { font-size: 16px; }
+      .formula mjx-container, .formula-line mjx-container {
+        display: inline-block;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        vertical-align: middle;
+      }
       .metric strong { font-size: 22px; }
       .compare-line { grid-template-columns: 78px minmax(0, 1fr); }
       .formula-memory { grid-template-columns: minmax(0, 1fr); }
@@ -367,19 +384,19 @@
           <span class="label">中心位置</span>
           <h3>算術平均</h3>
           <p>把每個數值公平地放在一起，問「平均一筆是多少？」適合成績、身高、每日用量等可直接相加的資料。</p>
-          <div class="formula">x̄ = (x₁ + x₂ + ⋯ + xₙ) ÷ n</div>
+          <div class="formula">\(\bar{x}=\dfrac{x_1+x_2+\cdots+x_n}{n}\)</div>
         </article>
         <article class="card concept teal">
           <span class="label teal">倍數變化</span>
           <h3>幾何平均</h3>
           <p>當資料是「連續乘上去」的倍率時，問「每一期等效乘多少倍？」例如投資成長因子、倍數或比率。</p>
-          <div class="formula">G = ⁿ√(x₁x₂⋯xₙ)</div>
+          <div class="formula">\(G=\sqrt[n]{x_1x_2\cdots x_n}\)</div>
         </article>
         <article class="card concept purple">
           <span class="label purple">一起變動</span>
           <h3>相關與迴歸</h3>
           <p>先看散布圖，再問兩個變數是否有線性趨勢；若有，迴歸直線可用來做「在資料範圍內」的估計。</p>
-          <div class="formula">ŷ = a + bx</div>
+          <div class="formula">\(\hat{y}=a+bx\)</div>
         </article>
       </div>
     </section>
@@ -392,14 +409,14 @@
           <span class="label">可加的量</span>
           <h3>算術平均：每一筆都平分</h3>
           <p>例如 4 次小考為 70、82、86、90 分，總分 328 分平均分給 4 次，所以平均是 82 分。</p>
-          <div class="formula">(70 + 82 + 86 + 90) ÷ 4 = 82</div>
+          <div class="formula">\(\dfrac{70+82+86+90}{4}=82\)</div>
           <div class="callout warn"><strong>常見錯誤：</strong>不同權重不能直接平均。若期中占 40%、期末占 60%，要算加權平均，不是把兩個分數直接除以 2。</div>
         </article>
         <article class="card concept teal">
           <span class="label teal">可乘的倍率</span>
           <h3>幾何平均：找等效倍率</h3>
-          <p>一筆金額先變成 1.2 倍，再變成 0.8 倍；兩期合起來是 0.96 倍，所以每期的等效倍率為 √0.96。</p>
-          <div class="formula">G = √(1.2 × 0.8) ≈ 0.980</div>
+          <p>一筆金額先變成 1.2 倍，再變成 0.8 倍；兩期合起來是 0.96 倍，所以每期的等效倍率為 \(\sqrt{0.96}\)。</p>
+          <div class="formula">\(G=\sqrt{1.2\times0.8}\approx0.980\)</div>
           <p class="small">也就是平均每期約乘上 0.980，約下降 2.0%。幾何平均的每筆資料必須是正數；談漲跌百分比時，先改寫成成長因子。</p>
         </article>
       </div>
@@ -413,35 +430,35 @@
             <h4>集中趨勢：代表值在哪裡？</h4>
             <div class="formula-lines">
               <div class="formula-line">眾數：出現次數最多的值（不一定只有一個）</div>
-              <div class="formula-line">中位數：由小到大排後的中間值；分組資料用 P₅₀ 內插</div>
-              <div class="formula-line">μ = (Σxᵢ) ÷ n</div>
-              <div class="formula-line">加權平均 = (Σwᵢxᵢ) ÷ (Σwᵢ)</div>
+              <div class="formula-line">中位數：由小到大排後的中間值；分組資料用 \(P_{50}\) 內插</div>
+              <div class="formula-line">\(\mu=\dfrac{\sum x_i}{n}\)</div>
+              <div class="formula-line">\(\text{加權平均}=\dfrac{\sum w_ix_i}{\sum w_i}\)</div>
             </div>
             <p class="formula-note">分組資料的平均數：以各組「組中點」當該組的代表值；眾數則先找最高的次數組。</p>
           </section>
           <section class="formula-panel teal-panel">
             <h4>倍率資料：幾何平均要先改成成長因子</h4>
             <div class="formula-lines">
-              <div class="formula-line">(1 + r₁)(1 + r₂)⋯(1 + rₙ) = (1 + r)ⁿ</div>
-              <div class="formula-line">等效平均成長率 r = ⁿ√[(1+r₁)⋯(1+rₙ)] − 1</div>
+              <div class="formula-line">\((1+r_1)(1+r_2)\cdots(1+r_n)=(1+r)^n\)</div>
+              <div class="formula-line">\(r=\sqrt[n]{(1+r_1)\cdots(1+r_n)}-1\)</div>
             </div>
             <p class="formula-note">例如「漲 20%、跌 20%」先寫成 1.2、0.8；不要直接平均 20 與 −20。</p>
           </section>
           <section class="formula-panel orange-panel">
             <h4>分散趨勢：資料拉得多開？</h4>
             <div class="formula-lines">
-              <div class="formula-line">全距 = 最大值 − 最小值</div>
-              <div class="formula-line">IQR = Q₃ − Q₁</div>
-              <div class="formula-line">分組資料：IQR = P₇₅ − P₂₅（用內插法）</div>
+              <div class="formula-line">\(\text{全距}=\text{最大值}-\text{最小值}\)</div>
+              <div class="formula-line">\(\operatorname{IQR}=Q_3-Q_1\)</div>
+              <div class="formula-line">分組資料：\(\operatorname{IQR}=P_{75}-P_{25}\)（用內插法）</div>
             </div>
             <p class="formula-note">全距容易受單一極端值影響；四分位距較適合描述中間 50% 的資料寬度。</p>
           </section>
           <section class="formula-panel purple-panel">
             <h4>平移、縮放與標準化</h4>
             <div class="formula-lines">
-              <div class="formula-line purple-line">X′ = aX + b　⇒　μ′ = aμ + b</div>
-              <div class="formula-line purple-line">σ′ = |a|σ（只受縮放影響，不受平移影響）</div>
-              <div class="formula-line purple-line">Z = (X − μ) ÷ σ　⇒　平均數 0、標準差 1</div>
+              <div class="formula-line purple-line">\(X'=aX+b\quad\Rightarrow\quad\mu'=a\mu+b\)</div>
+              <div class="formula-line purple-line">\(\sigma'=|a|\sigma\)（只受縮放影響，不受平移影響）</div>
+              <div class="formula-line purple-line">\(Z=\dfrac{X-\mu}{\sigma}\quad\Rightarrow\quad\mu_Z=0,\ \sigma_Z=1\)</div>
             </div>
             <p class="formula-note">最常錯在標準差：a 是負數時仍要取 |a|，因為標準差不能是負數。</p>
           </section>
@@ -466,13 +483,13 @@
         <article class="card concept teal">
           <span class="label teal">母體標準差</span>
           <h3>這一整組資料就是研究對象</h3>
-          <div class="formula">σ = √[Σ(xᵢ − x̄)² ÷ n]</div>
+          <div class="formula">\(\sigma=\sqrt{\dfrac{\sum\limits_{i=1}^{n}(x_i-\bar{x})^2}{n}}\)</div>
           <p>例如「這個班全體同學」的成績，若資料已收齊，通常用除以 <em>n</em> 的母體標準差。</p>
         </article>
         <article class="card concept orange">
           <span class="label orange">樣本標準差</span>
           <h3>用部分資料估計更大的母體</h3>
-          <div class="formula">s = √[Σ(xᵢ − x̄)² ÷ (n − 1)]</div>
+          <div class="formula">\(s=\sqrt{\dfrac{\sum\limits_{i=1}^{n}(x_i-\bar{x})^2}{n-1}}\)</div>
           <p>若只抽一些人來估計全校或全國，常用除以 <em>n − 1</em> 的樣本標準差。工具會同時列出兩者，避免把分母混在一起。</p>
         </article>
       </div>
@@ -485,25 +502,25 @@
           <section class="formula-panel teal-panel">
             <h4>從離平均數的距離出發</h4>
             <div class="formula-lines">
-              <div class="formula-line">Sₓₓ = Σ(xᵢ − μ)² = nσ²</div>
-              <div class="formula-line">σ = √[Σ(xᵢ − μ)² ÷ n] = √(Sₓₓ ÷ n)</div>
+              <div class="formula-line">\(S_{xx}=\sum\limits_{i=1}^{n}(x_i-\mu)^2=n\sigma^2\)</div>
+              <div class="formula-line">\(\sigma=\sqrt{\dfrac{\sum\limits_{i=1}^{n}(x_i-\mu)^2}{n}}=\sqrt{\dfrac{S_{xx}}{n}}\)</div>
             </div>
             <p class="formula-note">順序是：減平均、平方、加總、除以筆數、開根號。每一步的作用都不同，不能省略。</p>
           </section>
           <section class="formula-panel blue-panel">
-            <h4>已知 Σxᵢ 或 Σxᵢ² 時的速算</h4>
+            <h4>已知 \(\sum x_i\) 或 \(\sum x_i^2\) 時的速算</h4>
             <div class="formula-lines">
-              <div class="formula-line">σ = √[(Σxᵢ² − nμ²) ÷ n]</div>
-              <div class="formula-line">σ = √[(Σxᵢ² ÷ n) − μ²]　＝　√(方均 − 均方)</div>
-              <div class="formula-line emphasis">Σxᵢ² = n(μ² + σ²)</div>
+              <div class="formula-line">\(\sigma=\sqrt{\dfrac{\sum x_i^2-n\mu^2}{n}}\)</div>
+              <div class="formula-line">\(\sigma=\sqrt{\dfrac{\sum x_i^2}{n}-\mu^2}\quad\text{（方均減均方）}\)</div>
+              <div class="formula-line emphasis">\(\sum x_i^2=n(\mu^2+\sigma^2)\)</div>
             </div>
-            <p class="formula-note">看到 Σxᵢ² 時，先分清楚它是「平方後加總」；(Σxᵢ)² 則是「加總後才平方」，兩者不同。</p>
+            <p class="formula-note">看到 \(\sum x_i^2\) 時，先分清楚它是「平方後加總」；\(\left(\sum x_i\right)^2\) 則是「加總後才平方」，兩者不同。</p>
           </section>
         </div>
         <div class="formula-memory" aria-label="標準差表格記憶公式">
           <strong>用表格算時<br>三個總和</strong>
           <div class="formula-lines">
-            <div class="formula-line">Σxᵢ = nμ　　｜　　Σ(xᵢ − μ) = 0　　｜　　Σ(xᵢ − μ)² = Sₓₓ = nσ²</div>
+            <div class="formula-line">\(\sum x_i=n\mu\quad\big|\quad\sum(x_i-\mu)=0\quad\big|\quad\sum(x_i-\mu)^2=S_{xx}=n\sigma^2\)</div>
           </div>
         </div>
       </article>
@@ -548,8 +565,8 @@
           <section class="result-panel" aria-labelledby="sd-result-title">
             <h4 id="sd-result-title">計算結果</h4>
             <div class="mode-row" aria-label="標準差類型">
-              <label><input name="std-mode" type="radio" value="population" checked> 全體資料：除以 n</label>
-              <label><input name="std-mode" type="radio" value="sample"> 抽樣估計：除以 n − 1</label>
+              <label><input name="std-mode" type="radio" value="population" checked> 全體資料：除以 \(n\)</label>
+              <label><input name="std-mode" type="radio" value="sample"> 抽樣估計：除以 \(n-1\)</label>
             </div>
             <div class="metric-grid" id="std-metrics"></div>
             <p class="result-text" id="std-result-text">請至少加入一筆資料。</p>
@@ -559,7 +576,7 @@
 
         <div class="table-scroll">
           <table aria-label="標準差逐步計算表">
-            <thead><tr><th>第幾筆</th><th>xᵢ</th><th>xᵢ − x̄</th><th>(xᵢ − x̄)²</th></tr></thead>
+            <thead><tr><th>第幾筆</th><th>\(x_i\)</th><th>\(x_i-\bar{x}\)</th><th>\((x_i-\bar{x})^2\)</th></tr></thead>
             <tbody id="std-work-table"></tbody>
           </table>
         </div>
@@ -590,7 +607,7 @@
         <article class="card concept purple">
           <span class="label purple">相關係數 r</span>
           <h3>方向與線性緊密程度</h3>
-          <div class="formula">−1 ≤ r ≤ 1</div>
+          <div class="formula">\(-1\le r\le1\)</div>
           <ul class="steps">
             <li><strong>r &gt; 0：</strong>x 增加時，y 傾向增加。</li>
             <li><strong>r &lt; 0：</strong>x 增加時，y 傾向減少。</li>
@@ -599,9 +616,9 @@
         </article>
         <article class="card concept orange">
           <span class="label orange">最小平方法直線</span>
-          <h3>用 ŷ = a + bx 做估計</h3>
-          <p>斜率 <em>b</em> 表示 x 每增加 1，預測值 ŷ 平均改變多少；截距 <em>a</em> 是 x = 0 時的直線值。這條線會通過 (x̄, ȳ)。</p>
-          <div class="formula">b = Sxy ÷ Sxx，a = ȳ − bx̄</div>
+          <h3>用 \(\hat{y}=a+bx\) 做估計</h3>
+          <p>斜率 <em>b</em> 表示 x 每增加 1，預測值 \(\hat{y}\) 平均改變多少；截距 <em>a</em> 是 \(x=0\) 時的直線值。這條線會通過 \((\bar{x},\bar{y})\)。</p>
+          <div class="formula">\(b=\dfrac{S_{xy}}{S_{xx}},\qquad a=\bar{y}-b\bar{x}\)</div>
           <p class="small">若 x = 0 不在原始資料範圍內，截距可能只有代數意義，不一定適合做現實解釋。</p>
         </article>
       </div>
@@ -609,39 +626,39 @@
       <article class="formula-toolbox purple-box" aria-labelledby="two-dimensional-formula-title">
         <span class="label purple">二維資料公式整理</span>
         <h3 id="two-dimensional-formula-title">先建三個離差平方和，再讀相關與兩條回歸線</h3>
-        <p class="formula-kicker">以下以母體的 μₓ、μᵧ、σₓ、σᵧ 記號書寫；實作時可先用表格算 Sₓₓ、Sᵧᵧ、Sₓᵧ。</p>
+        <p class="formula-kicker">以下以母體的 \(\mu_x,\mu_y,\sigma_x,\sigma_y\) 記號書寫；實作時可先用表格算 \(S_{xx},S_{yy},S_{xy}\)。</p>
         <div class="formula-grid">
           <section class="formula-panel purple-panel">
             <h4>表格裡的三個總和</h4>
             <div class="formula-lines">
-              <div class="formula-line purple-line">Sₓₓ = Σ(xᵢ − μₓ)²　　Sᵧᵧ = Σ(yᵢ − μᵧ)²</div>
-              <div class="formula-line purple-line">Sₓᵧ = Σ(xᵢ − μₓ)(yᵢ − μᵧ)</div>
+              <div class="formula-line purple-line">\(S_{xx}=\sum(x_i-\mu_x)^2,\qquad S_{yy}=\sum(y_i-\mu_y)^2\)</div>
+              <div class="formula-line purple-line">\(S_{xy}=\sum(x_i-\mu_x)(y_i-\mu_y)\)</div>
             </div>
-            <p class="formula-note">Sₓᵧ 的正負會反映點大致往右上或右下走；Sₓₓ、Sᵧᵧ 則保證是非負的。</p>
+            <p class="formula-note">\(S_{xy}\) 的正負會反映點大致往右上或右下走；\(S_{xx},S_{yy}\) 則保證是非負的。</p>
           </section>
           <section class="formula-panel blue-panel">
             <h4>相關係數 r：三種等價寫法</h4>
             <div class="formula-lines">
-              <div class="formula-line">r = Sₓᵧ ÷ √(SₓₓSᵧᵧ)</div>
-              <div class="formula-line">r = [Σxᵢyᵢ − nμₓμᵧ] ÷ √[(Σxᵢ²−nμₓ²)(Σyᵢ²−nμᵧ²)]</div>
-              <div class="formula-line">r = [(Σxᵢyᵢ ÷ n) − μₓμᵧ] ÷ (σₓσᵧ)</div>
-              <div class="formula-line emphasis">Σxᵢyᵢ = n(μₓμᵧ + rσₓσᵧ)</div>
+              <div class="formula-line">\(r=\dfrac{S_{xy}}{\sqrt{S_{xx}S_{yy}}}\)</div>
+              <div class="formula-line">\(r=\dfrac{\sum x_iy_i-n\mu_x\mu_y}{\sqrt{(\sum x_i^2-n\mu_x^2)(\sum y_i^2-n\mu_y^2)}}\)</div>
+              <div class="formula-line">\(r=\dfrac{\dfrac{\sum x_iy_i}{n}-\mu_x\mu_y}{\sigma_x\sigma_y}\)</div>
+              <div class="formula-line emphasis">\(\sum x_iy_i=n(\mu_x\mu_y+r\sigma_x\sigma_y)\)</div>
             </div>
           </section>
           <section class="formula-panel orange-panel">
             <h4>y 對 x 的迴歸線：用 x 預測 y</h4>
             <div class="formula-lines">
-              <div class="formula-line">ŷ − μᵧ = r(σᵧ ÷ σₓ)(x − μₓ)</div>
-              <div class="formula-line">ŷ − μᵧ = (Sₓᵧ ÷ Sₓₓ)(x − μₓ)</div>
-              <div class="formula-line">ŷ = a + bx，b = Sₓᵧ ÷ Sₓₓ</div>
+              <div class="formula-line">\(\hat{y}-\mu_y=r\dfrac{\sigma_y}{\sigma_x}(x-\mu_x)\)</div>
+              <div class="formula-line">\(\hat{y}-\mu_y=\dfrac{S_{xy}}{S_{xx}}(x-\mu_x)\)</div>
+              <div class="formula-line">\(\hat{y}=a+bx,\qquad b=\dfrac{S_{xy}}{S_{xx}}\)</div>
             </div>
-            <p class="formula-note">這正是工具畫出的橘線；它一定通過 (μₓ, μᵧ)。</p>
+            <p class="formula-note">這正是工具畫出的橘線；它一定通過 \((\mu_x,\mu_y)\)。</p>
           </section>
           <section class="formula-panel teal-panel">
             <h4>x 對 y 的迴歸線：用 y 預測 x</h4>
             <div class="formula-lines">
-              <div class="formula-line">x̂ − μₓ = r(σₓ ÷ σᵧ)(y − μᵧ)</div>
-              <div class="formula-line">x̂ − μₓ = (Sₓᵧ ÷ Sᵧᵧ)(y − μᵧ)</div>
+              <div class="formula-line">\(\hat{x}-\mu_x=r\dfrac{\sigma_x}{\sigma_y}(y-\mu_y)\)</div>
+              <div class="formula-line">\(\hat{x}-\mu_x=\dfrac{S_{xy}}{S_{yy}}(y-\mu_y)\)</div>
             </div>
             <p class="formula-note">題目問「由哪個變數預測哪個變數」，就選對應的回歸式；兩條回歸線不是隨便交換 x、y。</p>
           </section>
@@ -650,10 +667,10 @@
           <table aria-label="相關與迴歸的性質整理">
             <thead><tr><th>性質</th><th>看到公式時的判讀</th></tr></thead>
             <tbody>
-              <tr><td>範圍與符號</td><td>−1 ≤ r ≤ 1；y 對 x 的迴歸線斜率與 r 同號。</td></tr>
-              <tr><td>兩條回歸線</td><td>都通過 (μₓ, μᵧ)。當 r = 0 時，y 對 x 是水平線、x 對 y 是鉛直線；當 |r| = 1 時，兩條線重合。</td></tr>
-              <tr><td>平移與縮放</td><td><span class="formula-line">X′ = aX+b，Y′ = cY+d　⇒　r′ = sgn(ac)r（a,c ≠ 0）</span> 平移不改變 r；正倍率不改變 r，只有負倍率會讓 r 變號。</td></tr>
-              <tr><td>何時先看圖</td><td>r 接近 0 只代表「線性」關係弱，可能仍有曲線關係；|r| 很小時，不宜硬用直線做預測。</td></tr>
+              <tr><td>範圍與符號</td><td>\(-1\le r\le1\)；\(y\) 對 \(x\) 的迴歸線斜率與 \(r\) 同號。</td></tr>
+              <tr><td>兩條回歸線</td><td>都通過 \((\mu_x,\mu_y)\)。當 \(r=0\) 時，\(y\) 對 \(x\) 是水平線、\(x\) 對 \(y\) 是鉛直線；當 \(|r|=1\) 時，兩條線重合。</td></tr>
+              <tr><td>平移與縮放</td><td><span class="formula-line">\(X'=aX+b,\quad Y'=cY+d\quad\Rightarrow\quad r'=\operatorname{sgn}(ac)r\quad(a,c\ne0)\)</span> 平移不改變 \(r\)；正倍率不改變 \(r\)，只有負倍率會讓 \(r\) 變號。</td></tr>
+              <tr><td>何時先看圖</td><td>\(r\) 接近 \(0\) 只代表「線性」關係弱，可能仍有曲線關係；\(|r|\) 很小時，不宜硬用直線做預測。</td></tr>
             </tbody>
           </table>
         </div>
@@ -728,7 +745,7 @@
       <div style="margin-top:14px">
         <details>
           <summary>基礎：資料 4、6、8 的算術平均與母體標準差是多少？</summary>
-          <p>平均數 x̄ = 6。離平均數的距離為 −2、0、2；平方後為 4、0、4，平方離差和為 8。母體變異數為 8 ÷ 3，所以母體標準差 σ = √(8/3) ≈ 1.633。</p>
+          <p>平均數 \(\bar{x}=6\)。離平均數的距離為 \(-2,0,2\)；平方後為 \(4,0,4\)，平方離差和為 \(8\)。母體變異數為 \(\dfrac{8}{3}\)，所以母體標準差 \(\sigma=\sqrt{\dfrac{8}{3}}\approx1.633\)。</p>
         </details>
         <details>
           <summary>進階：哪一組標準差較大？A：68、69、70、71、72；B：50、60、70、80、90。</summary>
@@ -736,7 +753,7 @@
         </details>
         <details>
           <summary>挑戰：若 r 接近 0，是否代表 x 與 y 完全沒有關係？</summary>
-          <p>不一定。r 接近 0 只表示<strong>線性</strong>關係弱；資料可能呈 U 形、倒 U 形或其他非線性關係。先看散布圖的形狀，不能只看一個數字。</p>
+          <p>不一定。\(r\) 接近 \(0\) 只表示<strong>線性</strong>關係弱；資料可能呈 U 形、倒 U 形或其他非線性關係。先看散布圖的形狀，不能只看一個數字。</p>
         </details>
       </div>
     </section>
@@ -751,6 +768,17 @@
       const format = (value, precise = false) => Number.isFinite(value) ? (precise ? preciseFormat : numberFormat).format(value) : '—';
       const nearlyZero = (value) => Math.abs(value) < 1e-10;
       const parseNumbers = (text) => text.trim().split(/[\s,，、;；]+/).filter(Boolean).map(Number);
+      const tex = (formula) => `\\(${formula}\\)`;
+      let mathTypesetFrame = 0;
+      function typesetMath(nodes) {
+        const targets = nodes.filter(Boolean);
+        if (!targets.length || !window.MathJax?.typesetPromise) return;
+        cancelAnimationFrame(mathTypesetFrame);
+        mathTypesetFrame = requestAnimationFrame(() => {
+          window.MathJax.typesetClear?.(targets);
+          window.MathJax.typesetPromise(targets).catch(() => {});
+        });
+      }
 
       const meanInput = document.querySelector('#mean-data-input');
       const meanResult = document.querySelector('#mean-result');
@@ -764,7 +792,10 @@
         const geometric = values.every((value) => value > 0)
           ? Math.exp(values.reduce((sum, value) => sum + Math.log(value), 0) / values.length)
           : null;
-        meanResult.innerHTML = `<strong>算術平均 x̄ = ${format(arithmetic, true)}</strong>（${format(values.reduce((sum, value) => sum + value, 0), true)} ÷ ${values.length}）<br>${geometric === null ? '幾何平均：這組資料含有 0 或負數，不能在實數範圍計算。' : `<strong>幾何平均 G = ${format(geometric, true)}</strong>（${values.length} 個正數的等效倍率）`}`;
+        const total = values.reduce((sum, value) => sum + value, 0);
+        const product = values.map((value) => format(value, true)).join(String.raw`\cdot`);
+        meanResult.innerHTML = `<strong>算術平均 ${tex(String.raw`\bar{x}=\dfrac{${format(total, true)}}{${values.length}}=${format(arithmetic, true)}`)}</strong><br>${geometric === null ? '幾何平均：這組資料含有 0 或負數，不能在實數範圍計算。' : `<strong>幾何平均 ${tex(String.raw`G=\sqrt[${values.length}]{${product}}=${format(geometric, true)}`)}</strong>（${values.length} 個正數的等效倍率）`}`;
+        typesetMath([meanResult]);
       }
       document.querySelector('#calculate-means').addEventListener('click', calculateMeans);
       meanInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') calculateMeans(); });
@@ -829,7 +860,7 @@
         const meanMark = document.createElement('div');
         meanMark.className = 'mean-mark';
         meanMark.style.left = `${percent(mean)}%`;
-        meanMark.innerHTML = `<span>x̄=${format(mean, true)}</span>`;
+        meanMark.innerHTML = `<span>${tex(String.raw`\bar{x}=${format(mean, true)}`)}</span>`;
         spreadPlot.appendChild(meanMark);
         [min, mean, max].forEach((value) => {
           const label = document.createElement('span');
@@ -838,7 +869,7 @@
           label.textContent = format(value, true);
           spreadPlot.appendChild(label);
         });
-        spreadCaption.textContent = `資料範圍 ${format(Math.min(...stdData), true)} 到 ${format(Math.max(...stdData), true)}；目前採用 ${selectedStdMode === 'population' ? '母體' : '樣本'}標準差。`;
+        spreadCaption.innerHTML = `資料範圍 ${format(Math.min(...stdData), true)} 到 ${format(Math.max(...stdData), true)}；目前採用${selectedStdMode === 'population' ? '母體' : '樣本'}標準差 ${tex(selectedStdMode === 'population' ? String.raw`\sigma` : 's')}。`;
       }
       function renderStdComparison(populationSd) {
         const compact = [68, 69, 70, 71, 72];
@@ -850,7 +881,7 @@
         const compactSd = calc(compact);
         const spreadSd = calc(spread);
         const max = Math.max(compactSd, spreadSd, populationSd || 0, 1);
-        comparison.innerHTML = `<div class="compare-line"><strong>集中組 σ=${format(compactSd, true)}</strong><div class="bar-track"><div class="bar" style="width:${(compactSd / max) * 100}%"></div></div></div><div class="compare-line"><strong>分散組 σ=${format(spreadSd, true)}</strong><div class="bar-track"><div class="bar orange" style="width:${(spreadSd / max) * 100}%"></div></div></div><p style="margin-top:9px">目前這組資料的母體標準差是 <strong>${format(populationSd, true)}</strong>。兩個範例的平均數都等於 70。</p>`;
+        comparison.innerHTML = `<div class="compare-line"><strong>集中組 ${tex(String.raw`\sigma=${format(compactSd, true)}`)}</strong><div class="bar-track"><div class="bar" style="width:${(compactSd / max) * 100}%"></div></div></div><div class="compare-line"><strong>分散組 ${tex(String.raw`\sigma=${format(spreadSd, true)}`)}</strong><div class="bar-track"><div class="bar orange" style="width:${(spreadSd / max) * 100}%"></div></div></div><p style="margin-top:9px">目前這組資料的母體標準差是 <strong>${tex(String.raw`\sigma=${format(populationSd, true)}`)}</strong>。兩個範例的平均數都等於 70。</p>`;
       }
       function renderStd() {
         stdList.replaceChildren();
@@ -870,11 +901,12 @@
         });
         stdTable.replaceChildren();
         if (!stdData.length) {
-          stdMetrics.innerHTML = metric('資料筆數 n', '0') + metric('平均數 x̄', '—') + metric('選用標準差', '—') + metric('平方離差和', '—');
+          stdMetrics.innerHTML = metric(`資料筆數 ${tex('n')}`, '0') + metric(`平均數 ${tex(String.raw`\bar{x}`)}`, '—') + metric('選用標準差', '—') + metric('平方離差和', '—');
           stdText.textContent = '請至少加入一筆資料。';
-          stdFormulaLive.textContent = '';
+          stdFormulaLive.innerHTML = '';
           renderStdPlot(NaN, NaN);
           renderStdComparison(0);
+          typesetMath([stdMetrics, stdFormulaLive, stdTable, spreadPlot, spreadCaption, comparison]);
           return;
         }
         const n = stdData.length;
@@ -886,12 +918,13 @@
         const sampleSd = n > 1 ? Math.sqrt(ss / (n - 1)) : NaN;
         selectedStdMode = currentStdMode();
         const activeSd = selectedStdMode === 'population' ? populationSd : sampleSd;
-        stdMetrics.innerHTML = metric('資料筆數 n', format(n)) + metric('平均數 x̄', format(mean, true)) + metric(selectedStdMode === 'population' ? '母體標準差 σ' : '樣本標準差 s', format(activeSd, true)) + metric('平方離差和 Σ(xᵢ−x̄)²', format(ss, true));
+        stdMetrics.innerHTML = metric(`資料筆數 ${tex('n')}`, format(n)) + metric(`平均數 ${tex(String.raw`\bar{x}`)}`, format(mean, true)) + metric(selectedStdMode === 'population' ? `母體標準差 ${tex(String.raw`\sigma`)}` : `樣本標準差 ${tex('s')}`, format(activeSd, true)) + metric(`平方離差和 ${tex(String.raw`\sum(x_i-\bar{x})^2`)}`, format(ss, true));
         stdText.textContent = Number.isFinite(activeSd)
           ? (nearlyZero(activeSd) ? '每筆資料都相同，因此每筆離平均數的距離都是 0，標準差也是 0。' : `標準差約為 ${format(activeSd, true)}；數值越大，表示資料離平均數越分散。`)
           : '樣本標準差需要至少兩筆資料，因為分母是 n − 1。';
         const divisor = selectedStdMode === 'population' ? n : n - 1;
-        stdFormulaLive.textContent = Number.isFinite(activeSd) ? `${selectedStdMode === 'population' ? 'σ' : 's'} = √(${format(ss, true)} ÷ ${divisor}) = ${format(activeSd, true)}` : '';
+        const activeSymbol = selectedStdMode === 'population' ? String.raw`\sigma` : 's';
+        stdFormulaLive.innerHTML = Number.isFinite(activeSd) ? tex(String.raw`${activeSymbol}=\sqrt{\dfrac{${format(ss, true)}}{${divisor}}}=${format(activeSd, true)}`) : '';
         stdData.forEach((value, index) => {
           const row = document.createElement('tr');
           [index + 1, format(value, true), format(value - mean, true), format(squaredDifferences[index], true)].forEach((text) => {
@@ -903,6 +936,7 @@
         });
         renderStdPlot(mean, Number.isFinite(activeSd) ? activeSd : populationSd);
         renderStdComparison(populationSd);
+        typesetMath([stdMetrics, stdFormulaLive, stdTable, spreadPlot, spreadCaption, comparison]);
       }
       function addStdValues(values, source) {
         if (!values.length || values.some((value) => !Number.isFinite(value))) {
@@ -945,7 +979,7 @@
       const scatterCaption = document.querySelector('#scatter-caption');
       let lastPairStats = null;
       const updatePairStatus = (message = '', isError = false) => { pairStatus.textContent = message; pairStatus.classList.toggle('error', isError); };
-      const lineFormula = (a, b) => `ŷ = ${format(b, true)}x ${a >= 0 ? '+' : '−'} ${format(Math.abs(a), true)}`;
+      const lineFormula = (a, b) => String.raw`\hat{y}=${format(b, true)}x ${a >= 0 ? '+' : '-'} ${format(Math.abs(a), true)}`;
       function pairStats() {
         if (pairData.length < 2) return null;
         const n = pairData.length;
@@ -1058,29 +1092,32 @@
         const stats = pairStats();
         lastPairStats = stats;
         if (!pairData.length) {
-          pairMetrics.innerHTML = metric('成對資料數 n', '0') + metric('相關係數 r', '—') + metric('斜率 b', '—') + metric('截距 a', '—');
+          pairMetrics.innerHTML = metric(`成對資料數 ${tex('n')}`, '0') + metric(`相關係數 ${tex('r')}`, '—') + metric(`斜率 ${tex('b')}`, '—') + metric(`截距 ${tex('a')}`, '—');
           fitSummary.textContent = '請先加入至少兩組成對資料。';
           scatterCaption.textContent = '散布圖會在加入資料後顯示。';
           drawScatter(null);
+          typesetMath([pairMetrics, fitSummary, pairTable, scatterCaption]);
           return;
         }
         if (!stats) {
-          pairMetrics.innerHTML = metric('成對資料數 n', format(pairData.length)) + metric('相關係數 r', '—') + metric('斜率 b', '—') + metric('截距 a', '—');
+          pairMetrics.innerHTML = metric(`成對資料數 ${tex('n')}`, format(pairData.length)) + metric(`相關係數 ${tex('r')}`, '—') + metric(`斜率 ${tex('b')}`, '—') + metric(`截距 ${tex('a')}`, '—');
           fitSummary.textContent = '還需要至少兩組資料，才能檢查線性趨勢。';
           scatterCaption.textContent = '再加入一組資料後，即可計算相關係數。';
           drawScatter(null);
+          typesetMath([pairMetrics, fitSummary, pairTable, scatterCaption]);
           return;
         }
-        pairMetrics.innerHTML = metric('成對資料數 n', format(stats.n)) + metric('相關係數 r', format(stats.r, true)) + metric('斜率 b', format(stats.b, true)) + metric('截距 a', format(stats.a, true));
+        pairMetrics.innerHTML = metric(`成對資料數 ${tex('n')}`, format(stats.n)) + metric(`相關係數 ${tex('r')}`, format(stats.r, true)) + metric(`斜率 ${tex('b')}`, format(stats.b, true)) + metric(`截距 ${tex('a')}`, format(stats.a, true));
         if (!Number.isFinite(stats.r)) {
-          fitSummary.innerHTML = '<strong>目前無法算出 r 或迴歸線。</strong><br>所有 x 都一樣或所有 y 都一樣時，沒有足夠的變化可以描述線性趨勢。';
+          fitSummary.innerHTML = `<strong>目前無法算出 ${tex('r')} 或迴歸線。</strong><br>所有 ${tex('x')} 都一樣或所有 ${tex('y')} 都一樣時，沒有足夠的變化可以描述線性趨勢。`;
           scatterCaption.textContent = '請讓 x 與 y 都至少有兩種不同的值。';
         } else {
           const direction = stats.r > 0 ? '正相關：x 增加時，y 傾向增加。' : stats.r < 0 ? '負相關：x 增加時，y 傾向減少。' : '線性相關極弱。';
-          fitSummary.innerHTML = `<strong>${direction}</strong> |r|=${format(Math.abs(stats.r), true)}，表示點和直線趨勢的貼近程度。<div class="formula">${lineFormula(stats.a, stats.b)}</div><p class="small">這條線通過 (x̄, ȳ) = (${format(stats.xMean, true)}, ${format(stats.yMean, true)})；斜率的意思是 x 每增加 1，預測 ŷ 約改變 ${format(stats.b, true)}。</p>`;
-          scatterCaption.textContent = `紫點是原始資料；橘線是最小平方法迴歸直線。請只在 x 的原始範圍 ${format(Math.min(...pairData.map((pair) => pair[0])), true)} 到 ${format(Math.max(...pairData.map((pair) => pair[0])), true)} 附近做估計。`;
+          fitSummary.innerHTML = `<strong>${direction}</strong> ${tex(String.raw`|r|=${format(Math.abs(stats.r), true)}`)}，表示點和直線趨勢的貼近程度。<div class="formula">${tex(lineFormula(stats.a, stats.b))}</div><p class="small">這條線通過 ${tex(String.raw`(\bar{x},\bar{y})=(${format(stats.xMean, true)},${format(stats.yMean, true)})`)}；斜率的意思是 ${tex('x')} 每增加 1，預測 ${tex(String.raw`\hat{y}`)} 約改變 ${format(stats.b, true)}。</p>`;
+          scatterCaption.innerHTML = `紫點是原始資料；橘線是最小平方法迴歸直線。請只在 ${tex('x')} 的原始範圍 ${format(Math.min(...pairData.map((pair) => pair[0])), true)} 到 ${format(Math.max(...pairData.map((pair) => pair[0])), true)} 附近做估計。`;
         }
         drawScatter(stats);
+        typesetMath([pairMetrics, fitSummary, pairTable, scatterCaption]);
       }
       function parsePairs(text) {
         const lines = text.trim().split(/[\n;；]+/).map((line) => line.trim()).filter(Boolean);
@@ -1120,6 +1157,9 @@
       calculateMeans();
       renderStd();
       renderPairs();
+      window.addEventListener('load', () => {
+        typesetMath([meanResult, stdMetrics, stdFormulaLive, stdTable, spreadPlot, spreadCaption, comparison, pairMetrics, fitSummary, pairTable, scatterCaption]);
+      });
     })();
   </script>
 </body>

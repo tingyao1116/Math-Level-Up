@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>高中數列：遞迴、等差等比與和公式</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       --ink: #102a43;
@@ -245,12 +254,12 @@
     <header class="hero">
       <div class="eyebrow">高中數學｜數列的規律、位置與總和</div>
       <h1>數列：從遞迴走到等差、等比與和公式</h1>
-      <p class="lead">先看「下一項怎麼來」，再把規律改寫成「第 <span class="formula">n</span> 項在哪裡」。最後才使用前 <span class="formula">n</span> 項和與 <span class="formula">1、2、3</span> 次和公式。這樣公式不再是一串要硬背的符號。</p>
+      <p class="lead">先看「下一項怎麼來」，再把規律改寫成「第 <span class="formula">\(n\)</span> 項在哪裡」。最後才使用前 <span class="formula">\(n\)</span> 項和與一次、二次、三次和公式。這樣公式不再是一串要硬背的符號。</p>
       <div class="tag-row" aria-label="本頁重點">
         <span class="tag">遞迴式＋初始值</span>
         <span class="tag">等差數列與等比數列</span>
-        <span class="tag orange">前 n 項和</span>
-        <span class="tag purple">Σk、Σk²、Σk³</span>
+        <span class="tag orange">前 \(n\) 項和</span>
+        <span class="tag purple">\(\sum k\)、\(\sum k^2\)、\(\sum k^3\)</span>
       </div>
       <nav class="nav" aria-label="頁面章節">
         <a href="#start">先分清兩種問法</a>
@@ -263,18 +272,18 @@
 
     <section class="section" id="start">
       <h2>0. 數列有兩個問題：下一項？第幾項？</h2>
-      <p class="section-lead">數列像依序站在位置 <span class="formula">1, 2, 3, …</span> 的數。遞迴式描述「從前一項走到下一項的動作」；通項公式則直接告訴你「第 <span class="formula">n</span> 個位置的值」。</p>
+      <p class="section-lead">數列像依序站在位置 <span class="formula">\(1,2,3,\ldots\)</span> 的數。遞迴式描述「從前一項走到下一項的動作」；通項公式則直接告訴你「第 <span class="formula">\(n\)</span> 個位置的值」。</p>
       <div class="flow" aria-label="從遞迴到通項再到總和的流程">
-        <div class="flow-step"><strong>① 起點</strong>先知道 <span class="formula">a₁</span> 是多少。</div>
+        <div class="flow-step"><strong>① 起點</strong>先知道 <span class="formula">\(a_1\)</span> 是多少。</div>
         <div class="flow-step"><strong>② 下一項規則</strong>例如每次加 3，或每次乘 2。</div>
-        <div class="flow-step"><strong>③ 位置與總和</strong>推得 <span class="formula">aₙ</span>，再算 <span class="formula">Sₙ</span>。</div>
+        <div class="flow-step"><strong>③ 位置與總和</strong>推得 <span class="formula">\(a_n\)</span>，再算 <span class="formula">\(S_n\)</span>。</div>
       </div>
-      <div class="callout warn"><strong>最重要的提醒：</strong><span class="formula">aₙ₊₁ = aₙ + 3</span> 只有「走法」，還沒有起點。<strong>一定還要給 <span class="formula">a₁</span></strong>，才會是唯一的一個數列。例如 <span class="formula">a₁ = 2</span> 與 <span class="formula">a₁ = 100</span> 都能每次加 3，但它們是不同數列。</div>
+      <div class="callout warn"><strong>最重要的提醒：</strong><span class="formula">\(a_{n+1}=a_n+3\)</span> 只有「走法」，還沒有起點。<strong>一定還要給 <span class="formula">\(a_1\)</span></strong>，才會是唯一的一個數列。例如 <span class="formula">\(a_1=2\)</span> 與 <span class="formula">\(a_1=100\)</span> 都能每次加 3，但它們是不同數列。</div>
     </section>
 
     <section class="section" id="explorer">
       <h2>1. 遞迴規律觀察器：先把數列「走」出來</h2>
-      <p class="section-lead">切換兩種動作，調整起點和規則。觀察每一支箭頭旁的動作，再對照下方的第 <span class="formula">n</span> 項與前 <span class="formula">n</span> 項和。</p>
+      <p class="section-lead">切換兩種動作，調整起點和規則。觀察每一支箭頭旁的動作，再對照下方的第 <span class="formula">\(n\)</span> 項與前 <span class="formula">\(n\)</span> 項和。</p>
       <article class="card">
         <div class="model-switch" role="group" aria-label="選擇數列規律">
           <button class="model-choice is-active" type="button" data-model="arithmetic">每次加同一個數（等差）</button>
@@ -282,10 +291,10 @@
         </div>
         <div class="control-panel">
           <div class="controls">
-            <label>第一項 a₁
+            <label>第一項 \(a_1\)
               <input id="firstTerm" type="number" inputmode="decimal" value="4" aria-describedby="explorerMessage">
             </label>
-            <label id="ruleLabel">公差 d（每次加多少）
+            <label><span id="ruleLabel">公差 \(d\)（每次加多少）</span>
               <input id="ruleValue" type="number" inputmode="decimal" value="3" aria-describedby="explorerMessage">
             </label>
             <label>顯示前幾項（2～12）
@@ -312,10 +321,10 @@
             <tr><th>比較</th><th>等差數列 AP</th><th>等比數列 GP</th></tr>
           </thead>
           <tbody>
-            <tr><td>遞迴式</td><td><span class="formula">aₙ₊₁ = aₙ + d</span></td><td><span class="formula">aₙ₊₁ = r aₙ</span></td></tr>
-            <tr><td>固定的規律</td><td>公差 <span class="formula">d = aₙ₊₁ − aₙ</span></td><td>公比 <span class="formula">r = aₙ₊₁ / aₙ</span>（<span class="formula">aₙ ≠ 0</span>）</td></tr>
-            <tr><td>通項</td><td><span class="formula">aₙ = a₁ + (n−1)d</span></td><td><span class="formula">aₙ = a₁rⁿ⁻¹</span></td></tr>
-            <tr><td>前 n 項和</td><td><span class="formula">Sₙ = n(a₁+aₙ)/2</span><br><span class="small">也可寫成 n[2a₁+(n−1)d]/2</span></td><td><span class="formula">Sₙ = a₁(rⁿ−1)/(r−1)</span>，<span class="formula">r ≠ 1</span><br><span class="small">若 r = 1，則 Sₙ = na₁。</span></td></tr>
+            <tr><td>遞迴式</td><td><span class="formula">\(a_{n+1}=a_n+d\)</span></td><td><span class="formula">\(a_{n+1}=ra_n\)</span></td></tr>
+            <tr><td>固定的規律</td><td>公差 <span class="formula">\(d=a_{n+1}-a_n\)</span></td><td>公比 <span class="formula">\(r=\dfrac{a_{n+1}}{a_n}\)</span>（<span class="formula">\(a_n\ne0\)</span>）</td></tr>
+            <tr><td>通項</td><td><span class="formula">\(a_n=a_1+(n-1)d\)</span></td><td><span class="formula">\(a_n=a_1r^{n-1}\)</span></td></tr>
+            <tr><td>前 \(n\) 項和</td><td><span class="formula">\(S_n=\dfrac{n(a_1+a_n)}{2}\)</span><br><span class="small">也可寫成 \(S_n=\dfrac{n[2a_1+(n-1)d]}{2}\)</span></td><td><span class="formula">\(S_n=\dfrac{a_1(r^n-1)}{r-1}\)</span>，<span class="formula">\(r\ne1\)</span><br><span class="small">若 \(r=1\)，則 \(S_n=na_1\)。</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -323,24 +332,24 @@
         <article class="card solution">
           <span class="tag">代表例題｜等差</span>
           <h3>由遞迴式求第 10 項與前 10 項和</h3>
-          <p>已知 <span class="formula">a₁=5，aₙ₊₁=aₙ+3</span>，求 <span class="formula">a₁₀</span> 與 <span class="formula">S₁₀</span>。</p>
+          <p>已知 <span class="formula">\(a_1=5,\ a_{n+1}=a_n+3\)</span>，求 <span class="formula">\(a_{10}\)</span> 與 <span class="formula">\(S_{10}\)</span>。</p>
           <ol class="steps">
-            <li>每次加 3，所以這是等差數列，<span class="formula">d=3</span>。</li>
-            <li><span class="formula">a₁₀=5+(10−1)×3=32</span>。</li>
-            <li><span class="formula">S₁₀=10(5+32)/2=185</span>。</li>
+            <li>每次加 3，所以這是等差數列，<span class="formula">\(d=3\)</span>。</li>
+            <li><span class="formula">\(a_{10}=5+(10-1)\cdot3=32\)</span>。</li>
+            <li><span class="formula">\(S_{10}=\dfrac{10(5+32)}{2}=185\)</span>。</li>
           </ol>
           <div class="callout"><strong>想法：</strong>先用通項找到最後一項，再用「項數 × 首尾平均」求和。</div>
         </article>
         <article class="card solution teal">
           <span class="tag">代表例題｜等比</span>
           <h3>由遞迴式求第 8 項與前 8 項和</h3>
-          <p>已知 <span class="formula">b₁=3，bₙ₊₁=2bₙ</span>，求 <span class="formula">b₈</span> 與 <span class="formula">T₈</span>。</p>
+          <p>已知 <span class="formula">\(b_1=3,\ b_{n+1}=2b_n\)</span>，求 <span class="formula">\(b_8\)</span> 與 <span class="formula">\(T_8\)</span>。</p>
           <ol class="steps">
-            <li>每次乘 2，所以是等比數列，<span class="formula">r=2</span>。</li>
-            <li><span class="formula">b₈=3×2⁷=384</span>。</li>
-            <li><span class="formula">T₈=3(2⁸−1)/(2−1)=765</span>。</li>
+            <li>每次乘 2，所以是等比數列，<span class="formula">\(r=2\)</span>。</li>
+            <li><span class="formula">\(b_8=3\cdot2^7=384\)</span>。</li>
+            <li><span class="formula">\(T_8=\dfrac{3(2^8-1)}{2-1}=765\)</span>。</li>
           </ol>
-          <div class="callout success"><strong>想法：</strong>第 8 項從第 1 項走了 7 次，所以指數是 <span class="formula">8−1</span>，不是 8。</div>
+          <div class="callout success"><strong>想法：</strong>第 8 項從第 1 項走了 7 次，所以指數是 <span class="formula">\(8-1\)</span>，不是 8。</div>
         </article>
       </div>
     </section>

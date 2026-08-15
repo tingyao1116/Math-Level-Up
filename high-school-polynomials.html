@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高中多項式：除法原理、餘式定理與高次餘式</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        processEscapes: true
+      },
+      chtml: { scale: 1 }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #15305b;
+      --muted: #53657e;
+      --paper: #ffffff;
+      --page: #f3f7fc;
+      --line: #d7e2f0;
+      --blue: #2857c5;
+      --blue-soft: #eef4ff;
+      --teal: #0f766e;
+      --teal-soft: #effcf9;
+      --orange: #b45309;
+      --orange-soft: #fff7ed;
+      --purple: #6d28d9;
+      --purple-soft: #f5f3ff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(145deg, #edf4ff 0, var(--page) 43%, #effbf8 100%);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.78;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 26px 18px 46px; }
+    .hero, .card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--paper);
+      box-shadow: 0 10px 28px rgba(25, 52, 94, .07);
+    }
+    .hero { padding: clamp(22px, 4vw, 34px); }
+    .section { margin-top: 28px; }
+    .card { padding: 18px; }
+    h1, h2, h3 { color: #132e59; line-height: 1.35; }
+    h1 { margin: 0 0 8px; font-size: clamp(30px, 5vw, 43px); }
+    h2 { margin: 0 0 10px; font-size: clamp(24px, 3.7vw, 31px); }
+    h3 { margin: 0 0 8px; font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .lead, .section-lead, .small { color: var(--muted); }
+    .lead { max-width: 810px; font-size: 17px; }
+    .small { font-size: 14px; }
+    .tag-row, .nav, .level-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag, .label, .level {
+      display: inline-block;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .tag { padding: 3px 10px; border: 1px solid #bfdbfe; color: #1e40af; background: var(--blue-soft); }
+    .tag.orange, .label.orange { border-color: #fed7aa; color: #9a3412; background: #ffedd5; }
+    .tag.teal, .label.teal { border-color: #99f6e4; color: #115e59; background: #ccfbf1; }
+    .nav { margin-top: 18px; }
+    .nav a {
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: #1e40af;
+      background: #f8fbff;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .grid { display: grid; gap: 14px; }
+    .grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .label { margin-bottom: 7px; padding: 2px 8px; color: #3730a3; background: #e0e7ff; }
+    .label.purple { color: #5b21b6; background: #ede9fe; }
+    .callout {
+      margin-top: 12px;
+      padding: 11px 13px;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      color: #1e3a8a;
+      background: var(--blue-soft);
+    }
+    .callout.teal { border-color: #99f6e4; color: #115e59; background: var(--teal-soft); }
+    .callout.warn { border-color: #fed7aa; color: #7c2d12; background: var(--orange-soft); }
+    .callout.purple { border-color: #ddd6fe; color: #5b21b6; background: var(--purple-soft); }
+    .equation {
+      margin: 11px 0;
+      padding: 10px 12px;
+      overflow-x: auto;
+      border: 1px solid #cbd9ec;
+      border-radius: 11px;
+      background: #f8fbff;
+      text-align: center;
+    }
+    .equation mjx-container[display="true"] { margin: .15em 0 !important; }
+    .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 8px; align-items: center; margin-top: 14px; }
+    .flow .box { padding: 11px 8px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; font-weight: 800; text-align: center; }
+    .flow .last { border-color: #fed7aa; color: #9a3412; background: var(--orange-soft); }
+    .flow .arrow { color: var(--blue); font-size: 24px; font-weight: 900; }
+    .degree-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 13px; }
+    .degree-grid > div { padding: 11px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    .degree-grid strong { display: block; color: #1e40af; }
+    .degree-grid .key { border-color: #fed7aa; color: #7c2d12; background: var(--orange-soft); }
+    .steps, .checklist { margin: 0; padding-left: 24px; }
+    .steps li { margin: 8px 0; padding-bottom: 8px; border-bottom: 1px dashed #d5ddeb; }
+    .steps li:last-child { padding-bottom: 0; border-bottom: 0; }
+    .checklist li { margin: 6px 0; }
+    .worked { border-top: 5px solid var(--blue); }
+    .worked.teal { border-top-color: var(--teal); }
+    .worked.orange { border-top-color: var(--orange); }
+    .worked.purple { border-top-color: var(--purple); }
+    .answer { margin-top: 11px; padding: 11px 13px; border: 1px solid #c7d2fe; border-radius: 12px; color: #3730a3; background: #eef2ff; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f8fbff; }
+    .method-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+    .method-grid > *, .flow > *, .degree-grid > * { min-width: 0; }
+    .method { padding: 15px; border: 1px solid var(--line); border-top: 5px solid var(--blue); border-radius: 14px; background: #fff; }
+    .method.newton { border-top-color: var(--teal); }
+    .method.lagrange { border-top-color: var(--purple); }
+    .math-block { margin: 10px 0; padding: 9px; overflow-x: auto; border-radius: 10px; background: #f8fbff; }
+    .math-block mjx-container[display="true"] { margin: .15em 0 !important; }
+    .level { padding: 2px 8px; color: #166534; background: #dcfce7; }
+    .level.advance { color: #9a3412; background: #ffedd5; }
+    .level.challenge { color: #5b21b6; background: #ede9fe; }
+    details { margin-top: 12px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    summary { cursor: pointer; color: #1e40af; font-weight: 800; }
+    mjx-container { max-width: 100%; }
+    mjx-container[display="true"] {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    .back { display: inline-block; margin-top: 24px; color: #1e40af; font-weight: 800; text-decoration: none; }
+    @media (max-width: 760px) {
+      .wrap { padding: 14px 10px 34px; }
+      .hero, .card { padding: 15px; border-radius: 14px; }
+      .two, .three, .method-grid, .degree-grid { grid-template-columns: minmax(0, 1fr); }
+      .flow { grid-template-columns: 1fr; }
+      .flow .arrow { transform: rotate(90deg); text-align: center; }
+      th, td { padding: 8px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="tag-row">
+        <span class="tag">高中數學｜多項式</span>
+        <span class="tag orange">除法原理 → 餘式定理 → 高次餘式</span>
+        <span class="tag teal">TeX 數學排版</span>
+      </div>
+      <h1>高中多項式：先判斷餘式的形狀，再求係數</h1>
+      <p class="lead">遇到高次多項式，不必急著做長除法。先由除式的次數判定餘式最多幾次；若除式可以寫成一次因式的乘積，再代入那些根，就能把餘式的係數一步一步求出。</p>
+      <nav class="nav" aria-label="本頁章節">
+        <a href="#division">除法原理</a>
+        <a href="#theorem">餘式與因式定理</a>
+        <a href="#higher">高次餘式</a>
+        <a href="#forms">三種列式</a>
+        <a href="#power">高次式化簡</a>
+        <a href="#practice">分層練習</a>
+      </nav>
+    </header>
+
+    <section class="section" id="division">
+      <h2>1. 除法原理：餘式的次數由除式決定</h2>
+      <p class="section-lead">設被除式是 \(P(x)\)，除式是非零多項式 \(D(x)\)，商式為 \(Q(x)\)，餘式為 \(R(x)\)。</p>
+      <div class="equation">\[
+        P(x)=D(x)Q(x)+R(x),\qquad \deg R&lt;\deg D
+      \]</div>
+      <div class="flow" aria-label="多項式除法原理">
+        <div class="box">被除式<br>\(P(x)\)</div><div class="arrow">＝</div>
+        <div class="box">除式 × 商式<br>\(D(x)Q(x)\)</div><div class="arrow">＋</div>
+        <div class="box last">餘式<br>\(R(x)\)</div>
+      </div>
+      <div class="degree-grid">
+        <div><strong>除式一次</strong>\(\deg D=1\)<br>\(R(x)\) 只能是常數。</div>
+        <div><strong>除式二次</strong>\(\deg D=2\)<br>\(R(x)=ax+b\)。</div>
+        <div><strong>除式三次</strong>\(\deg D=3\)<br>\(R(x)=ax^2+bx+c\)。</div>
+        <div class="key"><strong>第一個關卡</strong>餘式的次數一定要<strong>低於</strong>除式；先過這關，後面的列式才不會錯。</div>
+      </div>
+
+      <article class="card worked orange" style="margin-top:14px;">
+        <span class="label orange">例題 1｜長除法最後在說什麼？</span>
+        <p>把 \(2x^3-3x^2-11x+6\) 除以 \(x-3\)，長除法或綜合除法都得到：</p>
+        <div class="equation">\[
+          2x^3-3x^2-11x+6=(x-3)(2x^2+3x-2)+0
+        \]</div>
+        <p>最後的 \(0\) 是餘式，因此 \(x-3\) 整除原多項式。這個式子正是除法原理的完整寫法。</p>
+        <div class="callout warn"><strong>常見錯誤：</strong>綜合除法遇到 \(x+3\) 時，應看成 \(x-(-3)\)，右邊要放 \(-3\)。若原式缺少某一項，係數 \(0\) 也必須保留。</div>
+      </article>
+    </section>
+
+    <section class="section" id="theorem">
+      <h2>2. 餘式定理與因式定理：把除法變成代入</h2>
+      <div class="grid two">
+        <article class="card worked">
+          <span class="label">餘式定理</span>
+          <p>若 \(P(x)\) 除以 \(x-c\) 的餘式為 \(r\)，則</p>
+          <div class="equation">\[
+            P(x)=(x-c)Q(x)+r
+          \]</div>
+          <p>把 \(x=c\) 代入，前項變成 0：</p>
+          <div class="equation">\[
+            r=P(c)
+          \]</div>
+          <p class="small">所以「除以 \(x-c\) 的餘式」就是「代入 c 的值」。</p>
+        </article>
+        <article class="card worked purple">
+          <span class="label purple">因式定理</span>
+          <p>餘式等於 0 就是整除，因此</p>
+          <div class="equation">\[
+            P(c)=0\iff x-c\text{ 是 }P(x)\text{ 的因式}
+          \]</div>
+          <p>例如因式是 \(x+4\)，要代入的是 \(-4\)；因式是 \(x-\sqrt{2}\)，要代入的就是 \(\sqrt{2}\)。</p>
+          <div class="callout purple"><strong>觀念提醒：</strong>根號、分數都只是代入值。不要因為 \(c=\sqrt{2}\) 或 \(c=\frac12\) 就跳過因式定理。</div>
+        </article>
+      </div>
+
+      <div class="grid two" style="margin-top:14px;">
+        <article class="card worked teal">
+          <span class="label teal">例題 2｜一次除式的餘式</span>
+          <p>求 \(P(x)=x^4-3x^3+5x-7\) 除以 \(x-2\) 的餘式。</p>
+          <div class="math-block">\[
+            \begin{aligned}
+            R&=P(2)\\
+             &=2^4-3\cdot2^3+5\cdot2-7\\
+             &=16-24+10-7=-5
+            \end{aligned}
+          \]</div>
+          <div class="answer"><strong>答案：</strong>餘式為 \(-5\)。</div>
+        </article>
+        <article class="card worked orange">
+          <span class="label orange">例題 3｜先測試因式</span>
+          <p>判斷 \(x-1\) 是否為 \(P(x)=x^3-4x^2-x+4\) 的因式。</p>
+          <div class="math-block">\[
+            P(1)=1-4-1+4=0
+          \]</div>
+          <p>所以 \(x-1\) 是因式。再用綜合除法或分組分解：</p>
+          <div class="equation">\[
+            P(x)=(x-1)(x^2-3x-4)=(x-1)(x-4)(x+1)
+          \]</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="higher">
+      <h2>3. 高次除式的餘式定理：根提供了幾條資料？</h2>
+      <p class="section-lead">若 \(D(t)=0\)，由 \(P(x)=D(x)Q(x)+R(x)\) 可得 \(P(t)=R(t)\)。也就是說，除式的根會告訴我們餘式在那些位置的值。</p>
+      <article class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>除式</th><th>餘式先設成</th><th>可代入的根</th></tr></thead>
+            <tbody>
+              <tr><td>\(x-m\)</td><td>\(r\)</td><td>\(m\)</td></tr>
+              <tr><td>\((x-m)(x-n)\)</td><td>\(R(x)=ax+b\)</td><td>\(m,n\)</td></tr>
+              <tr><td>\((x-m)(x-n)(x-p)\)</td><td>\(R(x)=ax^2+bx+c\)</td><td>\(m,n,p\)</td></tr>
+              <tr><td>d 次除式</td><td>\(R(x)=a_{d-1}x^{d-1}+\cdots+a_1x+a_0\)</td><td>d 個相異根可提供 d 條式子</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warn"><strong>易錯點：</strong>若除式含 \((x-1)^2\) 這種重因式，代入 \(x=1\) 只得到一條資料，不可以把同一個值當成兩條方程式。此時應直接除法、比較係數，或使用題目另外提供的條件。</div>
+      </article>
+
+      <article class="card worked" style="margin-top:14px;">
+        <span class="label">例題 4｜二次除式，餘式一定是一次</span>
+        <p>求 \(P(x)=x^4-3x^2+4\) 除以 \((x-1)(x+2)\) 的餘式。</p>
+        <div class="grid two">
+          <ol class="steps">
+            <li>除式二次，先設 \(R(x)=ax+b\)。</li>
+            <li>代 \(x=1\)：\(P(1)=2=R(1)=a+b\)。</li>
+            <li>代 \(x=-2\)：\(P(-2)=8=R(-2)=-2a+b\)。</li>
+            <li>聯立 \(a+b=2\)、\(-2a+b=8\)，得到 \(a=-2\)、\(b=4\)。</li>
+          </ol>
+          <aside class="callout teal"><strong>答案：</strong>\(R(x)=-2x+4\)。<br><br><strong>驗算：</strong>\[
+            P(x)-R(x)=x^4-3x^2+2x=x(x-1)^2(x+2)
+          \]<br>確實含有 \((x-1)(x+2)\)。</aside>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="forms">
+      <h2>4. 同一題三種列式：直接式、逐點式、拉格朗日式</h2>
+      <p class="section-lead">設 \(P(x)\) 除以 \((x-1)(x-2)(x-3)\) 的餘式為 \(R(x)\)，已知 \(P(1)=12\)、\(P(2)=13\)、\(P(3)=10\)。除式三次，因此 \(R(x)\) 最多二次，且在 \(1,2,3\) 處有 \(P(x)=R(x)\)。</p>
+      <div class="method-grid">
+        <article class="method">
+          <span class="label">方法 A｜一般列式</span>
+          <h3>最熟悉，適合先練聯立</h3>
+          <div class="math-block">\[
+            R(x)=ax^2+bx+c
+          \]</div>
+          <div class="math-block">\[
+            \begin{aligned}
+            a+b+c&=12\\
+            4a+2b+c&=13\\
+            9a+3b+c&=10
+            \end{aligned}
+          \]</div>
+          <p class="small">相減後得 \(3a+b=1\)、\(5a+b=-3\)，所以 \(a=-2\)、\(b=7\)、\(c=7\)。</p>
+          <div class="answer">\[R(x)=-2x^2+7x+7\]</div>
+        </article>
+
+        <article class="method newton">
+          <span class="label teal">方法 B｜逐點列式（牛頓型）</span>
+          <h3>照代入順序，少解聯立</h3>
+          <div class="math-block">\[
+            R(x)=A(x-1)(x-2)+B(x-1)+C
+          \]</div>
+          <div class="math-block">\[
+            \begin{aligned}
+            x=1&:\ C=12\\
+            x=2&:\ B+C=13\Rightarrow B=1\\
+            x=3&:\ 2A+2B+C=10\Rightarrow A=-2
+            \end{aligned}
+          \]</div>
+          <p class="small">前面點的因式會自動變成 0，因此可依 \(C\to B\to A\) 的順序求出。</p>
+          <div class="answer">\[R(x)=-2(x-1)(x-2)+(x-1)+12\]</div>
+        </article>
+
+        <article class="method lagrange">
+          <span class="label purple">方法 C｜拉格朗日插值式</span>
+          <h3>每一項專門負責一個點</h3>
+          <div class="math-block">\[
+            \begin{aligned}
+            R(x)={}&12\frac{(x-2)(x-3)}{(1-2)(1-3)}\\
+            &+13\frac{(x-1)(x-3)}{(2-1)(2-3)}\\
+            &+10\frac{(x-1)(x-2)}{(3-1)(3-2)}
+            \end{aligned}
+          \]</div>
+          <p class="small">代入自己的點時，該項留下給定值；代入其他點時，分子含 0。題目未指定時不必硬背，但要看懂它如何使用資料點。</p>
+          <div class="answer">\[R(x)=-2x^2+7x+7\]</div>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:14px;">
+        <h3>選擇列式的教學口訣</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>你看到的題目情況</th><th>優先列式</th><th>原因</th></tr></thead>
+            <tbody>
+              <tr><td>剛開始、要練聯立</td><td>\(ax^2+bx+c\)</td><td>最通用，係數意義清楚。</td></tr>
+              <tr><td>已知根有順序 \(m,n,p\)</td><td>\(A(x-m)(x-n)+B(x-m)+C\)</td><td>依序代 \(m,n,p\)，每次只多一個未知數。</td></tr>
+              <tr><td>題目直接給插值形式</td><td>拉格朗日插值式</td><td>不必另解聯立，可直接由資料點拼出多項式。</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="power">
+      <h2>5. 高次式化簡：看到 \(x^n\pm1\) 先找可用的循環</h2>
+      <article class="card">
+        <div class="grid two">
+          <div>
+            <div class="math-block">\[
+              x^n-1=(x-1)(x^{n-1}+x^{n-2}+\cdots+x+1)
+            \]</div>
+            <p>任何正整數 \(n\) 都成立。</p>
+          </div>
+          <div>
+            <div class="math-block">\[
+              x^n+1=(x+1)(x^{n-1}-x^{n-2}+\cdots-x+1)
+            \]</div>
+            <p>當 \(n\) 是奇數時，\(x+1\) 才是因式。</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="card worked teal" style="margin-top:14px;">
+        <span class="label teal">例題 5｜不用長除法處理七次式</span>
+        <p>求 \(x^7+x^4+2\) 除以 \(x^2+x+1\) 的餘式。</p>
+        <div class="grid two">
+          <div class="math-block">\[
+            x^3-1=(x-1)(x^2+x+1)
+          \]<p>因此除以 \(x^2+x+1\) 時，可以使用 \(x^3\equiv1\)。</p>\[
+            x^7=x(x^3)^2\equiv x,\qquad x^4=x\cdot x^3\equiv x
+          \]</div>
+          <aside class="answer"><strong>答案：</strong>\[
+            R(x)=x+x+2=2x+2
+          \]<span class="small">最後檢查：除式二次，餘式 \(2x+2\) 是一次，次數正確。</span></aside>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" id="practice">
+      <h2>6. 分層練習：先寫餘式形式，再開始算</h2>
+      <div class="grid three">
+        <article class="card worked teal">
+          <div class="level-row"><span class="level">基礎</span></div>
+          <h3>一次除式</h3>
+          <p>求 \(x^3-5x+2\) 除以 \(x-2\) 的餘式，並判斷 \(x-2\) 是否為因式。</p>
+          <details><summary>看答案與檢查</summary><p>\[P(2)=2^3-5\cdot2+2=0\]</p><p>餘式為 0，故 \(x-2\) 是因式。</p></details>
+        </article>
+        <article class="card worked orange">
+          <div class="level-row"><span class="level advance">進階</span></div>
+          <h3>二次除式</h3>
+          <p>求 \(x^5+2x^3-x+1\) 除以 \((x-1)(x+2)\) 的餘式。</p>
+          <details><summary>看答案與檢查</summary><p>設 \(R(x)=ax+b\)。\(P(1)=3\)、\(P(-2)=-45\)，故 \(a+b=3\)、\(-2a+b=-45\)。</p><p>\[R(x)=16x-13\]</p></details>
+        </article>
+        <article class="card worked purple">
+          <div class="level-row"><span class="level challenge">挑戰</span></div>
+          <h3>三次除式＋逐點列式</h3>
+          <p>若 \(P(0)=2\)、\(P(1)=3\)、\(P(2)=10\)，求 \(P(x)\) 除以 \(x(x-1)(x-2)\) 的餘式。</p>
+          <details><summary>看答案與檢查</summary><p>設 \(R(x)=Ax(x-1)+Bx+C\)。依序代 \(0,1,2\)，得 \(C=2\)、\(B=1\)、\(A=3\)。</p><p>\[R(x)=3x^2-2x+2\]</p></details>
+        </article>
+      </div>
+      <article class="card" style="margin-top:14px;">
+        <span class="label orange">考前自我檢查</span>
+        <ol class="checklist">
+          <li>我有先確認 \(\deg R&lt;\deg D\) 嗎？</li>
+          <li>除式是 \(x+c\) 時，我代入的是 \(-c\) 嗎？</li>
+          <li>高次除式時，我有先設出正確次數的餘式嗎？</li>
+          <li>我使用的代入根是否互不相同？遇到重因式時，有沒有改用其他條件？</li>
+          <li>最後答案中的分數、根號、下標與平方，是否都以正確的 TeX 數學格式閱讀？</li>
+        </ol>
+      </article>
+    </section>
+
+    <a class="back" href="./index.html">← 返回教學首頁</a>
+  </main>
+</body>
+</html>
