@@ -184,6 +184,17 @@
     .angle-summary h3 { color: #184f78; font-size: 1rem; }
     .angle-summary p { color: var(--muted); font-size: .91rem; }
 
+    .center-layout { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(290px, .98fr); gap: 17px; align-items: center; }
+    #centerMethodSvg { display: block; width: 100%; min-height: 292px; height: auto; border: 1px solid var(--line); border-radius: 16px; background: #fbfdff; }
+    .center-workbench { padding: 18px; border: 1px solid #c4dcec; border-radius: 16px; background: #f6fbff; }
+    .center-method-title { margin: 14px 0 2px; color: #173f5c; font-size: 1.3rem; }
+    .center-principle { margin: 12px 0 0; padding: 12px; border-radius: 12px; color: #164a72; background: #e7f5ff; font-weight: 800; }
+    .center-action { margin-top: 10px; color: #42637b; font-size: .95rem; }
+    .center-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 17px; }
+    .center-summary article { padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+    .center-summary h3 { margin-bottom: 5px; color: #184f78; font-size: 1rem; }
+    .center-summary p { color: var(--muted); font-size: .91rem; }
+
     .relation-layout { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(290px, .98fr); gap: 17px; align-items: center; }
     #relationSvg { display: block; width: 100%; min-height: 292px; height: auto; border: 1px solid var(--line); border-radius: 16px; background: #fbfdff; }
     .relation-workbench { padding: 18px; border: 1px solid #c4dcec; border-radius: 16px; background: #f6fbff; }
@@ -196,6 +207,13 @@
     .relation-summary p { color: var(--muted); font-size: .91rem; }
     .extension-layout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
     .extension-layout .card { box-shadow: none; }
+    .common-tangent-card { grid-column: span 2; }
+    .power-card { grid-column: 1 / -1; }
+    .power-diagrams { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; max-width: 780px; margin: 12px auto 0; }
+    .power-diagram { padding: 9px; border: 1px solid var(--line); border-radius: 13px; background: #fcfdff; }
+    .power-diagram h4 { margin: 0 0 5px; color: #9a4800; font-size: .94rem; text-align: center; }
+    .power-diagram svg { display: block; width: min(100%, 180px); height: auto; margin: 0 auto; }
+    .power-diagram p { margin: 5px 0 0; color: var(--muted); font-size: .84rem; text-align: center; }
     .extension-diagram { margin-top: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 13px; background: #fcfdff; }
     .extension-diagram svg { display: block; width: 100%; height: auto; }
     .formula-stack { display: grid; gap: 9px; margin-top: 13px; }
@@ -233,6 +251,10 @@
     .tangent { stroke: #087e78; stroke-width: 4; }
     .secant { stroke: #7143a9; stroke-width: 4; }
     .guide { stroke: #7892a7; stroke-width: 2; stroke-dasharray: 6 6; }
+    .construction-rect { fill: none; stroke: #7892a7; stroke-width: 2; stroke-dasharray: 6 6; }
+    .fold-line { stroke: #b15f22; stroke-width: 3; stroke-dasharray: 8 5; }
+    .bisector { stroke: #7143a9; stroke-width: 3; stroke-dasharray: 8 5; }
+    .angle-bisector { stroke: #7143a9; stroke-width: 4; }
     .right-mark { fill: none; stroke: #566f84; stroke-width: 2; }
     .point { fill: #173a56; }
     .point-label { fill: #173a56; font-size: 16px; font-weight: 850; }
@@ -240,17 +262,19 @@
     .arc-label { fill: #0d6795; font-size: 14px; font-weight: 850; }
 
     @media (max-width: 850px) {
-      .explore-layout, .shape-layout, .angle-layout, .relation-layout { grid-template-columns: 1fr; }
+      .explore-layout, .shape-layout, .angle-layout, .center-layout, .relation-layout { grid-template-columns: 1fr; }
       .radian-flow { grid-template-columns: 1fr; }
-      .angle-summary, .relation-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .angle-summary, .center-summary, .relation-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .extension-layout { grid-template-columns: 1fr; }
+      .common-tangent-card { grid-column: auto; }
+      .power-diagrams { grid-template-columns: 1fr; max-width: 360px; }
     }
     @media (max-width: 620px) {
       .wrap { width: min(100% - 22px, 1140px); padding-top: 12px; }
       .hero { border-radius: 20px; }
       .grid, .two-diagrams { grid-template-columns: 1fr; }
       .quiz-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .angle-summary, .relation-summary, .quad-layout { grid-template-columns: 1fr; }
+      .angle-summary, .center-summary, .relation-summary, .quad-layout { grid-template-columns: 1fr; }
       .radian-table { font-size: .84rem; }
       .radian-table th, .radian-table td { padding: 6px 3px; }
     }
@@ -267,6 +291,7 @@
       <nav class="nav" aria-label="頁內導覽">
         <a href="#radius">圓心與半徑</a>
         <a href="#tangent-secant">切線與割線</a>
+        <a href="#find-center">找圓心</a>
         <a href="#circle-extensions">兩圓與圓的冪</a>
         <a href="#radian">先讀弧度</a>
         <a href="#angles">五種角</a>
@@ -460,18 +485,63 @@
       </div>
     </section>
 
+    <section class="section" id="find-center">
+      <div class="section-head">
+        <h2>四、找圓心的 5 種方法：先找「一定會過圓心」的線</h2>
+        <p>題目不直接給圓心時，不用猜。先辨認題目給的是摺痕、弦、切線、直角，還是圓外兩切線；再把能通過圓心的直線畫出來。</p>
+      </div>
+
+      <div class="card">
+        <div class="center-layout">
+          <svg id="centerMethodSvg" viewBox="0 0 450 310" role="img" aria-label="找圓心的方法示意圖">
+            <circle class="circle" cx="225" cy="155" r="105"></circle>
+            <path d="M225 50 A105 105 0 0 1 225 260 L225 50 Z" fill="#fff1d9" opacity=".7"></path>
+            <line class="fold-line" x1="225" y1="50" x2="225" y2="260"></line>
+            <line class="fold-line" x1="141" y1="92" x2="309" y2="218"></line>
+            <circle class="point" cx="225" cy="155" r="5"></circle>
+            <text class="point-label" x="234" y="150">O</text>
+            <text class="svg-label" x="237" y="75">第一次摺痕</text>
+            <text class="svg-label" x="278" y="226">第二次摺痕</text>
+          </svg>
+          <div class="center-workbench">
+            <div class="tabs" aria-label="找圓心的方法">
+              <button class="choice-tab active" type="button" data-center-method="fold">第 0 種：對摺</button>
+              <button class="choice-tab" type="button" data-center-method="chord">第 1 種：弦</button>
+              <button class="choice-tab" type="button" data-center-method="tangent">第 2 種：切線</button>
+              <button class="choice-tab" type="button" data-center-method="diameter">第 3 種：直角</button>
+              <button class="choice-tab" type="button" data-center-method="twoTangents">第 4 種：二切線</button>
+            </div>
+            <h3 class="center-method-title" id="centerMethodTitle">第 0 種：把圓形紙片對摺兩次</h3>
+            <p class="muted" id="centerMethodExplanation">每一條把圓完整對半的摺痕都是直徑；兩條不平行摺痕的交點就是圓心。</p>
+            <div class="center-principle" id="centerMethodPrinciple">\(O=\ell_1\cap\ell_2\)</div>
+            <p class="center-action" id="centerMethodAction"><strong>怎麼做：</strong>先摺出一條直徑，再換方向摺第二次；兩條摺痕相交的點就是 O。</p>
+          </div>
+        </div>
+
+        <div class="center-summary" aria-label="找圓心方法整理">
+          <article><h3>0．摺紙</h3><p>兩次對摺的摺痕都是直徑，交點是圓心。</p></article>
+          <article><h3>1．弦</h3><p>弦的中垂線會過圓心；取兩條弦更能定出位置。</p></article>
+          <article><h3>2．切線</h3><p>過切點作切線的垂線，就是半徑所在直線。</p></article>
+          <article><h3>3．直角</h3><p>圓周角是直角時，它所對的弦就是直徑。</p></article>
+          <article><h3>4．二切線</h3><p>圓外一點引兩切線，其夾角平分線會通過圓心。</p></article>
+        </div>
+
+        <div class="teacher-note" style="margin-top:16px;"><strong>重要提醒：</strong>「會過圓心」不等於只要畫一條線就能找出圓心。第 0、1、2、4 種通常還要再找第二條獨立的線來相交；只有已知直徑時，直徑的中點直接就是圓心。</div>
+      </div>
+    </section>
+
     <section class="section" id="circle-extensions">
       <div class="section-head">
-        <h2>四、兩圓的位置、圓的冪與四邊形</h2>
-        <p>把兩個圓先化成「圓心距 (d=O_1O_2)」與兩個半徑 (r_1,r_2)，再判斷位置；遇到弦、割線與切線，則回到乘積不變的圓的冪。</p>
+        <h2>五、兩圓的位置、圓的冪與四邊形</h2>
+        <p>把兩個圓先化成「圓心距 \(d=O_1O_2\)」與兩個半徑 \(r_1,r_2\)，再判斷位置；遇到弦、割線與切線，則回到乘積不變的圓的冪。</p>
       </div>
 
       <div class="card">
         <div class="relation-layout">
           <svg id="relationSvg" viewBox="0 0 460 290" role="img" aria-label="兩圓位置關係示意圖">
-            <line class="guide" x1="135" y1="150" x2="325" y2="150"></line>
             <circle class="circle" cx="135" cy="150" r="58"></circle>
             <circle class="circle" cx="325" cy="150" r="42"></circle>
+            <line class="guide" x1="135" y1="150" x2="325" y2="150"></line>
             <circle class="point" cx="135" cy="150" r="4"></circle><circle class="point" cx="325" cy="150" r="4"></circle>
             <text class="point-label" x="120" y="172">O₁</text><text class="point-label" x="311" y="172">O₂</text>
             <text class="svg-label" x="212" y="142">d = O₁O₂</text>
@@ -496,12 +566,12 @@
         <div class="relation-summary">
           <article><h3>外離</h3><p>\(d>r_1+r_2\)<br>公切線 4 條</p></article>
           <article><h3>外切</h3><p>\(d=r_1+r_2\)<br>公切線 3 條</p></article>
-          <article><h3>交於兩點</h3><p>\(\lvert r_1-r_2\rvert<d<r_1+r_2\)<br>公切線 2 條</p></article>
+          <article><h3>交於兩點</h3><p>\(\lvert r_1-r_2\rvert\lt d\lt r_1+r_2\)<br>公切線 2 條</p></article>
           <article><h3>內切</h3><p>\(d=\lvert r_1-r_2\rvert\)<br>公切線 1 條</p></article>
-          <article><h3>內離</h3><p>\(0<d<\lvert r_1-r_2\rvert\)<br>公切線 0 條</p></article>
+          <article><h3>內離</h3><p>\(0\lt d\lt\lvert r_1-r_2\rvert\)<br>公切線 0 條</p></article>
           <article><h3>同心圓</h3><p>\(d=0\) 且 \(r_1\ne r_2\)<br>公切線 0 條</p></article>
         </div>
-        <div class="teacher-note"><strong>判讀順序：</strong>先比較 (d) 和 (r_1+r_2)，再比較 (d) 和 \(\lvert r_1-r_2\rvert\)。不要只憑圖形「看起來碰到」就判外切或內切。</div>
+        <div class="teacher-note"><strong>判讀順序：</strong>先比較 \(d\) 和 \(r_1+r_2\)，再比較 \(d\) 和 \(\lvert r_1-r_2\rvert\)。不要只憑圖形「看起來碰到」就判外切或內切。</div>
       </div>
 
       <div class="extension-layout" style="margin-top:16px;">
@@ -526,19 +596,37 @@
           <p>這是把「圓心、弦的中點、垂直」連起來的雙向性質；求弦長常會接成直角三角形。</p>
         </article>
 
-        <article class="card">
+        <article class="card common-tangent-card">
           <span class="tag purple">公切線長</span>
           <h3>外公切線看半徑差；內公切線看半徑和</h3>
-          <div class="extension-diagram">
-            <svg viewBox="0 0 360 250" role="img" aria-label="兩圓公切線長與圓心距的直角三角形">
-              <circle class="circle" cx="112" cy="145" r="61"></circle><circle class="circle" cx="276" cy="145" r="35"></circle>
-              <line class="guide" x1="112" y1="145" x2="276" y2="145"></line>
-              <line class="tangent" x1="121.7" y1="84.8" x2="281.5" y2="110.5"></line>
-              <line class="radius" x1="112" y1="145" x2="121.7" y2="84.8"></line><line class="radius" x1="276" y1="145" x2="281.5" y2="110.5"></line>
-              <circle class="point" cx="112" cy="145" r="4"></circle><circle class="point" cx="276" cy="145" r="4"></circle>
-              <text class="point-label" x="92" y="166">O₁</text><text class="point-label" x="265" y="166">O₂</text>
-              <text class="svg-label" x="176" y="136">d</text><text class="svg-label" x="176" y="82">L外</text>
-            </svg>
+          <div class="two-diagrams">
+            <div class="small-diagram">
+              <svg viewBox="0 0 360 230" role="img" aria-label="外公切線以半徑差組成直角三角形">
+                <line class="tangent" x1="105" y1="62" x2="280" y2="62"></line>
+                <circle class="circle" cx="105" cy="132" r="70"></circle><circle class="circle" cx="280" cy="100" r="38"></circle>
+                <line class="guide" x1="105" y1="132" x2="280" y2="100"></line>
+                <rect class="construction-rect" x="105" y="62" width="175" height="70"></rect>
+                <line class="radius" x1="105" y1="132" x2="105" y2="62"></line><line class="radius" x1="280" y1="100" x2="280" y2="62"></line>
+                <path class="right-mark" d="M105 62 L118 62 L118 75 L105 75"></path><path class="right-mark" d="M280 62 L267 62 L267 75 L280 75"></path>
+                <circle class="point" cx="105" cy="132" r="4"></circle><circle class="point" cx="280" cy="100" r="4"></circle>
+                <text class="point-label" x="87" y="154">O₁</text><text class="point-label" x="287" y="101">O₂</text>
+                <text class="svg-label" x="174" y="50">L外</text><text class="svg-label" x="181" y="107">d</text><text class="svg-label" x="286" y="124">r₁−r₂</text>
+              </svg>
+              <p>外公切線：兩條半徑同向，直角三角形的高是 \(r_1-r_2\)。</p>
+            </div>
+            <div class="small-diagram">
+              <svg viewBox="0 0 360 230" role="img" aria-label="內公切線以半徑和組成直角三角形">
+                <circle class="circle" cx="105" cy="145" r="55"></circle><circle class="circle" cx="280" cy="145" r="35"></circle>
+                <line class="guide" x1="105" y1="145" x2="280" y2="145"></line>
+                <line class="tangent" x1="68.965" y1="230.74" x2="326.321" y2="76.412"></line>
+                <line class="radius" x1="105" y1="145" x2="133.3" y2="192.2"></line><line class="radius" x1="280" y1="145" x2="262" y2="115"></line>
+                <path class="right-mark" d="M127.1 181.9 L137.4 175.7 L143.6 186"></path><path class="right-mark" d="M268.2 125.3 L257.9 131.4 L251.7 121.2"></path>
+                <circle class="point" cx="105" cy="145" r="4"></circle><circle class="point" cx="280" cy="145" r="4"></circle>
+                <text class="point-label" x="86" y="167">O₁</text><text class="point-label" x="288" y="167">O₂</text>
+                <text class="svg-label" x="183" y="116">L內</text><text class="svg-label" x="177" y="137">d</text><text class="svg-label" x="146" y="222">r₁+r₂</text>
+              </svg>
+              <p>內公切線：兩條半徑反向，直角三角形的高是 \(r_1+r_2\)。</p>
+            </div>
           </div>
           <div class="formula-stack">
             <div class="formula purple">\(L_{\text{外}}=\sqrt{d^2-(r_1-r_2)^2}\)</div>
@@ -547,24 +635,43 @@
           <p>有內公切線的前提是 \(d>r_1+r_2\)。看到「同側」的切線用半徑差；兩圓之間交叉的切線用半徑和。</p>
         </article>
 
-        <article class="card">
+        <article class="card power-card">
           <span class="tag orange">圓的冪</span>
-          <h3>同一點出發，乘積固定</h3>
-          <div class="extension-diagram">
-            <svg viewBox="0 0 360 250" role="img" aria-label="圓內兩弦相交的乘積關係">
-              <circle class="circle" cx="170" cy="125" r="85"></circle>
-              <line class="chord" x1="85" y1="125" x2="255" y2="125"></line>
-              <line class="chord" x1="170" y1="40" x2="170" y2="210"></line>
-              <circle class="point" cx="170" cy="125" r="4"></circle><circle class="point" cx="85" cy="125" r="4"></circle><circle class="point" cx="255" cy="125" r="4"></circle><circle class="point" cx="170" cy="40" r="4"></circle><circle class="point" cx="170" cy="210" r="4"></circle>
-              <text class="point-label" x="178" y="120">P</text><text class="point-label" x="70" y="145">A</text><text class="point-label" x="261" y="145">B</text><text class="point-label" x="178" y="36">C</text><text class="point-label" x="178" y="227">D</text>
-            </svg>
+          <h3>圓的冪：三種圖都讀成「兩段長度的乘積」</h3>
+          <div class="power-diagrams">
+            <div class="power-diagram">
+              <h4>圓內冪：兩弦相交</h4>
+              <svg viewBox="0 0 300 250" role="img" aria-label="圓內非圓心的兩弦相交">
+                <circle class="circle" cx="150" cy="125" r="85"></circle>
+                <line class="chord" x1="67.4" y1="145" x2="232.6" y2="145"></line><line class="chord" x1="138" y1="209.1" x2="216.9" y2="72.5"></line>
+                <circle class="point" cx="150" cy="125" r="4"></circle><circle class="point" cx="175" cy="145" r="5"></circle><circle class="point" cx="67.4" cy="145" r="4"></circle><circle class="point" cx="232.6" cy="145" r="4"></circle><circle class="point" cx="138" cy="209.1" r="4"></circle><circle class="point" cx="216.9" cy="72.5" r="4"></circle>
+                <text class="point-label" x="155" y="121">O</text><text class="point-label" x="183" y="141">P</text><text class="point-label" x="54" y="164">A</text><text class="point-label" x="238" y="164">B</text><text class="point-label" x="126" y="226">C</text><text class="point-label" x="222" y="68">D</text>
+              </svg>
+              <p>\(PA\cdot PB=PC\cdot PD\)<br>P 不必是圓心。</p>
+            </div>
+            <div class="power-diagram">
+              <h4>圓外冪：兩條割線</h4>
+              <svg viewBox="0 0 300 250" role="img" aria-label="圓外一點引兩條割線">
+                <circle class="circle" cx="180" cy="125" r="80"></circle>
+                <line class="secant" x1="45" y1="145" x2="245.8" y2="79.5"></line><line class="secant" x1="45" y1="145" x2="217.9" y2="195.4"></line>
+                <circle class="point" cx="45" cy="145" r="5"></circle><circle class="point" cx="100" cy="127.1" r="4"></circle><circle class="point" cx="245.8" cy="79.5" r="4"></circle><circle class="point" cx="110.2" cy="164" r="4"></circle><circle class="point" cx="217.9" cy="195.4" r="4"></circle>
+                <text class="point-label" x="32" y="166">P</text><text class="point-label" x="91" y="120">A</text><text class="point-label" x="250" y="75">B</text><text class="point-label" x="102" y="181">C</text><text class="point-label" x="223" y="212">D</text>
+              </svg>
+              <p>\(PA\cdot PB=PC\cdot PD\)<br>兩個 \(PB,PD\) 都是全長。</p>
+            </div>
+            <div class="power-diagram">
+              <h4>切線－割線定理</h4>
+              <svg viewBox="0 0 300 250" role="img" aria-label="圓外切線與割線">
+                <circle class="circle" cx="180" cy="125" r="80"></circle>
+                <line class="tangent" x1="50" y1="155" x2="118.9" y2="73.4"></line><line class="secant" x1="50" y1="155" x2="254.2" y2="155"></line>
+                <line class="radius" x1="180" y1="125" x2="118.9" y2="73.4"></line>
+                <path class="right-mark" d="M126.5 79.8 L120.1 87.5 L112.5 81.0"></path>
+                <circle class="point" cx="50" cy="155" r="5"></circle><circle class="point" cx="118.9" cy="73.4" r="4"></circle><circle class="point" cx="180" cy="125" r="4"></circle><circle class="point" cx="105.8" cy="155" r="4"></circle><circle class="point" cx="254.2" cy="155" r="4"></circle>
+                <text class="point-label" x="37" y="176">P</text><text class="point-label" x="111" y="68">T</text><text class="point-label" x="188" y="121">O</text><text class="point-label" x="96" y="177">A</text><text class="point-label" x="259" y="177">B</text>
+              </svg>
+              <p>\(PT^2=PA\cdot PB\)<br>外段 × 全長 = 切線段平方。</p>
+            </div>
           </div>
-          <div class="formula-stack">
-            <div class="formula orange">圓內：\(PA\cdot PB=PC\cdot PD\)</div>
-            <div class="formula orange">圓外：\(PA\cdot PB=PC\cdot PD\)</div>
-            <div class="formula orange">切割線：\(PT^2=PA\cdot PB\)</div>
-          </div>
-          <p>圓外時的 \(PB,PD\) 都是從 P 到遠交點的<strong>全長</strong>；這正是前面「外段 × 全長」的來源。</p>
         </article>
       </div>
 
@@ -600,7 +707,7 @@
 
     <section class="section" id="radian">
       <div class="section-head">
-        <h2>五、先讀弧度：弧長 ÷ 半徑，就是圓心角</h2>
+        <h2>六、先讀弧度：弧長 ÷ 半徑，就是圓心角</h2>
         <p>接下來五種角都要讀弧。用弧度時，圓心角和弧的關係最乾淨：不必每次再乘 \(\frac{180}{\pi}\)。</p>
       </div>
       <div class="card">
@@ -621,7 +728,7 @@
             <p>整個圓周長 \(2\pi r\)，除以 \(r\)，得到 \(2\pi\) 弧度，正好對應 \(360^\circ\)。</p>
           </article>
         </div>
-        <div class="formula purple">\(\theta=\frac{s}{r}\)，\quad s=r\theta，\quad \text{扇形面積}=\frac{1}{2}r^2\theta\)</div>
+        <div class="formula purple">\(\theta=\frac{s}{r}\)，\(s=r\theta\)，\(\text{扇形面積}=\frac{1}{2}r^2\theta\)</div>
         <div class="grid">
           <article class="card" style="box-shadow:none;">
             <h3>常用對照表</h3>
@@ -652,7 +759,7 @@
 
     <section class="section" id="angles">
       <div class="section-head">
-        <h2>六、圓上的角：先找角的頂點，再讀對到的弧</h2>
+        <h2>七、圓上的角：先找角的頂點，再讀對到的弧</h2>
         <p>最穩定的流程是：<strong>① 看頂點在哪裡　② 圈出兩邊截到的弧　③ 選擇「整弧、半和、半差」</strong>。</p>
       </div>
       <div class="card">
@@ -669,7 +776,7 @@
             </g>
             <g data-angle-figure="inscribed" hidden>
               <circle class="circle" cx="220" cy="165" r="110"></circle>
-              <line class="chord" x1="142.2" y1="87.2" x2="297.8" y2="87.2"></line><line class="chord" x1="142.2" y1="87.2" x2="220" y2="275"></line><line class="chord" x1="220" y1="275" x2="297.8" y2="87.2"></line>
+              <line class="chord" x1="142.2" y1="87.2" x2="220" y2="275"></line><line class="chord" x1="220" y1="275" x2="297.8" y2="87.2"></line>
               <path class="arc" d="M142.2 87.2 A110 110 0 0 1 297.8 87.2"></path>
               <circle class="point" cx="142.2" cy="87.2" r="5"></circle><circle class="point" cx="297.8" cy="87.2" r="5"></circle><circle class="point" cx="220" cy="275" r="5"></circle>
               <text class="point-label" x="126" y="82">A</text><text class="point-label" x="304" y="82">B</text><text class="point-label" x="228" y="293">C</text>
@@ -686,10 +793,10 @@
             <g data-angle-figure="exterior" hidden>
               <circle class="circle" cx="260" cy="165" r="100"></circle>
               <line class="secant" x1="60" y1="165" x2="340" y2="105"></line><line class="secant" x1="60" y1="165" x2="340" y2="225"></line>
-              <path class="arc" d="M340 105 A100 100 0 0 1 340 225"></path><path class="arc" d="M162.4 143 A100 100 0 0 1 162.4 187"></path>
+              <path class="arc" d="M340 105 A100 100 0 0 1 340 225"></path><path class="arc" d="M162.4 143 A100 100 0 0 0 162.4 187"></path>
               <circle class="point" cx="60" cy="165" r="5"></circle><circle class="point" cx="162.4" cy="143" r="5"></circle><circle class="point" cx="340" cy="105" r="5"></circle><circle class="point" cx="162.4" cy="187" r="5"></circle><circle class="point" cx="340" cy="225" r="5"></circle>
               <text class="point-label" x="44" y="188">P</text><text class="point-label" x="147" y="137">A</text><text class="point-label" x="346" y="100">B</text><text class="point-label" x="147" y="207">C</text><text class="point-label" x="346" y="241">D</text>
-              <text class="arc-label" x="318" y="67">遠弧 BD</text><text class="arc-label" x="75" y="158">近弧 AC</text><text class="svg-label" x="91" y="161">θ</text>
+              <text class="arc-label" x="318" y="67">遠弧 BD</text><text class="arc-label" x="158" y="247">近弧 AC</text><text class="svg-label" x="93" y="172">θ</text>
             </g>
             <g data-angle-figure="tangentChord" hidden>
               <circle class="circle" cx="220" cy="165" r="108"></circle>
@@ -748,7 +855,7 @@
 
     <section class="section" id="practice">
       <div class="section-head">
-        <h2>七、三層自我檢查</h2>
+        <h2>八、三層自我檢查</h2>
         <p>答錯時不會跳走；先看提示，再改選同一題，讓「找弧 → 選規則」變成可以修正的習慣。</p>
       </div>
       <div class="card quiz-card">
@@ -924,6 +1031,67 @@
       secantExternal.addEventListener('input', updateSecant);
       updateSecant();
 
+      const centerMethodSvg = byId('centerMethodSvg');
+      const centerMethodTitle = byId('centerMethodTitle');
+      const centerMethodExplanation = byId('centerMethodExplanation');
+      const centerMethodPrinciple = byId('centerMethodPrinciple');
+      const centerMethodAction = byId('centerMethodAction');
+      const centerMethodData = {
+        fold: {
+          title: '第 0 種：把圓形紙片對摺兩次',
+          explanation: '每一條把圓完整對半的摺痕都是直徑；兩條不平行摺痕的交點就是圓心。',
+          principle: '\\(O=\\ell_1\\cap\\ell_2\\)',
+          action: '<strong>怎麼做：</strong>先摺出一條直徑，再換方向摺第二次；兩條摺痕相交的點就是 O。',
+          svg: '<circle class="circle" cx="225" cy="155" r="105"></circle><path d="M225 50 A105 105 0 0 1 225 260 L225 50 Z" fill="#fff1d9" opacity=".7"></path><line class="fold-line" x1="225" y1="50" x2="225" y2="260"></line><line class="fold-line" x1="141" y1="92" x2="309" y2="218"></line><circle class="point" cx="225" cy="155" r="5"></circle><text class="point-label" x="234" y="150">O</text><text class="svg-label" x="237" y="75">第一次摺痕</text><text class="svg-label" x="278" y="226">第二次摺痕</text>'
+        },
+        chord: {
+          title: '第 1 種：弦的中垂線會通過圓心',
+          explanation: '圓心到弦的垂線會平分弦，所以弦的中垂線一定通過圓心。兩條弦本身不必相交；各作中垂線後，兩條中垂線的交點就是 O。',
+          principle: '\\(M\\text{ 是 }\\overline{AB}\\text{ 的中點}\u3000\\Longrightarrow\\ OM\\perp\\overline{AB}\\)',
+          action: '<strong>怎麼做：</strong>先取兩條不平行的弦，各作中垂線；兩條中垂線的交點就是 O。',
+          svg: '<circle class="circle" cx="225" cy="155" r="105"></circle><line class="chord" x1="144.6" y1="87.5" x2="311" y2="94.8"></line><line class="chord" x1="328.8" y1="170.9" x2="211.2" y2="259.1"></line><line class="bisector" x1="220" y1="270" x2="230" y2="40"></line><line class="bisector" x1="144" y1="47" x2="306" y2="263"></line><path class="right-mark" d="M227.4 101.1 L237.4 101.5 L237.8 91.5"></path><path class="right-mark" d="M264 207 L256 213 L262 221"></path><circle class="point" cx="225" cy="155" r="5"></circle><circle class="point" cx="144.6" cy="87.5" r="4"></circle><circle class="point" cx="311" cy="94.8" r="4"></circle><circle class="point" cx="328.8" cy="170.9" r="4"></circle><circle class="point" cx="211.2" cy="259.1" r="4"></circle><circle class="point" cx="227.8" cy="91.1" r="3.5"></circle><circle class="point" cx="270" cy="215" r="3.5"></circle><text class="point-label" x="234" y="150">O</text><text class="point-label" x="130" y="84">A</text><text class="point-label" x="316" y="91">B</text><text class="point-label" x="334" y="168">C</text><text class="point-label" x="204" y="278">D</text><text class="svg-label" x="236" y="82">M</text><text class="svg-label" x="278" y="212">N</text>'
+        },
+        tangent: {
+          title: '第 2 種：過切點垂直切線的直線會通過圓心',
+          explanation: '半徑與切線在切點垂直。從切點向切線作垂線，這一條就是半徑所在直線，因此會通過圓心。',
+          principle: '\\(OA\\perp\\ell_A,\\quad OB\\perp\\ell_B\\)',
+          action: '<strong>怎麼做：</strong>在兩個切點各作一條垂直於切線的直線；兩條垂線的交點就是 O。',
+          svg: '<line class="tangent" x1="80.3" y1="153.7" x2="248.9" y2="12.3"></line><line class="tangent" x1="336.7" y1="63" x2="298.5" y2="279.7"></line><circle class="circle" cx="225" cy="155" r="94"></circle><line class="radius" x1="225" y1="155" x2="164.6" y2="83"></line><line class="radius" x1="225" y1="155" x2="317.6" y2="171.3"></line><path class="right-mark" d="M172.3 92.2 L181.5 84.5 L173.8 75.3"></path><path class="right-mark" d="M306.8 169.4 L304.9 180.2 L315.7 182.1"></path><circle class="point" cx="225" cy="155" r="5"></circle><circle class="point" cx="164.6" cy="83" r="4"></circle><circle class="point" cx="317.6" cy="171.3" r="4"></circle><text class="point-label" x="234" y="150">O</text><text class="point-label" x="151" y="78">A</text><text class="point-label" x="326" y="178">B</text><text class="svg-label" x="80" y="170">切線 ℓ₁</text><text class="svg-label" x="329" y="88">切線 ℓ₂</text>'
+        },
+        diameter: {
+          title: '第 3 種：圓周角是直角，所對的弦就是直徑',
+          explanation: '若圓周角 \\(\\angle ACB\\) 是直角，與它相對的 \\(\\overline{AB}\\) 必為直徑；直徑的中點就是圓心。',
+          principle: '\\(\\angle ACB=90^\\circ\\Longrightarrow\\overline{AB}\\text{ 是直徑}\\Longrightarrow O\\text{ 是 }\\overline{AB}\\text{ 的中點}\\)',
+          action: '<strong>怎麼做：</strong>先找直角的對邊 AB，再取 \\(\\overline{AB}\\) 的中點；中點就是 O。',
+          svg: '<circle class="circle" cx="225" cy="155" r="100"></circle><line class="radius" x1="125" y1="155" x2="325" y2="155"></line><line class="chord" x1="125" y1="155" x2="225" y2="55"></line><line class="chord" x1="225" y1="55" x2="325" y2="155"></line><path class="right-mark" d="M212.3 67.7 L225 80.4 L237.7 67.7"></path><circle class="point" cx="225" cy="155" r="5"></circle><circle class="point" cx="125" cy="155" r="4"></circle><circle class="point" cx="325" cy="155" r="4"></circle><circle class="point" cx="225" cy="55" r="4"></circle><text class="point-label" x="234" y="150">O</text><text class="point-label" x="111" y="177">A</text><text class="point-label" x="331" y="177">B</text><text class="point-label" x="216" y="47">C</text><text class="svg-label" x="181" y="178">直徑 AB</text><text class="svg-label" x="242" y="83">90°</text>'
+        },
+        twoTangents: {
+          title: '第 4 種：圓外一點的二切線，角平分線會通過圓心',
+          explanation: '從圓外 P 引兩條切線 PA、PB，兩條切線段等長；兩個直角三角形對稱，所以 \\(\\angle APB\\) 的角平分線 PO 會通過圓心。',
+          principle: '\\(PA=PB,\\ OA=OB\\Longrightarrow\\angle APO=\\angle OPB\\)',
+          action: '<strong>怎麼做：</strong>先找兩切線的交點 P，作 \\(\\angle APB\\) 的角平分線；它與圓的對稱軸上的交會方向會通過 O。',
+          svg: '<circle class="circle" cx="225" cy="155" r="72"></circle><line class="tangent" x1="90" y1="155" x2="186.6" y2="94.1"></line><line class="tangent" x1="90" y1="155" x2="186.6" y2="215.9"></line><line class="radius" x1="225" y1="155" x2="186.6" y2="94.1"></line><line class="radius" x1="225" y1="155" x2="186.6" y2="215.9"></line><line class="angle-bisector" x1="90" y1="155" x2="297" y2="155"></line><circle class="point" cx="90" cy="155" r="5"></circle><circle class="point" cx="225" cy="155" r="5"></circle><circle class="point" cx="186.6" cy="94.1" r="4"></circle><circle class="point" cx="186.6" cy="215.9" r="4"></circle><text class="point-label" x="76" y="177">P</text><text class="point-label" x="234" y="150">O</text><text class="point-label" x="175" y="89">A</text><text class="point-label" x="175" y="232">B</text><text class="svg-label" x="108" y="147">角平分線 PO</text><text class="svg-label" x="100" y="111">切線 PA</text><text class="svg-label" x="100" y="224">切線 PB</text>'
+        }
+      };
+      function updateCenterMethod(key) {
+        const data = centerMethodData[key];
+        centerMethodSvg.innerHTML = data.svg;
+        centerMethodTitle.textContent = data.title;
+        centerMethodExplanation.innerHTML = data.explanation;
+        centerMethodPrinciple.innerHTML = data.principle;
+        centerMethodAction.innerHTML = data.action;
+        typeset(centerMethodExplanation);
+        typeset(centerMethodPrinciple);
+        typeset(centerMethodAction);
+      }
+      document.querySelectorAll('[data-center-method]').forEach((button) => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('[data-center-method]').forEach((item) => item.classList.toggle('active', item === button));
+          updateCenterMethod(button.dataset.centerMethod);
+        });
+      });
+      updateCenterMethod('fold');
+
       const relationSvg = byId('relationSvg');
       const relationTitle = byId('relationTitle');
       const relationExplanation = byId('relationExplanation');
@@ -934,31 +1102,31 @@
           title: '外離：兩圓沒有交點',
           explanation: '圓心距比兩個半徑和還長，所以兩圓完全分開。',
           condition: '條件：\\(d>r_1+r_2\\)', count: '公切線數：4 條',
-          svg: '<line class="guide" x1="135" y1="150" x2="325" y2="150"></line><circle class="circle" cx="135" cy="150" r="58"></circle><circle class="circle" cx="325" cy="150" r="42"></circle><circle class="point" cx="135" cy="150" r="4"></circle><circle class="point" cx="325" cy="150" r="4"></circle><text class="point-label" x="120" y="172">O₁</text><text class="point-label" x="311" y="172">O₂</text><text class="svg-label" x="212" y="142">d = O₁O₂</text>'
+          svg: '<circle class="circle" cx="135" cy="150" r="58"></circle><circle class="circle" cx="325" cy="150" r="42"></circle><line class="guide" x1="135" y1="150" x2="325" y2="150"></line><circle class="point" cx="135" cy="150" r="4"></circle><circle class="point" cx="325" cy="150" r="4"></circle><text class="point-label" x="120" y="172">O₁</text><text class="point-label" x="311" y="172">O₂</text><text class="svg-label" x="212" y="142">d = O₁O₂</text>'
         },
         externalTangent: {
           title: '外切：只有一個公共點',
           explanation: '兩個圓從外面碰到；兩圓心與切點會在同一直線上。',
           condition: '條件：\\(d=r_1+r_2\\)', count: '公切線數：3 條',
-          svg: '<line class="guide" x1="150" y1="150" x2="330" y2="150"></line><circle class="circle" cx="150" cy="150" r="70"></circle><circle class="circle" cx="330" cy="150" r="110"></circle><circle class="point" cx="150" cy="150" r="4"></circle><circle class="point" cx="330" cy="150" r="4"></circle><circle class="point" cx="220" cy="150" r="5"></circle><text class="point-label" x="135" y="172">O₁</text><text class="point-label" x="316" y="172">O₂</text><text class="point-label" x="214" y="143">T</text>'
+          svg: '<circle class="circle" cx="150" cy="150" r="70"></circle><circle class="circle" cx="330" cy="150" r="110"></circle><line class="guide" x1="150" y1="150" x2="330" y2="150"></line><circle class="point" cx="150" cy="150" r="4"></circle><circle class="point" cx="330" cy="150" r="4"></circle><circle class="point" cx="220" cy="150" r="5"></circle><text class="point-label" x="135" y="172">O₁</text><text class="point-label" x="316" y="172">O₂</text><text class="point-label" x="214" y="143">T</text>'
         },
         intersect: {
           title: '交於兩點：形成共同弦',
           explanation: '圓心距介於半徑和與半徑差之間，兩圓交出兩個公共點。',
           condition: '條件：\\(\\lvert r_1-r_2\\rvert\\lt d\\lt r_1+r_2\\)', count: '公切線數：2 條',
-          svg: '<line class="guide" x1="160" y1="150" x2="300" y2="150"></line><circle class="circle" cx="160" cy="150" r="80"></circle><circle class="circle" cx="300" cy="150" r="90"></circle><line class="chord" x1="223.9" y1="101.9" x2="223.9" y2="198.1"></line><circle class="point" cx="160" cy="150" r="4"></circle><circle class="point" cx="300" cy="150" r="4"></circle><circle class="point" cx="223.9" cy="101.9" r="4"></circle><circle class="point" cx="223.9" cy="198.1" r="4"></circle><text class="point-label" x="145" y="172">O₁</text><text class="point-label" x="286" y="172">O₂</text><text class="point-label" x="230" y="98">A</text><text class="point-label" x="230" y="215">B</text>'
+          svg: '<circle class="circle" cx="160" cy="150" r="80" style="fill-opacity:.38"></circle><circle class="circle" cx="300" cy="150" r="90" style="fill-opacity:.38"></circle><line class="guide" x1="160" y1="150" x2="300" y2="150"></line><line class="chord" x1="223.9" y1="101.9" x2="223.9" y2="198.1"></line><circle class="point" cx="160" cy="150" r="4"></circle><circle class="point" cx="300" cy="150" r="4"></circle><circle class="point" cx="223.9" cy="101.9" r="4"></circle><circle class="point" cx="223.9" cy="198.1" r="4"></circle><text class="point-label" x="145" y="172">O₁</text><text class="point-label" x="286" y="172">O₂</text><text class="point-label" x="230" y="98">A</text><text class="point-label" x="230" y="215">B</text><text class="svg-label" x="232" y="153">共同弦</text>'
         },
         internalTangent: {
           title: '內切：小圓在大圓內，且只有一個公共點',
           explanation: '小圓在大圓內部並剛好相碰；切點在兩圓心的連線上。',
           condition: '條件：\\(d=\\lvert r_1-r_2\\rvert\\)', count: '公切線數：1 條',
-          svg: '<line class="guide" x1="190" y1="150" x2="250" y2="150"></line><circle class="circle" cx="190" cy="150" r="105"></circle><circle class="circle" cx="250" cy="150" r="45"></circle><circle class="point" cx="190" cy="150" r="4"></circle><circle class="point" cx="250" cy="150" r="4"></circle><circle class="point" cx="295" cy="150" r="5"></circle><text class="point-label" x="174" y="172">O₁</text><text class="point-label" x="236" y="172">O₂</text><text class="point-label" x="300" y="143">T</text>'
+          svg: '<circle class="circle" cx="190" cy="150" r="105"></circle><circle class="circle" cx="250" cy="150" r="45"></circle><line class="guide" x1="190" y1="150" x2="250" y2="150"></line><circle class="point" cx="190" cy="150" r="4"></circle><circle class="point" cx="250" cy="150" r="4"></circle><circle class="point" cx="295" cy="150" r="5"></circle><text class="point-label" x="174" y="172">O₁</text><text class="point-label" x="236" y="172">O₂</text><text class="point-label" x="300" y="143">T</text>'
         },
         contained: {
           title: '內離：小圓完全在大圓內',
           explanation: '小圓在大圓內部，兩圓沒有接觸也沒有交點。',
           condition: '條件：\\(0\\lt d\\lt\\lvert r_1-r_2\\rvert\\)', count: '公切線數：0 條',
-          svg: '<line class="guide" x1="200" y1="150" x2="250" y2="150"></line><circle class="circle" cx="200" cy="150" r="105"></circle><circle class="circle" cx="250" cy="150" r="40"></circle><circle class="point" cx="200" cy="150" r="4"></circle><circle class="point" cx="250" cy="150" r="4"></circle><text class="point-label" x="184" y="172">O₁</text><text class="point-label" x="236" y="172">O₂</text>'
+          svg: '<circle class="circle" cx="200" cy="150" r="105"></circle><circle class="circle" cx="250" cy="150" r="40"></circle><line class="guide" x1="200" y1="150" x2="250" y2="150"></line><circle class="point" cx="200" cy="150" r="4"></circle><circle class="point" cx="250" cy="150" r="4"></circle><text class="point-label" x="184" y="172">O₁</text><text class="point-label" x="236" y="172">O₂</text>'
         },
         concentric: {
           title: '同心圓：圓心重合',

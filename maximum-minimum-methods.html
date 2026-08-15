@@ -85,6 +85,7 @@
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 12px; }
     .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
     .three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .grid > *, .two > *, .three > *, .path > * { min-width: 0; }
     .card, .condition-card, .example, .check, .method-step {
       border: 1px solid var(--line);
       border-radius: 13px;
@@ -168,6 +169,18 @@
     .example h3 { color: #115e59; }
     .steps { margin: 8px 0 0; padding-left: 23px; }
     .steps li { margin: 5px 0; }
+    .geometry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; margin-top: 13px; }
+    .geometry-figure { margin: 0; padding: 10px; border: 1px solid #b9e4dc; border-radius: 13px; background: #f8fffe; }
+    .geometry-figure svg { display: block; width: 100%; height: auto; }
+    .geometry-figure figcaption { margin: 6px 4px 0; color: var(--sub); font-size: 14px; }
+    .geo-line { stroke: #64748b; stroke-width: 2.4; }
+    .geo-dash { stroke-dasharray: 6 5; }
+    .geo-path-a { stroke: #0f766e; stroke-width: 3; fill: none; }
+    .geo-path-b { stroke: #c2410c; stroke-width: 3; fill: none; }
+    .geo-reflect { stroke: #7c3aed; stroke-width: 2.2; stroke-dasharray: 5 4; fill: none; }
+    .geo-point { fill: #0f172a; }
+    .geo-label { fill: #172033; font-family: Cambria, "Times New Roman", serif; font-size: 18px; font-weight: 700; }
+    .geo-note { fill: #475569; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 14px; }
     details { margin-top: 10px; padding: 8px 10px; border: 1px solid #bfdbfe; border-radius: 9px; background: #eff6ff; }
     summary { color: #1d4ed8; cursor: pointer; font-weight: 800; }
     details p { margin: 7px 0 0; color: #1e3a8a; }
@@ -179,7 +192,7 @@
     @media (max-width: 580px) {
       .wrap { padding: 12px 10px 30px; }
       .hero, .section, .teacher-note { border-radius: 14px; }
-      .two, .three, .path { grid-template-columns: 1fr; }
+      .two, .three, .path, .geometry-grid { grid-template-columns: 1fr; }
       .rule-table { font-size: 14px; }
       .rule-table th, .rule-table td { padding: 8px; }
       .rule-table td:first-child { width: auto; }
@@ -261,6 +274,7 @@
           <tr><td>二次式</td><td>配方法</td><td>頂點是否在允許範圍內</td></tr>
           <tr><td>正數的和、積、倒數</td><td>算幾不等式</td><td>兩項是否真的非負；等號能否成立</td></tr>
           <tr><td>平方和固定、線性式最值</td><td>柯西不等式</td><td>等號的比例條件</td></tr>
+          <tr><td>\(P\) 在直線 \(\ell\) 上移動，求距離和／差的極值</td><td>反射法＋三角不等式</td><td>\(A,B\) 在 \(\ell\) 的同側或異側；等號位置是否可取</td></tr>
           <tr><td>分式函數的值域</td><td>令 \(y=f(x)\)，判別式 \(\Delta\ge0\)</td><td>二次式退化成一次式的情況</td></tr>
           <tr><td>\(A\sin\theta+B\cos\theta\)</td><td>三角疊合</td><td>\(\theta\) 是否有指定區間</td></tr>
           <tr><td>含 \(\sin^2\theta\)、\(\cos^2\theta\)</td><td>設 \(t\) 後配方</td><td>\(t\in[-1,1]\) 不可漏</td></tr>
@@ -276,11 +290,12 @@
         <a href="#complete-square">1. 配方法</a>
         <a href="#am-gm">2. 算幾不等式</a>
         <a href="#cauchy">3. 柯西不等式</a>
-        <a href="#discriminant">4. 判別式</a>
-        <a href="#trig-combine">5. 三角疊合</a>
-        <a href="#trig-square">6. 三角配方</a>
-        <a href="#exp-log">7. 指數對數換元</a>
-        <a href="#calculus">8. 微分</a>
+        <a href="#reflection">4. 幾何最值：反射法</a>
+        <a href="#discriminant">5. 判別式</a>
+        <a href="#trig-combine">6. 三角疊合</a>
+        <a href="#trig-square">7. 三角配方</a>
+        <a href="#exp-log">8. 指數對數換元</a>
+        <a href="#calculus">9. 微分</a>
       </nav>
     </section>
 
@@ -320,8 +335,82 @@
         </div>
       </article>
 
+      <article class="method" id="reflection">
+        <div class="method-header"><div class="method-number">4</div><div><h2>幾何最值：反射法＋三角不等式</h2><p>當動點 \(P\) 被限制在直線 \(\ell\) 上，而題目問距離和或距離差時，先看 \(A,B\) 在 \(\ell\) 的同側或異側，再把其中一點對 \(\ell\) 反射。</p></div></div>
+        <div class="two">
+          <article class="method-step">
+            <span class="tag green">同側：距離和最小</span>
+            <h4>求 \(PA+PB\) 的最小值</h4>
+            <p>若 \(A,B\) 在 \(\ell\) 同側，將 \(A\) 對 \(\ell\) 反射為 \(A'\)。因 \(PA=PA'\)，所以</p>
+            <div class="formula">\[PA+PB=A'P+PB\ge A'B\]</div>
+            <p>當 \(A',P,B\) 三點共線時取等號，因此 \(P=A'B\cap\ell\)。</p>
+          </article>
+          <article class="method-step">
+            <span class="tag orange">異側：距離差最大</span>
+            <h4>求 \(\lvert PA-PB\rvert\) 的最大值</h4>
+            <p>若 \(A,B\) 在 \(\ell\) 異側，將 \(B\) 對 \(\ell\) 反射為 \(B'\)。因 \(PB=PB'\)，所以</p>
+            <div class="formula">\[\lvert PA-PB\rvert=\lvert PA-PB'\rvert\le AB'\]</div>
+            <p>當 \(A,P,B'\) 共線且 \(P\) 在 \(AB'\) 的延長線上時取等號，因此 \(P=AB'\cap\ell\)。</p>
+          </article>
+        </div>
+        <div class="notice"><strong>兩個常見變形：</strong>若題目改問 \(\triangle PAB\) 周長最小，因 \(AB\) 固定，只要先求 \(PA+PB\) 最小；若 \(A,B\) 原本就在 \(\ell\) 異側而要求 \(PA+PB\) 最小，則直接取 \(P=AB\cap\ell\)，最小值就是 \(AB\)。</div>
+        <div class="geometry-grid">
+          <figure class="geometry-figure">
+            <svg viewBox="0 0 390 220" role="img" aria-label="A、B在直線同側時，A反射為A撇，且A撇、P、B嚴格共線的反射法示意圖">
+              <line class="geo-line" x1="24" y1="110" x2="366" y2="110"></line>
+              <text class="geo-note" x="347" y="102">ℓ</text>
+              <line class="geo-path-a" x1="75" y1="45" x2="196.875" y2="110"></line>
+              <line class="geo-path-b" x1="196.875" y1="110" x2="300" y2="55"></line>
+              <line class="geo-reflect" x1="75" y1="45" x2="75" y2="175"></line>
+              <line class="geo-reflect" x1="75" y1="175" x2="196.875" y2="110"></line>
+              <circle class="geo-point" cx="75" cy="45" r="4.4"></circle><circle class="geo-point" cx="75" cy="175" r="4.4"></circle><circle class="geo-point" cx="196.875" cy="110" r="4.4"></circle><circle class="geo-point" cx="300" cy="55" r="4.4"></circle>
+              <text class="geo-label" x="58" y="37">A</text><text class="geo-label" x="50" y="198">A′</text><text class="geo-label" x="188" y="135">P</text><text class="geo-label" x="310" y="52">B</text>
+              <text class="geo-note" x="108" y="91">PA = PA′</text>
+            </svg>
+            <figcaption>同側時，折線 \(A\to P\to B\) 改看成直線 \(A'\to P\to B\)。</figcaption>
+          </figure>
+          <figure class="geometry-figure">
+            <svg viewBox="0 0 390 210" role="img" aria-label="A、B在直線異側時，B反射為B撇，且A、P、B撇嚴格共線的距離差反射法示意圖">
+              <line class="geo-line" x1="24" y1="120" x2="366" y2="120"></line>
+              <text class="geo-note" x="347" y="112">ℓ</text>
+              <line class="geo-path-a" x1="55" y1="45" x2="344.285714" y2="120"></line>
+              <line class="geo-path-b" x1="344.285714" y1="120" x2="190" y2="160"></line>
+              <line class="geo-reflect" x1="190" y1="80" x2="190" y2="160"></line>
+              <line class="geo-reflect" x1="190" y1="80" x2="344.285714" y2="120"></line>
+              <circle class="geo-point" cx="55" cy="45" r="4.4"></circle><circle class="geo-point" cx="190" cy="80" r="4.4"></circle><circle class="geo-point" cx="190" cy="160" r="4.4"></circle><circle class="geo-point" cx="344.285714" cy="120" r="4.4"></circle>
+              <text class="geo-label" x="40" y="37">A</text><text class="geo-label" x="199" y="75">B′</text><text class="geo-label" x="199" y="181">B</text><text class="geo-label" x="336" y="145">P</text>
+              <text class="geo-note" x="220" y="108">PB = PB′</text>
+            </svg>
+            <figcaption>異側時，\(P\) 落在 \(AB'\) 的延長線上，讓距離差達到最大。</figcaption>
+          </figure>
+        </div>
+        <div class="example">
+          <h3>例 1：\(A(1,5),\ B(6,7)\)，\(P(x,0)\) 在 \(x\) 軸上移動，求 \(PA+PB\) 的最小值</h3>
+          <ol class="steps">
+            <li>\(A,B\) 都在 \(x\) 軸上方，屬於同側；將 \(A\) 對 \(x\) 軸反射為 \(A'(1,-5)\)。</li>
+            <li>直線 \(A'B\) 為 \(y+5=\frac{12}{5}(x-1)\)。令 \(y=0\)，得 \(x=\frac{37}{12}\)。</li>
+            <li>此時 \(PA+PB=A'B=\sqrt{5^2+12^2}=13\)。</li>
+          </ol>
+          <p class="answer"><strong>答案：</strong>當 \(P\left(\frac{37}{12},0\right)\) 時，\(PA+PB\) 的最小值為 \(13\)。</p>
+        </div>
+        <div class="example">
+          <h3>例 2：\(A(2,1),\ B(9,4)\) 在 \(\ell:3x-y=15\) 的異側；\(P\) 在 \(\ell\) 上，求 \(\lvert PA-PB\rvert\) 的最大值</h3>
+          <ol class="steps">
+            <li>將 \(B\) 對 \(\ell\) 反射為 \(B'\)。由 \(3x-y-15=0\)，可得 \(B'\left(\frac{21}{5},\frac{28}{5}\right)\)。</li>
+            <li>直線 \(AB'\) 可寫成 \((x,y)=(2,1)+t\left(\frac{11}{5},\frac{23}{5}\right)\)。代入 \(3x-y=15\)，得 \(t=5\)，所以 \(P=(13,24)\)。</li>
+            <li>\(\lvert PA-PB\rvert\le AB'=\sqrt{\left(\frac{11}{5}\right)^2+\left(\frac{23}{5}\right)^2}=\sqrt{26}\)，且此時等號成立。</li>
+          </ol>
+          <p class="answer"><strong>答案：</strong>當 \(P=(13,24)\) 時，\(\lvert PA-PB\rvert\) 的最大值為 \(\sqrt{26}\)。</p>
+        </div>
+        <details>
+          <summary>一般直線怎麼求對稱點？</summary>
+          <p>若 \(Q(x_0,y_0)\) 對 \(\ell:ax+by+c=0\) 反射為 \(Q'\)，令 \(d=\frac{ax_0+by_0+c}{a^2+b^2}\)，則 \(Q'=(x_0-2ad,\ y_0-2bd)\)。例 2 正是以此求出 \(B'\)。</p>
+        </details>
+        <div class="mistake"><strong>最常混淆：</strong>\(PA+PB\) 與 \(\lvert PA-PB\rvert\) 用到的反射點位置不同。看到「和」先想三角不等式的和；看到「差」先想反三角不等式的差，並確認 \(P\) 是否落在等號需要的延長線位置。</div>
+      </article>
+
       <article class="method" id="discriminant">
-        <div class="method-header"><div class="method-number">4</div><div><h2>判別式 \(\Delta\ge0\)：反過來問「\(y\) 能不能取？」</h2><p>求值域而不易直接配方時，固定一個 \(y\)，把 \(y=f(x)\) 改寫成 \(x\) 的方程式。\(y\) 合法，等價於該方程式有實數解。</p></div></div>
+        <div class="method-header"><div class="method-number">5</div><div><h2>判別式 \(\Delta\ge0\)：反過來問「\(y\) 能不能取？」</h2><p>求值域而不易直接配方時，固定一個 \(y\)，把 \(y=f(x)\) 改寫成 \(x\) 的方程式。\(y\) 合法，等價於該方程式有實數解。</p></div></div>
         <div class="example">
           <h3>例題：求 \(y=\frac{x}{x^2+1}\) 的值域</h3>
           <ol class="steps"><li>\(yx^2-x+y=0\)。</li><li>對 \(x\) 有實數解，需 \(\Delta=1-4y^2\ge0\)。</li><li>故 \(-\frac{1}{2}\le y\le\frac{1}{2}\)。</li></ol>
@@ -331,7 +420,7 @@
       </article>
 
       <article class="method" id="trig-combine">
-        <div class="method-header"><div class="method-number">5</div><div><h2>三角疊合</h2><p>把 \(A\sin\theta+B\cos\theta\) 合成一個振幅為 \(\sqrt{A^2+B^2}\) 的三角函數；振幅就是最大絕對值。</p></div></div>
+        <div class="method-header"><div class="method-number">6</div><div><h2>三角疊合</h2><p>把 \(A\sin\theta+B\cos\theta\) 合成一個振幅為 \(\sqrt{A^2+B^2}\) 的三角函數；振幅就是最大絕對值。</p></div></div>
         <div class="formula">\[A\sin\theta+B\cos\theta=R\sin(\theta+\varphi),\qquad R=\sqrt{A^2+B^2}\]</div>
         <div class="example">
           <h3>例題：求 \(\sqrt{3}\sin\theta+\cos\theta\) 的最大、最小值（\(\theta\) 為任意實數）</h3>
@@ -342,7 +431,7 @@
       </article>
 
       <article class="method" id="trig-square">
-        <div class="method-header"><div class="method-number">6</div><div><h2>三角配方＋範圍</h2><p>含 \(\sin^2\theta\) 或 \(\cos^2\theta\) 時，設 \(t=\sin\theta\) 或 \(t=\cos\theta\)；但 \(t\) 的範圍固定是 \([-1,1]\)。</p></div></div>
+        <div class="method-header"><div class="method-number">7</div><div><h2>三角配方＋範圍</h2><p>含 \(\sin^2\theta\) 或 \(\cos^2\theta\) 時，設 \(t=\sin\theta\) 或 \(t=\cos\theta\)；但 \(t\) 的範圍固定是 \([-1,1]\)。</p></div></div>
         <div class="example">
           <h3>例題：求 \(\sin^2\theta-4\sin\theta+1\) 的最大、最小值</h3>
           <ol class="steps"><li>設 \(t=\sin\theta\)，所以 \(-1\le t\le1\)。</li><li>\(t^2-4t+1=(t-2)^2-3\)。</li><li>在 \(t\in[-1,1]\) 中，\(t-2\in[-3,-1]\)，故 \((t-2)^2\in[1,9]\)。</li></ol>
@@ -352,7 +441,7 @@
       </article>
 
       <article class="method" id="exp-log">
-        <div class="method-header"><div class="method-number">7</div><div><h2>指數、對數換元後配方</h2><p>先把「看起來複雜」的指數或對數設成一個新變數，再用二次式的方法；關鍵是新變數的天然範圍。</p></div></div>
+        <div class="method-header"><div class="method-number">8</div><div><h2>指數、對數換元後配方</h2><p>先把「看起來複雜」的指數或對數設成一個新變數，再用二次式的方法；關鍵是新變數的天然範圍。</p></div></div>
         <div class="two">
           <article class="example">
             <h3>指數例：\(4^x-6\cdot2^x+5\)</h3>
@@ -368,7 +457,7 @@
       </article>
 
       <article class="method" id="calculus">
-        <div class="method-header"><div class="method-number">8</div><div><h2>微分求極值</h2><p>當沒有漂亮的結構，或題目在指定區間中求全域最值時，微分是穩定的通法。</p></div></div>
+        <div class="method-header"><div class="method-number">9</div><div><h2>微分求極值</h2><p>當沒有漂亮的結構，或題目在指定區間中求全域最值時，微分是穩定的通法。</p></div></div>
         <div class="formula"><strong>閉區間 \([a,b]\) 的固定流程：</strong>臨界點 \(f'(x)=0\) ＋ \(f'\) 不存在但 \(f\) 有定義的點 ＋ 兩個端點，全部代回比較。</div>
         <div class="example">
           <h3>例題：求 \(f(x)=x^3-3x\) 在 \([-2,3]\) 的最大、最小值</h3>

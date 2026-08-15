@@ -256,6 +256,24 @@
     .vector-result { min-height: 88px; margin-top: 13px; padding: 12px 14px; border-radius: 12px; color: #204e69; background: #eff8fc; }
     .vector-result.correct { color: #075f58; background: var(--teal-pale); }
     .vector-result.incorrect { color: #8a3940; background: var(--red-pale); }
+    .theorem-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .theorem-card { min-width: 0; }
+    .theorem-diagram-frame { margin: 13px 0; padding: 7px; border: 1px solid #bdd8e7; border-radius: 16px; background: linear-gradient(135deg, #fff, #f4faff); }
+    .theorem-diagram { display: block; width: 100%; height: auto; }
+    .theorem-diagram .edge { fill: none; stroke: #29465f; stroke-width: 3; stroke-linejoin: round; }
+    .theorem-diagram .cevian { fill: none; stroke: #e07b20; stroke-width: 2.6; stroke-dasharray: 7 4; }
+    .theorem-diagram .transversal { fill: none; stroke: #6b4ba3; stroke-width: 3.2; }
+    .theorem-diagram .point { fill: #fff; stroke: #29465f; stroke-width: 2.2; }
+    .theorem-diagram .division { fill: #fff8dc; stroke: #b46a00; stroke-width: 2.3; }
+    .theorem-diagram .interior { fill: #fff; stroke: #b34c12; stroke-width: 3.3; }
+    .theorem-diagram .label { fill: #17394f; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 15px; font-weight: 900; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+    .theorem-diagram .line-label { fill: #6b4ba3; font-size: 13px; }
+    .theorem-steps { margin: 12px 0 0; padding-left: 21px; }
+    .theorem-steps li { margin: 8px 0; }
+    .theorem-card .formula { overflow-x: auto; overflow-y: hidden; }
+    .theorem-card .formula mjx-container[display="true"] { margin-inline: 0; }
+    .theorem-live { margin-top: 18px; padding: 16px 18px; border: 1px solid #b8dccd; border-radius: 16px; color: #075f58; background: linear-gradient(135deg, #f2fcf8, #effaff); }
+    .theorem-live h3 { color: #075f58; }
     .footer { margin: 44px 0 0; color: var(--muted); text-align: center; }
     @media (max-width: 890px) {
       .activity-layout { grid-template-columns: 1fr; }
@@ -263,9 +281,10 @@
     }
     @media (max-width: 690px) {
       .wrap { width: min(100% - 22px, 1150px); padding-top: 15px; }
-      .grid, .three-grid, .walk-grid, .ratio-cards, .given-ratios, .answer-grid, .reverse-layout, .target-ratios, .target-answer-grid, .vector-layout, .vector-input-grid { grid-template-columns: 1fr; }
+      .grid, .three-grid, .walk-grid, .ratio-cards, .given-ratios, .answer-grid, .reverse-layout, .target-ratios, .target-answer-grid, .vector-layout, .vector-input-grid, .theorem-grid { grid-template-columns: 1fr; }
       .hero { border-radius: 22px; }
       .comparison { display: block; overflow-x: auto; }
+      .theorem-card .formula mjx-container[display="true"] { font-size: .88em; }
     }
   </style>
 </head>
@@ -284,6 +303,7 @@
         <a href="#reverse-practice">反推出題</a>
         <a href="#vectors">向量反推</a>
         <a href="#practice">例題與練習</a>
+        <a href="#theorems">西瓦・孟氏</a>
       </nav>
     </header>
 
@@ -545,6 +565,146 @@
       </div>
     </section>
 
+    <section id="theorems" class="section" aria-labelledby="theorems-title">
+      <div class="section-head">
+        <span class="tag violet">面積比的進階應用</span>
+        <h2 id="theorems-title">西瓦定理與孟氏定理：分數連乘，從面積比自然出現</h2>
+        <p>看到三條從頂點出發的線，就想「西瓦」；看到一條直線截三邊或延長線，就想「孟氏」。兩者的分數其實都能用「同底或同高的面積比」串起來。</p>
+      </div>
+
+      <div class="theorem-grid">
+        <article class="card theorem-card">
+          <span class="tag teal">西瓦定理・共點</span>
+          <h3>三條中線型線段交於同一點 \(K\)</h3>
+          <p>令 \(D\in\overline{BC},E\in\overline{CA},F\in\overline{AB}\)，且 \(\overline{AD},\overline{BE},\overline{CF}\) 交於 \(K\)。</p>
+          <p>沿用本頁的面積記號：</p>
+          <div class="formula small">
+            \[
+              \begin{aligned}
+                a&=[\triangle KBC],& b&=[\triangle KCA],\\
+                c&=[\triangle KAB].
+              \end{aligned}
+            \]
+          </div>
+          <div class="theorem-diagram-frame">
+            <svg class="theorem-diagram" viewBox="0 0 500 320" role="img" aria-label="西瓦定理示意圖：三角形 ABC 中，AD、BE、CF 交於 K">
+              <polygon class="region-a" points="240,166 48,278 454,278"></polygon>
+              <polygon class="region-b" points="240,166 454,278 226,32"></polygon>
+              <polygon class="region-c" points="240,166 226,32 48,278"></polygon>
+              <path class="edge" d="M 226 32 L 48 278 L 454 278 Z"></path>
+              <path class="cevian" d="M 226 32 L 252 278 M 48 278 L 311 124 M 454 278 L 160 124"></path>
+              <circle class="point" cx="226" cy="32" r="5"></circle><circle class="point" cx="48" cy="278" r="5"></circle><circle class="point" cx="454" cy="278" r="5"></circle>
+              <circle class="division" cx="252" cy="278" r="5"></circle><circle class="division" cx="311" cy="124" r="5"></circle><circle class="division" cx="160" cy="124" r="5"></circle>
+              <circle class="interior" cx="240" cy="166" r="7"></circle>
+              <text class="label" x="216" y="21">A</text><text class="label" x="29" y="298">B</text><text class="label" x="462" y="298">C</text>
+              <text class="label" x="247" y="299">D</text><text class="label" x="321" y="122">E</text><text class="label" x="145" y="122">F</text><text class="label" x="250" y="159">K</text>
+              <text class="label" x="239" y="246">a</text><text class="label" x="343" y="164">b</text><text class="label" x="138" y="164">c</text>
+            </svg>
+          </div>
+          <div class="formula small">
+            \[
+              \begin{aligned}
+                \frac{\overline{BD}}{\overline{DC}}
+                &=\frac{[\triangle KBD]}{[\triangle KDC]}\\
+                &=\frac{[\triangle KAB]}{[\triangle KAC]}=\frac{c}{b}
+              \end{aligned}
+            \]
+            \[
+              \frac{\overline{CE}}{\overline{EA}}=\frac{a}{c},
+              \qquad
+              \frac{\overline{AF}}{\overline{FB}}=\frac{b}{a}
+            \]
+          </div>
+          <ol class="theorem-steps">
+            <li>先在同一條邊上比底：<br>\([\triangle KBD]:[\triangle KDC]\)<br>\(=\overline{BD}:\overline{DC}\)。</li>
+            <li>再看共用同一條中線的兩塊：\([\triangle KAB]:[\triangle KAC]=c:b\)。兩個比都等於 \(\overline{BD}:\overline{DC}\)。</li>
+            <li>把三組分數相乘，\(a,b,c\) 會全部消掉。</li>
+          </ol>
+          <div class="formula">
+            \[
+              \boxed{
+              \begin{aligned}
+                \frac{\overline{BD}}{\overline{DC}}
+                \cdot\frac{\overline{CE}}{\overline{EA}}
+                \cdot\frac{\overline{AF}}{\overline{FB}}
+                &=\frac{c}{b}\cdot\frac{a}{c}\cdot\frac{b}{a}\\
+                &=1
+              \end{aligned}}
+            \]
+          </div>
+          <div class="success-note"><strong>西瓦定理：</strong>上述三條線共點 \(\Rightarrow\) 連乘為 \(1\)；反過來，若三個正比值的連乘為 \(1\)，三條線也會共點。</div>
+        </article>
+
+        <article class="card theorem-card">
+          <span class="tag orange">孟氏定理・共線</span>
+          <h3>一條直線截到三邊所在直線</h3>
+          <p>令一直線 \(\ell\) 通過 \(D,E,F\)。</p>
+          <p>\(D\in\overline{BC}\)、\(E\in\overline{CA}\)，而 \(F\) 在 \(\overline{AB}\) 的延長線上。孟氏定理處理的正是「三個分點共線」的判斷。</p>
+          <div class="theorem-diagram-frame">
+            <svg class="theorem-diagram" viewBox="0 0 500 350" role="img" aria-label="孟氏定理示意圖：直線 l 通過 D、E、F，F 位在 AB 的延長線上">
+              <path class="edge" d="M 226 36 L 48 266 L 454 266 Z"></path>
+              <path class="transversal" d="M 5 327 L 349 160 L 486 94"></path>
+              <circle class="point" cx="226" cy="36" r="5"></circle><circle class="point" cx="48" cy="266" r="5"></circle><circle class="point" cx="454" cy="266" r="5"></circle>
+              <circle class="division" cx="131" cy="266" r="5"></circle><circle class="division" cx="349" cy="160" r="5"></circle><circle class="division" cx="5" cy="327" r="5"></circle>
+              <text class="label" x="216" y="24">A</text><text class="label" x="29" y="285">B</text><text class="label" x="462" y="285">C</text>
+              <text class="label" x="123" y="286">D</text><text class="label" x="358" y="157">E</text><text class="label" x="12" y="345">F</text><text class="label line-label" x="461" y="89">ℓ</text>
+              <text class="label line-label" x="44" y="323">F 在 AB 延長線</text>
+            </svg>
+          </div>
+          <p>設 \(h_A,h_B,h_C\) 分別為 \(A,B,C\) 到直線 \(\ell\) 的垂直距離。</p>
+          <p>每一組小三角形共用一段在 \(\ell\) 上的底，因此面積比就是高比：</p>
+          <div class="formula small">
+            \[
+              \begin{aligned}
+                \frac{|\overline{BD}|}{|\overline{DC}|}
+                &=\frac{[\triangle BFD]}{[\triangle CFD]}\\
+                &=\frac{|h_B|}{|h_C|}\\[2pt]
+                \frac{|\overline{CE}|}{|\overline{EA}|}
+                &=\frac{|h_C|}{|h_A|}
+              \end{aligned}
+            \]
+            \[
+              \frac{|\overline{AF}|}{|\overline{FB}|}
+              =\frac{|h_A|}{|h_B|}
+            \]
+          </div>
+          <ol class="theorem-steps">
+            <li>例如 \([\triangle BFD]\) 與 \([\triangle CFD]\) 共用底 \(\overline{FD}\)，所以面積比等於 \(B,C\) 到 \(\ell\) 的高比。</li>
+            <li>三個高比連乘後，\(|h_A|,|h_B|,|h_C|\) 同樣完全約掉。</li>
+            <li>若使用正長度，外部交點也照樣以長度的絕對值計算。</li>
+          </ol>
+          <div class="formula">
+            \[
+              \boxed{
+              \begin{aligned}
+                \frac{|\overline{BD}|}{|\overline{DC}|}
+                \cdot\frac{|\overline{CE}|}{|\overline{EA}|}
+                \cdot\frac{|\overline{AF}|}{|\overline{FB}|}
+                &=1
+              \end{aligned}}
+            \]
+            <p><strong>使用有向線段時：</strong></p>
+            \[
+              \begin{aligned}
+                \frac{\overline{BD}}{\overline{DC}}
+                \cdot\frac{\overline{CE}}{\overline{EA}}
+                \cdot\frac{\overline{AF}}{\overline{FB}}
+                &=-1
+              \end{aligned}
+            \]
+          </div>
+          <div class="error-note"><strong>最常見錯誤：</strong>西瓦看的是「三線共點」，孟氏看的是「三點共線」；孟氏圖中通常有一個分點落在邊的延長線上。若題目採有向線段，必須使用 \(-1\)，不能直接把正長度版的 \(1\) 搬過去。</div>
+        </article>
+      </div>
+
+      <article class="theorem-live" aria-live="polite">
+        <span class="tag teal">連回上方主圖</span>
+        <h3>目前面積比的西瓦驗證</h3>
+        <div id="ceva-live-check"></div>
+        <p>快速練習：若 \(\frac{\overline{BD}}{\overline{DC}}=\frac23\)、\(\frac{\overline{CE}}{\overline{EA}}=\frac54\)，要讓三線共點，則 \(\frac{\overline{AF}}{\overline{FB}}=\frac65\)。</p>
+      </article>
+    </section>
+
     <p class="footer">三角形內點的面積比：先固定 a、b、c 的位置，再用「底邊 → 上方兩塊 → 中線」三個動作讀出比例。</p>
   </main>
 
@@ -595,6 +755,8 @@
         return parts.left === parts.right ? '1' : `\\frac{${parts.left}}{${parts.right}}`;
       };
       const math = (tex) => `<span class="math">\\(${tex}\\)</span>`;
+      const displayMath = (tex) => `\\[${tex}\\]`;
+      const texFraction = (numerator, denominator) => `\\frac{${numerator}}{${denominator}}`;
       const texSegment = (name) => `\\overline{${name}}`;
       const texVector = (name) => `\\vec{${name}}`;
       const texTriangle = (vertices) => `\\triangle ${vertices}`;
@@ -756,6 +918,7 @@
         renderMap();
         updateText();
         renderVectorSection();
+        renderTheoremCheck();
         typesetMath();
       }
 
@@ -816,6 +979,16 @@
         vectorFormulas.innerHTML = `<strong>目前主圖：</strong>${math(`a:b:c=${state.a}:${state.b}:${state.c}`)}，${math(`S=a+b+c=${S}`)}
           <span class="math-line">${math(`${texVector('OK')}=${fractionLabel(state.a, S)}${texVector('OA')}+${fractionLabel(state.b, S)}${texVector('OB')}+${fractionLabel(state.c, S)}${texVector('OC')}`)}</span>
           <span class="math-line">${math(`${texVector('AK')}=${fractionLabel(state.b, S)}${texVector('AB')}+${fractionLabel(state.c, S)}${texVector('AC')}`)}</span>`;
+      }
+
+      function renderTheoremCheck() {
+        const check = $('ceva-live-check');
+        if (!check) return;
+        const bdDc = texFraction(texSegment('BD'), texSegment('DC'));
+        const ceEa = texFraction(texSegment('CE'), texSegment('EA'));
+        const afFb = texFraction(texSegment('AF'), texSegment('FB'));
+        const product = `${bdDc}\\cdot${ceEa}\\cdot${afFb}=${texFraction('c', 'b')}\\cdot${texFraction('a', 'c')}\\cdot${texFraction('b', 'a')}=1`;
+        check.innerHTML = `<p>目前主圖的面積比為 ${math(`a:b:c=${state.a}:${state.b}:${state.c}`)}，因此三個西瓦分數為 ${math(`${bdDc}=${fractionLabel(state.c, state.b)}`)}、${math(`${ceEa}=${fractionLabel(state.a, state.c)}`)}、${math(`${afFb}=${fractionLabel(state.b, state.a)}`)}。</p><div class="formula small">${displayMath(product)}</div>`;
       }
 
       function calculateVectorArea() {

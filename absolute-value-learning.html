@@ -69,11 +69,12 @@
     .card { padding: clamp(16px, 3vw, 24px); }
     .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(285px, 1fr)); }
     .two-col { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.12fr) minmax(270px, .88fr); }
+    .two-col > * { min-width: 0; }
     .tag { display: inline-block; margin-bottom: 7px; padding: 2px 9px; border: 1px solid #99f6e4; border-radius: 999px; background: #ccfbf1; color: #134e4a; font-size: 13px; font-weight: 800; }
     .tag.blue { border-color: #bae6fd; background: var(--blue-bg); color: #0c4a6e; }
     .tag.gold { border-color: #fde68a; background: var(--gold-bg); color: #854d0e; }
     .tag.purple { border-color: #ddd6fe; background: var(--purple-bg); color: #5b21b6; }
-    .formula { margin: 10px 0; padding: 10px 12px; border-left: 4px solid var(--brand); border-radius: 9px; background: #f0fdfa; font-size: 17px; font-weight: 800; text-align: center; }
+    .formula { margin: 10px 0; padding: 10px 12px; border-left: 4px solid var(--brand); border-radius: 9px; background: #f0fdfa; font-size: 17px; font-weight: 800; text-align: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .formula.blue { border-color: var(--blue); background: #f0f9ff; }
     .formula.gold { border-color: var(--gold); background: #fffbeb; }
     .formula.purple { border-color: var(--purple); background: #faf5ff; }
@@ -84,11 +85,13 @@
     .error-note { border: 1px solid #fecdd3; background: var(--bad-bg); }
     .teacher-note { border: 1px solid #bfdbfe; background: #eff6ff; }
     .note strong, .error-note strong, .teacher-note strong { color: var(--ink); }
-    .steps { display: grid; gap: 8px; counter-reset: plan; }
-    .step { position: relative; min-height: 44px; padding: 10px 10px 10px 45px; border: 1px solid var(--line); border-radius: 10px; background: #fcfdff; }
+    .steps { display: grid; gap: 8px; min-width: 0; counter-reset: plan; }
+    .step { position: relative; min-width: 0; min-height: 44px; padding: 10px 10px 10px 45px; border: 1px solid var(--line); border-radius: 10px; background: #fcfdff; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .step::before { content: counter(plan); counter-increment: plan; position: absolute; left: 11px; top: 10px; display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 900; }
     .math { display: inline-block; padding: 1px 5px; border: 1px solid #c7d2fe; border-radius: 6px; background: #eef2ff; color: #312e81; white-space: nowrap; }
     .math mjx-container, .formula mjx-container { margin: 0 !important; }
+    html body mjx-container mjx-assistive-mml { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(1px, 1px, 1px, 1px) !important; white-space: nowrap !important; contain: strict !important; }
+    html body mjx-container mjx-assistive-mml > math { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
     ul { margin: 8px 0; padding-left: 22px; }
     li { margin: 4px 0; }
     label { display: block; margin: 9px 0 4px; font-weight: 800; }
@@ -108,10 +111,23 @@
     .numberline .endpoint.open { fill: #fff; }
     .numberline .endpoint.closed { fill: var(--brand); }
     .line-caption { color: var(--sub); font-size: 14px; text-align: center; }
-    .result { min-height: 52px; margin-top: 10px; padding: 10px 12px; border: 1px dashed #94a3b8; border-radius: 10px; background: #f8fafc; }
+    .result { min-height: 52px; margin-top: 10px; padding: 10px 12px; border: 1px dashed #94a3b8; border-radius: 10px; background: #f8fafc; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .result.good { border-color: #86efac; background: var(--good-bg); color: var(--good); }
     .example-answer { display: none; margin-top: 10px; }
     .example-answer.show { display: block; }
+    .example-question { min-width: 0; margin: 7px 0 10px; font-size: 18px; font-weight: 800; line-height: 1.65; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .example-question .math { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .example-question > mjx-container { display: inline-block !important; max-width: 100%; margin: 0 .1em; overflow-x: auto; vertical-align: middle; -webkit-overflow-scrolling: touch; }
+    .example-toolbar { display: grid; grid-template-columns: minmax(280px, 500px) minmax(0, 1fr); gap: 14px; align-items: end; margin-bottom: 16px; }
+    .example-picker { margin: 0; }
+    .example-actions { min-width: 0; padding: 4px 0; }
+    .example-actions .tools { justify-content: flex-start; }
+    .example-actions .example-tip { max-width: 560px; }
+    .example-workspace { min-width: 0; }
+    .example-solution { margin-top: 12px; }
+    .example-solution[hidden] { display: none; }
+    .example-solution .steps { margin-top: 8px; }
+    .example-tip { margin-top: 10px; color: var(--sub); font-size: 14px; }
     .compare-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     .compare-table th, .compare-table td { padding: 8px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
     .compare-table th { background: #f0fdfa; color: #134e4a; }
@@ -123,7 +139,7 @@
     .footer { padding: 25px 0 8px; color: var(--sub); font-size: 14px; text-align: center; }
     @media (max-width: 720px) {
       .wrap { padding: 14px; }
-      .two-col, .quiz-layout { grid-template-columns: 1fr; }
+      .two-col, .quiz-layout, .example-toolbar { grid-template-columns: 1fr; }
       .nav a { flex: 1 1 135px; text-align: center; }
     }
   </style>
@@ -142,7 +158,8 @@
         <a href="#inequality">3. 不等式與端點</a>
         <a href="#triangle">4. 三角不等式</a>
         <a href="#minimum">5. 最小值</a>
-        <a href="#practice">6. 自我檢查</a>
+        <a href="#examples">6. 參數變化例題</a>
+        <a href="#practice">7. 自我檢查</a>
       </nav>
     </section>
 
@@ -349,9 +366,54 @@
       </div>
     </section>
 
+    <section id="examples" class="section">
+      <div class="section-head">
+        <h2>6. 參數變化例題：看懂題型，再換數字練反應</h2>
+        <p>這一區收進「整數解、反推係數、分段、最小值」的代表題；按一下即可換一組同觀念的參數。</p>
+      </div>
+      <div class="card">
+        <div class="example-toolbar">
+          <aside class="mini example-picker">
+            <div class="tag purple">選題型</div>
+            <label for="exampleType">要練哪一種思考？</label>
+            <select id="exampleType">
+              <option value="specifiedIntegers">指定哪些整數是解</option>
+              <option value="recoverCoefficients">由解集反推 a、b</option>
+              <option value="countIntegers">整數解恰有幾個</option>
+              <option value="piecewise">含多個絕對值的不等式</option>
+              <option value="weightedMinimum">加權絕對值的最小值</option>
+            </select>
+          </aside>
+          <div class="example-actions">
+            <div class="tools">
+              <button id="exampleNext" class="button" type="button">換一組參數</button>
+              <button id="exampleToggle" class="button secondary" type="button" aria-expanded="true">收起解法</button>
+            </div>
+            <p class="example-tip">每組都保留相同的解題骨架；改變的是數字與端點，避免只記住單一答案。</p>
+          </div>
+        </div>
+        <div class="example-workspace">
+          <div id="exampleTag" class="tag blue">代表範例</div>
+          <h3 id="exampleTitle">例題</h3>
+          <div id="exampleQuestion" class="example-question"></div>
+          <div id="exampleHint" class="teacher-note"></div>
+          <div id="exampleSolution" class="example-solution">
+            <div class="tag gold">完整解法</div>
+            <div id="exampleSteps" class="steps"></div>
+            <div id="exampleConclusion" class="formula"></div>
+          </div>
+        </div>
+        <div class="grid section">
+          <div class="note"><strong>先判斷題型：</strong>看到「恰為某些整數」時，要同時檢查指定整數能進來、相鄰整數不能偷跑進來。</div>
+          <div class="note"><strong>反推區間的口訣：</strong>先找中點與半距，寫成 <span class="math">\(\lvert x-\text{中點}\rvert\le\text{半距}\)</span>，再配係數。</div>
+          <div class="error-note"><strong>最常錯的地方：</strong>係數出現負數時，不能直接喊「加權中位數」；要先用各區間的斜率比較最小值。</div>
+        </div>
+      </div>
+    </section>
+
     <section id="practice" class="section">
       <div class="section-head">
-        <h2>6. 分層自我檢查</h2>
+        <h2>7. 分層自我檢查</h2>
         <p>每題先判斷「距離中心」的情境，再選答案；答完會顯示理由。</p>
       </div>
       <div class="card quiz-layout">
@@ -386,7 +448,7 @@
         window.MathJax.typesetPromise(targets).catch(() => {});
       });
     }
-    const mathInline = tex => `\\(${tex}\\)`;
+    const mathInline = tex => `\\(${String(tex).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}\\)`;
     const absoluteTex = expression => `\\lvert ${expression}\\rvert`;
     const fmt = value => {
       const rounded = Math.abs(value) < 1e-9 ? 0 : Math.round(value * 100) / 100;
@@ -527,6 +589,213 @@
       result.innerHTML = `<strong>目前：</strong>${mathInline(`\\sum_i${absoluteTex("t-a_i")}=${fmt(absSum)}`)}；${mathInline(`\\sum_i(t-a_i)^2=${fmt(squareSum)}`)}<br><strong>絕對值總和：</strong>${medianDescription} 時最小。<br><strong>平方總和：</strong>平均數 ${mathInline(fmt(mean))} 時最小。`;
       typesetMath([result]);
     }
+    const exampleSets = {
+      specifiedIntegers: [
+        {
+          tag: "代表範例・指定整數解", title: "整數解恰為 1、2、3", tone: "blue",
+          question: `滿足 ${mathInline("\\lvert3x-p\\rvert<5")} 的整數解恰為 ${mathInline("1,2,3")}，求 ${mathInline("p")} 的範圍。`,
+          hint: `「恰為」不只要讓 ${mathInline("1,2,3")} 都成立，也要確認相鄰的 ${mathInline("0,4")} 沒有偷跑進解集。`,
+          steps: [
+            `先讓 ${mathInline("x=1,2,3")} 都是解：分別得到 ${mathInline("-2<p<8")}、${mathInline("1<p<11")}、${mathInline("4<p<14")}，交集是 ${mathInline("4<p<8")}。`,
+            `排除 ${mathInline("x=0")}：${mathInline("\\lvert-p\\rvert\\ge5")}。在 ${mathInline("4<p<8")} 中，這等價於 ${mathInline("p\\ge5")}。`,
+            `排除 ${mathInline("x=4")}：${mathInline("\\lvert12-p\\rvert\\ge5")}。在目前範圍內，這等價於 ${mathInline("p\\le7")}。`
+          ],
+          conclusion: `p\\in[5,7]`
+        },
+        {
+          tag: "換參數・指定整數解", title: "整數解恰為 1、2、3", tone: "blue",
+          question: `滿足 ${mathInline("\\lvert4x-p\\rvert<7")} 的整數解恰為 ${mathInline("1,2,3")}，求 ${mathInline("p")} 的範圍。`,
+          hint: `係數與距離改了，但仍只需要看「指定的整數」以及左右緊鄰的兩個整數。`,
+          steps: [
+            `讓 ${mathInline("x=1,2,3")} 都成立，可得 ${mathInline("-3<p<11")}、${mathInline("1<p<15")}、${mathInline("5<p<19")}；交集為 ${mathInline("5<p<11")}。`,
+            `要排除 ${mathInline("x=0")}，在此交集中得到 ${mathInline("p\\ge7")}；要排除 ${mathInline("x=4")}，得到 ${mathInline("p\\le9")}。`,
+            `端點 ${mathInline("p=7,9")} 時，相鄰整數剛好使絕對值等於 7；原題是嚴格小於，所以仍不會被算進來。`
+          ],
+          conclusion: `p\\in[7,9]`
+        },
+        {
+          tag: "換參數・指定整數解", title: "整數解恰為 −1、0、1、2", tone: "blue",
+          question: `滿足 ${mathInline("\\lvert3x-p\\rvert<7")} 的整數解恰為 ${mathInline("-1,0,1,2")}，求 ${mathInline("p")} 的範圍。`,
+          hint: `整數解跨過 0 時，不必改方法；只要仍然盯住最左、最右與外側相鄰整數。`,
+          steps: [
+            `令 ${mathInline("x=-1,0,1,2")} 都成立，四個範圍的交集為 ${mathInline("-1<p<4")}。`,
+            `排除左側相鄰的 ${mathInline("x=-2")}，得到 ${mathInline("p\\ge1")}；排除右側相鄰的 ${mathInline("x=3")}，得到 ${mathInline("p\\le2")}。`,
+            `因為更外側的整數距離只會更遠，所以不用一個一個再檢查。`
+          ],
+          conclusion: `p\\in[1,2]`
+        }
+      ],
+      recoverCoefficients: [
+        {
+          tag: "代表範例・反推係數", title: "由解集反推數對 (a,b)", tone: "purple",
+          question: `不等式 ${mathInline("\\lvert ax+7\\rvert\\le b")} 的解為 ${mathInline("-1\\le x\\le5")}，求數對 ${mathInline("(a,b)")}。`,
+          hint: `先從解集讀出中心與半距，再讓絕對值裡的式子配成「常數倍的 ${mathInline("x-\\text{中心}")}」。`,
+          steps: [
+            `端點 ${mathInline("-1,5")} 的中點是 ${mathInline("2")}、半距是 ${mathInline("3")}，所以解集可寫成 ${mathInline("\\lvert x-2\\rvert\\le3")}。`,
+            `要使 ${mathInline("ax+7=a(x-2)")}，比較常數項得 ${mathInline("-2a=7")}，故 ${mathInline("a=-\\frac72")}。`,
+            `原式為 ${mathInline("\\lvert a\\rvert\\lvert x-2\\rvert\\le b")}，因此 ${mathInline("b=3\\lvert a\\rvert=\\frac{21}{2}")}。`
+          ],
+          conclusion: `(a,b)=\\left(-\\frac72,\\frac{21}{2}\\right)`
+        },
+        {
+          tag: "換參數・反推係數", title: "由區間反推數對 (a,b)", tone: "purple",
+          question: `不等式 ${mathInline("\\lvert ax+6\\rvert\\le b")} 的解為 ${mathInline("1\\le x\\le5")}，求數對 ${mathInline("(a,b)")}。`,
+          hint: `中點不在 0 也沒關係；先把範圍改寫成標準的「中心 ± 半距」。`,
+          steps: [
+            `中點是 ${mathInline("3")}、半距是 ${mathInline("2")}，故先寫成 ${mathInline("\\lvert x-3\\rvert\\le2")}。`,
+            `配係數：${mathInline("ax+6=a(x-3)")}，所以 ${mathInline("-3a=6")}，得到 ${mathInline("a=-2")}。`,
+            `半距 2 要被放大 ${mathInline("\\lvert a\\rvert=2")} 倍，因此 ${mathInline("b=4")}。`
+          ],
+          conclusion: `(a,b)=(-2,4)`
+        },
+        {
+          tag: "換參數・反推係數", title: "中心是負數時的反推", tone: "purple",
+          question: `不等式 ${mathInline("\\lvert ax+9\\rvert\\le b")} 的解為 ${mathInline("-5\\le x\\le-1")}，求數對 ${mathInline("(a,b)")}。`,
+          hint: `中心是 ${mathInline("-3")} 時，標準式應寫成 ${mathInline("\\lvert x+3\\rvert")}，不是 ${mathInline("\\lvert x-3\\rvert")}。`,
+          steps: [
+            `端點的中點為 ${mathInline("-3")}、半距為 ${mathInline("2")}，所以核心是 ${mathInline("\\lvert x+3\\rvert\\le2")}。`,
+            `由 ${mathInline("ax+9=a(x+3)")} 得 ${mathInline("3a=9")}，故 ${mathInline("a=3")}。`,
+            `因此 ${mathInline("b=2\\lvert a\\rvert=6")}。`
+          ],
+          conclusion: `(a,b)=(3,6)`
+        }
+      ],
+      countIntegers: [
+        {
+          tag: "代表範例・整數解個數", title: "恰有 5 個整數解時，k 的範圍", tone: "gold",
+          question: `若 ${mathInline("\\lvert3x-7\\rvert\\le k")} 恰有 ${mathInline("5")} 個整數解，求 ${mathInline("k")} 的範圍。`,
+          hint: `這題不用急著除以 3；把鄰近整數代進去，依「離 7 有多遠」排序會最直觀。`,
+          steps: [
+            `依絕對值由小到大列出：${mathInline("x=2,3,1,4,0,5")} 時，${mathInline("\\lvert3x-7\\rvert=1,2,4,5,7,8")}。`,
+            `要有 5 個整數解，必須收進前五個，因此 ${mathInline("k\\ge7")}。`,
+            `第六個整數 ${mathInline("x=5")} 不能收進來，所以 ${mathInline("k<8")}。`
+          ],
+          conclusion: `7\\le k<8`
+        },
+        {
+          tag: "換參數・整數解個數", title: "恰有 4 個整數解時，k 的範圍", tone: "gold",
+          question: `若 ${mathInline("\\lvert3x-8\\rvert\\le k")} 恰有 ${mathInline("4")} 個整數解，求 ${mathInline("k")} 的範圍。`,
+          hint: `先排的是「絕對值的數值」，不是 ${mathInline("x")} 的大小。`,
+          steps: [
+            `最接近的整數依序為 ${mathInline("x=3,2,4,1,5")}，其值為 ${mathInline("1,2,4,5,7")}。`,
+            `第四個要包含：${mathInline("k\\ge5")}；第五個要排除：${mathInline("k<7")}。`,
+            `因此剛好留下 ${mathInline("x=1,2,3,4")} 共四個整數解。`
+          ],
+          conclusion: `5\\le k<7`
+        },
+        {
+          tag: "換參數・整數解個數", title: "恰有 3 個整數解時，k 的範圍", tone: "gold",
+          question: `若 ${mathInline("\\lvert4x-9\\rvert\\le k")} 恰有 ${mathInline("3")} 個整數解，求 ${mathInline("k")} 的範圍。`,
+          hint: `把「第 3 小」與「第 4 小」的絕對值找出來，就能立刻夾住 ${mathInline("k")}。`,
+          steps: [
+            `由小到大，${mathInline("x=2,3,1,4")} 對應 ${mathInline("1,3,5,7")}。`,
+            `第三個要收進來，所以 ${mathInline("k\\ge5")}；第四個不能收進來，所以 ${mathInline("k<7")}。`,
+            `這時整數解恰為 ${mathInline("x=1,2,3")}。`
+          ],
+          conclusion: `5\\le k<7`
+        }
+      ],
+      piecewise: [
+        {
+          tag: "代表範例・分段討論", title: "兩個絕對值的不等式", tone: "blue",
+          question: `解不等式 ${mathInline("3\\lvert x-1\\rvert-2\\lvert x-3\\rvert\\le x-2")}。`,
+          hint: `分界點只有絕對值裡面變號的地方：${mathInline("x=1,3")}。每一段先去絕對值，再和該段的範圍取交集。`,
+          steps: [
+            `當 ${mathInline("x\\le1")}：${mathInline("3(1-x)-2(3-x)\\le x-2")}，得到 ${mathInline("x\\ge-1")}；此段解為 ${mathInline("[-1,1]")}。`,
+            `當 ${mathInline("1\\le x\\le3")}：${mathInline("3(x-1)-2(3-x)\\le x-2")}，得到 ${mathInline("x\\le\\frac74")}；此段解為 ${mathInline("[1,\\frac74]")}。`,
+            `當 ${mathInline("x\\ge3")}：${mathInline("3(x-1)-2(x-3)\\le x-2")} 無解。合併前兩段即可。`
+          ],
+          conclusion: `-1\\le x\\le\\frac74`
+        },
+        {
+          tag: "換參數・分段討論", title: "分界點在負數與正數兩側", tone: "blue",
+          question: `解不等式 ${mathInline("2\\lvert x+1\\rvert-\\lvert x-2\\rvert\\le x+1")}。`,
+          hint: `這次分界點是 ${mathInline("-1,2")}；最容易漏掉的是每段最後都要取回原本的區間。`,
+          steps: [
+            `當 ${mathInline("x\\le-1")}：${mathInline("2(-x-1)-(2-x)\\le x+1")}，得 ${mathInline("x\\ge-\\frac52")}，故為 ${mathInline("[-\\frac52,-1]")}。`,
+            `當 ${mathInline("-1\\le x\\le2")}：${mathInline("2(x+1)-(2-x)\\le x+1")}，得 ${mathInline("x\\le\\frac12")}，故為 ${mathInline("[-1,\\frac12]")}。`,
+            `當 ${mathInline("x\\ge2")}：${mathInline("2(x+1)-(x-2)\\le x+1")} 無解；合併前兩段。`
+          ],
+          conclusion: `-\\frac52\\le x\\le\\frac12`
+        },
+        {
+          tag: "換參數・分段討論", title: "係數改變，但分段法不變", tone: "blue",
+          question: `解不等式 ${mathInline("4\\lvert x\\rvert-\\lvert x-2\\rvert\\le2x+1")}。`,
+          hint: `分界點是 ${mathInline("0,2")}；右邊雖然也有 ${mathInline("x")}，仍然只是在每個區間解一次普通的一次不等式。`,
+          steps: [
+            `當 ${mathInline("x\\le0")}：${mathInline("-4x-(2-x)\\le2x+1")}，得 ${mathInline("x\\ge-\\frac35")}，此段為 ${mathInline("[-\\frac35,0]")}。`,
+            `當 ${mathInline("0\\le x\\le2")}：${mathInline("4x-(2-x)\\le2x+1")}，得 ${mathInline("x\\le1")}，此段為 ${mathInline("[0,1]")}。`,
+            `當 ${mathInline("x\\ge2")}：${mathInline("4x-(x-2)\\le2x+1")} 無解；合併得答案。`
+          ],
+          conclusion: `-\\frac35\\le x\\le1`
+        }
+      ],
+      weightedMinimum: [
+        {
+          tag: "代表範例・係數有負數", title: "不能直接套加權中位數的最小值", tone: "purple",
+          question: `求 ${mathInline("\\begin{aligned}f(x)&=5\\lvert x-1\\rvert-4\\lvert x-2\\rvert\\\\&\\quad+3\\lvert x-4\\rvert\\end{aligned}")} 的最小值。`,
+          hint: `有 ${mathInline("-4\\lvert x-2\\rvert")} 時，權重不是全正，不能直接用加權中位數；要比較分界點兩側的斜率。`,
+          steps: [
+            `分界點為 ${mathInline("1,2,4")}。在 ${mathInline("x<1,(1,2),(2,4),x>4")} 的斜率依序是 ${mathInline("-4,6,-2,4")}。`,
+            `斜率由負變正的位置是 ${mathInline("x=1,4")}，所以只需比較兩個谷底：${mathInline("f(1)=5")}、${mathInline("f(4)=7")}。`,
+            `雖然 ${mathInline("x=4")} 也是局部最小，但它比 ${mathInline("x=1")} 高。`
+          ],
+          conclusion: `x=1\\text{ 時，最小值為 }5`
+        },
+        {
+          tag: "代表範例・加權中位數", title: "全為正權重時的最小值", tone: "purple",
+          question: `求 ${mathInline("\\begin{aligned}f(x)&=2\\lvert x-1\\rvert+\\lvert x-2\\rvert\\\\&\\quad+3\\lvert x-4\\rvert+\\lvert x-5\\rvert\\\\&\\quad+2\\lvert x-6\\rvert+2\\lvert x-10\\rvert\\end{aligned}")} 的最小值。`,
+          hint: `所有係數都正，可以把係數視為重複次數；找「累積權重首次超過一半」的位置。`,
+          steps: [
+            `總權重為 ${mathInline("2+1+3+1+2+2=11")}，一半是 ${mathInline("5.5")}。`,
+            `由左至右的累積權重為 ${mathInline("2,3,6,7,9,11")}；首次超過 ${mathInline("5.5")} 的點是 ${mathInline("x=4")}。`,
+            `分兩組相加：${mathInline("6+2+0=8")}，${mathInline("1+4+12=17")}，所以 ${mathInline("f(4)=25")}。`
+          ],
+          conclusion: `x=4\\text{ 時，最小值為 }25`
+        },
+        {
+          tag: "換參數・加權中位數", title: "換一組正權重資料", tone: "purple",
+          question: `求 ${mathInline("\\begin{aligned}g(x)&=\\lvert x-1\\rvert+2\\lvert x-3\\rvert\\\\&\\quad+3\\lvert x-5\\rvert+2\\lvert x-8\\rvert\\end{aligned}")} 的最小值。`,
+          hint: `把權重想成資料點出現的次數；這比逐段展開更快，但前提是所有權重都非負。`,
+          steps: [
+            `總權重為 ${mathInline("8")}；由左至右的累積權重是 ${mathInline("1,3,6,8")}。`,
+            `累積權重跨過一半 ${mathInline("4")} 的位置是 ${mathInline("x=5")}，因此加權中位數為 ${mathInline("5")}。`,
+            `代入：${mathInline("g(5)=4+2\\cdot2+3\\cdot0+2\\cdot3=14")}。`
+          ],
+          conclusion: `x=5\\text{ 時，最小值為 }14`
+        }
+      ]
+    };
+    const exampleState = { type: "specifiedIntegers", index: 0, solutionVisible: true };
+    function renderExample() {
+      const variants = exampleSets[exampleState.type];
+      const item = variants[exampleState.index];
+      document.getElementById("exampleType").value = exampleState.type;
+      const tag = document.getElementById("exampleTag");
+      tag.className = `tag ${item.tone}`;
+      tag.textContent = item.tag;
+      document.getElementById("exampleTitle").textContent = item.title;
+      const question = document.getElementById("exampleQuestion");
+      const hint = document.getElementById("exampleHint");
+      const steps = document.getElementById("exampleSteps");
+      const conclusion = document.getElementById("exampleConclusion");
+      question.innerHTML = item.question;
+      hint.innerHTML = `<strong>解題提醒：</strong>${item.hint}`;
+      steps.replaceChildren();
+      item.steps.forEach(text => {
+        const step = document.createElement("div");
+        step.className = "step";
+        step.innerHTML = text;
+        steps.append(step);
+      });
+      conclusion.innerHTML = `<strong>答案：</strong>${mathInline(item.conclusion)}`;
+      const solution = document.getElementById("exampleSolution");
+      const toggle = document.getElementById("exampleToggle");
+      solution.hidden = !exampleState.solutionVisible;
+      toggle.textContent = exampleState.solutionVisible ? "收起解法" : "展開解法";
+      toggle.setAttribute("aria-expanded", String(exampleState.solutionVisible));
+      typesetMath([question, hint, steps, conclusion]);
+    }
     const quizData = [
       { tag: "基礎・取正", q: `${mathInline("\\lvert-8\\rvert")} 的值是多少？`, options: [mathInline("-8"), mathInline("8"), mathInline("0"), "不存在"], answer: 1, explain: `−8 到 0 的距離是 8，所以 ${mathInline("\\lvert-8\\rvert=8")}。` },
       { tag: "基礎・等式", q: `${mathInline("\\lvert x+3\\rvert=4")} 的解為何？`, options: [mathInline("x=1"), mathInline("x=-7"), `${mathInline("x=1")} 或 ${mathInline("x=-7")}`, "無解"], answer: 2, explain: `${mathInline("x+3=4")} 或 ${mathInline("x+3=-4")}，因此 ${mathInline("x=1")} 或 ${mathInline("x=-7")}。` },
@@ -590,6 +859,22 @@
     document.getElementById("pointData").addEventListener("input", updatePointData);
     document.getElementById("pointData").addEventListener("change", updatePointData);
     document.getElementById("minT").addEventListener("input", renderMinimum);
+    document.getElementById("exampleType").addEventListener("change", event => {
+      exampleState.type = event.target.value;
+      exampleState.index = 0;
+      exampleState.solutionVisible = true;
+      renderExample();
+    });
+    document.getElementById("exampleNext").addEventListener("click", () => {
+      const variants = exampleSets[exampleState.type];
+      exampleState.index = (exampleState.index + 1) % variants.length;
+      exampleState.solutionVisible = true;
+      renderExample();
+    });
+    document.getElementById("exampleToggle").addEventListener("click", () => {
+      exampleState.solutionVisible = !exampleState.solutionVisible;
+      renderExample();
+    });
     document.getElementById("quizStart").addEventListener("click", () => { quizState.index = -1; quizState.correct = 0; quizState.total = 0; quizState.streak = 0; renderQuizScore(); nextQuiz(); });
     document.getElementById("quizNext").addEventListener("click", () => { if (quizState.index < 0) { nextQuiz(); } else { nextQuiz(); } });
     renderDistance();
@@ -597,6 +882,7 @@
     renderTriangle();
     parseData();
     renderMinimum();
+    renderExample();
     renderQuizScore();
   </script>
 </body>

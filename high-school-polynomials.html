@@ -172,6 +172,7 @@
         <a href="#theorem">餘式與因式定理</a>
         <a href="#higher">高次餘式</a>
         <a href="#forms">三種列式</a>
+        <a href="#variations">題型變化</a>
         <a href="#power">高次式化簡</a>
         <a href="#practice">分層練習</a>
       </nav>
@@ -362,8 +363,163 @@
       </article>
     </section>
 
+    <section class="section" id="variations">
+      <h2>5. 題型變化：把已知餘式改成「根的資料」</h2>
+      <p class="section-lead">這類題目最容易被式子外觀嚇到。穩定的流程是：<strong>先因式分解目標除式，再從已知餘式讀出各個根的函數值，最後只設目標餘式需要的次數。</strong></p>
+
+      <div class="grid two">
+        <article class="card worked orange">
+          <span class="label orange">例題 6｜外面多乘一個一次式</span>
+          <p>若 \((x+1)f(x)\) 除以 \(x^2+x+1\) 的餘式為 \(5x+3\)，求 \(f(x)\) 除以 \(x^2+x+1\) 的餘式。</p>
+          <ol class="steps">
+            <li>除式二次，先設 \(f(x)\) 的餘式為 \(R(x)=ax+b\)。</li>
+            <li>由 \(x^2+x+1\equiv0\)，可把 \(x^2\) 換成 \(-x-1\)。</li>
+            <li>將乘積化簡成：
+              <div class="math-block">\[
+                (x+1)R(x)=ax^2+(a+b)x+b\equiv bx+(b-a)
+              \]</div>
+            </li>
+            <li>與 \(5x+3\) 比較，得 \(b=5\)、\(b-a=3\)，所以 \(a=2\)。</li>
+          </ol>
+          <div class="answer">\[
+            \boxed{R(x)=2x+5}
+          \]</div>
+          <div class="callout warn"><strong>易錯提醒：</strong>不能直接把 \((x+1)\) 約掉；要先把未知餘式設為 \(ax+b\)，再在「除以 \(x^2+x+1\)」的規則下化簡。</div>
+        </article>
+
+        <article class="card worked teal">
+          <span class="label teal">例題 7｜兩個一次餘式拼成二次除式</span>
+          <p>若 \(f(x)\) 除以 \(x-2\) 的餘式為 \(7\)，除以 \(x+3\) 的餘式為 \(-8\)，求除以 \((x-2)(x+3)\) 的餘式。</p>
+          <div class="math-block">\[
+            R(x)=ax+b
+          \]</div>
+          <div class="math-block">\[
+            R(2)=7,\qquad R(-3)=-8
+          \]</div>
+          <div class="math-block">\[
+            \begin{aligned}
+            2a+b&=7\\
+            -3a+b&=-8
+            \end{aligned}
+            \quad\Rightarrow\quad a=3,\ b=1
+          \]</div>
+          <div class="answer">\[
+            \boxed{R(x)=3x+1}
+          \]</div>
+          <p class="small">這題的答案不是把 \(7\) 和 \(-8\) 相乘或相加；它是一個在 \(2\) 與 \(-3\) 處分別取到指定值的一次式。</p>
+        </article>
+      </div>
+
+      <article class="card worked" style="margin-top:14px;">
+        <span class="label">例題 8｜兩組二次除式，取出交錯的兩個根</span>
+        <p>已知</p>
+        <div class="math-block">\[
+          \begin{aligned}
+          f(x)&\equiv3x+1\pmod{(x+1)(x+2)},\\
+          f(x)&\equiv-x+5\pmod{(x-1)(x-2)}.
+          \end{aligned}
+        \]</div>
+        <div class="grid two">
+          <div>
+            <h3>（1）除以 \((x+1)(x-1)\)</h3>
+            <p>需要 \(x=-1,1\) 的值：</p>
+            <div class="math-block">\[
+              f(-1)=-2,\qquad f(1)=4
+            \]</div>
+            <p>設 \(R(x)=ax+b\)，則 \(-a+b=-2\)、\(a+b=4\)。</p>
+            <div class="answer">\[\boxed{R(x)=3x+1}\]</div>
+          </div>
+          <div>
+            <h3>（2）除以 \((x+2)(x-2)\)</h3>
+            <p>需要 \(x=-2,2\) 的值：</p>
+            <div class="math-block">\[
+              f(-2)=-5,\qquad f(2)=3
+            \]</div>
+            <p>設 \(R(x)=ax+b\)，則 \(-2a+b=-5\)、\(2a+b=3\)。</p>
+            <div class="answer">\[\boxed{R(x)=2x-1}\]</div>
+          </div>
+        </div>
+        <div class="callout teal"><strong>老師板書重點：</strong>不要把已知的兩個「餘式多項式」拿來相除；每一個餘式最有用的資訊，是它在該除式根的位置所給出的 \(f(t)\)。</div>
+      </article>
+
+      <div class="grid two" style="margin-top:14px;">
+        <article class="card worked purple">
+          <span class="label purple">例題 9｜一個二次餘式加一個一次條件</span>
+          <p>若 \(f(x)\) 除以 \(x^2+x+3\) 的餘式為 \(3x-1\)，且 \(f(x)\) 除以 \(x-1\) 的餘式為 \(12\)，求 \(f(x)\) 除以 \((x-1)(x^2+x+3)\) 的餘式。</p>
+          <p>目標除式三次，因此餘式最多二次。把已知二次除式的餘式先保留：</p>
+          <div class="math-block">\[
+            R(x)=A(x^2+x+3)+3x-1
+          \]</div>
+          <p>代 \(x=1\)：</p>
+          <div class="math-block">\[
+            12=R(1)=5A+3-1\quad\Rightarrow\quad A=2
+          \]</div>
+          <div class="answer">\[
+            \boxed{R(x)=2x^2+5x+5}
+          \]</div>
+        </article>
+
+        <article class="card worked teal">
+          <span class="label teal">例題 10｜兩個二次餘式，找另一組二次除式</span>
+          <p>若 \(f(x)\) 除以 \(x^2-5x+4\) 的餘式為 \(x+2\)，除以 \(x^2-5x+6\) 的餘式為 \(3x+4\)，求除以 \(x^2-4x+3\) 的餘式。</p>
+          <div class="math-block">\[
+            \begin{aligned}
+            x^2-5x+4&=(x-1)(x-4),\\
+            x^2-5x+6&=(x-2)(x-3),\\
+            x^2-4x+3&=(x-1)(x-3).
+            \end{aligned}
+          \]</div>
+          <p>目標只需要 \(f(1)\)、\(f(3)\)：\(f(1)=3\)、\(f(3)=13\)。設 \(R(x)=ax+b\)。</p>
+          <div class="answer">\[
+            a+b=3,\quad3a+b=13
+            \quad\Rightarrow\quad\boxed{R(x)=5x-2}
+          \]</div>
+        </article>
+      </div>
+
+      <div class="grid two" style="margin-top:14px;">
+        <article class="card worked orange">
+          <span class="label orange">例題 11｜已知三次，重建整個多項式</span>
+          <p>設 \(f(x)\) 是三次多項式。若它除以 \(x^2-1\) 的餘式為 \(3x+1\)，除以 \(x^2+1\) 的餘式為 \(-x+3\)，求 \(f(x)\)。</p>
+          <p>設 \(f(x)=ax^3+bx^2+cx+d\)。利用 \(x^2\equiv1\) 與 \(x^2\equiv-1\)：</p>
+          <div class="math-block">\[
+            \begin{aligned}
+            (a+c)x+(b+d)&=3x+1,\\
+            (-a+c)x+(-b+d)&=-x+3.
+            \end{aligned}
+          \]</div>
+          <div class="answer">\[
+            a=2,\ b=-1,\ c=1,\ d=2
+            \quad\Rightarrow\quad\boxed{f(x)=2x^3-x^2+x+2}
+          \]</div>
+        </article>
+
+        <article class="card worked purple">
+          <span class="label purple">例題 12｜同一個二次式在三個不同點同值</span>
+          <p>設 \(a,b,c\) 為實數，\[ f(x)=a(x-1)(x-2)+b(x-1)(x+2)+c(x+2)(x-2). \] 若 \(f(\sqrt3)=f(\pi)=f(99)=12\)，求 \(a,b,c\)。</p>
+          <p>\(f(x)-12\) 是至多二次式，卻有 \(\sqrt3,\pi,99\) 三個相異根，因此它必為零多項式。比較係數：</p>
+          <div class="math-block">\[
+            a+b+c=0,\qquad -3a+b=0,\qquad 2a-2b-4c=12
+          \]</div>
+          <div class="answer">\[
+            \boxed{a=1,\qquad b=3,\qquad c=-4}
+          \]</div>
+          <p class="small">這題的關鍵不是把 \(\sqrt3\)、\(\pi\)、99 各自代完，而是辨認「二次式不可能有三個相異根」。</p>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:14px;">
+        <span class="label orange">補充｜非首一除式的商式要換算</span>
+        <p>若 \(f(x)\) 除以 \(ax-b\) 的商為 \(q(x)\)、餘式為 \(r\)，則</p>
+        <div class="equation">\[
+          f(x)=(ax-b)q(x)+r=\left(x-\frac{b}{a}\right)\bigl(aq(x)\bigr)+r
+        \]</div>
+        <p>所以改除以 \(x-\frac ba\) 時，<strong>商式是 \(aq(x)\)，餘式仍是 \(r\)</strong>。這正是「除式差一個常數倍，商要補回那個常數倍」的原因。</p>
+      </article>
+    </section>
+
     <section class="section" id="power">
-      <h2>5. 高次式化簡：看到 \(x^n\pm1\) 先找可用的循環</h2>
+      <h2>6. 高次式化簡：看到 \(x^n\pm1\) 先找可用的循環</h2>
       <article class="card">
         <div class="grid two">
           <div>
@@ -398,7 +554,7 @@
     </section>
 
     <section class="section" id="practice">
-      <h2>6. 分層練習：先寫餘式形式，再開始算</h2>
+      <h2>7. 分層練習：先寫餘式形式，再開始算</h2>
       <div class="grid three">
         <article class="card worked teal">
           <div class="level-row"><span class="level">基礎</span></div>
