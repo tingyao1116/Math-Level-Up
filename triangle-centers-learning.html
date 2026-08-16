@@ -226,6 +226,10 @@
     .step strong { color: var(--blue); }
     .example-answer { margin-top: 12px; padding: 12px; border-radius: 11px; background: #f1f8fc; }
     .example-answer ol { margin: 5px 0 0; padding-left: 1.35em; }
+    .challenge-note { margin: 10px 0 0; color: #315269; font-size: .94rem; }
+    details.challenge-answer { margin-top: 14px; border: 1px solid #c9d8e5; border-radius: 11px; background: #fbfdff; }
+    details.challenge-answer summary { padding: 10px 12px; cursor: pointer; color: #17415e; font-weight: 850; }
+    details.challenge-answer .answer-inside { padding: 0 12px 12px; }
 
     .quiz-card { padding: clamp(19px, 4vw, 30px); }
     .quiz-top { display: flex; align-items: end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
@@ -306,6 +310,7 @@
         <a href="#special">特殊三角形</a>
         <a href="#formulas">公式地圖</a>
         <a href="#examples">例題</a>
+        <a href="#advanced">進階難題</a>
         <a href="#check">自我檢查</a>
         <a href="./triangle-centers-senior-learning.html">前往高中版：座標與向量</a>
       </nav>
@@ -612,6 +617,62 @@
         </article>
       </div>
       <div class="error-note"><strong>最常犯的錯：</strong>等腰三角形只有「頂點連到底邊中點」這一條對稱軸同時兼具多種身分；不能因此推論任何一條中線都是高，也不能推論四心必定重合。</div>
+    </section>
+
+    <section id="advanced" class="section">
+      <div class="section-head">
+        <h2>進階難題：用座標找三心的位置與距離</h2>
+        <p>本區的「三心」固定指外心 \(O\)、內心 \(I\)、重心 \(G\)。等腰三角形先用畢氏數求高，再把對稱軸設成 \(y\) 軸；直角三角形則把兩條直角邊放在座標軸上。困難的距離一律用兩點距離公式，不跳步猜答案。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag gold">進階一｜等腰 \(13,13,10\)</span>
+          <h3>三心都在對稱軸，但位置並不相同</h3>
+          <p>\(\triangle ABC\) 滿足 \(AB=AC=13\)、\(BC=10\)。設 \(M\) 為 \(BC\) 中點。求 \(O,I,G\) 的座標、在對稱軸上的先後順序，以及三段距離 \(OI,IG,OG\)。</p>
+          <div class="example-answer">
+            <strong>座標化解題</strong>
+            <div class="steps">
+              <div class="step"><strong>1. 先用畢氏數求高。</strong>\[\overline{AM}=\sqrt{13^2-5^2}=12\]</div>
+              <div class="step"><strong>2. 把底邊中點放原點。</strong>\[A(0,12),\qquad B(-5,0),\qquad C(5,0)\]</div>
+              <div class="step"><strong>3. 外心 \(O\) 在 \(y\) 軸，設 \(O=(0,t)\)。</strong>\[OA^2=OB^2\]\[(12-t)^2=t^2+5^2\]\[t=\frac{119}{24},\qquad O\left(0,\frac{119}{24}\right)\]</div>
+              <div class="step"><strong>4. 用加權座標找內心，用平均座標找重心。</strong>\[I=\frac{10A+13B+13C}{10+13+13}=\left(0,\frac{10}{3}\right)\]\[G=\frac{A+B+C}{3}=(0,4)\]</div>
+              <div class="step"><strong>5. 三心都在 \(y\) 軸，距離就是 \(y\) 座標相減。</strong>\[\overline{IG}=4-\frac{10}{3}=\frac{2}{3}\]\[\overline{OG}=\frac{119}{24}-4=\frac{23}{24}\]\[\overline{OI}=\frac{119}{24}-\frac{10}{3}=\frac{13}{8}\]</div>
+            </div>
+          </div>
+          <p class="challenge-note">從底邊往頂點的順序為 \(M\rightarrow I\rightarrow G\rightarrow O\rightarrow A\)。等腰只保證三心共對稱軸，<strong>不保證</strong>三心重合。</p>
+        </article>
+
+        <article class="card">
+          <span class="tag red">進階二｜直角 \(5,12,13\)</span>
+          <h3>三心不共線時，只能老實算距離</h3>
+          <p>\(\triangle ABC\) 中 \(\angle A=90^\circ\)、\(AB=12\)、\(AC=5\)、\(BC=13\)。求 \(O,I,G\) 的座標，並求 \(OI,IG,OG\)。</p>
+          <div class="example-answer">
+            <strong>座標化解題</strong>
+            <div class="steps">
+              <div class="step"><strong>1. 讓直角邊落在座標軸上。</strong>\[A(0,0),\qquad B(12,0),\qquad C(0,5)\]</div>
+              <div class="step"><strong>2. 外心是斜邊中點；內心到兩座標軸的距離都是 \(r\)。</strong>\[O=\left(\frac{12+0}{2},\frac{0+5}{2}\right)=\left(6,\frac{5}{2}\right)\]\[r=\frac{12+5-13}{2}=2,\qquad I=(2,2)\]</div>
+              <div class="step"><strong>3. 重心是三頂點座標平均。</strong>\[G=\left(\frac{0+12+0}{3},\frac{0+0+5}{3}\right)=\left(4,\frac{5}{3}\right)\]</div>
+              <div class="step"><strong>4. 三段距離都用兩點距離公式。</strong>\[\overline{OG}=\sqrt{(6-4)^2+\left(\frac{5}{2}-\frac{5}{3}\right)^2}=\frac{13}{6}\]\[\overline{IG}=\sqrt{(4-2)^2+\left(\frac{5}{3}-2\right)^2}=\frac{\sqrt{37}}{3}\]\[\overline{OI}=\sqrt{(6-2)^2+\left(\frac{5}{2}-2\right)^2}=\frac{\sqrt{65}}{2}\]</div>
+            </div>
+          </div>
+          <p class="challenge-note">\(\overline{OG}=\frac{13}{6}=\frac{BC}{6}\) 可作為最後驗算；但 \(OI\) 與 \(IG\) 沒有這種一眼可得的特例，直接座標化最可靠。</p>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:16px">
+        <span class="tag">挑戰練習｜換一組畢氏數</span>
+        <h3>等腰 \(17,17,16\)：自己完成三心距離</h3>
+        <p>把 \(\triangle ABC\) 設為 \(A(0,15)\)、\(B(-8,0)\)、\(C(8,0)\)。求 \(O,I,G\) 與 \(OI,IG,OG\)，並寫出三心由下到上的順序。</p>
+        <div class="formula-block">\[\overline{AM}=\sqrt{17^2-8^2}=15\]</div>
+        <details class="challenge-answer">
+          <summary>展開自我檢查答案</summary>
+          <div class="answer-inside">
+            <div class="formula-block">\[O=\left(0,\frac{161}{30}\right),\qquad I=\left(0,\frac{24}{5}\right),\qquad G=(0,5)\]</div>
+            <div class="formula-block">\[\overline{IG}=\frac{1}{5},\qquad \overline{OG}=\frac{11}{30},\qquad \overline{OI}=\frac{17}{30}\]</div>
+            <p class="challenge-note">順序為 \(M\rightarrow I\rightarrow G\rightarrow O\rightarrow A\)。檢查：\(\overline{OI}=\overline{IG}+\overline{OG}\)。</p>
+          </div>
+        </details>
+      </article>
     </section>
 
     <section id="check" class="section">

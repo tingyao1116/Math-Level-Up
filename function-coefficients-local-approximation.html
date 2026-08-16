@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>從係數讀圖：一次、二次、三次函數與一次近似</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] },
+      chtml: { matchFontHeight: false }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #18324a;
+      --sub: #496176;
+      --line: #d7e4ee;
+      --blue: #16628a;
+      --blue-soft: #eaf6fb;
+      --green: #15745f;
+      --green-soft: #e8f8f1;
+      --gold: #9a6200;
+      --gold-soft: #fff5dc;
+      --red: #b64646;
+      --paper: #ffffff;
+      --bg: #eef6f7;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      padding: 22px;
+      min-width: 320px;
+      color: var(--ink);
+      background: linear-gradient(140deg, #e8f5f4 0%, #f4f7ff 48%, #eef8fb 100%);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    }
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--paper);
+      box-shadow: 0 18px 46px rgba(24, 50, 74, .10);
+    }
+    .hero {
+      padding: clamp(24px, 5vw, 48px);
+      color: #fff;
+      background: linear-gradient(125deg, #155f7b, #237b87 56%, #307f68);
+    }
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 4px 10px;
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .9rem;
+      letter-spacing: .04em;
+      background: rgba(255,255,255,.13);
+    }
+    h1, h2, h3 { color: var(--ink); }
+    .hero h1 { margin: 0; color: #fff; font-size: clamp(1.8rem, 4vw, 2.8rem); }
+    .hero p { max-width: 820px; margin: 12px 0 0; color: #e8f9fb; line-height: 1.9; }
+    .hero-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .hero-nav a {
+      padding: 7px 11px;
+      border: 1px solid rgba(255,255,255,.46);
+      border-radius: 9px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      background: rgba(8, 45, 58, .17);
+    }
+    .hero-nav a:hover { background: rgba(255,255,255,.2); }
+    .pad { padding: clamp(18px, 3vw, 32px); }
+    h2 { margin: 0 0 8px; font-size: clamp(1.35rem, 2.5vw, 1.72rem); }
+    h3 { margin: 0 0 7px; font-size: 1.06rem; }
+    p, li { color: var(--sub); line-height: 1.8; }
+    p { margin: 0 0 10px; }
+    ul { margin: 7px 0 0; padding-left: 1.3em; }
+    .section { padding: 28px 0; border-top: 1px solid var(--line); }
+    .section:first-child { padding-top: 0; border-top: 0; }
+    .section-lead { max-width: 900px; }
+    .rule-grid, .two-col, .four-grid { display: grid; gap: 14px; }
+    .rule-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 14px; }
+    .two-col { grid-template-columns: minmax(0, 1.25fr) minmax(300px, .9fr); margin-top: 14px; }
+    .four-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 14px; }
+    .card, .rule-card, .note, .formula-box, .lab-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+    .rule-card { padding: 14px; background: linear-gradient(145deg, #fbfeff, #f2f9fc); }
+    .rule-card .tag { display: inline-block; margin-bottom: 7px; color: var(--blue); font-size: .84rem; font-weight: 800; }
+    .rule-card p:last-child { margin-bottom: 0; }
+    .lab-card { padding: 16px; }
+    .formula-box { margin-top: 10px; padding: 12px 14px; background: #f7fbfd; color: #244d64; overflow-x: auto; }
+    .note { margin-top: 12px; padding: 12px 14px; }
+    .note.tip { border-left: 5px solid var(--green); background: var(--green-soft); }
+    .note.warn { border-left: 5px solid var(--gold); background: var(--gold-soft); }
+    .note strong { color: var(--ink); }
+    .controls { display: grid; gap: 10px; margin-top: 12px; }
+    .control-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 62px; gap: 10px; align-items: center; }
+    .control-row label { color: #264b63; font-weight: 800; }
+    input[type="range"] { width: 100%; accent-color: var(--blue); }
+    output { min-width: 3.2em; color: var(--blue); text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    button {
+      appearance: none;
+      border: 1px solid #abc9db;
+      border-radius: 9px;
+      padding: 8px 11px;
+      color: #24516d;
+      background: #f9fcfd;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--blue); background: var(--blue-soft); }
+    button.active { border-color: var(--blue); color: #fff; background: var(--blue); }
+    button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid #6cc6de; outline-offset: 2px; }
+    canvas { display: block; width: 100%; height: 360px; border: 1px solid #c9dce8; border-radius: 12px; background: #fff; }
+    #cubicCasesCanvas { height: 500px; }
+    .canvas-caption { margin-top: 7px; font-size: .92rem; }
+    .readout { min-height: 4em; margin-top: 10px; padding: 11px 12px; border-radius: 10px; color: #284e64; background: #f4fafc; }
+    .readout strong { color: var(--ink); }
+    .status { margin-top: 10px; padding: 10px 12px; border-radius: 10px; color: #0d5c49; background: var(--green-soft); font-weight: 750; }
+    .status.no-root { color: #8b5210; background: var(--gold-soft); }
+    .status.two-root { color: #9b3636; background: #fff0f0; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 9px 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; line-height: 1.65; }
+    th { color: #234f66; background: #edf7fa; }
+    .table-wrap { overflow-x: auto; margin-top: 14px; }
+    .table-wrap table { min-width: 690px; }
+    .case-card { padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdfe; }
+    .case-card h3 { color: var(--blue); }
+    .case-card p:last-child { margin-bottom: 0; }
+    .synthetic-grid { display: grid; gap: 9px; margin-top: 12px; }
+    .synthetic-step { padding: 10px 12px; border: 1px solid #cfe1ea; border-radius: 10px; background: #f7fbfd; }
+    .synthetic-step strong { color: #24516d; }
+    .synthetic-step p:last-child { margin-bottom: 0; }
+    .synthetic-result { margin-top: 12px; padding: 12px 14px; border-radius: 11px; color: #1b4d42; background: var(--green-soft); border: 1px solid #b7e1d3; }
+    details { margin-top: 9px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfdfe; }
+    summary { color: #244e65; font-weight: 800; cursor: pointer; }
+    details > :last-child { margin-bottom: 0; }
+    .small { font-size: .92rem; }
+    .hidden-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+    @media (max-width: 840px) {
+      body { padding: 12px; }
+      .wrap { border-radius: 15px; }
+      .rule-grid, .two-col, .four-grid { grid-template-columns: 1fr; }
+      #cubicCasesCanvas { height: 500px; }
+    }
+    @media (max-width: 520px) {
+      .hero { padding: 24px 18px; }
+      .pad { padding: 18px; }
+      .control-row { grid-template-columns: 70px minmax(0, 1fr) 46px; gap: 7px; }
+      canvas { height: 300px; }
+      #cubicCasesCanvas { height: 500px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <span class="eyebrow">高一函數圖形・係數判讀</span>
+      <h1>從係數讀圖：一次、二次、三次函數與一次近似</h1>
+      <p>同一張函數圖不只是在「畫曲線」：斜率、截距、開口、頂點、反曲點與切線，都在告訴我們式子中的係數做了什麼。先讀圖形的骨架，再回到公式確認。</p>
+      <nav class="hero-nav" aria-label="本頁段落">
+        <a href="#linear">一次函數</a>
+        <a href="#quadratic">二次函數</a>
+        <a href="#cubic">三次函數</a>
+        <a href="#local">一次近似</a>
+      </nav>
+    </header>
+<div class="pad">
+      <section class="section" aria-labelledby="start-title">
+        <h2 id="start-title">先抓住讀圖原則：係數不是各自孤立的按鈕</h2>
+        <p class="section-lead">先找圖形最穩定的關鍵點：直線看斜率和 \(y\) 截距；拋物線看開口、頂點與 \(x\) 軸交點；三次函數看反曲點和該點的切線。這些骨架會把看似複雜的係數關係變成可判讀的圖形。</p>
+        <div class="note tip"><strong>座標比例固定：</strong>本頁每張函數圖都採 \(x\) 軸、\(y\) 軸「1 格同樣長」的比例。視窗為了容納圖形可能延伸較遠，但不會把拋物線或三次曲線拉寬、壓扁來製造錯覺。</div>
+        <div class="rule-grid">
+          <article class="rule-card"><span class="tag">一次 \(y=mx+b\)</span><h3>先看走 1 格，上下多少</h3><p>\(m\) 是斜率；\(b\) 是穿過 \(y\) 軸的位置。只要 \(\Delta x=1\)，就有 \(\Delta y=m\)。</p></article>
+          <article class="rule-card"><span class="tag">二次 \(y=ax^2+bx+c\)</span><h3>先找頂點，再數交點</h3><p>對稱軸是 \(x=-\frac b{2a}\)；判別式 \(D\) 告訴我們與 \(x\) 軸交幾次。</p></article>
+          <article class="rule-card"><span class="tag">三次 \(y=a(x-h)^3+p(x-h)+k\)</span><h3>先找反曲點，再看切線方向</h3><p>反曲點是 \((h,k)\)，而 \(p\) 是那裡的切線斜率；\(a\) 決定兩端總體往上或往下。</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="linear" aria-labelledby="linear-title">
+        <h2 id="linear-title">一、一次函數：斜率 \(m\) 與截距 \(b\)</h2>
+        <p class="section-lead">對 \(y=mx+b\) 而言，先從 \(x=0\) 開始：圖形一定通過 \((0,b)\)。接著向右走 1 單位，\(y\) 的改變量就是 \(m\)。這比只背「正斜率上升、負斜率下降」更能處理分數斜率。</p>
+        <div class="two-col">
+          <article class="lab-card">
+            <h3>滑動觀察：斜率三角形與截距</h3>
+            <div class="controls">
+              <div class="control-row"><label for="linearM">斜率 \(m\)</label><input id="linearM" type="range" min="-3" max="3" step="0.5" value="1.5"><output id="linearMOut" for="linearM">1.5</output></div>
+              <div class="control-row"><label for="linearB">截距 \(b\)</label><input id="linearB" type="range" min="-4" max="4" step="1" value="-1"><output id="linearBOut" for="linearB">-1</output></div>
+            </div>
+            <div class="formula-box" id="linearFormula" aria-live="polite"></div>
+            <canvas id="linearCanvas" aria-label="一次函數斜率與截距圖形"></canvas>
+            <p class="canvas-caption">綠色點是 \(y\) 截距 \((0,b)\)；虛線三角形固定向右走 \(1\)，所以垂直改變量就是 \(m\)。</p>
+          </article>
+          <article class="lab-card">
+            <h3>上課可直接說的判讀句</h3>
+            <div class="readout" id="linearReadout"></div>
+            <div class="note tip"><strong>例題：</strong>直線通過 \((0,-2)\)、\((3,4)\)。由兩點算斜率 \(m=\frac{4-(-2)}{3-0}=2\)，所以 \(y=2x-2\)。先讀到 \(b=-2\)，再驗算另一點即可。</div>
+            <div class="note warn"><strong>常見錯誤：</strong>把 \(b\) 當成 \(x\) 截距。\(b\) 是 \(x=0\) 時的 \(y\) 值；真正的 \(x\) 截距要令 \(y=0\)，得到 \(x=-\frac bm\)（前提是 \(m\ne0\)）。</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="quadratic" aria-labelledby="quadratic-title">
+        <h2 id="quadratic-title">二、二次函數：一般式、標準式與判別式的圖形語言</h2>
+        <p class="section-lead">一般式 \(y=ax^2+bx+c\) 最適合直接讀 \(c\)，也能由 \(y\) 軸處的切線讀出 \(b\)；標準式 \(y=a(x-h)^2+k\) 最適合直接讀頂點。兩式不是競爭關係，而是各自負責一件重要的事。</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>從哪裡讀？</th><th>係數／公式</th><th>圖形上怎麼判斷？</th></tr></thead>
+            <tbody>
+              <tr><td>開口與彎曲程度</td><td>\(a\)</td><td>\(a>0\) 開口向上；\(a<0\) 開口向下。相同座標刻度下，\(|a|\) 越大，拋物線越窄。</td></tr>
+              <tr><td>\(y\) 軸截距</td><td>\(c\)</td><td>令 \(x=0\)，得到 \(y=c\)，所以圖形通過 \((0,c)\)。</td></tr>
+              <tr><td>\(y\) 軸處的切線<br>（\(x=0\) 附近的一次近似）</td><td>\(f'(0)=b\)</td><td>\(f'(x)=2ax+b\)，所以在 \((0,c)\) 的切線近似為 \(y\approx c+bx\)。向右看：\(b>0\) 表示切線上升；\(b<0\) 表示切線下降；\(b=0\) 表示切線水平。</td></tr>
+              <tr><td>對稱軸與頂點橫坐標</td><td>\(h=-\frac b{2a}\)</td><td>頂點在對稱軸 \(x=h\) 上。這裡的 \(b\) 要和 \(a\) 一起用，才能判斷頂點在左或右；不要把它和「\(y\) 軸處切線的正、負斜率」混在一起。</td></tr>
+              <tr><td>與 \(x\) 軸交點數</td><td>\(D=b^2-4ac\)</td><td>\(D>0\)：兩個交點；\(D=0\)：在頂點相切；\(D<0\)：沒有交點。</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="two-col">
+          <article class="lab-card">
+            <h3>滑動一般式：由圖驗證 \(D\) 的正負</h3>
+            <div class="controls">
+              <div class="control-row"><label for="quadA">\(a\)</label><input id="quadA" type="range" min="-2" max="2" step="0.5" value="1"><output id="quadAOut" for="quadA">1</output></div>
+              <div class="control-row"><label for="quadB">\(b\)</label><input id="quadB" type="range" min="-6" max="6" step="1" value="0"><output id="quadBOut" for="quadB">0</output></div>
+              <div class="control-row"><label for="quadC">\(c\)</label><input id="quadC" type="range" min="-5" max="5" step="1" value="0"><output id="quadCOut" for="quadC">0</output></div>
+            </div>
+            <div class="button-row" aria-label="二次函數判別式範例">
+              <button type="button" data-quad="two">\(D>0\)：兩交點</button>
+              <button type="button" data-quad="touch" class="active">\(D=0\)：相切</button>
+              <button type="button" data-quad="none">\(D<0\)：無交點</button>
+            </div>
+            <div class="formula-box" id="quadFormula" aria-live="polite"></div>
+            <canvas id="quadCanvas" aria-label="二次函數判別式與頂點圖形"></canvas>
+          </article>
+          <article class="lab-card">
+            <h3>把判別式接回頂點</h3>
+            <div class="readout" id="quadReadout"></div>
+            <div class="status" id="quadStatus" aria-live="polite"></div>
+            <div class="note tip"><strong>最省力的圖形判斷：</strong>若頂點為 \((h,k)\)，則 \(D=-4ak\)。所以開口向上時，頂點在 \(x\) 軸下方 \((k<0)\) 才有兩根；開口向下時，頂點在 \(x\) 軸上方 \((k>0)\) 才有兩根。</div>
+            <div class="note warn"><strong>常見錯誤：</strong>\(D=0\) 不是「沒有根」，而是兩個解重合成一個 \(x\) 值；圖形上是頂點剛好碰到 \(x\) 軸。</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="cubic" aria-labelledby="cubic-title">
+        <h2 id="cubic-title">三、三次函數：反曲點、\(a,p\) 的四種骨架</h2>
+        <p class="section-lead">若一般式為 \(y=ax^3+bx^2+cx+d\)，把 \(x\) 平移到 \(h=-\frac b{3a}\) 後，可寫成 \(y=a(x-h)^3+p(x-h)+k\)。此時 \((h,k)\) 是反曲點；在那一點的切線斜率正好是 \(p\)。</p>
+        <div class="formula-box">\[y=a(x-h)^3+p(x-h)+k,\qquad h=-\frac{b}{3a}\]展開後，\(x^2\) 的係數是 \(b=-3ah\)。因此先由一般式找 \(b\)，就能找到反曲點的橫坐標 \(h\)。</div>
+        <div class="four-grid">
+          <article class="case-card"><h3>\(a>0,\ p>0\)</h3><p>整體由左下到右上；反曲點處也向上。因為 \(f'(x)=3a(x-h)^2+p>0\)，全程遞增。</p></article>
+          <article class="case-card"><h3>\(a>0,\ p<0\)</h3><p>整體仍由左下到右上，但中間先有極大、再有極小，形成「起伏的 S」。</p></article>
+          <article class="case-card"><h3>\(a<0,\ p>0\)</h3><p>整體由左上到右下，但中間先有極小、再有極大，形成「起伏的反 S」。</p></article>
+          <article class="case-card"><h3>\(a<0,\ p<0\)</h3><p>整體由左上到右下；反曲點處也向下。因為 \(f'(x)<0\)，全程遞減。</p></article>
+        </div>
+        <article class="lab-card" style="margin-top:14px;"><h3>四種圖一次比較</h3><canvas id="cubicCasesCanvas" aria-label="三次函數依 a 與 p 正負號分類的四種圖形"></canvas><p class="canvas-caption">每格的反曲點都先放在原點：看兩端方向用 \(a\)，看原點附近切線向上或向下、是否會出現兩個轉折，用 \(p\)。</p></article>
+        <div class="two-col">
+          <article class="lab-card">
+            <h3>移動反曲點：平移函數圖形，座標軸固定</h3>
+            <div class="button-row" id="cubicCaseButtons" aria-label="選擇三次函數 a 與 p 的正負號"></div>
+            <div class="controls">
+              <div class="control-row"><label for="cubicH">\(h\)</label><input id="cubicH" type="range" min="-3" max="3" step="0.5" value="1"><output id="cubicHOut" for="cubicH">1</output></div>
+              <div class="control-row"><label for="cubicK">\(k\)</label><input id="cubicK" type="range" min="-3" max="3" step="0.5" value="-1"><output id="cubicKOut" for="cubicK">-1</output></div>
+            </div>
+            <div class="formula-box" id="cubicFormula" aria-live="polite"></div>
+            <canvas id="cubicCanvas" aria-label="三次函數反曲點與切線斜率圖形"></canvas>
+            <p class="canvas-caption">改變 \(h,k\) 時，是整個函數圖形在固定座標軸上平移；藍點是新的反曲點 \((h,k)\)，橘色虛線是該點切線，斜率為 \(p\)。</p>
+          </article>
+          <article class="lab-card">
+            <h3>為什麼只有這四種？</h3>
+            <div class="readout" id="cubicReadout"></div>
+            <div class="note tip"><strong>固定流程：</strong>先用 \(a\) 看兩端（右端往上或往下），再用 \(p\) 看反曲點的切線方向。若 \(a,p\) 同號，沒有極大極小；若異號，會出現兩個轉折點。</div>
+            <div class="note warn"><strong>常見錯誤：</strong>把 \(h=-\frac b{3a}\) 誤當成頂點。三次函數一般沒有頂點；\((h,k)\) 是凹向上、凹向下互換的反曲點。</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="local" aria-labelledby="local-title">
+        <h2 id="local-title">四、一次近似：用局部特徵把曲線暫時看成直線</h2>
+        <p class="section-lead">在某個很靠近 \(x_0\) 的小範圍，平滑曲線會很像它在 \((x_0,f(x_0))\) 的切線。因此可用一次函數近似：</p>
+        <div class="formula-box">\[f(x)\approx f(x_0)+f'(x_0)(x-x_0).\]常數項 \(f(x_0)\) 把直線放到正確高度；斜率 \(f'(x_0)\) 保留曲線在那一點的局部變化率。</div>
+        <div class="two-col">
+          <article class="lab-card">
+            <h3>三次函數範例：綜合除法連除，換成以 \(x-2\) 為中心的「進位」</h3>
+            <p>取 \(f(x)=x^3-3x^2+2x+1\)，要在 \(x_0=2\) 附近做一次近似。每次都除以 \((x-2)\)：餘數就是目前多項式在 \(x=2\) 的值；再把商繼續除，便能把原式改寫成 \((x-2)\) 的冪次。下方實驗每換一個 \(x_0\)，都會重新連做三次綜合除法，不是只代入已知的展開係數。</p>
+            <div class="synthetic-grid">
+              <div class="synthetic-step"><strong>第 1 次綜合除法：</strong><p>\(f(x)=(x-2)(x^2-x)+1\)。所以第一個餘數是 \(f(2)=1\)。</p></div>
+              <div class="synthetic-step"><strong>第 2 次綜合除法：</strong><p>\(x^2-x=(x-2)(x+1)+2\)。下一個餘數是 \(2\)。</p></div>
+              <div class="synthetic-step"><strong>第 3 次綜合除法：</strong><p>\(x+1=(x-2)+3\)。最後的餘數是 \(3\)。</p></div>
+            </div>
+          </article>
+          <article class="lab-card">
+            <h3>由連除結果得到一次近似</h3>
+            <div class="formula-box">\[
+              f(x)=1+2(x-2)+3(x-2)^2+(x-2)^3.
+            \]</div>
+            <p>靠近 \(2\) 時，\((x-2)^2\)、\((x-2)^3\) 比一次項更小，因此先保留常數與一次項：</p>
+            <div class="synthetic-result"><strong>一次近似：</strong>\[L(x)=1+2(x-2).\]<p>例：\(x=2.1\) 時，\(L(2.1)=1.2\)，而 \(f(2.1)=1.231\)，誤差為 \(0.031\)。下方預設圖會同時畫出原三次函數與這條近似直線。</p></div>
+          </article>
+        </div>
+        <div class="two-col">
+          <article class="lab-card">
+            <h3>切線近似實驗：拖曳切點 \(x_0\)</h3>
+            <div class="button-row" id="approxButtons" aria-label="選擇一次近似範例"></div>
+            <div class="controls"><div class="control-row"><label for="approxX">切點 \(x_0\)</label><input id="approxX" type="range" step="1"><output id="approxXOut" for="approxX">2</output></div></div>
+            <div class="formula-box" id="approxFormula" aria-live="polite"></div>
+            <div class="synthetic-step" id="approxSyntheticSteps" aria-live="polite"></div>
+            <canvas id="approxCanvas" aria-label="函數曲線與一次近似切線"></canvas>
+            <p class="canvas-caption">座標軸固定不動；藍線是同一個原函數，橘色虛線是目前 \(x_0\) 的局部一次函數。拖曳滑桿時，改變的是切點與切線模型，不是移動座標軸。</p>
+          </article>
+          <article class="lab-card">
+            <h3>一次近似不是全域公式</h3>
+            <div class="readout" id="approxReadout"></div>
+            <div class="note tip"><strong>與三次函數的連結：</strong>在反曲點附近 \(x=h\)，\(a(x-h)^3\) 比一次項小得多，因此 \(y=a(x-h)^3+p(x-h)+k\) 局部看起來像 \(y=p(x-h)+k\)。這正是 \(p\) 能描述反曲點局部方向的原因。</div>
+            <div class="note warn"><strong>常見錯誤：</strong>近似符號 \(\approx\) 不等於等號。一次近似在 \(x=x_0\) 時最準；距離越遠，彎曲造成的誤差通常越大，也要先確認函數有定義。</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="practice-title">
+        <h2 id="practice-title">課後自我檢查：先說圖形，再寫公式</h2>
+        <details><summary>基礎：\(y=-\frac12x+3\) 的圖形怎麼畫？</summary><p>先標出 \(y\) 截距 \((0,3)\)。斜率是 \(-\frac12\)，所以向右走 2 格、向下走 1 格，得到另一點 \((2,2)\)，連成直線。</p></details>
+        <details><summary>進階：\(y=2x^2-8x+6\) 與 \(x\) 軸交幾點？頂點在哪裡？</summary><p>\(D=(-8)^2-4(2)(6)=16>0\)，所以有兩個交點。\(h=-\frac{-8}{2\cdot2}=2\)，代入得 \(k=-2\)，頂點為 \((2,-2)\)。也可寫成 \(y=2(x-2)^2-2\)。</p></details>
+        <details><summary>挑戰：已知 \(y=0.2(x-1)^3-2(x-1)+3\)，不用完整畫圖，如何先判讀？</summary><p>反曲點是 \((1,3)\)，且 \(a>0,p<0\)：兩端由左下到右上，但反曲點處切線向下，因此中間有一個極大與一個極小。反曲點附近的一次近似為 \(y\approx-2(x-1)+3\)。</p></details>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+    const colors = { curve: "#16628a", tangent: "#d77b22", axis: "#426177", grid: "#dce7ed", point: "#15745f", root: "#b64646" };
+
+    function clean(n, digits = 2) {
+      const rounded = Number(Number(n).toFixed(digits));
+      return Object.is(rounded, -0) ? 0 : rounded;
+    }
+    function fmt(n, digits = 2) { return String(clean(n, digits)); }
+    function signed(n, digits = 2) {
+      const value = clean(n, digits);
+      return value < 0 ? "-" + fmt(-value, digits) : "+" + fmt(value, digits);
+    }
+    function coefficient(n, variable) {
+      const value = clean(n);
+      if (value === 1) return variable;
+      if (value === -1) return "-" + variable;
+      return fmt(value) + variable;
+    }
+    function texLinear(m, b) { return "\\(y=" + coefficient(m, "x") + (clean(b) === 0 ? "" : signed(b)) + "\\)"; }
+    function originTangentTex(b, c) {
+      if (clean(b) === 0) return "y\\approx " + fmt(c);
+      if (clean(c) === 0) return "y\\approx " + coefficient(b, "x");
+      return "y\\approx " + fmt(c) + signed(b) + "x";
+    }
+    function xShift(h) { return clean(h) === 0 ? "x" : "x" + signed(-h); }
+    function typeset(element) {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([element]).catch(() => {});
+      }
+    }
+    function setupCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      const width = Math.max(1, Math.round(rect.width));
+      const height = Math.max(1, Math.round(rect.height));
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      return { ctx, width, height };
+    }
+    function mapX(x, range, width) { return ((x - range.xMin) / (range.xMax - range.xMin)) * width; }
+    function mapY(y, range, height) { return height - ((y - range.yMin) / (range.yMax - range.yMin)) * height; }
+    function drawGrid(ctx, width, height, range, offsetX = 0, offsetY = 0) {
+      const spanX = range.xMax - range.xMin;
+      const spanY = range.yMax - range.yMin;
+      const unitX = Math.max(18, width / spanX);
+      const unitY = Math.max(18, height / spanY);
+      ctx.save();
+      ctx.strokeStyle = colors.grid;
+      ctx.lineWidth = 1;
+      for (let x = Math.ceil(range.xMin); x <= Math.floor(range.xMax); x += 1) {
+        const px = offsetX + mapX(x, range, width);
+        ctx.beginPath(); ctx.moveTo(px, offsetY); ctx.lineTo(px, offsetY + height); ctx.stroke();
+      }
+      for (let y = Math.ceil(range.yMin); y <= Math.floor(range.yMax); y += 1) {
+        const py = offsetY + mapY(y, range, height);
+        ctx.beginPath(); ctx.moveTo(offsetX, py); ctx.lineTo(offsetX + width, py); ctx.stroke();
+      }
+      ctx.strokeStyle = colors.axis;
+      ctx.lineWidth = 1.4;
+      if (range.yMin <= 0 && range.yMax >= 0) {
+        const py = offsetY + mapY(0, range, height);
+        ctx.beginPath(); ctx.moveTo(offsetX, py); ctx.lineTo(offsetX + width, py); ctx.stroke();
+      }
+      if (range.xMin <= 0 && range.xMax >= 0) {
+        const px = offsetX + mapX(0, range, width);
+        ctx.beginPath(); ctx.moveTo(px, offsetY); ctx.lineTo(px, offsetY + height); ctx.stroke();
+      }
+      if (unitX > 34 && unitY > 27) {
+        ctx.fillStyle = "#668090";
+        ctx.font = "12px sans-serif";
+        ctx.textAlign = "center";
+        for (let x = Math.ceil(range.xMin); x <= Math.floor(range.xMax); x += 1) {
+          if (x !== 0 && range.yMin <= 0 && range.yMax >= 0) ctx.fillText(String(x), offsetX + mapX(x, range, width), offsetY + mapY(0, range, height) - 5);
+        }
+        ctx.textAlign = "right";
+        for (let y = Math.ceil(range.yMin); y <= Math.floor(range.yMax); y += 1) {
+          if (y !== 0 && range.xMin <= 0 && range.xMax >= 0) ctx.fillText(String(y), offsetX + mapX(0, range, width) - 5, offsetY + mapY(y, range, height) + 4);
+        }
+      }
+      ctx.restore();
+    }
+    function drawCurve(ctx, width, height, range, fn, color = colors.curve, offsetX = 0, offsetY = 0, lineWidth = 2.5) {
+      ctx.save();
+      ctx.beginPath();
+      let drawing = false;
+      let lastY = NaN;
+      for (let pixel = 0; pixel <= width; pixel += 1) {
+        const x = range.xMin + (pixel / width) * (range.xMax - range.xMin);
+        const y = fn(x);
+        const py = mapY(y, range, height);
+        if (!Number.isFinite(y) || Math.abs(py) > height * 8 || (drawing && Math.abs(py - lastY) > height * 2)) {
+          drawing = false;
+          continue;
+        }
+        if (!drawing) { ctx.moveTo(offsetX + pixel, offsetY + py); drawing = true; }
+        else ctx.lineTo(offsetX + pixel, offsetY + py);
+        lastY = py;
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+      ctx.restore();
+    }
+    function drawPoint(ctx, width, height, range, x, y, label, color = colors.point, offsetX = 0, offsetY = 0) {
+      const px = offsetX + mapX(x, range, width);
+      const py = offsetY + mapY(y, range, height);
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(px, py, 4.3, 0, Math.PI * 2); ctx.fill();
+      if (label) {
+        ctx.fillStyle = "#294e64";
+        ctx.font = "700 12px sans-serif";
+        ctx.textAlign = px > offsetX + width * .72 ? "right" : "left";
+        ctx.fillText(label, px + (px > offsetX + width * .72 ? -7 : 7), py - 8);
+      }
+      ctx.restore();
+    }
+    function dashedLine(ctx, width, height, range, fn, color = colors.tangent, offsetX = 0, offsetY = 0) {
+      ctx.save();
+      ctx.setLineDash([7, 5]);
+      drawCurve(ctx, width, height, range, fn, color, offsetX, offsetY, 2);
+      ctx.restore();
+    }
+    function rangeFromFunction(fn, xMin, xMax, anchors = []) {
+      const values = anchors.slice();
+      for (let i = 0; i <= 120; i += 1) values.push(fn(xMin + (xMax - xMin) * i / 120));
+      const finite = values.filter(Number.isFinite);
+      let min = Math.min(0, ...finite), max = Math.max(0, ...finite);
+      const pad = Math.max(1.5, (max - min) * .16);
+      if (max - min < 7) { min -= (7 - (max - min)) / 2; max += (7 - (max - min)) / 2; }
+      return { xMin, xMax, yMin: min - pad, yMax: max + pad };
+    }
+    function fixedUnitRange(range, width, height) {
+      const xSpan = range.xMax - range.xMin;
+      const ySpan = range.yMax - range.yMin;
+      const canvasRatio = width / height;
+      const xMid = (range.xMin + range.xMax) / 2;
+      const yMid = (range.yMin + range.yMax) / 2;
+      if (xSpan / ySpan < canvasRatio) {
+        const nextXSpan = ySpan * canvasRatio;
+        return { ...range, xMin: xMid - nextXSpan / 2, xMax: xMid + nextXSpan / 2 };
+      }
+      const nextYSpan = xSpan / canvasRatio;
+      return { ...range, yMin: yMid - nextYSpan / 2, yMax: yMid + nextYSpan / 2 };
+    }
+
+    function renderLinear() {
+      const m = Number($("#linearM").value), b = Number($("#linearB").value);
+      $("#linearMOut").value = fmt(m); $("#linearBOut").value = fmt(b);
+      $("#linearFormula").textContent = "式子：" + texLinear(m, b) + "；截距點：\\((0," + fmt(b) + ")\\)。";
+      const { ctx, width, height } = setupCanvas($("#linearCanvas"));
+      const range = fixedUnitRange({ xMin: -5, xMax: 5, yMin: -7, yMax: 7 }, width, height);
+      drawGrid(ctx, width, height, range);
+      drawCurve(ctx, width, height, range, (x) => m * x + b);
+      drawPoint(ctx, width, height, range, 0, b, "(0, " + fmt(b) + ")");
+      const x1 = 0, y1 = b, x2 = 1, y2 = b + m;
+      ctx.save();
+      ctx.setLineDash([5, 4]); ctx.strokeStyle = "#4f9a84"; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(mapX(x1, range, width), mapY(y1, range, height)); ctx.lineTo(mapX(x2, range, width), mapY(y1, range, height)); ctx.lineTo(mapX(x2, range, width), mapY(y2, range, height)); ctx.stroke();
+      ctx.fillStyle = "#27735f"; ctx.font = "700 12px sans-serif"; ctx.textAlign = "center";
+      ctx.fillText("Δx=1", (mapX(x1, range, width) + mapX(x2, range, width)) / 2, mapY(y1, range, height) + 16);
+      ctx.textAlign = "left"; ctx.fillText("Δy=" + fmt(m), mapX(x2, range, width) + 7, (mapY(y1, range, height) + mapY(y2, range, height)) / 2);
+      ctx.restore();
+      const direction = m > 0 ? "由左下往右上，向右走時上升" : m < 0 ? "由左上往右下，向右走時下降" : "水平，函數值不改變";
+      $("#linearReadout").innerHTML = "<strong>讀圖：</strong>斜率 \\(m=" + fmt(m) + "\\)，所以直線" + direction + "。它穿過 \\(y\\) 軸的高度是 \\(b=" + fmt(b) + "\\)。<br><strong>一句話：</strong>從 \\((0," + fmt(b) + ")\\) 出發，右走 1 格，\\(y\\) 就改變 " + fmt(m) + "。";
+      typeset($("#linearFormula")); typeset($("#linearReadout"));
+    }
+
+    function quadraticTex(a, b, c) {
+      let text = "y=" + coefficient(a, "x^2");
+      if (clean(b) !== 0) text += signed(b) + "x";
+      if (clean(c) !== 0) text += signed(c);
+      return text;
+    }
+    function renderQuadratic() {
+      let a = Number($("#quadA").value), b = Number($("#quadB").value), c = Number($("#quadC").value);
+      if (a === 0) { a = 0.5; $("#quadA").value = "0.5"; }
+      $("#quadAOut").value = fmt(a); $("#quadBOut").value = fmt(b); $("#quadCOut").value = fmt(c);
+      const h = -b / (2 * a), k = a * h * h + b * h + c, d = b * b - 4 * a * c;
+      const fn = (x) => a * x * x + b * x + c;
+      const originTangent = (x) => b * x + c;
+      const xMin = Math.min(-5, h - 4), xMax = Math.max(5, h + 4);
+      const rawRange = rangeFromFunction(fn, xMin, xMax, [k, 0, originTangent(xMin), originTangent(xMax)]);
+      $("#quadFormula").textContent = "一般式：\\(" + quadraticTex(a, b, c) + "\\)；標準式：\\(y=" + fmt(a) + "\\left(" + xShift(h) + "\\right)^2" + signed(k) + "\\)。\\(x=0\\) 附近的一次近似（橘色切線）是 \\(" + originTangentTex(b, c) + "\\)，所以斜率 \\(f'(0)=b=" + fmt(b) + "\\)。";
+      const { ctx, width, height } = setupCanvas($("#quadCanvas"));
+      const range = fixedUnitRange(rawRange, width, height);
+      drawGrid(ctx, width, height, range);
+      drawCurve(ctx, width, height, range, fn);
+      dashedLine(ctx, width, height, range, originTangent);
+      ctx.save(); ctx.setLineDash([6, 5]); ctx.strokeStyle = "#7a91a1"; ctx.lineWidth = 1.5;
+      const axisX = mapX(h, range, width); ctx.beginPath(); ctx.moveTo(axisX, 0); ctx.lineTo(axisX, height); ctx.stroke(); ctx.restore();
+      drawPoint(ctx, width, height, range, h, k, "頂點 (" + fmt(h) + ", " + fmt(k) + ")");
+      drawPoint(ctx, width, height, range, 0, c, "c=" + fmt(c));
+      if (d >= -1e-9) {
+        const root1 = (-b - Math.sqrt(Math.max(0, d))) / (2 * a);
+        const root2 = (-b + Math.sqrt(Math.max(0, d))) / (2 * a);
+        drawPoint(ctx, width, height, range, root1, 0, d === 0 ? "重根" : "根", colors.root);
+        if (d > 1e-9) drawPoint(ctx, width, height, range, root2, 0, "根", colors.root);
+      }
+      const bDirection = b > 0 ? "向右上升（\\(b>0\\)）" : b < 0 ? "向右下降（\\(b<0\\)）" : "水平（\\(b=0\\)）";
+      $("#quadReadout").innerHTML = "<strong>從 \\(y\\) 軸處切線讀 \\(b\\)：</strong>\\(f'(x)=2ax+b\\)，所以 \\(f'(0)=b=" + fmt(b) + "\\)。橘色切線" + bDirection + "。<br><strong>頂點與對稱軸：</strong>\\(h=-\\frac{b}{2a}=" + fmt(h) + "\\)，所以頂點是 \\((" + fmt(h) + "," + fmt(k) + ")\\)，對稱軸為 \\(x=" + fmt(h) + "\\)。<br><strong>把 \\(D\\) 圖像化：</strong>\\(D=" + fmt(d) + "=-4a\\cdot k\\)。";
+      const status = $("#quadStatus");
+      status.className = "status";
+      if (d > 1e-9) { status.classList.add("two-root"); status.textContent = "D > 0：曲線穿過 x 軸兩次，所以有兩個相異實根。"; }
+      else if (d < -1e-9) { status.classList.add("no-root"); status.textContent = "D < 0：曲線完全沒有碰到 x 軸，所以沒有實根。"; }
+      else status.textContent = "D = 0：頂點剛好在 x 軸上，曲線只碰到 x 軸一次（重根）。";
+      typeset($("#quadFormula")); typeset($("#quadReadout"));
+    }
+    const quadPresets = { two: [1, -1, -2], touch: [1, 0, 0], none: [1, 0, 2] };
+    $$("[data-quad]").forEach((button) => button.addEventListener("click", () => {
+      const [a, b, c] = quadPresets[button.dataset.quad];
+      $("#quadA").value = a; $("#quadB").value = b; $("#quadC").value = c;
+      $$("[data-quad]").forEach((item) => item.classList.toggle("active", item === button)); renderQuadratic();
+    }));
+
+    const cubicCases = [
+      { id: "up-straight", a: .06, p: .54, label: "a>0，p>0", description: "全程遞增" },
+      { id: "up-turn", a: .06, p: -.54, label: "a>0，p<0", description: "極大後極小" },
+      { id: "down-turn", a: -.06, p: .54, label: "a<0，p>0", description: "極小後極大" },
+      { id: "down-straight", a: -.06, p: -.54, label: "a<0，p<0", description: "全程遞減" }
+    ];
+    let cubicCase = cubicCases[1];
+    function drawCubicCases() {
+      const canvas = $("#cubicCasesCanvas"), { ctx, width, height } = setupCanvas(canvas);
+      const cols = 2, rows = 2;
+      const gap = 18, boxW = (width - gap * (cols + 1)) / cols, boxH = (height - gap * (rows + 1)) / rows;
+      const baseRange = { xMin: -3.5, xMax: 3.5, yMin: -4.5, yMax: 4.5 };
+      cubicCases.forEach((item, index) => {
+        const col = index % 2, row = Math.floor(index / 2);
+        const left = gap + col * (boxW + gap), top = gap + row * (boxH + gap);
+        const range = fixedUnitRange(baseRange, boxW, boxH);
+        ctx.save();
+        ctx.beginPath(); ctx.rect(left, top, boxW, boxH); ctx.clip();
+        drawGrid(ctx, boxW, boxH, range, left, top);
+        drawCurve(ctx, boxW, boxH, range, (x) => item.a * x ** 3 + item.p * x, colors.curve, left, top);
+        dashedLine(ctx, boxW, boxH, range, (x) => item.p * x, colors.tangent, left, top);
+        ctx.restore();
+        ctx.save();
+        ctx.strokeStyle = "#c8dce7"; ctx.lineWidth = 1; ctx.strokeRect(left, top, boxW, boxH); ctx.restore();
+        drawPoint(ctx, boxW, boxH, range, 0, 0, "反曲點", colors.point, left, top);
+        ctx.save();
+        ctx.fillStyle = "#254b62"; ctx.font = boxW < 250 ? "700 11px sans-serif" : "800 14px sans-serif"; ctx.textAlign = "left";
+        if (boxW < 250) {
+          ctx.fillText(item.label, left + 8, top + 17);
+          ctx.fillText(item.description, left + 8, top + 32);
+        } else ctx.fillText(item.label + "：" + item.description, left + 9, top + 19);
+        ctx.restore();
+      });
+    }
+    function cubicTex(a, p, h, k) {
+      const aText = clean(a) === 1 ? "" : clean(a) === -1 ? "-" : fmt(a);
+      return "y=" + aText + "\\left(" + xShift(h) + "\\right)^3" + (clean(p) === 0 ? "" : signed(p) + "\\left(" + xShift(h) + "\\right)") + (clean(k) === 0 ? "" : signed(k));
+    }
+    function cubicExtrema(a, p, h, k) {
+      if (a * p >= 0) return [];
+      const u = Math.sqrt(-p / (3 * a));
+      const fn = (x) => a * (x - h) ** 3 + p * (x - h) + k;
+      return [{ x: h - u, y: fn(h - u), type: a > 0 ? "極大" : "極小" }, { x: h + u, y: fn(h + u), type: a > 0 ? "極小" : "極大" }];
+    }
+    function renderCubicButtons() {
+      const host = $("#cubicCaseButtons");
+      host.innerHTML = cubicCases.map((item) => "<button type=\"button\" data-cubic=\"" + item.id + "\" class=\"" + (item.id === cubicCase.id ? "active" : "") + "\">" + item.label + "</button>").join("");
+      $$("[data-cubic]").forEach((button) => button.addEventListener("click", () => { cubicCase = cubicCases.find((item) => item.id === button.dataset.cubic); renderCubicButtons(); renderCubic(); }));
+    }
+    function renderCubic() {
+      const a = cubicCase.a, p = cubicCase.p, h = Number($("#cubicH").value), k = Number($("#cubicK").value);
+      $("#cubicHOut").value = fmt(h); $("#cubicKOut").value = fmt(k);
+      const b = -3 * a * h;
+      const fn = (x) => a * (x - h) ** 3 + p * (x - h) + k;
+      const rawRange = rangeFromFunction(fn, Math.min(-5, h - 4.5), Math.max(5, h + 4.5), [k]);
+      $("#cubicFormula").textContent = "標準形：\\(" + cubicTex(a, p, h, k) + "\\)。一般式中 \\(x^2\\) 的係數為 \\(b=-3ah=" + fmt(b) + "\\)，所以 \\(h=-\\frac{b}{3a}=" + fmt(h) + "\\)。";
+      const { ctx, width, height } = setupCanvas($("#cubicCanvas"));
+      const range = fixedUnitRange(rawRange, width, height);
+      drawGrid(ctx, width, height, range);
+      drawCurve(ctx, width, height, range, fn);
+      dashedLine(ctx, width, height, range, (x) => p * (x - h) + k);
+      drawPoint(ctx, width, height, range, h, k, "反曲點 (" + fmt(h) + ", " + fmt(k) + ")");
+      const extrema = cubicExtrema(a, p, h, k);
+      extrema.forEach((point) => drawPoint(ctx, width, height, range, point.x, point.y, point.type, colors.root));
+      let behavior;
+      if (a * p > 0) behavior = a > 0 ? "因為 \\(a,p\\) 都是正，導數全程為正：圖形一路遞增。" : "因為 \\(a,p\\) 都是負，導數全程為負：圖形一路遞減。";
+      else behavior = "因為 \\(a,p\\) 異號，\\(f'(x)=3a(x-h)^2+p\\) 有兩個零點，所以出現兩個轉折點。";
+      $("#cubicReadout").innerHTML = "<strong>反曲點：</strong>\\((h,k)=(" + fmt(h) + "," + fmt(k) + ")\\)。<strong>局部切線斜率：</strong>\\(p=" + fmt(p) + "\\)。<br><strong>判讀：</strong>" + behavior;
+      typeset($("#cubicFormula")); typeset($("#cubicReadout"));
+    }
+
+    function texSignedTerm(value, body) {
+      const number = clean(value);
+      if (number === 0) return "";
+      const absolute = Math.abs(number);
+      const core = body ? (absolute === 1 ? body : fmt(absolute) + "\\," + body) : fmt(absolute);
+      return (number > 0 ? "+" : "-") + core;
+    }
+    function texLeadingTerm(value, body) {
+      const number = clean(value);
+      const absolute = Math.abs(number);
+      const core = body ? (absolute === 1 ? body : fmt(absolute) + "\\," + body) : fmt(absolute);
+      return (number < 0 ? "-" : "") + core;
+    }
+    function syntheticDivide(coefficients, center) {
+      const quotient = [coefficients[0]];
+      for (let index = 1; index < coefficients.length - 1; index += 1) {
+        quotient.push(clean(coefficients[index] + quotient[index - 1] * center));
+      }
+      const remainder = clean(coefficients[coefficients.length - 1] + quotient[quotient.length - 1] * center);
+      return { quotient, remainder };
+    }
+    function centeredCubicBySyntheticDivision(center) {
+      const first = syntheticDivide([1, -3, 2, 1], center);
+      const second = syntheticDivide(first.quotient, center);
+      const third = syntheticDivide(second.quotient, center);
+      return {
+        first,
+        second,
+        third,
+        coefficients: {
+          cubic: third.quotient[0],
+          quadratic: third.remainder,
+          linear: second.remainder,
+          constant: first.remainder
+        }
+      };
+    }
+    function coefficientListTex(values) {
+      return "\\left[" + values.map((value) => fmt(value)).join(",\\;") + "\\right]";
+    }
+    function syntheticTableTex(input, result, center) {
+      const products = ["", ...result.quotient.map((value) => fmt(clean(value * center)))];
+      const bottom = [...result.quotient, result.remainder].map((value) => fmt(value));
+      return "\\begin{array}{r|" + "r".repeat(input.length)
+        + "}x_0=" + fmt(center) + "&" + input.map((value) => fmt(value)).join("&")
+        + "\\\\&" + products.join("&")
+        + "\\\\\\hline&" + bottom.join("&")
+        + "\\end{array}";
+    }
+    function centeredCubicTex(center, decomposition) {
+      const t = "\\left(" + xShift(center) + "\\right)";
+      const coefficients = decomposition.coefficients;
+      return "f(x)=" + texLeadingTerm(coefficients.cubic, t + "^3") + texSignedTerm(coefficients.quadratic, t + "^2") + texSignedTerm(coefficients.linear, t) + texSignedTerm(coefficients.constant, "");
+    }
+    function syntheticStepsHtml(center, decomposition) {
+      const factor = "\\left(" + xShift(center) + "\\right)";
+      const { first, second, third, coefficients } = decomposition;
+      return "<strong>以 \\(x_0=" + fmt(center) + "\\) 連做綜合除法：</strong>"
+        + "<p>每個表格最下面一列依序是「商的係數、餘數」；下一次把商的係數再拿來除以 \\(" + factor + "\\)。</p>"
+        + "<p><strong>第 1 次：</strong>\\(" + coefficientListTex([1, -3, 2, 1]) + "\\div " + factor + "\\)</p>\\[" + syntheticTableTex([1, -3, 2, 1], first, center) + "\\]"
+        + "<p><strong>第 2 次：</strong>\\(" + coefficientListTex(first.quotient) + "\\div " + factor + "\\)</p>\\[" + syntheticTableTex(first.quotient, second, center) + "\\]"
+        + "<p><strong>第 3 次：</strong>\\(" + coefficientListTex(second.quotient) + "\\div " + factor + "\\)</p>\\[" + syntheticTableTex(second.quotient, third, center) + "\\]"
+        + "<p><strong>換位後的係數：</strong>常數 \\(" + fmt(coefficients.constant) + "\\)、一次項 \\(" + fmt(coefficients.linear) + "\\)、二次項 \\(" + fmt(coefficients.quadratic) + "\\)、三次項 \\(" + fmt(coefficients.cubic) + "\\)。</p>";
+    }
+    function tangentTex(center, value, slope) {
+      return "L_{" + fmt(center) + "}(x)=" + fmt(value) + texSignedTerm(slope, "\\left(" + xShift(center) + "\\right)");
+    }
+    const approxExamples = [
+      { id: "sqrt", label: "√x：移動切點", centerMin: 1, centerMax: 6, value: 4, viewMin: .5, viewMax: 6.5, fn: (x) => Math.sqrt(x), derivative: (x) => 1 / (2 * Math.sqrt(x)), tex: "f(x)=\\sqrt{x}" },
+      { id: "square", label: "x²：移動切點", centerMin: -3, centerMax: 3, value: 2, viewMin: -3.2, viewMax: 3.2, fn: (x) => x * x, derivative: (x) => 2 * x, tex: "f(x)=x^2" },
+      { id: "cubic", label: "三次綜合除法：移動 x₀", centerMin: -1, centerMax: 3, value: 2, viewMin: -1, viewMax: 3, fn: (x) => x ** 3 - 3 * x ** 2 + 2 * x + 1, derivative: (x) => 3 * x ** 2 - 6 * x + 2, tex: "f(x)=x^3-3x^2+2x+1" }
+    ];
+    let approxExample = approxExamples[2];
+    function renderApproxButtons() {
+      $("#approxButtons").innerHTML = approxExamples.map((item) => "<button type=\"button\" data-approx=\"" + item.id + "\" class=\"" + (item.id === approxExample.id ? "active" : "") + "\">" + item.label + "</button>").join("");
+      $$("[data-approx]").forEach((button) => button.addEventListener("click", () => {
+        approxExample = approxExamples.find((item) => item.id === button.dataset.approx);
+        const slider = $("#approxX"); slider.min = approxExample.centerMin; slider.max = approxExample.centerMax; slider.value = approxExample.value; renderApproxButtons(); renderApprox();
+      }));
+    }
+    function renderApprox() {
+      const item = approxExample, center = Number($("#approxX").value), f0 = item.fn(center), slope = item.derivative(center);
+      const comparisonX = center >= item.viewMax - .15 ? center - .1 : center + .1;
+      const tangent = (value) => f0 + slope * (value - center);
+      const estimate = tangent(comparisonX), actual = item.fn(comparisonX), error = actual - estimate;
+      $("#approxXOut").value = fmt(center);
+      if (item.id === "cubic") {
+        const decomposition = centeredCubicBySyntheticDivision(center);
+        $("#approxFormula").textContent = "原式：\\(" + item.tex + "\\)。當 \\(x_0=" + fmt(center) + "\\) 時，依下方連續綜合除法的商與餘數換位後：\\[" + centeredCubicTex(center, decomposition) + "\\]取常數與一次項，切線（局部一次函數）為：\\[" + tangentTex(center, f0, slope) + "\\]。";
+        $("#approxSyntheticSteps").hidden = false;
+        $("#approxSyntheticSteps").innerHTML = syntheticStepsHtml(center, decomposition);
+      } else {
+        $("#approxFormula").textContent = "\\(" + item.tex + "\\)，在 \\(x_0=" + fmt(center) + "\\) 的局部一次函數為 \\[" + tangentTex(center, f0, slope) + "\\]。";
+        $("#approxSyntheticSteps").hidden = true;
+        $("#approxSyntheticSteps").innerHTML = "";
+      }
+      const rawRange = rangeFromFunction(item.fn, item.viewMin, item.viewMax);
+      const { ctx, width, height } = setupCanvas($("#approxCanvas"));
+      const range = fixedUnitRange(rawRange, width, height);
+      drawGrid(ctx, width, height, range);
+      drawCurve(ctx, width, height, range, item.fn);
+      dashedLine(ctx, width, height, range, tangent);
+      drawPoint(ctx, width, height, range, center, f0, "切點");
+      drawPoint(ctx, width, height, range, comparisonX, actual, "實際值", colors.curve);
+      drawPoint(ctx, width, height, range, comparisonX, estimate, "近似值", colors.tangent);
+      $("#approxReadout").innerHTML = "<strong>切點：</strong>\\((x_0,f(x_0))=(" + fmt(center) + "," + fmt(f0) + ")\\)，切線斜率為 \\(f'(x_0)=" + fmt(slope) + "\\)。<br><strong>比較：</strong>在 \\(x=" + fmt(comparisonX, 1) + "\\) 時，實際值 \\(f(x)=" + fmt(actual, 5) + "\\)，近似值 \\(L_{" + fmt(center) + "}(x)=" + fmt(estimate, 5) + "\\)，誤差為 \\(" + fmt(error, 5) + "\\)。";
+      typeset($("#approxFormula")); typeset($("#approxSyntheticSteps")); typeset($("#approxReadout"));
+    }
+
+    ["#linearM", "#linearB"].forEach((id) => $(id).addEventListener("input", renderLinear));
+    ["#quadA", "#quadB", "#quadC"].forEach((id) => $(id).addEventListener("input", () => { $$("[data-quad]").forEach((item) => item.classList.remove("active")); renderQuadratic(); }));
+    ["#cubicH", "#cubicK"].forEach((id) => $(id).addEventListener("input", renderCubic));
+    $("#approxX").addEventListener("input", renderApprox);
+    function renderAll() { renderLinear(); renderQuadratic(); drawCubicCases(); renderCubic(); renderApprox(); }
+    renderCubicButtons(); renderApproxButtons();
+    const approxSlider = $("#approxX"); approxSlider.min = approxExample.centerMin; approxSlider.max = approxExample.centerMax; approxSlider.value = approxExample.value;
+    window.addEventListener("load", renderAll);
+    window.addEventListener("resize", () => { window.clearTimeout(window.__coefficientResize); window.__coefficientResize = window.setTimeout(renderAll, 120); });
+  </script>
+</body>
+</html>

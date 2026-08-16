@@ -204,6 +204,81 @@
     .sum-visual span:nth-child(4) { height: 66%; }
     .sum-visual span:nth-child(5) { height: 90%; }
     .sum-note { min-height: 49px; font-size: 14px; }
+    .proof-card { border-top: 5px solid var(--blue); }
+    .proof-card.square-proof { border-top-color: var(--orange); }
+    .proof-card.shift-proof { border-top-color: var(--purple); }
+    .proof-card.teal-proof { border-top-color: var(--teal); }
+    .proof-grid { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .proof-grid > * { min-width: 0; }
+    .proof-visual { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .proof-visual h4 { margin: 0 0 3px; color: #164985; font-size: 17px; }
+    .proof-visual p { color: var(--muted); font-size: 14px; }
+    .triangle-collection { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
+    .triangle-piece { margin: 0; padding: 8px; border: 1px solid var(--line); border-radius: 11px; background: #fff; text-align: center; }
+    .triangle-piece strong { display: block; color: #294866; font-size: 13px; white-space: nowrap; }
+    .triangle-piece small { display: block; min-height: 37px; color: var(--muted); line-height: 1.45; }
+    .triangle-piece svg { display: block; width: 100%; max-width: 145px; height: auto; margin: 5px auto 1px; }
+    .equi-triangle {
+      --triangle-fill: #edf5ff;
+      --triangle-line: #8db4df;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 214px;
+      margin: 8px auto 7px;
+      padding: 9px 10px 11px;
+      overflow: visible;
+      background: transparent;
+    }
+    .equi-triangle::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: var(--triangle-line);
+      clip-path: polygon(50% 0, 2% 100%, 98% 100%);
+    }
+    .equi-triangle::after {
+      position: absolute;
+      inset: 3px 3px 2px;
+      content: "";
+      background: var(--triangle-fill);
+      clip-path: polygon(50% 0, 2% 100%, 98% 100%);
+    }
+    .equi-triangle.blue { --triangle-fill: #edf5ff; --triangle-line: #5e96d3; }
+    .equi-triangle.teal { --triangle-fill: #edfffa; --triangle-line: #39a596; }
+    .equi-triangle.orange { --triangle-fill: #fff5e9; --triangle-line: #d98c35; }
+    .equi-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      flex: 1 1 0;
+      justify-content: space-around;
+      gap: 2px;
+      color: #183b67;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .equi-row:nth-child(1) { width: 12%; }
+    .equi-row:nth-child(2) { width: 28%; }
+    .equi-row:nth-child(3) { width: 45%; }
+    .equi-row:nth-child(4) { width: 62%; }
+    .equi-row:nth-child(5) { width: 85%; }
+    .equi-row span { display: inline-flex; justify-content: center; min-width: 0; white-space: nowrap; }
+    .equi-row mjx-container { margin: 0 !important; }
+    .equi-row.dots { color: #5c728c; font-size: 12px; letter-spacing: 0; }
+    .equi-row.base { margin-top: 0; font-size: 13px; }
+    .proof-identity { margin-top: 13px; padding: 11px 13px; border: 1px dashed #a8c9ec; border-radius: 12px; background: var(--blue-soft); }
+    .proof-identity.orange { border-color: #f7c78f; background: var(--orange-soft); }
+    .proof-identity.purple { border-color: #d4c0f6; background: var(--purple-soft); }
+    .proof-identity.teal { border-color: #9fddd2; background: var(--teal-soft); }
+    .proof-identity p:last-child { margin-bottom: 0; }
+    .proof-steps { margin: 10px 0 0; padding-left: 24px; }
+    .proof-steps li { padding: 7px 0; border-bottom: 1px dashed #d7e1ee; }
+    .proof-steps li:last-child { border-bottom: 0; }
     .sum-lab { display: grid; grid-template-columns: minmax(160px, .38fr) 1fr; gap: 14px; align-items: start; margin-top: 14px; }
     .lab-result { padding: 13px; border: 1px solid #bed8f5; border-radius: 13px; background: var(--blue-soft); }
     .lab-result p { margin: 0 0 4px; color: #38516e; }
@@ -239,7 +314,7 @@
     @media (max-width: 760px) {
       .wrap { padding: 14px 10px 36px; }
       .hero, .card { border-radius: 15px; padding: 16px; }
-      .two, .three, .practice-grid, .sum-lab, .teacher-grid { grid-template-columns: minmax(0, 1fr); }
+      .two, .three, .practice-grid, .sum-lab, .teacher-grid, .proof-grid, .triangle-collection { grid-template-columns: minmax(0, 1fr); }
       .controls { grid-template-columns: 1fr; }
       .flow { grid-template-columns: 1fr; }
       .flow-step:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -20px; transform: translateX(-50%); }
@@ -266,6 +341,8 @@
         <a href="#explorer">遞迴規律觀察器</a>
         <a href="#apgp">等差、等比公式</a>
         <a href="#power-sums">一次二次三次和</a>
+        <a href="#derived-sums">衍生和公式</a>
+        <a href="#fraction-cancel">分數拆項對消</a>
         <a href="#practice">自我檢查</a>
       </nav>
     </header>
@@ -328,6 +405,34 @@
           </tbody>
         </table>
       </div>
+      <div class="proof-grid" style="margin-top:14px;">
+        <article class="card proof-card">
+          <span class="tag">等差級數和｜首尾配對</span>
+          <h3>為什麼能用「項數 × 首尾平均」？</h3>
+          <p>把同一個和倒過來寫，再逐項相加；每一欄都變成相同的首尾和。</p>
+          <div class="equation">\[
+            \begin{aligned}
+            S_n &amp;= a_1+(a_1+d)+\cdots+a_n\\
+            S_n &amp;= a_n+\cdots+(a_1+d)+a_1\\ \hline
+            2S_n &amp;= \underbrace{(a_1+a_n)+\cdots+(a_1+a_n)}_{n\text{ 組}}=n(a_1+a_n)
+            \end{aligned}
+          \]</div>
+          <div class="proof-identity"><strong>所以：</strong><span class="formula">\(S_n=\dfrac{n(a_1+a_n)}{2}\)</span>。若先把 <span class="formula">\(a_n=a_1+(n-1)d\)</span> 代入，也就得到 <span class="formula">\(S_n=\dfrac{n[2a_1+(n-1)d]}{2}\)</span>。</div>
+        </article>
+        <article class="card proof-card teal-proof">
+          <span class="tag">等比級數和｜乘後錯開相減</span>
+          <h3>把整個和乘上公比，讓中間項消失</h3>
+          <p>這裡的關鍵不是逐項相減，而是先把整個級數乘上 <span class="formula">\(r\)</span>，再和原式錯開。</p>
+          <div class="equation teal">\[
+            \begin{aligned}
+            S_n &amp;= a_1+a_1r+a_1r^2+\cdots+a_1r^{n-1}\\
+            rS_n &amp;= \phantom{a_1+{}}a_1r+a_1r^2+\cdots+a_1r^n\\ \hline
+            (r-1)S_n &amp;= a_1(r^n-1)
+            \end{aligned}
+          \]</div>
+          <div class="proof-identity teal"><strong>所以：</strong>當 <span class="formula">\(r\ne1\)</span>，<span class="formula">\(S_n=\dfrac{a_1(r^n-1)}{r-1}\)</span>；若 <span class="formula">\(r=1\)</span>，每項都相同，直接是 <span class="formula">\(S_n=na_1\)</span>。</div>
+        </article>
+      </div>
       <div class="grid two" style="margin-top:14px;">
         <article class="card solution">
           <span class="tag">代表例題｜等差</span>
@@ -380,6 +485,68 @@
           <p class="sum-note">很好記：<strong>三次和 = 一次和的平方</strong>。</p>
         </article>
       </div>
+      <article class="card proof-card square-proof" style="margin-top:14px;">
+        <span class="tag orange">平方和證明｜三個正三角形旋轉</span>
+        <h3>同一個正三角形，逆時針旋轉 <span class="formula">\(120^\circ\)</span> 兩次</h3>
+        <p>第一個三角形的第 <span class="formula">\(r\)</span> 列有 <span class="formula">\(r\)</span> 個 <span class="formula">\(r\)</span>，所以它的所有數字總和就是 <span class="formula">\(\sum_{k=1}^{n}k^2\)</span>。兩次旋轉不改變這個總和。</p>
+        <div class="triangle-collection" aria-label="三個旋轉正三角形的平方和證明">
+          <figure class="triangle-piece">
+            <strong>① 原三角形</strong>
+            <div class="equi-triangle blue" aria-label="第一列 1，第二列兩個 2，第三列三個 3，到第 n 列 n 個 n">
+              <div class="equi-row"><span>\(1\)</span></div>
+              <div class="equi-row"><span>\(2\)</span><span>\(2\)</span></div>
+              <div class="equi-row"><span>\(3\)</span><span>\(3\)</span><span>\(3\)</span></div>
+              <div class="equi-row dots"><span>\(\vdots\)</span><span>\(\vdots\)</span><span>\(\vdots\)</span></div>
+              <div class="equi-row base"><span>\(n\)</span><span>\(n\)</span><span>\(\cdots\)</span><span>\(n\)</span></div>
+            </div>
+            <small>第 \(r\) 列的每個數都是 \(r\)。</small>
+          </figure>
+          <figure class="triangle-piece">
+            <strong>② 逆時針旋轉 \(120^\circ\)</strong>
+            <div class="equi-triangle teal" aria-label="逆時針旋轉後，行由左到右為 n、n減一">
+              <div class="equi-row"><span>\(n\)</span></div>
+              <div class="equi-row"><span>\(n\)</span><span>\(n-1\)</span></div>
+              <div class="equi-row"><span>\(n\)</span><span>\(n-1\)</span><span>\(n-2\)</span></div>
+              <div class="equi-row dots"><span>\(\vdots\)</span><span>\(\vdots\)</span><span>\(\ddots\)</span></div>
+              <div class="equi-row base"><span>\(n\)</span><span>\(n-1\)</span><span>\(n-2\)</span><span>\(\cdots\)</span><span>\(1\)</span></div>
+            </div>
+            <small>第 \(r\) 列第 \(c\) 格是 \(n-c+1\)。</small>
+          </figure>
+          <figure class="triangle-piece">
+            <strong>③ 再逆時針旋轉 \(120^\circ\)</strong>
+            <div class="equi-triangle orange" aria-label="再次逆時針旋轉後，行由左到右為遞增數">
+              <div class="equi-row"><span>\(n\)</span></div>
+              <div class="equi-row"><span>\(n-1\)</span><span>\(n\)</span></div>
+              <div class="equi-row"><span>\(n-2\)</span><span>\(n-1\)</span><span>\(n\)</span></div>
+              <div class="equi-row dots"><span>\(\vdots\)</span><span>\(\vdots\)</span><span>\(\ddots\)</span></div>
+              <div class="equi-row base"><span>\(1\)</span><span>\(2\)</span><span>\(\cdots\)</span><span>\(n\)</span></div>
+            </div>
+            <small>第 \(r\) 列第 \(c\) 格是 \(n-r+c\)。</small>
+          </figure>
+        </div>
+        <div class="proof-grid" style="margin-top:14px;">
+          <div class="proof-visual">
+            <h4>第 1 步：同一個位置的三數相加</h4>
+            <p>例如最上方是 <span class="formula">\(1+n+n\)</span>；第二列左邊是 <span class="formula">\(2+n+(n-1)\)</span>。不論在哪一格，和都一樣：</p>
+            <div class="equation orange">\[
+              r+(n-c+1)+(n-r+c)=2n+1
+            \]</div>
+          </div>
+          <div class="proof-visual">
+            <h4>第 2 步：數一數正三角形有幾格</h4>
+            <p>正三角形共有 <span class="formula">\(1+2+\cdots+n=\dfrac{n(n+1)}2\)</span> 格。每一格由三個旋轉後的數字組成，和都是 <span class="formula">\(2n+1\)</span>。</p>
+            <div class="equation orange">\[
+              3\sum_{k=1}^{n}k^2=(2n+1)\cdot\frac{n(n+1)}2
+            \]</div>
+          </div>
+        </div>
+        <div class="proof-identity orange">
+          <div class="equation orange">\[
+            \boxed{\sum_{k=1}^{n}k^2=\frac{n(n+1)(2n+1)}6}
+          \]</div>
+          <p><strong>關鍵想法：</strong>不要分別計算三個三角形；把它們疊在同一格看，每格都是 <span class="formula">\(2n+1\)</span>，因此可以一次完成總和。</p>
+        </div>
+      </article>
       <article class="card" style="margin-top:14px;">
         <h3>代入驗算小實驗</h3>
         <p class="small">輸入 <span class="formula">\(n\)</span>，同時看三種和。可先用小的 <span class="formula">\(n\)</span> 手算，再用公式核對。</p>
@@ -413,8 +580,149 @@
       </div>
     </section>
 
+    <section class="section" id="derived-sums">
+      <h2>4. 衍生和公式：用錯開相減讓中間項消失</h2>
+      <p class="section-lead">從截圖中的 <span class="formula">\(k(k+1)\)</span> 開始。先把每一項放進「相鄰兩個三連乘」的差，乘積會一前一後錯開，中央項自然相消。</p>
+      <div class="proof-grid" style="margin-top:14px;">
+        <article class="card proof-card shift-proof">
+          <span class="tag purple">完整證明｜\(\sum k(k+1)\)</span>
+          <h3>先製造每項的「三倍」</h3>
+          <p>令 <span class="formula">\(S=\sum_{k=1}^{n}k(k+1)\)</span>。注意相鄰兩個三連乘只差一個位置：</p>
+          <div class="equation purple">\[
+            k(k+1)(k+2)-(k-1)k(k+1)=3k(k+1)
+          \]</div>
+          <ol class="proof-steps">
+            <li>把上式從 <span class="formula">\(k=1\)</span> 加到 <span class="formula">\(n\)</span>，左邊就得到 <span class="formula">\(3S\)</span>。</li>
+            <li>兩串乘積錯開一格相減，中間的 <span class="formula">\(1\cdot2\cdot3,\ 2\cdot3\cdot4,\ldots\)</span> 全部消掉。</li>
+            <li>只剩最後的 <span class="formula">\(n(n+1)(n+2)\)</span>。</li>
+          </ol>
+          <div class="proof-identity purple">
+            <div class="equation purple">\[
+              \begin{aligned}
+              3S &amp;=\left[1\cdot2\cdot3+2\cdot3\cdot4+\cdots+n(n+1)(n+2)\right]\\
+                 &amp;\quad-\left[0\cdot1\cdot2+1\cdot2\cdot3+\cdots+(n-1)n(n+1)\right]\\
+                 &amp;=n(n+1)(n+2)
+              \end{aligned}
+            \]</div>
+            <p><strong>結論：</strong><span class="formula">\(\displaystyle\sum_{k=1}^{n}k(k+1)=\dfrac{n(n+1)(n+2)}{3}\)</span>。</p>
+          </div>
+        </article>
+        <article class="card proof-card">
+          <span class="tag">截圖中的延伸公式</span>
+          <h3>再往上一階：四連乘的錯開相減</h3>
+          <p>同樣把每項乘上 4，改用相鄰兩個四連乘相減：</p>
+          <div class="equation">\[
+            \begin{aligned}
+            4k(k+1)(k+2)
+            &amp;=k(k+1)(k+2)(k+3)\\
+            &amp;\quad-(k-1)k(k+1)(k+2)
+            \end{aligned}
+          \]</div>
+          <p>把式子從 <span class="formula">\(1\)</span> 加到 <span class="formula">\(n\)</span>，同樣只留下第一串最後一項，因此</p>
+          <div class="proof-identity">
+            <div class="equation">\[
+              \sum_{k=1}^{n}k(k+1)(k+2)=\frac{n(n+1)(n+2)(n+3)}{4}
+            \]</div>
+            <p><strong>範例：</strong><span class="formula">\(\displaystyle\sum_{k=1}^{99}k(k+1)=\dfrac{99\cdot100\cdot101}{3}=333300\)</span>。</p>
+          </div>
+          <div class="callout"><strong>辨識規律：</strong>連乘有 <span class="formula">\(m\)</span> 個連續因數時，常試著用「多一個因數」的相鄰乘積做錯開相減；係數正好是 <span class="formula">\(m+1\)</span>。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="fraction-cancel">
+      <h2>5. 分數拆項對消：把複雜分母改成會消掉的差</h2>
+      <p class="section-lead">看到相隔固定的兩個因數，例如 <span class="formula">\(x(x+m)\)</span>，先試著拆成兩個倒數的差。相鄰項一正一負排開後，中間大多會消失，只要留下開頭與結尾。</p>
+      <div class="proof-grid" style="margin-top:14px;">
+        <article class="card proof-card teal-proof">
+          <span class="tag">核心工具｜先看分母差多少</span>
+          <h3>相差 <span class="formula">\(m\)</span> 的兩個因數</h3>
+          <div class="equation teal">\[
+            \frac{1}{x(x+m)}
+            =\frac{1}{m}\left(\frac{1}{x}-\frac{1}{x+m}\right)
+          \]</div>
+          <ol class="proof-steps">
+            <li>右邊通分後，分子是 <span class="formula">\((x+m)-x=m\)</span>。</li>
+            <li>外面的 <span class="formula">\(\dfrac1m\)</span> 正好把 <span class="formula">\(m\)</span> 約掉，回到原式。</li>
+            <li>寫總和時，先列出前兩項和最後一項；這樣才看得出哪些會對消。</li>
+          </ol>
+          <div class="proof-identity teal"><strong>判斷口訣：</strong>分母是「相距固定的兩因數」→ 拆成「前一個倒數 − 後一個倒數」。</div>
+        </article>
+        <article class="card proof-card">
+          <span class="tag">截圖例 1｜每次相差 3</span>
+          <h3>\(\dfrac{1}{1\cdot4}+\dfrac{1}{4\cdot7}+\cdots+\dfrac{1}{97\cdot100}\)</h3>
+          <p>令分母依序為 <span class="formula">\((3j+1)(3j+4)\)</span>，其中 <span class="formula">\(j=0,1,\ldots,32\)</span>。</p>
+          <div class="equation">\[
+            \frac{1}{(3j+1)(3j+4)}
+            =\frac13\left(\frac{1}{3j+1}-\frac{1}{3j+4}\right)
+          \]</div>
+          <div class="proof-identity">
+            <div class="equation">\[
+              \begin{aligned}
+              \sum_{j=0}^{32}\frac{1}{(3j+1)(3j+4)}
+              &amp;=\frac13\left[\left(1-\frac14\right)+\left(\frac14-\frac17\right)+\cdots+\left(\frac1{97}-\frac1{100}\right)\right]\\
+              &amp;=\frac13\left(1-\frac1{100}\right)=\frac{33}{100}
+              \end{aligned}
+            \]</div>
+          </div>
+        </article>
+      </div>
+      <div class="proof-grid" style="margin-top:14px;">
+        <article class="card proof-card square-proof">
+          <span class="tag orange">截圖例 2｜分母是三角形數</span>
+          <h3>\(\dfrac{1}{1}+\dfrac{1}{1+2}+\cdots+\dfrac{1}{1+2+\cdots+100}\)</h3>
+          <p>先把第 <span class="formula">\(k\)</span> 個分母寫成三角形數：<span class="formula">\(1+2+\cdots+k=\dfrac{k(k+1)}2\)</span>。</p>
+          <div class="equation orange">\[
+            \frac{1}{1+2+\cdots+k}
+            =\frac{2}{k(k+1)}
+            =2\left(\frac1k-\frac1{k+1}\right)
+          \]</div>
+          <div class="proof-identity orange">
+            <div class="equation orange">\[
+              \begin{aligned}
+              \sum_{k=1}^{100}\frac{1}{1+2+\cdots+k}
+              &amp;=2\left[\left(1-\frac12\right)+\left(\frac12-\frac13\right)+\cdots+\left(\frac1{100}-\frac1{101}\right)\right]\\
+              &amp;=2\left(1-\frac1{101}\right)=\frac{200}{101}
+              \end{aligned}
+            \]</div>
+          </div>
+        </article>
+        <article class="card proof-card shift-proof">
+          <span class="tag purple">截圖例 3｜三個連續因數</span>
+          <h3>\(\dfrac{1}{1\cdot2\cdot3}+\dfrac{1}{2\cdot3\cdot4}+\cdots+\dfrac{1}{n(n+1)(n+2)}\)</h3>
+          <p>這次不必一次拆成三個分數；先把它視為兩個相鄰二連乘的差，就能直接對消。</p>
+          <div class="equation purple">\[
+            \frac{1}{k(k+1)(k+2)}
+            =\frac12\left[\frac{1}{k(k+1)}-\frac{1}{(k+1)(k+2)}\right]
+          \]</div>
+          <div class="proof-identity purple">
+            <div class="equation purple">\[
+              \begin{aligned}
+              \sum_{k=1}^{n}\frac{1}{k(k+1)(k+2)}
+              &amp;=\frac12\left[\frac1{1\cdot2}-\frac1{(n+1)(n+2)}\right]\\
+              &amp;=\frac{n(n+3)}{4(n+1)(n+2)}
+              \end{aligned}
+            \]</div>
+          </div>
+        </article>
+      </div>
+      <article class="card proof-card" style="margin-top:14px;">
+        <span class="tag">再一題｜尾端留下兩項</span>
+        <h3>\(\displaystyle\sum_{k=1}^{n}\frac1{k(k+2)}\)</h3>
+        <p>因為每一項跨兩格，對消後不只剩一個尾端，而是保留前兩項與後兩項。</p>
+        <div class="equation">\[
+          \begin{aligned}
+          \sum_{k=1}^{n}\frac1{k(k+2)}
+          &amp;=\frac12\sum_{k=1}^{n}\left(\frac1k-\frac1{k+2}\right)\\
+          &amp;=\frac12\left(1+\frac12-\frac1{n+1}-\frac1{n+2}\right)
+          \end{aligned}
+        \]</div>
+        <div class="callout warn"><strong>最常錯：</strong>只寫 <span class="formula">\(1-\dfrac1{n+2}\)</span>。這會漏掉 <span class="formula">\(\dfrac12\)</span> 與 <span class="formula">\(-\dfrac1{n+1}\)</span>；先展開至少三項，才能數清楚邊界剩幾項。</div>
+      </article>
+    </section>
+
     <section class="section" id="mistakes">
-      <h2>4. 學生最常卡住的地方</h2>
+      <h2>6. 學生最常卡住的地方</h2>
       <article class="card">
         <ul class="mistake-list">
           <li><strong>把第 n 項的指數寫成 n：</strong>等比從 <span class="formula">\(a_1\)</span> 走到 <span class="formula">\(a_n\)</span>，只走了 <span class="formula">\(n-1\)</span> 步，所以是 <span class="formula">\(a_1r^{n-1}\)</span>。</li>
@@ -427,7 +735,7 @@
     </section>
 
     <section class="section" id="practice">
-      <h2>5. 自我檢查：先選，再看理由</h2>
+      <h2>7. 自我檢查：先選，再看理由</h2>
       <p class="section-lead">答錯時只會鎖住那個選項，請利用剩下的選項重新判斷；答對後才會顯示下一題。</p>
       <div class="practice-grid">
         <article class="card">
@@ -449,7 +757,7 @@
     </section>
 
     <section class="section" id="teacher-use">
-      <h2>教師使用建議：一節課的節奏</h2>
+      <h2>8. 教師使用建議：一節課的節奏</h2>
       <article class="card">
         <p>可先讓學生操作規律觀察器：固定 <span class="formula">\(a_1\)</span>，只改 <span class="formula">\(d\)</span> 或 <span class="formula">\(r\)</span>。學生看到「每次加」與「每次乘」的成長差異後，再整理通項與和公式，會比直接抄公式更有意義。</p>
         <div class="teacher-grid">

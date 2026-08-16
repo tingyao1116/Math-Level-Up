@@ -151,6 +151,18 @@
     .question strong { color: var(--blue); }
     .input-grid { display: grid; grid-template-columns: repeat(4, minmax(95px, 1fr)); gap: 10px; margin-top: 13px; }
     .input-grid.chain-grid { grid-template-columns: repeat(3, minmax(110px, 1fr)); }
+    .tab-row { display: flex; flex-wrap: wrap; gap: 9px; margin: 14px 0; }
+    .tab-row button { color: #466075; background: #eef4f7; }
+    .tab-row button[aria-pressed="true"], .tab-row button[aria-selected="true"] { color: #fff; background: var(--teal); }
+    .tab-row button[aria-pressed="true"]:hover, .tab-row button[aria-selected="true"]:hover { background: #066157; }
+    .ratio-input-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 13px; }
+    .ratio-card { padding: 11px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    .ratio-card h4 { color: #294b66; }
+    .ratio-pair { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 5px; }
+    .ratio-pair > span { padding-bottom: 8px; color: var(--blue); font-weight: 900; }
+    .measure-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-top: 14px; }
+    .measure-box { margin-top: 16px; padding: 13px; border: 1px solid #cde0e9; border-radius: 13px; background: #f7fcff; }
+    .measure-box p { margin: 4px 0 0; color: var(--muted); font-size: .92rem; }
     label {
       display: grid;
       gap: 4px;
@@ -201,14 +213,15 @@
     .comparison th, .comparison td { padding: 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
     .comparison th { color: #214a69; background: #eff7fb; }
     .footer { margin: 43px 0 0; color: var(--muted); text-align: center; }
+    .hidden { display: none !important; }
     @media (max-width: 800px) {
       .wrap { width: min(100% - 22px, 1130px); padding-top: 15px; }
       .grid, .three-grid, .two-col { grid-template-columns: 1fr; }
-      .input-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .input-grid, .measure-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .hero { border-radius: 21px; }
     }
     @media (max-width: 480px) {
-      .input-grid, .input-grid.chain-grid, .length-row { grid-template-columns: 1fr; }
+      .input-grid, .input-grid.chain-grid, .ratio-input-grid, .measure-grid, .length-row { grid-template-columns: 1fr; }
       .actions { align-items: flex-start; flex-direction: column; }
       .diagram-frame svg { min-height: 250px; }
     }
@@ -226,6 +239,7 @@
         <a href="#tools">先備工具</a>
         <a href="#cut-diagonal">題型一：截線與對角線</a>
         <a href="#chain-ratio">題型二：三段連比</a>
+        <a href="#two-secant">進階：二截線</a>
         <a href="#checklist">自我檢查</a>
       </nav>
     </header>
@@ -382,6 +396,166 @@
       </div>
     </section>
 
+    <section id="two-secant-legacy-draft" class="section hidden">
+      <div class="section-head">
+        <span class="tag teal">進階・復原二截線題型</span>
+        <h2>兩條截線交於 P：先辨認「同向」還是「交錯」</h2>
+        <p>兩條截線若同時截同一組平行邊，就有相同的分段比；若一條截上下邊、另一條截左右邊，兩條線的分段比要分別計算。兩類題型都能再用邊長與夾角求中間分段的實際長度。</p>
+      </div>
+
+      <article class="card">
+        <div class="two-col">
+          <div class="diagram-frame">
+            <svg id="same-secant-svg" class="diagram" viewBox="0 0 540 350" role="img" aria-label="同向二截線分段比示意圖"></svg>
+          </div>
+          <div>
+            <span class="tag purple">同向進階題</span>
+            <h3>兩條線同時截左右邊，或同時截上下邊</h3>
+            <p>同向的判準不是斜率看起來像不像，而是兩條線是否碰到<strong>同一組對邊</strong>。</p>
+            <div class="tab-row" role="group" aria-label="同向二截線方向">
+              <button id="same-sides-button" type="button" aria-pressed="true">兩線都截左右邊</button>
+              <button id="same-bases-button" type="button" aria-pressed="false">兩線都截上下邊</button>
+            </div>
+            <div id="same-secant-question" class="question"></div>
+            <div class="ratio-input-grid">
+              <div class="ratio-card"><h4 id="same-e-name">E 在 AD</h4><div class="ratio-pair"><label><span id="same-e-first-label">AE</span><input id="same-e-first" type="number" inputmode="numeric" min="1" max="9" step="1" value="1"></label><span>:</span><label><span id="same-e-second-label">ED</span><input id="same-e-second" type="number" inputmode="numeric" min="1" max="9" step="1" value="4"></label></div></div>
+              <div class="ratio-card"><h4 id="same-f-name">F 在 BC</h4><div class="ratio-pair"><label><span id="same-f-first-label">BF</span><input id="same-f-first" type="number" inputmode="numeric" min="1" max="9" step="1" value="7"></label><span>:</span><label><span id="same-f-second-label">FC</span><input id="same-f-second" type="number" inputmode="numeric" min="1" max="9" step="1" value="3"></label></div></div>
+              <div class="ratio-card"><h4 id="same-g-name">G 在 AD</h4><div class="ratio-pair"><label><span id="same-g-first-label">AG</span><input id="same-g-first" type="number" inputmode="numeric" min="1" max="9" step="1" value="4"></label><span>:</span><label><span id="same-g-second-label">GD</span><input id="same-g-second" type="number" inputmode="numeric" min="1" max="9" step="1" value="1"></label></div></div>
+              <div class="ratio-card"><h4 id="same-h-name">H 在 BC</h4><div class="ratio-pair"><label><span id="same-h-first-label">BH</span><input id="same-h-first" type="number" inputmode="numeric" min="1" max="9" step="1" value="2"></label><span>:</span><label><span id="same-h-second-label">HC</span><input id="same-h-second" type="number" inputmode="numeric" min="1" max="9" step="1" value="3"></label></div></div>
+            </div>
+            <div class="actions">
+              <button id="same-secant-random" type="button">同向隨機進階題</button>
+              <button id="same-secant-answer" class="secondary" type="button">看答案與步驟</button>
+            </div>
+            <div id="same-secant-result" class="answer-box" aria-live="polite"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card practice-card">
+        <div class="two-col">
+          <div class="diagram-frame">
+            <svg id="cross-secant-svg" class="diagram" viewBox="0 0 540 350" role="img" aria-label="交錯二截線分段比示意圖"></svg>
+          </div>
+          <div>
+            <span class="tag gold">更進階・交錯二截線</span>
+            <h3>一條截左右邊；另一條截上下邊</h3>
+            <p><span class="math">EF</span> 由 <span class="math">AD</span> 截到 <span class="math">BC</span>；<span class="math">GH</span> 由 <span class="math">AB</span> 截到 <span class="math">DC</span>。這次不能直接寫兩條截線的分段比相等。</p>
+            <div id="cross-secant-question" class="question"></div>
+            <div class="ratio-input-grid">
+              <div class="ratio-card"><h4>E 在 AD</h4><div class="ratio-pair"><label>AE<input id="cross-e-first" type="number" inputmode="numeric" min="1" max="9" step="1" value="1"></label><span>:</span><label>ED<input id="cross-e-second" type="number" inputmode="numeric" min="1" max="9" step="1" value="4"></label></div></div>
+              <div class="ratio-card"><h4>F 在 BC</h4><div class="ratio-pair"><label>BF<input id="cross-f-first" type="number" inputmode="numeric" min="1" max="9" step="1" value="7"></label><span>:</span><label>FC<input id="cross-f-second" type="number" inputmode="numeric" min="1" max="9" step="1" value="3"></label></div></div>
+              <div class="ratio-card"><h4>G 在 AB</h4><div class="ratio-pair"><label>AG<input id="cross-g-first" type="number" inputmode="numeric" min="1" max="9" step="1" value="3"></label><span>:</span><label>GB<input id="cross-g-second" type="number" inputmode="numeric" min="1" max="9" step="1" value="7"></label></div></div>
+              <div class="ratio-card"><h4>H 在 DC</h4><div class="ratio-pair"><label>DH<input id="cross-h-first" type="number" inputmode="numeric" min="1" max="9" step="1" value="4"></label><span>:</span><label>HC<input id="cross-h-second" type="number" inputmode="numeric" min="1" max="9" step="1" value="1"></label></div></div>
+            </div>
+            <div class="actions">
+              <button id="cross-secant-random" type="button">交錯隨機進階題</button>
+              <button id="cross-secant-answer" class="secondary" type="button">看答案與步驟</button>
+            </div>
+            <div id="cross-secant-result" class="answer-box" aria-live="polite"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card practice-card">
+        <span class="tag">需要計算實際長度時</span>
+        <h3>設定平行四邊形的兩鄰邊與夾角</h3>
+        <p>比例與圖形的斜度無關；但若要知道 <span class="math">EP、PF、GP、PH</span> 的實際長度，就需要這三個尺寸。變更尺寸不會揭示答案。</p>
+        <div class="measure-box">
+          <div class="measure-grid">
+            <label>AB 長<input id="secant-ab" type="number" inputmode="decimal" min="0.1" step="0.1" value="10"></label>
+            <label>AD 長<input id="secant-ad" type="number" inputmode="decimal" min="0.1" step="0.1" value="7"></label>
+            <label>∠DAB（度）<input id="secant-angle" type="number" inputmode="decimal" min="1" max="179" step="1" value="75"></label>
+          </div>
+        </div>
+      </article>
+
+      <div class="grid" style="margin-top:16px">
+        <article class="card">
+          <span class="tag teal">同向的結論</span>
+          <h3>兩線都截同一組對邊</h3>
+          <div class="formula small">EP : PF = GP : PH</div>
+          <p>可同時截 <span class="math">AD、BC</span>，也可同時截 <span class="math">AB、DC</span>。把圖形剪切成矩形來看，兩線被交點切開的比例相同。</p>
+        </article>
+        <article class="card">
+          <span class="tag gold">交錯的提醒</span>
+          <h3>一條左右、一條上下</h3>
+          <div class="formula small">EP : PF 與 GP : PH 要分開求</div>
+          <p>不要因為兩條線都在平行四邊形內就套用同向結論。正確順序是：先辨認每一條線碰到哪一組平行邊，再寫交點的分段比。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="two-secant" class="section">
+      <div class="section-head">
+        <span class="tag teal">原本的二截線進階題</span>
+        <h2>二截線的分段比：同方向與不同方向</h2>
+        <p>先判斷兩條線分別截到哪一組平行邊。這裡保留原本的兩個題型與四種隨機出題層級；輸入改變時，答案會重新收起來。</p>
+      </div>
+
+      <article class="card">
+        <div class="tab-row" role="tablist" aria-label="二截線題型">
+          <button id="restore-same-tab" type="button" role="tab" aria-selected="true">同方向：兩線都截左右邊</button>
+          <button id="restore-different-tab" type="button" role="tab" aria-selected="false">不同方向：一線截左右、一線截上下</button>
+        </div>
+        <div class="two-col">
+          <div class="diagram-frame">
+            <svg id="restore-secant-svg" class="diagram" viewBox="0 0 540 350" role="img" aria-label="平行四邊形二截線分段比示意圖"></svg>
+          </div>
+          <div>
+            <div class="measure-box">
+              <h3>計算實際長度時的圖形尺寸</h3>
+              <p>比例不需要邊長；若要計算交點周圍的中間分段長度，才設定這三個量。</p>
+              <div class="measure-grid">
+                <label>AB 長<input id="restore-ab" type="number" inputmode="decimal" min="0.1" step="0.1" value="10"></label>
+                <label>AD 長<input id="restore-ad" type="number" inputmode="decimal" min="0.1" step="0.1" value="7"></label>
+                <label>∠DAB（度）<input id="restore-angle" type="number" inputmode="decimal" min="1" max="179" step="1" value="75"></label>
+              </div>
+            </div>
+
+            <div id="restore-same-controls">
+              <h3>同方向：兩條線都由 AD 截到 BC</h3>
+              <p><span class="math">E、G∈AD；F、H∈BC</span>，且 <span class="math">EF</span> 與 <span class="math">GH</span> 交於 <span class="math">P</span>。</p>
+              <div class="formula small">EP : PF = GP : PH</div>
+              <div class="question"><strong>隨機出題：</strong>簡易題讓左側 AD、右側 BC 各固定一個頂點；進階題則讓兩邊的分點都自由變化。</div>
+              <div class="actions">
+                <button id="restore-same-random-easy" type="button">簡易隨機題：左右各一個頂點</button>
+                <button id="restore-same-random-advanced" type="button">進階隨機題：兩邊都變化</button>
+              </div>
+              <p id="restore-same-note" class="answer-hint">可先調整四組分點，再按「看答案」核對。</p>
+              <div class="ratio-input-grid">
+                <div class="ratio-card"><h4>E 將 AD 分成</h4><div class="ratio-pair"><label>AE<input id="restore-same-e-a" type="number" inputmode="numeric" min="0" max="10" step="1" value="1"></label><span>:</span><label>ED<input id="restore-same-e-d" type="number" inputmode="numeric" min="0" max="10" step="1" value="4"></label></div></div>
+                <div class="ratio-card"><h4>F 將 BC 分成</h4><div class="ratio-pair"><label>BF<input id="restore-same-f-b" type="number" inputmode="numeric" min="0" max="10" step="1" value="7"></label><span>:</span><label>FC<input id="restore-same-f-c" type="number" inputmode="numeric" min="0" max="10" step="1" value="3"></label></div></div>
+                <div class="ratio-card"><h4>G 將 AD 分成</h4><div class="ratio-pair"><label>AG<input id="restore-same-g-a" type="number" inputmode="numeric" min="0" max="10" step="1" value="4"></label><span>:</span><label>GD<input id="restore-same-g-d" type="number" inputmode="numeric" min="0" max="10" step="1" value="1"></label></div></div>
+                <div class="ratio-card"><h4>H 將 BC 分成</h4><div class="ratio-pair"><label>BH<input id="restore-same-h-b" type="number" inputmode="numeric" min="0" max="10" step="1" value="2"></label><span>:</span><label>HC<input id="restore-same-h-c" type="number" inputmode="numeric" min="0" max="10" step="1" value="3"></label></div></div>
+              </div>
+              <div class="actions"><button id="restore-same-show-answer" class="secondary" type="button">看答案</button><span class="answer-hint">先自行求出 EP:PF 與 GP:PH。</span></div>
+              <div id="restore-same-result" class="answer-box" aria-live="polite"></div>
+            </div>
+
+            <div id="restore-different-controls" class="hidden">
+              <h3>不同方向：EF 截左右邊；GH 截上下邊</h3>
+              <p><span class="math">E∈AD、F∈BC、G∈AB、H∈DC</span>，且 <span class="math">EF</span> 與 <span class="math">GH</span> 交於 <span class="math">P</span>。</p>
+              <div class="question"><strong>隨機出題：</strong>簡易題讓每一條截線各有一個頂點端點；進階題讓兩組邊上的四個分點都自由變化。</div>
+              <div class="actions">
+                <button id="restore-different-random-easy" type="button">簡易隨機題：每線一端是頂點</button>
+                <button id="restore-different-random-advanced" type="button">進階隨機題：兩組邊都變化</button>
+              </div>
+              <p id="restore-different-note" class="answer-hint">先各自求兩條截線上的分段比，再按「看答案」核對。</p>
+              <div class="ratio-input-grid">
+                <div class="ratio-card"><h4>E 將 AD 分成</h4><div class="ratio-pair"><label>AE<input id="restore-diff-e-a" type="number" inputmode="numeric" min="0" max="10" step="1" value="1"></label><span>:</span><label>ED<input id="restore-diff-e-d" type="number" inputmode="numeric" min="0" max="10" step="1" value="4"></label></div></div>
+                <div class="ratio-card"><h4>F 將 BC 分成</h4><div class="ratio-pair"><label>BF<input id="restore-diff-f-b" type="number" inputmode="numeric" min="0" max="10" step="1" value="7"></label><span>:</span><label>FC<input id="restore-diff-f-c" type="number" inputmode="numeric" min="0" max="10" step="1" value="3"></label></div></div>
+                <div class="ratio-card"><h4>G 將 AB 分成</h4><div class="ratio-pair"><label>AG<input id="restore-diff-g-a" type="number" inputmode="numeric" min="0" max="10" step="1" value="3"></label><span>:</span><label>GB<input id="restore-diff-g-b" type="number" inputmode="numeric" min="0" max="10" step="1" value="7"></label></div></div>
+                <div class="ratio-card"><h4>H 將 DC 分成</h4><div class="ratio-pair"><label>DH<input id="restore-diff-h-d" type="number" inputmode="numeric" min="0" max="10" step="1" value="4"></label><span>:</span><label>HC<input id="restore-diff-h-c" type="number" inputmode="numeric" min="0" max="10" step="1" value="1"></label></div></div>
+              </div>
+              <div class="actions"><button id="restore-different-show-answer" class="secondary" type="button">看答案</button><span class="answer-hint">交錯題不能直接把兩條比寫成相等。</span></div>
+              <div id="restore-different-result" class="answer-box" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
     <section id="checklist" class="section">
       <div class="section-head">
         <span class="tag gold">課堂收束與自我檢查</span>
@@ -415,6 +589,12 @@
       const $ = (id) => document.getElementById(id);
       let cutAnswerShown = false;
       let chainAnswerShown = false;
+      let sameSecantOrientation = 'sides';
+      let sameSecantAnswerShown = false;
+      let crossSecantAnswerShown = false;
+      let restoreMode = 'same';
+      let restoreSameAnswerShown = false;
+      let restoreDifferentAnswerShown = false;
 
       function gcd(a, b) {
         a = Math.abs(a);
@@ -638,6 +818,629 @@
           '<div class="success-note">自我檢查：<span class="math">DF:BE=' + data.ratio[2] + ':' + data.ratio[0] + '</span>；三段相加為 <span class="math">' + decimalText(beLength + efLength + fdLength) + '</span>，等於 <span class="math">BD</span>。</div>';
       }
 
+      function bigGcd(first, second) {
+        first = first < 0n ? -first : first;
+        second = second < 0n ? -second : second;
+        while (second !== 0n) {
+          const next = first % second;
+          first = second;
+          second = next;
+        }
+        return first || 1n;
+      }
+
+      function rational(numerator, denominator) {
+        if (denominator === 0n) return null;
+        if (denominator < 0n) {
+          numerator = -numerator;
+          denominator = -denominator;
+        }
+        const divisor = bigGcd(numerator, denominator);
+        return { n: numerator / divisor, d: denominator / divisor };
+      }
+
+      function ratAdd(first, second) {
+        return rational(first.n * second.d + second.n * first.d, first.d * second.d);
+      }
+
+      function ratSub(first, second) {
+        return rational(first.n * second.d - second.n * first.d, first.d * second.d);
+      }
+
+      function ratMul(first, second) {
+        return rational(first.n * second.n, first.d * second.d);
+      }
+
+      function ratDiv(first, second) {
+        return rational(first.n * second.d, first.d * second.n);
+      }
+
+      function ratNumber(value) {
+        return Number(value.n) / Number(value.d);
+      }
+
+      function ratInterior(value) {
+        return value && value.n > 0n && value.n < value.d;
+      }
+
+      function ratText(value) {
+        return value.n.toString() + '/' + value.d.toString();
+      }
+
+      function ratioFromUnitFraction(value) {
+        const ratio = rational(value.n, value.d - value.n);
+        return ratio.n.toString() + ':' + ratio.d.toString();
+      }
+
+      function readPointPosition(firstId, secondId) {
+        const first = BigInt(readInteger(firstId, 1));
+        const second = BigInt(readInteger(secondId, 1));
+        return rational(first, first + second);
+      }
+
+      function updateSameSecantLabels() {
+        const byOrientation = sameSecantOrientation === 'sides'
+          ? [
+            ['same-e-name', 'E 在 AD'], ['same-e-first-label', 'AE'], ['same-e-second-label', 'ED'],
+            ['same-f-name', 'F 在 BC'], ['same-f-first-label', 'BF'], ['same-f-second-label', 'FC'],
+            ['same-g-name', 'G 在 AD'], ['same-g-first-label', 'AG'], ['same-g-second-label', 'GD'],
+            ['same-h-name', 'H 在 BC'], ['same-h-first-label', 'BH'], ['same-h-second-label', 'HC']
+          ]
+          : [
+            ['same-e-name', 'E 在 AB'], ['same-e-first-label', 'AE'], ['same-e-second-label', 'EB'],
+            ['same-f-name', 'F 在 DC'], ['same-f-first-label', 'DF'], ['same-f-second-label', 'FC'],
+            ['same-g-name', 'G 在 AB'], ['same-g-first-label', 'AG'], ['same-g-second-label', 'GB'],
+            ['same-h-name', 'H 在 DC'], ['same-h-first-label', 'DH'], ['same-h-second-label', 'HC']
+          ];
+        byOrientation.forEach((entry) => { $(entry[0]).textContent = entry[1]; });
+        $('same-sides-button').setAttribute('aria-pressed', String(sameSecantOrientation === 'sides'));
+        $('same-bases-button').setAttribute('aria-pressed', String(sameSecantOrientation === 'bases'));
+      }
+
+      function sameSecantData() {
+        const e = readPointPosition('same-e-first', 'same-e-second');
+        const f = readPointPosition('same-f-first', 'same-f-second');
+        const g = readPointPosition('same-g-first', 'same-g-second');
+        const h = readPointPosition('same-h-first', 'same-h-second');
+        const firstPart = ratSub(g, e);
+        const secondPart = ratSub(f, h);
+        const denominator = ratAdd(firstPart, secondPart);
+        const lambda = denominator.n === 0n ? null : ratDiv(firstPart, denominator);
+        return { e, f, g, h, lambda, valid: ratInterior(lambda) };
+      }
+
+      function crossSecantData() {
+        const e = readPointPosition('cross-e-first', 'cross-e-second');
+        const f = readPointPosition('cross-f-first', 'cross-f-second');
+        const g = readPointPosition('cross-g-first', 'cross-g-second');
+        const h = readPointPosition('cross-h-first', 'cross-h-second');
+        const hMinusG = ratSub(h, g);
+        const lambdaNumerator = ratAdd(g, ratMul(e, hMinusG));
+        const lambdaDenominator = ratSub(rational(1n, 1n), ratMul(ratSub(f, e), hMinusG));
+        const lambda = lambdaDenominator.n === 0n ? null : ratDiv(lambdaNumerator, lambdaDenominator);
+        const mu = lambda ? ratAdd(e, ratMul(lambda, ratSub(f, e))) : null;
+        return { e, f, g, h, lambda, mu, valid: ratInterior(lambda) && ratInterior(mu) };
+      }
+
+      function secantBase() {
+        const A = point(135, 58);
+        const B = point(435, 58);
+        const D = point(65, 285);
+        const C = point(365, 285);
+        const map = (x, y) => point(A.x + (B.x - A.x) * x + (D.x - A.x) * y, A.y + (B.y - A.y) * x + (D.y - A.y) * y);
+        return {
+          A, B, C, D, map,
+          edge: '<path class="edge" d="M135 58 L435 58 L365 285 L65 285 Z"></path>'
+        };
+      }
+
+      function renderSecantVertices(base) {
+        return [
+          dot(base.A, 'point'), dot(base.B, 'point'), dot(base.C, 'point'), dot(base.D, 'point'),
+          label('A', base.A, -18, -9), label('B', base.B, 9, -9),
+          label('C', base.C, 9, 21), label('D', base.D, -21, 21)
+        ].join('');
+      }
+
+      function sameSecantPoints(data) {
+        const e = ratNumber(data.e);
+        const f = ratNumber(data.f);
+        const g = ratNumber(data.g);
+        const h = ratNumber(data.h);
+        if (sameSecantOrientation === 'sides') {
+          return {
+            e: point(0, e), f: point(1, f), g: point(0, g), h: point(1, h),
+            eLabel: 'E', fLabel: 'F', gLabel: 'G', hLabel: 'H'
+          };
+        }
+        return {
+          e: point(e, 0), f: point(f, 1), g: point(g, 0), h: point(h, 1),
+          eLabel: 'E', fLabel: 'F', gLabel: 'G', hLabel: 'H'
+        };
+      }
+
+      function renderSameSecantDiagram(data) {
+        const base = secantBase();
+        const positions = sameSecantPoints(data);
+        const E = base.map(positions.e.x, positions.e.y);
+        const F = base.map(positions.f.x, positions.f.y);
+        const G = base.map(positions.g.x, positions.g.y);
+        const H = base.map(positions.h.x, positions.h.y);
+        let content = base.edge + line(E, F, 'trace') + line(G, H, 'trace-two') + renderSecantVertices(base);
+        content += dot(E, 'special-point') + dot(F, 'special-point') + dot(G, 'special-point') + dot(H, 'special-point');
+        content += label('E', E, -20, -8) + label('F', F, 10, -8) + label('G', G, -21, 20) + label('H', H, 10, 20);
+        if (data.valid) {
+          const lambda = ratNumber(data.lambda);
+          const P = point(E.x + (F.x - E.x) * lambda, E.y + (F.y - E.y) * lambda);
+          content += dot(P, 'intersection') + label('P', P, 9, -10);
+        }
+        $('same-secant-svg').innerHTML = content;
+      }
+
+      function renderSameSecantQuestion(data) {
+        const boundaryText = sameSecantOrientation === 'sides'
+          ? 'E、G 在 AD 上，F、H 在 BC 上'
+          : 'E、G 在 AB 上，F、H 在 DC 上';
+        $('same-secant-question').innerHTML =
+          '<strong>題目：</strong>平行四邊形 ABCD 中，' + boundaryText + '。' +
+          '<span class="math">EF</span> 與 <span class="math">GH</span> 交於 <span class="math">P</span>。' +
+          '求 <span class="math">EP:PF</span> 與 <span class="math">GP:PH</span> 的最簡整數比。';
+      }
+
+      function secantMeasure() {
+        const ab = readLength('secant-ab', 10);
+        const ad = readLength('secant-ad', 7);
+        const angle = Number($('secant-angle').value);
+        if (!Number.isFinite(angle) || angle <= 0 || angle >= 180) return null;
+        return { ab, ad, cosine: Math.cos(angle * Math.PI / 180) };
+      }
+
+      function affineDistance(first, second, measure) {
+        const dx = second.x - first.x;
+        const dy = second.y - first.y;
+        return Math.sqrt(measure.ab * measure.ab * dx * dx + measure.ad * measure.ad * dy * dy + 2 * measure.ab * measure.ad * measure.cosine * dx * dy);
+      }
+
+      function secantLengthHtml(first, second, third, fourth, p) {
+        const measure = secantMeasure();
+        if (!measure) return '';
+        const firstTotal = affineDistance(first, second, measure);
+        const secondTotal = affineDistance(third, fourth, measure);
+        const firstPart = affineDistance(first, p, measure);
+        const firstRest = affineDistance(p, second, measure);
+        const secondPart = affineDistance(third, p, measure);
+        const secondRest = affineDistance(p, fourth, measure);
+        return '<div class="length-row">' +
+          '<div>EF = ' + decimalText(firstTotal) + '<br>EP = ' + decimalText(firstPart) + '，PF = ' + decimalText(firstRest) + '</div>' +
+          '<div>GH = ' + decimalText(secondTotal) + '<br>GP = ' + decimalText(secondPart) + '，PH = ' + decimalText(secondRest) + '</div>' +
+          '<div>確認：<br>EP + PF = EF<br>GP + PH = GH</div>' +
+          '</div>';
+      }
+
+      function renderSameSecantResult(data) {
+        if (!data.valid) {
+          $('same-secant-result').innerHTML = '<span class="answer-prompt">目前兩條同向截線沒有在平行四邊形內相交。請調整四個分點，讓兩條線在一側的高低順序不同。</span>';
+          return;
+        }
+        if (!sameSecantAnswerShown) {
+          $('same-secant-result').innerHTML = '<span class="answer-prompt">先判斷兩條線是否真的截同一組平行邊，再按「看答案與步驟」核對共同的分段比。</span>';
+          return;
+        }
+        const positions = sameSecantPoints(data);
+        const lambda = ratNumber(data.lambda);
+        const P = point(positions.e.x + (positions.f.x - positions.e.x) * lambda, positions.e.y + (positions.f.y - positions.e.y) * lambda);
+        const ratio = ratioFromUnitFraction(data.lambda);
+        $('same-secant-result').innerHTML =
+          '<strong>EP : PF = GP : PH = ' + ratio + '</strong>' +
+          '<div class="answer-steps">' +
+          '<div class="answer-step">① 交點在 EF 上的位置是 <span class="math">EP/EF=' + ratText(data.lambda) + '</span>。</div>' +
+          '<div class="answer-step">② 因兩條線都截同一組平行邊，所以 P 在 GH 上的位置相同。</div>' +
+          '<div class="answer-step">③ 因此兩條截線都被切成 <span class="math">' + ratio + '</span>。</div>' +
+          '</div>' +
+          secantLengthHtml(positions.e, positions.f, positions.g, positions.h, P);
+      }
+
+      function refreshSameSecant() {
+        updateSameSecantLabels();
+        const data = sameSecantData();
+        renderSameSecantDiagram(data);
+        renderSameSecantQuestion(data);
+        renderSameSecantResult(data);
+      }
+
+      function renderCrossSecantDiagram(data) {
+        const base = secantBase();
+        const positions = {
+          e: point(0, ratNumber(data.e)),
+          f: point(1, ratNumber(data.f)),
+          g: point(ratNumber(data.g), 0),
+          h: point(ratNumber(data.h), 1)
+        };
+        const E = base.map(positions.e.x, positions.e.y);
+        const F = base.map(positions.f.x, positions.f.y);
+        const G = base.map(positions.g.x, positions.g.y);
+        const H = base.map(positions.h.x, positions.h.y);
+        let content = base.edge + line(E, F, 'trace') + line(G, H, 'trace-two') + renderSecantVertices(base);
+        content += dot(E, 'special-point') + dot(F, 'special-point') + dot(G, 'special-point') + dot(H, 'special-point');
+        content += label('E', E, -20, -8) + label('F', F, 10, -8) + label('G', G, 0, -10) + label('H', H, 0, 21);
+        if (data.valid) {
+          const P = base.map(ratNumber(data.lambda), ratNumber(data.mu));
+          content += dot(P, 'intersection') + label('P', P, 9, -10);
+        }
+        $('cross-secant-svg').innerHTML = content;
+      }
+
+      function renderCrossSecantQuestion() {
+        $('cross-secant-question').innerHTML =
+          '<strong>題目：</strong>平行四邊形 ABCD 中，E∈AD、F∈BC、G∈AB、H∈DC。' +
+          '<span class="math">EF</span> 與 <span class="math">GH</span> 交於 <span class="math">P</span>。' +
+          '分別求 <span class="math">EP:PF</span>、<span class="math">GP:PH</span> 的最簡整數比。';
+      }
+
+      function renderCrossSecantResult(data) {
+        if (!data.valid) {
+          $('cross-secant-result').innerHTML = '<span class="answer-prompt">目前交點不在兩條線段的內部。請調整四個分點，或按「交錯隨機進階題」產生一題。</span>';
+          return;
+        }
+        if (!crossSecantAnswerShown) {
+          $('cross-secant-result').innerHTML = '<span class="answer-prompt">這是交錯二截線，請先分別求 EF 與 GH 上的分段比，再按「看答案與步驟」。</span>';
+          return;
+        }
+        const positions = {
+          e: point(0, ratNumber(data.e)),
+          f: point(1, ratNumber(data.f)),
+          g: point(ratNumber(data.g), 0),
+          h: point(ratNumber(data.h), 1)
+        };
+        const P = point(ratNumber(data.lambda), ratNumber(data.mu));
+        const efRatio = ratioFromUnitFraction(data.lambda);
+        const ghRatio = ratioFromUnitFraction(data.mu);
+        $('cross-secant-result').innerHTML =
+          '<strong>EP : PF = ' + efRatio + '；GP : PH = ' + ghRatio + '</strong>' +
+          '<div class="answer-steps">' +
+          '<div class="answer-step">① P 在 EF 上的位置 <span class="math">EP/EF=' + ratText(data.lambda) + '</span>。</div>' +
+          '<div class="answer-step">② P 在 GH 上的位置 <span class="math">GP/GH=' + ratText(data.mu) + '</span>。</div>' +
+          '<div class="answer-step">③ 因兩條線截到不同組的對邊，兩個分段比通常不同，不能直接寫成相等。</div>' +
+          '</div>' +
+          secantLengthHtml(positions.e, positions.f, positions.g, positions.h, P);
+      }
+
+      function refreshCrossSecant() {
+        const data = crossSecantData();
+        renderCrossSecantDiagram(data);
+        renderCrossSecantQuestion();
+        renderCrossSecantResult(data);
+      }
+
+      function randomizeRatioInputs(firstId, secondId) {
+        $(firstId).value = String(randomInteger(1, 9));
+        $(secondId).value = String(randomInteger(1, 9));
+      }
+
+      function randomSameSecantQuestion() {
+        for (let attempt = 0; attempt < 200; attempt += 1) {
+          randomizeRatioInputs('same-e-first', 'same-e-second');
+          randomizeRatioInputs('same-f-first', 'same-f-second');
+          randomizeRatioInputs('same-g-first', 'same-g-second');
+          randomizeRatioInputs('same-h-first', 'same-h-second');
+          const data = sameSecantData();
+          if (data.valid) {
+            sameSecantAnswerShown = false;
+            refreshSameSecant();
+            return;
+          }
+        }
+      }
+
+      function randomCrossSecantQuestion() {
+        for (let attempt = 0; attempt < 200; attempt += 1) {
+          randomizeRatioInputs('cross-e-first', 'cross-e-second');
+          randomizeRatioInputs('cross-f-first', 'cross-f-second');
+          randomizeRatioInputs('cross-g-first', 'cross-g-second');
+          randomizeRatioInputs('cross-h-first', 'cross-h-second');
+          const data = crossSecantData();
+          if (data.valid) {
+            crossSecantAnswerShown = false;
+            refreshCrossSecant();
+            return;
+          }
+        }
+      }
+
+      function readRestoredInteger(id, fallback) {
+        const input = $(id);
+        let value = Math.round(Number(input.value));
+        if (!Number.isFinite(value) || value < 0) value = fallback;
+        if (value > 10) value = 10;
+        input.value = String(value);
+        return value;
+      }
+
+      function readRestoredPosition(firstId, secondId) {
+        let first = readRestoredInteger(firstId, 0);
+        let second = readRestoredInteger(secondId, 1);
+        if (first === 0 && second === 0) {
+          second = 1;
+          $(secondId).value = '1';
+        }
+        return rational(BigInt(first), BigInt(first + second));
+      }
+
+      function restoredRatioSmallEnough(value) {
+        const ratio = rational(value.n, value.d - value.n);
+        return ratio.n <= 10n && ratio.d <= 10n;
+      }
+
+      function restoredSameData() {
+        const e = readRestoredPosition('restore-same-e-a', 'restore-same-e-d');
+        const f = readRestoredPosition('restore-same-f-b', 'restore-same-f-c');
+        const g = readRestoredPosition('restore-same-g-a', 'restore-same-g-d');
+        const h = readRestoredPosition('restore-same-h-b', 'restore-same-h-c');
+        const firstPart = ratSub(g, e);
+        const secondPart = ratSub(f, h);
+        const denominator = ratAdd(firstPart, secondPart);
+        const lambda = denominator.n === 0n ? null : ratDiv(firstPart, denominator);
+        return { e, f, g, h, lambda, valid: ratInterior(lambda) };
+      }
+
+      function restoredDifferentData() {
+        const e = readRestoredPosition('restore-diff-e-a', 'restore-diff-e-d');
+        const f = readRestoredPosition('restore-diff-f-b', 'restore-diff-f-c');
+        const g = readRestoredPosition('restore-diff-g-a', 'restore-diff-g-b');
+        const h = readRestoredPosition('restore-diff-h-d', 'restore-diff-h-c');
+        const hMinusG = ratSub(h, g);
+        const lambdaNumerator = ratAdd(g, ratMul(e, hMinusG));
+        const lambdaDenominator = ratSub(rational(1n, 1n), ratMul(ratSub(f, e), hMinusG));
+        const lambda = lambdaDenominator.n === 0n ? null : ratDiv(lambdaNumerator, lambdaDenominator);
+        const mu = lambda ? ratAdd(e, ratMul(lambda, ratSub(f, e))) : null;
+        return { e, f, g, h, lambda, mu, valid: ratInterior(lambda) && ratInterior(mu) };
+      }
+
+      function restoredPointLabel(name, position, startName, endName) {
+        const value = ratNumber(position);
+        if (value === 0) return name + '=' + startName;
+        if (value === 1) return name + '=' + endName;
+        return name;
+      }
+
+      function restoredSamePoints(data) {
+        return {
+          e: point(0, ratNumber(data.e)),
+          f: point(1, ratNumber(data.f)),
+          g: point(0, ratNumber(data.g)),
+          h: point(1, ratNumber(data.h))
+        };
+      }
+
+      function restoredDifferentPoints(data) {
+        return {
+          e: point(0, ratNumber(data.e)),
+          f: point(1, ratNumber(data.f)),
+          g: point(ratNumber(data.g), 0),
+          h: point(ratNumber(data.h), 1)
+        };
+      }
+
+      function renderRestoredSameDiagram(data) {
+        const base = secantBase();
+        const positions = restoredSamePoints(data);
+        const E = base.map(positions.e.x, positions.e.y);
+        const F = base.map(positions.f.x, positions.f.y);
+        const G = base.map(positions.g.x, positions.g.y);
+        const H = base.map(positions.h.x, positions.h.y);
+        let content = base.edge + line(E, F, 'trace') + line(G, H, 'trace-two') + renderSecantVertices(base);
+        content += dot(E, 'special-point') + dot(F, 'special-point') + dot(G, 'special-point') + dot(H, 'special-point');
+        content += label(restoredPointLabel('E', data.e, 'A', 'D'), E, -23, -8);
+        content += label(restoredPointLabel('F', data.f, 'B', 'C'), F, 9, -8);
+        content += label(restoredPointLabel('G', data.g, 'A', 'D'), G, -23, 20);
+        content += label(restoredPointLabel('H', data.h, 'B', 'C'), H, 9, 20);
+        if (data.valid) {
+          const lambda = ratNumber(data.lambda);
+          const P = point(E.x + (F.x - E.x) * lambda, E.y + (F.y - E.y) * lambda);
+          content += dot(P, 'intersection') + label('P', P, 9, -10);
+        }
+        $('restore-secant-svg').innerHTML = content;
+      }
+
+      function renderRestoredDifferentDiagram(data) {
+        const base = secantBase();
+        const positions = restoredDifferentPoints(data);
+        const E = base.map(positions.e.x, positions.e.y);
+        const F = base.map(positions.f.x, positions.f.y);
+        const G = base.map(positions.g.x, positions.g.y);
+        const H = base.map(positions.h.x, positions.h.y);
+        let content = base.edge + line(E, F, 'trace') + line(G, H, 'trace-two') + renderSecantVertices(base);
+        content += dot(E, 'special-point') + dot(F, 'special-point') + dot(G, 'special-point') + dot(H, 'special-point');
+        content += label(restoredPointLabel('E', data.e, 'A', 'D'), E, -23, -8);
+        content += label(restoredPointLabel('F', data.f, 'B', 'C'), F, 9, -8);
+        content += label(restoredPointLabel('G', data.g, 'A', 'B'), G, 0, -10);
+        content += label(restoredPointLabel('H', data.h, 'D', 'C'), H, 0, 20);
+        if (data.valid) {
+          const P = base.map(ratNumber(data.lambda), ratNumber(data.mu));
+          content += dot(P, 'intersection') + label('P', P, 9, -10);
+        }
+        $('restore-secant-svg').innerHTML = content;
+      }
+
+      function restoredMeasure() {
+        const ab = readLength('restore-ab', 10);
+        const ad = readLength('restore-ad', 7);
+        const angle = Number($('restore-angle').value);
+        if (!Number.isFinite(angle) || angle <= 0 || angle >= 180) return null;
+        return { ab, ad, cosine: Math.cos(angle * Math.PI / 180) };
+      }
+
+      function restoredLengthHtml(first, second, third, fourth, p) {
+        const measure = restoredMeasure();
+        if (!measure) return '';
+        const firstTotal = affineDistance(first, second, measure);
+        const secondTotal = affineDistance(third, fourth, measure);
+        const firstPart = affineDistance(first, p, measure);
+        const firstRest = affineDistance(p, second, measure);
+        const secondPart = affineDistance(third, p, measure);
+        const secondRest = affineDistance(p, fourth, measure);
+        return '<div class="length-row">' +
+          '<div>EF = ' + decimalText(firstTotal) + '<br>EP = ' + decimalText(firstPart) + '，PF = ' + decimalText(firstRest) + '</div>' +
+          '<div>GH = ' + decimalText(secondTotal) + '<br>GP = ' + decimalText(secondPart) + '，PH = ' + decimalText(secondRest) + '</div>' +
+          '<div>分段長度<br>已依 AB、AD、夾角計算</div>' +
+          '</div>';
+      }
+
+      function renderRestoredSameResult(data) {
+        if (!data.valid) {
+          $('restore-same-result').innerHTML = '<span class="answer-prompt">目前兩條線沒有在平行四邊形內相交。請調整分點，或按隨機出題產生可作答的題目。</span>';
+          return;
+        }
+        if (!restoreSameAnswerShown) {
+          $('restore-same-result').innerHTML = '<span class="answer-prompt">圖形已更新。請先自行求出 EP:PF 與 GP:PH，再按「看答案」核對最簡整數比。</span>';
+          return;
+        }
+        const positions = restoredSamePoints(data);
+        const lambda = ratNumber(data.lambda);
+        const P = point(positions.e.x + (positions.f.x - positions.e.x) * lambda, positions.e.y + (positions.f.y - positions.e.y) * lambda);
+        const answer = ratioFromUnitFraction(data.lambda);
+        $('restore-same-result').innerHTML =
+          '<strong>EP : PF = GP : PH = ' + answer + '</strong>' +
+          '<div class="answer-steps"><div class="answer-step">兩條截線同時截 AD、BC；P 在兩條截線上的位置相同，因此分段比相同。</div></div>' +
+          restoredLengthHtml(positions.e, positions.f, positions.g, positions.h, P);
+      }
+
+      function renderRestoredDifferentResult(data) {
+        if (!data.valid) {
+          $('restore-different-result').innerHTML = '<span class="answer-prompt">目前交點不在兩條線段的內部。請調整分點，或按隨機出題產生可作答的題目。</span>';
+          return;
+        }
+        if (!restoreDifferentAnswerShown) {
+          $('restore-different-result').innerHTML = '<span class="answer-prompt">圖形已更新。請先分別求 EP:PF 與 GP:PH，再按「看答案」核對。</span>';
+          return;
+        }
+        const positions = restoredDifferentPoints(data);
+        const P = point(ratNumber(data.lambda), ratNumber(data.mu));
+        const firstAnswer = ratioFromUnitFraction(data.lambda);
+        const secondAnswer = ratioFromUnitFraction(data.mu);
+        $('restore-different-result').innerHTML =
+          '<strong>EP : PF = ' + firstAnswer + '；GP : PH = ' + secondAnswer + '</strong>' +
+          '<div class="answer-steps"><div class="answer-step">EF 截左右邊、GH 截上下邊；兩條線的交點位置不同，所以兩個分段比要分開求。</div></div>' +
+          restoredLengthHtml(positions.e, positions.f, positions.g, positions.h, P);
+      }
+
+      function refreshRestoredSame() {
+        const data = restoredSameData();
+        renderRestoredSameDiagram(data);
+        renderRestoredSameResult(data);
+      }
+
+      function refreshRestoredDifferent() {
+        const data = restoredDifferentData();
+        renderRestoredDifferentDiagram(data);
+        renderRestoredDifferentResult(data);
+      }
+
+      function setRestoredMode(mode) {
+        restoreMode = mode;
+        restoreSameAnswerShown = false;
+        restoreDifferentAnswerShown = false;
+        $('restore-same-tab').setAttribute('aria-selected', String(mode === 'same'));
+        $('restore-different-tab').setAttribute('aria-selected', String(mode === 'different'));
+        $('restore-same-controls').classList.toggle('hidden', mode !== 'same');
+        $('restore-different-controls').classList.toggle('hidden', mode !== 'different');
+        if (mode === 'same') refreshRestoredSame(); else refreshRestoredDifferent();
+      }
+
+      function setRestoredInputs(values) {
+        Object.entries(values).forEach((entry) => { $(entry[0]).value = String(entry[1]); });
+      }
+
+      function restoredRandomInteriorPair() {
+        return [randomInteger(1, 10), randomInteger(1, 10)];
+      }
+
+      function restoredSameValues() {
+        const e = restoredRandomInteriorPair();
+        const f = restoredRandomInteriorPair();
+        const g = restoredRandomInteriorPair();
+        const h = restoredRandomInteriorPair();
+        return {
+          'restore-same-e-a': e[0], 'restore-same-e-d': e[1],
+          'restore-same-f-b': f[0], 'restore-same-f-c': f[1],
+          'restore-same-g-a': g[0], 'restore-same-g-d': g[1],
+          'restore-same-h-b': h[0], 'restore-same-h-c': h[1]
+        };
+      }
+
+      function restoredEasySameValues() {
+        const values = restoredSameValues();
+        if (Math.random() < .5) {
+          const left = Math.random() < .5 ? ['E=A', { 'restore-same-e-a': 0, 'restore-same-e-d': 1 }] : ['E=D', { 'restore-same-e-a': 1, 'restore-same-e-d': 0 }];
+          const right = Math.random() < .5 ? ['H=B', { 'restore-same-h-b': 0, 'restore-same-h-c': 1 }] : ['H=C', { 'restore-same-h-b': 1, 'restore-same-h-c': 0 }];
+          return { values: Object.assign(values, left[1], right[1]), note: '簡易題已產生：左邊 AD 的 ' + left[0] + '、右邊 BC 的 ' + right[0] + ' 是頂點。' };
+        }
+        const left = Math.random() < .5 ? ['G=A', { 'restore-same-g-a': 0, 'restore-same-g-d': 1 }] : ['G=D', { 'restore-same-g-a': 1, 'restore-same-g-d': 0 }];
+        const right = Math.random() < .5 ? ['F=B', { 'restore-same-f-b': 0, 'restore-same-f-c': 1 }] : ['F=C', { 'restore-same-f-b': 1, 'restore-same-f-c': 0 }];
+        return { values: Object.assign(values, left[1], right[1]), note: '簡易題已產生：左邊 AD 的 ' + left[0] + '、右邊 BC 的 ' + right[0] + ' 是頂點。' };
+      }
+
+      function makeRestoredSameQuestion(easy) {
+        for (let attempt = 0; attempt < 300; attempt += 1) {
+          const candidate = easy ? restoredEasySameValues() : { values: restoredSameValues(), note: '進階題已產生：AD、BC 兩邊的分點都自由變化。' };
+          setRestoredInputs(candidate.values);
+          const data = restoredSameData();
+          if (data.valid && restoredRatioSmallEnough(data.lambda)) {
+            restoreSameAnswerShown = false;
+            $('restore-same-note').textContent = candidate.note;
+            refreshRestoredSame();
+            return;
+          }
+        }
+      }
+
+      function restoredDifferentValues() {
+        const e = restoredRandomInteriorPair();
+        const f = restoredRandomInteriorPair();
+        const g = restoredRandomInteriorPair();
+        const h = restoredRandomInteriorPair();
+        return {
+          'restore-diff-e-a': e[0], 'restore-diff-e-d': e[1],
+          'restore-diff-f-b': f[0], 'restore-diff-f-c': f[1],
+          'restore-diff-g-a': g[0], 'restore-diff-g-b': g[1],
+          'restore-diff-h-d': h[0], 'restore-diff-h-c': h[1]
+        };
+      }
+
+      function restoredEasyDifferentValues() {
+        const values = restoredDifferentValues();
+        const firstLine = [
+          ['E=A', { 'restore-diff-e-a': 0, 'restore-diff-e-d': 1 }],
+          ['E=D', { 'restore-diff-e-a': 1, 'restore-diff-e-d': 0 }],
+          ['F=B', { 'restore-diff-f-b': 0, 'restore-diff-f-c': 1 }],
+          ['F=C', { 'restore-diff-f-b': 1, 'restore-diff-f-c': 0 }]
+        ];
+        const secondLine = [
+          ['G=A', { 'restore-diff-g-a': 0, 'restore-diff-g-b': 1 }],
+          ['G=B', { 'restore-diff-g-a': 1, 'restore-diff-g-b': 0 }],
+          ['H=D', { 'restore-diff-h-d': 0, 'restore-diff-h-c': 1 }],
+          ['H=C', { 'restore-diff-h-d': 1, 'restore-diff-h-c': 0 }]
+        ];
+        const first = firstLine[randomInteger(0, firstLine.length - 1)];
+        let second = secondLine[randomInteger(0, secondLine.length - 1)];
+        while (first[0].slice(-1) === second[0].slice(-1)) second = secondLine[randomInteger(0, secondLine.length - 1)];
+        return { values: Object.assign(values, first[1], second[1]), note: '簡易題已產生：EF 的 ' + first[0] + '、GH 的 ' + second[0] + ' 是頂點。' };
+      }
+
+      function makeRestoredDifferentQuestion(easy) {
+        for (let attempt = 0; attempt < 300; attempt += 1) {
+          const candidate = easy ? restoredEasyDifferentValues() : { values: restoredDifferentValues(), note: '進階題已產生：兩組邊上的四個分點都自由變化。' };
+          setRestoredInputs(candidate.values);
+          const data = restoredDifferentData();
+          if (data.valid && restoredRatioSmallEnough(data.lambda) && restoredRatioSmallEnough(data.mu)) {
+            restoreDifferentAnswerShown = false;
+            $('restore-different-note').textContent = candidate.note;
+            refreshRestoredDifferent();
+            return;
+          }
+        }
+      }
+
       function refreshChain() {
         const data = chainData();
         renderChainDiagram(data);
@@ -690,9 +1493,85 @@
         chainAnswerShown = true;
         refreshChain();
       });
+      $('same-sides-button').addEventListener('click', () => {
+        sameSecantOrientation = 'sides';
+        sameSecantAnswerShown = false;
+        refreshSameSecant();
+      });
+      $('same-bases-button').addEventListener('click', () => {
+        sameSecantOrientation = 'bases';
+        sameSecantAnswerShown = false;
+        refreshSameSecant();
+      });
+      ['same-e-first', 'same-e-second', 'same-f-first', 'same-f-second', 'same-g-first', 'same-g-second', 'same-h-first', 'same-h-second'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          sameSecantAnswerShown = false;
+          refreshSameSecant();
+        });
+      });
+      ['cross-e-first', 'cross-e-second', 'cross-f-first', 'cross-f-second', 'cross-g-first', 'cross-g-second', 'cross-h-first', 'cross-h-second'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          crossSecantAnswerShown = false;
+          refreshCrossSecant();
+        });
+      });
+      ['secant-ab', 'secant-ad', 'secant-angle'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          refreshSameSecant();
+          refreshCrossSecant();
+        });
+      });
+      $('same-secant-random').addEventListener('click', randomSameSecantQuestion);
+      $('cross-secant-random').addEventListener('click', randomCrossSecantQuestion);
+      $('same-secant-answer').addEventListener('click', () => {
+        sameSecantAnswerShown = true;
+        refreshSameSecant();
+      });
+      $('cross-secant-answer').addEventListener('click', () => {
+        crossSecantAnswerShown = true;
+        refreshCrossSecant();
+      });
+      $('restore-same-tab').addEventListener('click', () => setRestoredMode('same'));
+      $('restore-different-tab').addEventListener('click', () => setRestoredMode('different'));
+      ['restore-same-e-a', 'restore-same-e-d', 'restore-same-f-b', 'restore-same-f-c', 'restore-same-g-a', 'restore-same-g-d', 'restore-same-h-b', 'restore-same-h-c'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          restoreSameAnswerShown = false;
+          $('restore-same-note').textContent = '已手動調整題目；請先自行作答，再按「看答案」核對。';
+          refreshRestoredSame();
+        });
+      });
+      ['restore-diff-e-a', 'restore-diff-e-d', 'restore-diff-f-b', 'restore-diff-f-c', 'restore-diff-g-a', 'restore-diff-g-b', 'restore-diff-h-d', 'restore-diff-h-c'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          restoreDifferentAnswerShown = false;
+          $('restore-different-note').textContent = '已手動調整題目；請先自行作答，再按「看答案」核對。';
+          refreshRestoredDifferent();
+        });
+      });
+      ['restore-ab', 'restore-ad', 'restore-angle'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          restoreSameAnswerShown = false;
+          restoreDifferentAnswerShown = false;
+          if (restoreMode === 'same') refreshRestoredSame(); else refreshRestoredDifferent();
+        });
+      });
+      $('restore-same-random-easy').addEventListener('click', () => makeRestoredSameQuestion(true));
+      $('restore-same-random-advanced').addEventListener('click', () => makeRestoredSameQuestion(false));
+      $('restore-different-random-easy').addEventListener('click', () => makeRestoredDifferentQuestion(true));
+      $('restore-different-random-advanced').addEventListener('click', () => makeRestoredDifferentQuestion(false));
+      $('restore-same-show-answer').addEventListener('click', () => {
+        restoreSameAnswerShown = true;
+        refreshRestoredSame();
+      });
+      $('restore-different-show-answer').addEventListener('click', () => {
+        restoreDifferentAnswerShown = true;
+        refreshRestoredDifferent();
+      });
 
       refreshCut();
       refreshChain();
+      refreshSameSecant();
+      refreshCrossSecant();
+      setRestoredMode('same');
     })();
   </script>
 </body>

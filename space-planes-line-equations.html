@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="chapter-code" content="s4-2">
+  <title>空間中的平面與直線方程式｜法向量、方向量教學</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root { --ink:#17263f; --sub:#52667f; --line:#d6e2ee; --navy:#175c98; --teal:#087b72; --sky:#eff8ff; --teal-pale:#e9faf6; --violet:#6e56a6; --orange:#a85c16; --red:#9a3449; --shadow:0 18px 45px rgba(22,61,102,.11); }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; }
+    body { margin:0; min-width:320px; color:var(--ink); background:linear-gradient(145deg,#eff9ff 0%,#fbfdff 48%,#eefaf6 100%); font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; line-height:1.78; }
+    .wrap { width:min(1180px,calc(100% - 28px)); margin:22px auto 50px; }
+    .page { overflow:hidden; padding:clamp(18px,3.8vw,38px); border:1px solid #cdddeb; border-radius:24px; background:#fff; box-shadow:var(--shadow); }
+    .topbar,.tags,.toc,.check-row { display:flex; align-items:center; gap:9px; flex-wrap:wrap; }.topbar { justify-content:space-between; }
+    .back,.jump,.toc a { display:inline-flex; align-items:center; min-height:38px; padding:7px 12px; color:#fff; background:var(--navy); border:1px solid var(--navy); border-radius:10px; font-weight:800; text-decoration:none; }.back:hover,.jump:hover { background:#104c7e; }
+    h1 { margin:13px 0 8px; font-size:clamp(30px,4.5vw,46px); line-height:1.25; } h2 { margin:0 0 9px; font-size:clamp(23px,3vw,31px); line-height:1.38; } h3 { margin:0 0 7px; font-size:19px; line-height:1.48; } p { margin:8px 0; } li { margin:5px 0; }
+    .tags { margin-top:17px; }.tag { padding:3px 10px; border-radius:999px; color:#075b68; background:#ddf6f0; font-size:13px; font-weight:900; }.lead,.section-intro { color:var(--sub); }.lead { max-width:920px; margin:0; font-size:17px; line-height:1.92; }.section-intro { margin:-3px 0 15px; }
+    .toc { margin:21px 0 25px; padding:12px; border:1px solid #c6e4f5; border-radius:14px; background:#f1faff; }.toc a { min-height:0; padding:4px 10px; color:#15598e; border-color:#cfe4f3; background:#fff; font-size:14px; }.toc a:hover { background:#def2ff; }
+    .mission { display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; margin-bottom:29px; padding:16px 17px; border-left:6px solid #14918b; border-radius:0 15px 15px 0; background:var(--teal-pale); }.mission-mark { display:grid; place-items:center; width:52px; height:52px; border-radius:50%; color:#fff; background:var(--teal); font:900 26px Georgia,serif; }.mission p { margin:0; }
+    .section { margin-top:36px; scroll-margin-top:14px; }.grid2,.grid3,.steps,.quiz-grid,.mistakes { display:grid; gap:15px; }.grid2,.quiz-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.grid3,.mistakes { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .role,.card,.formula,.example,.question { min-width:0; border:1px solid var(--line); border-radius:16px; background:#fff; }.role,.card,.formula,.question { padding:16px; }.role { position:relative; overflow:hidden; padding-left:27px; }.role::before { content:""; position:absolute; inset:0 auto 0 0; width:8px; }.role.plane { border-color:#a6d9d0; background:#f0fcf9; }.role.plane::before { background:var(--teal); }.role.line { border-color:#b7d7ed; background:#f4faff; }.role.line::before { background:var(--navy); }.role-label { display:inline-block; margin-bottom:8px; padding:2px 9px; border-radius:999px; color:#fff; font-size:13px; font-weight:900; }.plane .role-label { background:var(--teal); }.line .role-label { background:var(--navy); }.large { margin:2px 0 9px; font-size:clamp(20px,2.8vw,26px); font-weight:900; line-height:1.4; }
+    .math { overflow-x:auto; padding:4px 2px; font-size:clamp(15px,2.1vw,18px); }.translation,.callout,.warning,.tip,.teacher-note { margin-top:15px; padding:14px 16px; border-radius:14px; }.translation { border:1px solid #b6d9eb; background:linear-gradient(135deg,#f3fbff,#fff); }.translation h3,.tip strong { color:var(--navy); }.translation-grid { display:grid; grid-template-columns:1fr auto 1fr; gap:13px; align-items:stretch; margin-top:12px; }.translation-item { padding:13px 14px; border:1px solid #d4e6f2; border-radius:12px; background:#fff; }.translation-arrow { display:grid; place-items:center; color:#4f7d9c; font-size:27px; font-weight:900; }.callout { border:1px solid #addfd5; background:var(--teal-pale); }.callout strong { color:#087369; }.warning { border:1px solid #efc987; background:#fff6e9; }.warning strong { color:#99530c; }.tip { border:1px solid #bedced; background:var(--sky); }.teacher-note { border:1px dashed #afc7d9; background:#f9fcff; }.teacher-note summary { cursor:pointer; color:#1f5d91; font-weight:900; }
+    .formula { overflow:hidden; padding:0 16px 16px; }.formula header,.example header { margin:0 -16px 13px; padding:11px 15px; color:#fff; background:var(--navy); font-weight:900; }.formula.teal header,.example:nth-child(2) header { background:var(--teal); }.formula.violet header,.example:nth-child(3) header { background:var(--violet); }.step { padding:13px; border:1px solid #d7e5ee; border-radius:14px; background:#fbfdff; }.step-number { display:inline-grid; place-items:center; width:25px; height:25px; margin-right:5px; border-radius:50%; color:#fff; background:var(--navy); font-size:13px; font-weight:900; }.step p,.card p,.formula p,.example p,.question p { color:var(--sub); }.step p { margin:6px 0 0; font-size:14px; line-height:1.65; }
+    .example { overflow:hidden; }.example header { margin:0; }.example .body { padding:13px 14px 15px; }.work { margin-top:9px; padding:9px 10px; border-radius:9px; background:#f6f9fc; color:#213950; font-family:Cambria,"Times New Roman",serif; line-height:1.7; }
+    .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:15px; } table { width:100%; min-width:660px; border-collapse:collapse; background:#fff; } th,td { padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; } th { color:#114d7e; background:#edf8ff; font-size:15px; } tr:last-child td { border-bottom:0; } td strong { color:#155b91; }
+    .decision { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(270px,.85fr); gap:16px; }.flow { padding:16px; border:1px solid #b7d8e8; border-radius:16px; background:#f6fcff; }.flow-step { position:relative; margin:9px 0; padding:11px 13px 11px 48px; border:1px solid #d3e5ef; border-radius:11px; background:#fff; }.flow-step::before { content:attr(data-step); position:absolute; top:11px; left:12px; display:grid; place-items:center; width:24px; height:24px; border-radius:50%; color:#fff; background:#1676b2; font-size:13px; font-weight:900; }.flow-arrow { margin:-5px 0 -5px 20px; color:#4f7c9a; font-weight:900; }.memory { padding:16px; border:1px solid #c7b8e9; border-radius:16px; background:#f5f0ff; }.memory h3 { color:#5c4593; }.memory div { margin-top:9px; padding:9px 10px; border-radius:10px; background:rgba(255,255,255,.8); font-size:15px; }
+    .mistake { padding:14px; border:1px solid #efc6ce; border-radius:14px; background:#fff3f5; }.mistake strong { color:var(--red); }.mistake p { margin:6px 0 0; color:#6b5260; font-size:14px; }
+    .quiz { padding:18px; border:1px solid #b8dce9; border-radius:17px; background:#f4fcff; }.question label { display:block; margin:6px 0; padding:6px 8px; border-radius:8px; cursor:pointer; font-size:14px; }.question label:hover { background:#eaf7fd; }.question input { accent-color:var(--teal); }.check-row { justify-content:flex-start; margin-top:15px; }.check,.retry { min-height:38px; padding:7px 12px; border-radius:9px; font:inherit; font-weight:900; cursor:pointer; }.check { color:#fff; border:1px solid var(--teal); background:var(--teal); }.retry { color:#0d5c83; border:1px solid #8ec6e1; background:#fff; }.quiz-result { min-height:27px; color:#244966; font-weight:800; }.footer { margin:30px 0 0; color:#687b90; text-align:center; font-size:14px; }:focus-visible { outline:3px solid #38bdf8; outline-offset:3px; }
+    @media (max-width:900px) { .grid3,.mistakes { grid-template-columns:1fr; }.steps { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:680px) { .wrap { width:min(100% - 16px,1180px); margin-top:8px; }.page { padding:17px; border-radius:16px; }.mission,.grid2,.quiz-grid,.decision { grid-template-columns:1fr; }.mission-mark { display:none; }.translation-grid { grid-template-columns:1fr; }.translation-arrow { min-height:20px; transform:rotate(90deg); }.steps { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main class="wrap"><article class="page">
+    <div class="topbar"><a class="back" href="./index.html#s4">← 回到教學首頁</a><a class="jump" href="#self-check">先做 5 題檢核</a></div>
+    <div class="tags"><span class="tag">高二下・s4-2</span><span class="tag">空間解析幾何</span><span class="tag">法向量 × 方向量</span></div>
+    <h1>空間中的平面與直線方程式</h1>
+    <p class="lead">空間題看起來式子很多，其實先把「誰在指方向」分清楚就穩了一半：<strong>平面先看法向量</strong>，<strong>直線先看方向量</strong>。接著再用內積判垂直、用外積找同時垂直的向量，方程式就不再只是背誦。</p>
+    <nav class="toc" aria-label="頁面導覽"><a href="#core">先抓兩種向量</a><a href="#planes">平面方程式</a><a href="#plane-relations">平面關係與距離</a><a href="#lines">直線方程式</a><a href="#line-relations">線、面、線的關係</a><a href="#self-check">自我檢查</a></nav>
+    <section class="mission"><div class="mission-mark">⇄</div><p><strong>全頁核心口訣：</strong>「<strong>平面看垂直它的法向量；直線看沿著它走的方向量</strong>。」看到 \(ax+by+cz+d=0\)，立刻圈出 \((a,b,c)\)；看到 \(x=x_0+lt,\ y=y_0+mt,\ z=z_0+nt\)，立刻圈出 \((l,m,n)\)。</p></section>
+
+    <section class="section" id="core">
+      <h2>一、先把兩種向量的角色分清楚</h2><p class="section-intro">這不是小細節，而是整章的翻譯字典。先認角色，才決定要不要做內積或外積。</p>
+      <div class="grid2">
+        <article class="role plane"><span class="role-label">平面 E 的關鍵向量</span><div class="large">法向量 \(\mathbf n\)：垂直平面</div><p>法向量像一根從桌面「直直站起來」的旗桿。它不躺在平面上，而是告訴我們平面朝哪裡。</p><div class="math">\[E:ax+by+cz+d=0\quad\Longrightarrow\quad\mathbf n=(a,b,c)\]</div></article>
+        <article class="role line"><span class="role-label">直線 L 的關鍵向量</span><div class="large">方向量 \(\mathbf v\)：沿著直線走</div><p>方向量像走在鐵軌上的「前進一步」。只要從線上任一點沿這個方向走，就仍在同一條直線上。</p><div class="math">\[L:\ \mathbf r=\mathbf r_0+t\mathbf v\quad\Longrightarrow\quad\mathbf v=(l,m,n)\]</div></article>
+      </div>
+      <div class="translation"><h3>把式子翻成向量：考場先做這一件事</h3><div class="translation-grid"><div class="translation-item"><strong>平面</strong><br>\(2x-y+3z-8=0\)<br>係數 \((2,-1,3)\) 是<strong>法向量</strong>。</div><div class="translation-arrow" aria-hidden="true">⇄</div><div class="translation-item"><strong>直線</strong><br>\(x=1+2t,\ y=-2-t,\ z=4+3t\)<br>\(t\) 的係數 \((2,-1,3)\) 是<strong>方向量</strong>。</div></div><div class="tip"><strong>同一個三元組，角色可能不同：</strong>\((2,-1,3)\) 本身沒有固定身分；出現在平面係數時當法向量，出現在參數 \(t\) 的係數時當方向量。先看它跟著哪一種方程式，別只看數字。</div></div>
+      <div class="warning"><strong>容易說錯：</strong>一個平面或一條直線的法／方向向量不是只有一個。例如 \((2,-1,3)\) 與 \((-4,2,-6)\) 都描述同一個方向。精確地說，是<strong>方向唯一到非零倍數</strong>；所以比較時看「是否成比例」。</div>
+    </section>
+
+    <section class="section" id="planes">
+      <h2>二、空間中的平面：先找法向量，再代入一點</h2><p class="section-intro">平面方程式不是憑空湊出來的。最穩的寫法是先確定一個垂直平面的向量 \(\mathbf n\)，再找一個平面上的點 \(A\)。</p>
+      <div class="grid3">
+        <article class="formula teal"><header>1｜點法式：已知一點與法向量</header><div class="math">\[A(x_0,y_0,z_0),\ \mathbf n=(a,b,c)\]\[a(x-x_0)+b(y-y_0)+c(z-z_0)=0\]</div><p>平面上任一點 \(P\) 到 \(A\) 的位移 \(\overrightarrow{AP}\)，一定與法向量垂直。</p></article>
+        <article class="formula"><header>2｜一般式：係數就是法向量</header><div class="math">\[ax+by+cz+d=0\]\[\mathbf n=(a,b,c),\qquad a^2+b^2+c^2\ne0\]</div><p>常數 \(d\) 負責把平面沿法向量平移；而 \(a,b,c\) <strong>不能全為 0</strong>，否則它根本不是一個平面。</p></article>
+        <article class="formula violet"><header>3｜截距式：三個軸截距已知</header><div class="math">\[\frac{x}{p}+\frac{y}{q}+\frac{z}{r}=1\]\[p,q,r\ne0\]</div><p>平面通過 \((p,0,0),(0,q,0),(0,0,r)\)。適合題目直接給三個截距，或要算四面體體積時使用。</p></article>
+      </div>
+      <div class="callout"><strong>一個要看懂的推理：</strong>若 \(P(x,y,z)\) 在平面上，則 \(\overrightarrow{AP}=(x-x_0,y-y_0,z-z_0)\) 躺在平面內；它和垂直平面的 \(\mathbf n=(a,b,c)\) 內積為 0，便得到點法式。也就是說，<strong>平面方程式其實是「位移向量與法向量垂直」的翻譯</strong>。</div>
+      <h3 style="margin-top:24px">平面上的法向量怎麼找？四個常用來源</h3>
+      <div class="steps"><article class="step"><span class="step-number">1</span><strong>三個不共線點</strong><p>先求 \(\overrightarrow{AB},\overrightarrow{AC}\)，再做 \(\overrightarrow{AB}\times\overrightarrow{AC}\)。外積同時垂直兩條平面內向量，因此就是法向量。</p></article><article class="step"><span class="step-number">2</span><strong>一直線與線外一點</strong><p>線的方向量 \(\mathbf v\) 與從線上點指向外點的向量 \(\mathbf w\) 都在平面內；\(\mathbf v\times\mathbf w\) 是法向量。</p></article><article class="step"><span class="step-number">3</span><strong>兩條相交直線</strong><p>各取方向量 \(\mathbf v_1,\mathbf v_2\)。只要不平行，\(\mathbf v_1\times\mathbf v_2\) 就垂直這個平面。</p></article><article class="step"><span class="step-number">4</span><strong>兩條平行直線</strong><p>取共同方向量 \(\mathbf v\)，再取一條「從第一線指到第二線」的 \(\mathbf w\)；\(\mathbf v\times\mathbf w\) 是法向量。</p></article></div>
+      <div class="grid3" style="margin-top:15px"><article class="example"><header>例 1｜已知點與法向量</header><div class="body"><p>過 \(A(1,0,2)\)，法向量為 \((2,-1,3)\) 的平面。</p><div class="work">\(2(x-1)-(y-0)+3(z-2)=0\)<br>\(\therefore\ 2x-y+3z-8=0\)</div><p><strong>板書提醒：</strong>先保留點法式，展開後才較不會把常數算錯。</p></div></article><article class="example"><header>例 2｜三點先外積</header><div class="body"><p>\(A(1,0,0),B(2,1,0),C(0,1,1)\)。</p><div class="work">\(\overrightarrow{AB}=(1,1,0),\ \overrightarrow{AC}=(-1,1,1)\)<br>\(\overrightarrow{AB}\times\overrightarrow{AC}=(1,-1,2)\)<br>\(x-y+2z-1=0\)</div><p>先做外積找<strong>法向量</strong>，再代回 \(A\)。</p></div></article><article class="example"><header>例 3｜認特殊平面</header><div class="body"><p>平面 \(3x-2y+5=0\) 少了 \(z\)。</p><div class="work">\(\mathbf n=(3,-2,0)\)<br>\((0,0,1)\cdot(3,-2,0)=0\)</div><p>所以 \(z\) 軸方向躺在平面內：此平面<strong>平行 \(z\) 軸</strong>。少哪個變數，就平行哪一軸。</p></div></article></div>
+      <details class="teacher-note"><summary>老師上課可這樣問：為什麼「少 \(z\)」就平行 \(z\) 軸？</summary><p>不要先叫學生背。令 \(x,y\) 固定成一個滿足 \(3x-2y+5=0\) 的組合，無論 \(z\) 取任何值，方程式都仍成立。也就是在同一平面內，可以一直沿 \((0,0,1)\) 的方向走；這正是「平行 \(z\) 軸」的意思。</p></details>
+    </section>
+
+    <section class="section" id="plane-relations">
+      <h2>三、兩平面關係與點到平面距離</h2><p class="section-intro">兩個平面要不要平行、垂直或求夾角，都把視線放回兩個法向量。</p>
+      <div class="table-wrap"><table><thead><tr><th>題目問什麼？</th><th>把平面翻譯成法向量後</th><th>學生要多做的一步</th></tr></thead><tbody><tr><td><strong>是否平行／重合</strong></td><td>\(\mathbf n_1\parallel\mathbf n_2\)，也就是係數成比例。</td><td>再把一個平面上的點代入另一式：成立為重合，不成立才是相異平行。</td></tr><tr><td><strong>是否垂直</strong></td><td>\(\mathbf n_1\cdot\mathbf n_2=0\)。</td><td>法向量互相垂直，兩個平面也垂直。</td></tr><tr><td><strong>兩平面夾角</strong></td><td>取兩法向量的銳角：\(\displaystyle\cos\theta=\frac{|\mathbf n_1\cdot\mathbf n_2|}{\|\mathbf n_1\|\|\mathbf n_2\|}\)。</td><td>題目慣例取銳角，所以加絕對值。</td></tr><tr><td><strong>平行平面距離</strong></td><td>先把兩式的 \(x,y,z\) 係數調成完全相同。</td><td>若為 \(ax+by+cz+d_1=0\)、\(ax+by+cz+d_2=0\)，距離才是 \(\displaystyle\frac{|d_1-d_2|}{\sqrt{a^2+b^2+c^2}}\)。</td></tr></tbody></table></div>
+      <div class="grid2" style="margin-top:16px"><article class="card"><h3>點到平面：沿法向量量最短距離</h3><p>從 \(P(x_0,y_0,z_0)\) 到 \(E:ax+by+cz+d=0\) 的垂線，一定平行法向量 \((a,b,c)\)。</p><div class="math">\[d(P,E)=\frac{|ax_0+by_0+cz_0+d|}{\sqrt{a^2+b^2+c^2}}\]</div><p>分子是把點代入平面的「代數距離」；分母把法向量長度校正回真正距離。</p></article><article class="card"><h3>投影點、對稱點：把絕對值拿掉</h3><p>令 \(\displaystyle\Delta=\frac{ax_0+by_0+cz_0+d}{a^2+b^2+c^2}\)，其中 \(\Delta\) 要保留正負號。</p><div class="math">\[H=P-\Delta(a,b,c)\quad\text{（投影點）}\]\[P'=P-2\Delta(a,b,c)\quad\text{（對稱點）}\]</div><p>想成從 \(P\) 沿法向量走到平面得 \(H\)，再多走同樣距離就是鏡射點 \(P'\)。</p></article></div>
+      <div class="warning"><strong>距離公式的兩個陷阱：</strong>① 點到平面公式的分母是法向量長度，不能漏。② 平行平面距離公式必須先把兩式的前三個係數統一，例如 \(2x+2y+2z+1=0\) 先除以 2，才可和 \(x+y+z-3=0\) 比常數。</div>
+    </section>
+
+    <section class="section" id="lines">
+      <h2>四、空間中的直線：先找方向量，再代入一點</h2><p class="section-intro">直線上的點會隨參數 \(t\) 前後移動；\(t\) 每增加 1，座標改變的量就是方向量。</p>
+      <div class="grid3"><article class="formula"><header>1｜向量式與參數式</header><div class="math">\[\mathbf r=\mathbf r_0+t\mathbf v\]\[\begin{cases}x=x_0+lt\\y=y_0+mt\\z=z_0+nt\end{cases}\quad(t\in\mathbb R)\]</div><p>通過 \(P_0(x_0,y_0,z_0)\)，方向量 \(\mathbf v=(l,m,n)\ne\mathbf0\)。這是最通用、最好計算的形式。</p></article><article class="formula teal"><header>2｜兩點式：終點減起點</header><div class="math">\[A(x_1,y_1,z_1),\ B(x_2,y_2,z_2)\]\[\overrightarrow{AB}=(x_2-x_1,y_2-y_1,z_2-z_1)\]</div><p>兩點不同時，\(\overrightarrow{AB}\) 就是方向量；把 \(A\) 當起點代入參數式即可。</p></article><article class="formula violet"><header>3｜對稱比式：有零要拆開</header><div class="math">\[\frac{x-x_0}{l}=\frac{y-y_0}{m}=\frac{z-z_0}{n}\]</div><p>只有 \(l,m,n\) 都不為 0 才能這樣寫。若 \(l=0\)，要改寫成 \(x=x_0\) 與其餘兩個比式。</p></article></div>
+      <div class="grid2" style="margin-top:16px"><article class="card"><h3>方向量的生活直覺：每走一步，座標怎麼變？</h3><p>直線 \(x=1+2t,\ y=-2-t,\ z=4+3t\) 的方向量是 \((2,-1,3)\)。</p><ul><li>\(t\) 增加 1：\(x\) 加 2、\(y\) 減 1、\(z\) 加 3。</li><li>\(t\) 增加 2：走兩步，位移是 \((4,-2,6)\)。</li><li>\(t\) 改成負數：沿反方向走；這仍是同一條直線。</li></ul><div class="tip"><strong>直線不需要斜率：</strong>二維常用一個斜率，但空間有三個座標變化量，方向量 \((l,m,n)\) 才是自然的描述。</div></article><article class="card"><h3>零分量示範：不能除以 0</h3><p>過 \(P(1,-2,4)\)，方向量 \((0,2,-3)\) 的直線：</p><div class="math">\[\begin{cases}x=1\\y=-2+2t\\z=4-3t\end{cases}\]\[x=1,\qquad\frac{y+2}{2}=\frac{z-4}{-3}\]</div><p>\(x\) 永遠等於 1，表示這條線不往 \(x\) 方向移動。<strong>千萬不要寫 \((x-1)/0\)</strong>。</p></article></div>
+      <div class="callout"><strong>線段、射線也用參數式：</strong>同一個兩點式 \(\mathbf r=\mathbf A+t\overrightarrow{AB}\) 中，\(t\in\mathbb R\) 是整條直線；\(t\ge0\) 是從 \(A\) 出發的射線；\(0\le t\le1\) 才剛好是線段 \(\overline{AB}\)。題目若問「是否在線段上」，不能只檢查三個方程式，還要檢查 \(t\) 的範圍。</div>
+    </section>
+
+    <section class="section" id="line-relations">
+      <h2>五、線與面、兩直線：讓方向量和法向量對話</h2><p class="section-intro">遇到交線、垂直、距離，不是新公式越背越多，而是把「需要同時垂直誰」翻成外積。</p>
+      <div class="decision"><section class="flow"><h3>直線 \(L\) 與平面 \(E\) 的考場判別流程</h3><p>若 \(L\) 的方向量是 \(\mathbf v\)，\(E\) 的法向量是 \(\mathbf n\)：</p><div class="flow-step" data-step="1"><strong>先算 \(\mathbf v\cdot\mathbf n\)</strong><br>不為 0：直線不平行平面，必恰好交於一點。把參數式代入平面方程式即可求 \(t\)。</div><div class="flow-arrow">↓</div><div class="flow-step" data-step="2"><strong>若 \(\mathbf v\cdot\mathbf n=0\)</strong><br>直線方向和法向量垂直，所以直線平行於平面；接著代入直線上一點 \(P_0\)。</div><div class="flow-arrow">↓</div><div class="flow-step" data-step="3"><strong>最後分成兩種</strong><br>\(P_0\) 滿足平面式：\(L\subset E\)（整條線在平面內）；不滿足：\(L\parallel E\)（完全沒有交點）。</div></section><aside class="memory"><h3>外積的三個高頻用途</h3><div><strong>兩平面交線方向：</strong><br>當 \(\mathbf n_1,\mathbf n_2\) 不成比例時，\(E_1\cap E_2\) 的方向量是 \(\mathbf n_1\times\mathbf n_2\)。</div><div><strong>點到直線距離：</strong><br>若 \(Q\in L\)，\(\mathbf v\) 是方向量，\(\displaystyle d(P,L)=\frac{\|\overrightarrow{QP}\times\mathbf v\|}{\|\mathbf v\|}\)。外積長度是平行四邊形面積。</div><div><strong>找平面法向量：</strong><br>平面內兩個不平行方向量 \(\mathbf u,\mathbf w\)，則 \(\mathbf u\times\mathbf w\) 垂直平面。</div></aside></div>
+      <div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>兩直線的第一眼判斷</th><th>方向量告訴你什麼？</th><th>下一步／結論</th></tr></thead><tbody><tr><td>方向量成比例</td><td>兩線平行或重合。</td><td>拿第一條線上一點代入第二條；有成立則重合，否則是相異平行線。</td></tr><tr><td>方向量不成比例</td><td>可能相交，也可能歪斜。</td><td>聯立兩條參數式；能找到同一組點就是相交，無解就是歪斜。</td></tr><tr><td>求兩直線夾角</td><td>用兩個方向量：\(\displaystyle\cos\theta=\frac{|\mathbf v_1\cdot\mathbf v_2|}{\|\mathbf v_1\|\|\mathbf v_2\|}\)。</td><td>通常取銳角；若內積為 0，兩條直線方向垂直。</td></tr><tr><td>求歪斜線距離</td><td>先取 \(\mathbf v_1\times\mathbf v_2\)，這是同時垂直兩線的方向。</td><td>兩線各取一點 \(P,Q\)，距離是 \(\displaystyle\frac{|\overrightarrow{PQ}\cdot(\mathbf v_1\times\mathbf v_2)|}{\|\mathbf v_1\times\mathbf v_2\|}\)。</td></tr></tbody></table></div>
+      <div class="mistakes" style="margin-top:16px"><article class="mistake"><strong>錯誤 1｜把平面係數當成方向量</strong><p>\(ax+by+cz+d=0\) 的 \((a,b,c)\) 垂直平面，不是躺在平面內的方向量。要找平面內方向，要再找與法向量內積為 0 的向量。</p></article><article class="mistake"><strong>錯誤 2｜\(\mathbf v\cdot\mathbf n=0\) 就寫「線在面內」</strong><p>這只代表線<strong>平行於平面</strong>。還必須把直線上一點代入平面式，才可分出「在面內」或「相異平行」。</p></article><article class="mistake"><strong>錯誤 3｜方向不平行就必相交</strong><p>這是在平面上才成立。空間中兩線方向量不成比例，還可能歪斜：不平行、也沒有交點。</p></article></div>
+    </section>
+
+    <section class="section" id="self-check">
+      <h2>六、5 題自我檢查：答錯後可直接重試</h2><p class="section-intro">先圈出向量角色，再選答案。全部答對代表你已經能把式子翻回空間關係。</p>
+      <div class="quiz"><div class="quiz-grid">
+        <section class="question"><h3>1. 平面的法向量</h3><p>\(E:3x-2y+z+5=0\) 的法向量是？</p><label><input type="radio" name="q1" value="a"> \((3,-2,1)\)</label><label><input type="radio" name="q1" value="b"> \((5,0,0)\)</label><label><input type="radio" name="q1" value="c"> \((3,-2,5)\)</label></section>
+        <section class="question"><h3>2. 直線的方向量</h3><p>\(x=1+2t,\ y=4-t,\ z=-3+3t\) 的方向量是？</p><label><input type="radio" name="q2" value="a"> \((1,4,-3)\)</label><label><input type="radio" name="q2" value="b"> \((2,-1,3)\)</label><label><input type="radio" name="q2" value="c"> \((2,1,-3)\)</label></section>
+        <section class="question"><h3>3. 點法式</h3><p>過 \(A(1,0,2)\)，法向量為 \((2,-1,3)\) 的平面是？</p><label><input type="radio" name="q3" value="a"> \(2x-y+3z-8=0\)</label><label><input type="radio" name="q3" value="b"> \(x-2y+3z-7=0\)</label><label><input type="radio" name="q3" value="c"> \(2x-y+3z=0\)</label></section>
+        <section class="question"><h3>4. 零分量的對稱比式</h3><p>過 \((1,-2,4)\)，方向量 \((0,2,-3)\) 的正確寫法是？</p><label><input type="radio" name="q4" value="a"> \(\frac{x-1}{0}=\frac{y+2}{2}=\frac{z-4}{-3}\)</label><label><input type="radio" name="q4" value="b"> \(x=1,\ \frac{y+2}{2}=\frac{z-4}{-3}\)</label><label><input type="radio" name="q4" value="c"> \(x=0,\ \frac{y+2}{2}=\frac{z-4}{-3}\)</label></section>
+        <section class="question"><h3>5. 線與面的關係</h3><p>平面 \(E:x+2y-z=0\)，直線過 \(P(1,1,1)\)，方向量 \((2,-1,0)\)。此直線與平面？</p><label><input type="radio" name="q5" value="a"> 相交於一點</label><label><input type="radio" name="q5" value="b"> 在平面內</label><label><input type="radio" name="q5" value="c"> 平行且不在平面內</label></section>
+      </div><div class="check-row"><button class="check" type="button" id="check-quiz">核對答案</button><button class="retry" type="button" id="retry-quiz">清除後重試</button><output class="quiz-result" id="quiz-result" aria-live="polite"></output></div></div>
+    </section>
+    <p class="footer">複習最後一句：平面是「法向量 + 一點」；直線是「方向量 + 一點」。先找對向量，才開始寫方程式。</p>
+  </article></main>
+  <script>
+    (() => {
+      const answers = { q1: 'a', q2: 'b', q3: 'a', q4: 'b', q5: 'c' };
+      const explanations = {
+        q1: '第 1 題：平面係數 \\(3,-2,1\\) 就是法向量；任何非零倍數也都可以。',
+        q2: '第 2 題：方向量讀的是參數 \\(t\\) 的係數，因此是 \\(2,-1,3\\)。',
+        q3: '第 3 題：代入 \\(2(x-1)-y+3(z-2)=0\\)，化簡得 \\(2x-y+3z-8=0\\)。',
+        q4: '第 4 題：第一個方向分量為 0，所以 \\(x\\) 固定為 1，不能出現除以 0。',
+        q5: '第 5 題：\\((2,-1,0)\\cdot(1,2,-1)=0\\)，先知平行；但 \\(1+2\\cdot1-1=2\\ne0\\)，點不在面上，所以是相異平行。'
+      };
+      const result = document.querySelector('#quiz-result');
+      document.querySelector('#check-quiz').addEventListener('click', () => {
+        let score = 0; const feedback = [];
+        Object.entries(answers).forEach(([name, answer]) => {
+          const chosen = document.querySelector('input[name="' + name + '"]:checked');
+          if (chosen?.value === answer) score += 1; else feedback.push(explanations[name]);
+        });
+        result.innerHTML = score === 5 ? '答對 5 / 5！你已能分清法向量與方向量，也能處理零分量。' : '答對 ' + score + ' / 5。' + feedback.join('　');
+        if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([result]);
+      });
+      document.querySelector('#retry-quiz').addEventListener('click', () => {
+        document.querySelectorAll('#self-check input[type="radio"]').forEach((input) => { input.checked = false; });
+        result.textContent = '已清除作答，可以再試一次。';
+      });
+    })();
+  </script>
+</body>
+</html>

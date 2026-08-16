@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import queue
 import re
+import json
 import subprocess
 import sys
 import threading
@@ -16,7 +17,13 @@ from tkinter import filedialog, messagebox, ttk
 ROOT = Path(__file__).resolve().parent
 EXPORTER = ROOT / "export_long_web_pdf.mjs"
 EXPORTS_DIR = ROOT / "exports"
+CATALOG = ROOT / "page-chapter-catalog.js"
 TITLE_PATTERN = re.compile(r"<title[^>]*>\s*(.*?)\s*</title>", re.IGNORECASE | re.DOTALL)
+CHAPTER_META_PATTERN = re.compile(
+    r'<meta\s+[^>]*name=["\']chapter-code["\'][^>]*content=["\']([^"\']+)["\']',
+    re.IGNORECASE,
+)
+CHAPTER_CODE_PATTERN = re.compile(r"^([js])(\d+)(?:-(\d+))?", re.IGNORECASE)
 
 
 def page_title(path: Path) -> str:
@@ -31,6 +38,50 @@ def page_title(path: Path) -> str:
     return path.stem
 
 
+def load_catalog() -> dict[str, dict[str, object]]:
+    """讀取首頁與匯出工具共用的章節對照表。"""
+    if not CATALOG.exists():
+        return {}
+    try:
+        source = CATALOG.read_text(encoding="utf-8")
+        marker = "window.MATH_PAGE_CHAPTER_CATALOG ="
+        payload = source.split(marker, 1)[1].strip().split(";", 1)[0].strip()
+        records = json.loads(payload)
+        return {filename: record for filename, record in records.items() if isinstance(record, dict)}
+    except (IndexError, OSError, json.JSONDecodeError):
+        return {}
+
+
+def chapter_code_for_page(path: Path, catalog: dict[str, dict[str, object]]) -> str:
+    """優先使用共用對照表；新頁也可在 HTML 寫入 chapter-code meta。"""
+    if path.name in catalog:
+        return str(catalog[path.name].get("chapterCode", "")).strip()
+    try:
+        source = path.read_text(encoding="utf-8")
+        match = CHAPTER_META_PATTERN.search(source)
+        if match:
+            return match.group(1).strip()
+    except OSError:
+        pass
+    return ""
+
+
+def chapter_sort_key(chapter_code: str, path: Path, manual_order: int = 999) -> tuple[int, int, int, int, int, str]:
+    """依 j1 → j6 → s1 → s6，再依小節排序；未標註頁面固定放最後。"""
+    match = CHAPTER_CODE_PATTERN.match(chapter_code)
+    if not match:
+        return (9, 99, 99, 1, manual_order, path.name.casefold())
+    stage, term, section = match.groups()
+    return (
+        0 if stage.lower() == "j" else 1,
+        int(term),
+        int(section or 0),
+        1 if "+" in chapter_code else 0,
+        manual_order,
+        path.name.casefold(),
+    )
+
+
 class WebPdfExporter(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
@@ -39,11 +90,22 @@ class WebPdfExporter(tk.Tk):
         self.minsize(620, 360)
         self.option_add("*Font", ("Microsoft JhengHei", 10))
 
-        self.pages = sorted(
-            (path for path in ROOT.glob("*.html") if not path.name.startswith(".")),
-            key=lambda path: path.name.casefold(),
-        )
-        self.labels = {f"{page_title(path)}　〔{path.name}〕": path for path in self.pages}
+        catalog = load_catalog()
+        page_records = [
+            (
+                path,
+                chapter_code_for_page(path, catalog),
+                int(catalog.get(path.name, {}).get("order", 999)),
+            )
+            for path in ROOT.glob("*.html")
+            if path.name != "index.html" and not path.name.startswith(".")
+        ]
+        page_records.sort(key=lambda item: chapter_sort_key(item[1], item[0], item[2]))
+        self.pages = [path for path, _chapter_code, _order in page_records]
+        self.labels = {
+            f"{chapter_code or '未標註章節'}｜{page_title(path)}　〔{path.name}〕": path
+            for path, chapter_code, _order in page_records
+        }
         self.selected_page = tk.StringVar(value=next(iter(self.labels), ""))
         self.output_path = tk.StringVar()
         self.status = tk.StringVar(value="選擇教學頁後，按下「匯出整頁 PDF」。")

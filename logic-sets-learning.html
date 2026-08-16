@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高中數學 s2-2｜邏輯與集合：真值、否定與文氏圖</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      chtml: { scale: 1.03 }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #15304c;
+      --muted: #536b84;
+      --paper: #ffffff;
+      --page: #f5f9ff;
+      --line: #cfdeed;
+      --navy: #164f8e;
+      --blue: #2168b8;
+      --blue-soft: #eaf4ff;
+      --teal: #08796e;
+      --teal-soft: #e8fbf7;
+      --violet: #6b45a8;
+      --violet-soft: #f2edff;
+      --orange: #a95613;
+      --orange-soft: #fff3e6;
+      --red: #aa3b37;
+      --red-soft: #fff0ef;
+      --green: #177342;
+      --green-soft: #eaf9ef;
+      --shadow: 0 14px 34px rgba(24, 65, 110, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.78;
+      background:
+        radial-gradient(circle at 4% 0%, #dceeff 0, transparent 27rem),
+        radial-gradient(circle at 96% 10%, #def8ed 0, transparent 26rem),
+        var(--page);
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #38bdf8; outline-offset: 3px; }
+    .wrap { max-width: 1140px; margin: 0 auto; padding: 24px 18px 54px; }
+    .hero, .section, .teacher-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+    .hero { position: relative; overflow: hidden; padding: clamp(24px, 4vw, 42px); }
+    .hero::after {
+      content: "∩ ∪ ¬ ⇒";
+      position: absolute;
+      right: 14px;
+      bottom: -32px;
+      color: rgba(33, 104, 184, .075);
+      font-family: Georgia, serif;
+      font-size: clamp(70px, 13vw, 150px);
+      font-weight: 800;
+      letter-spacing: .08em;
+      pointer-events: none;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { position: relative; z-index: 1; margin-bottom: 9px; color: #123a68; font-size: clamp(30px, 5.2vw, 47px); line-height: 1.28; letter-spacing: .02em; }
+    h2 { margin-bottom: 8px; color: #123a68; font-size: clamp(24px, 3.7vw, 32px); line-height: 1.38; }
+    h3 { margin-bottom: 7px; color: #154c84; font-size: 20px; line-height: 1.45; }
+    h4 { margin-bottom: 5px; color: #164f8e; font-size: 16px; }
+    p { margin-bottom: 11px; }
+    .lead { position: relative; z-index: 1; max-width: 850px; color: var(--muted); font-size: 17px; }
+    .eyebrow, .tag, .level, .chapter {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .eyebrow { margin-bottom: 9px; color: #174d86; background: var(--blue-soft); border: 1px solid #b6d8fb; }
+    .chapter { color: #075e57; background: var(--teal-soft); border: 1px solid #9be3d4; }
+    .tag { color: #176251; background: var(--teal-soft); border: 1px solid #a6e7da; }
+    .tag.violet { color: #5a368d; background: var(--violet-soft); border-color: #d5c4f5; }
+    .tag.orange { color: #914705; background: var(--orange-soft); border-color: #ffd2a8; }
+    .level { margin-bottom: 7px; color: #174d86; background: var(--blue-soft); border: 1px solid #b6d8fb; }
+    .level.advance { color: #5a368d; background: var(--violet-soft); border-color: #d5c4f5; }
+    .level.challenge { color: #914705; background: var(--orange-soft); border-color: #ffd2a8; }
+    .tag-row, .jump-nav, .button-row, .operation-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+    .jump-nav { position: relative; z-index: 1; margin-top: 18px; }
+    .jump-nav a, .choice-button, .operation-button, .primary-button, .secondary-button {
+      border: 1px solid #aed2f6;
+      border-radius: 10px;
+      padding: 7px 10px;
+      color: #174d86;
+      background: #f9fcff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .jump-nav a:hover, .choice-button:hover, .operation-button:hover, .secondary-button:hover { background: var(--blue-soft); }
+    .choice-button[aria-pressed="true"], .operation-button[aria-pressed="true"], .primary-button {
+      color: #fff;
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+    .primary-button:hover { background: #0e3f73; }
+    .section { margin-top: 24px; padding: clamp(19px, 3.4vw, 30px); }
+    .section-lead { max-width: 880px; color: var(--muted); }
+    .grid { display: grid; gap: 14px; }
+    .grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card, .example, .lab, .quiz-shell, .strategy-card {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 16px;
+      background: #fff;
+    }
+    .card { height: 100%; }
+    .card p:last-child, .example p:last-child, .strategy-card p:last-child { margin-bottom: 0; }
+    .card.tint { border-color: #abd9f3; background: linear-gradient(145deg, #f7fcff, var(--blue-soft)); }
+    .card.teal { border-color: #a9e8db; background: linear-gradient(145deg, #fbfffe, var(--teal-soft)); }
+    .card.violet { border-color: #d7c7f5; background: linear-gradient(145deg, #fff, var(--violet-soft)); }
+    .equation {
+      margin: 11px 0;
+      padding: 10px 13px;
+      overflow-x: auto;
+      border: 1px solid #bfd9f2;
+      border-radius: 12px;
+      color: #133e6e;
+      background: #f8fbff;
+      text-align: center;
+      font-family: Cambria, "Times New Roman", serif;
+      font-size: clamp(18px, 2.7vw, 23px);
+      white-space: nowrap;
+    }
+    .equation.teal { color: #075c55; border-color: #a5ded2; background: var(--teal-soft); }
+    .equation.violet { color: #59358e; border-color: #d8c9f4; background: var(--violet-soft); }
+    .callout {
+      margin-top: 13px;
+      padding: 12px 14px;
+      border: 1px solid #bad7f3;
+      border-radius: 13px;
+      color: #244f78;
+      background: var(--blue-soft);
+    }
+    .callout strong { color: #154d88; }
+    .callout.warn { border-color: #ffd0a2; color: #884407; background: var(--orange-soft); }
+    .callout.warn strong { color: #914705; }
+    .callout.good { border-color: #a7e1bb; color: #1c663c; background: var(--green-soft); }
+    .callout.good strong { color: #17613a; }
+    .callout.error { border-color: #fec8c4; color: #8e3330; background: var(--red-soft); }
+    .callout.error strong { color: #942e2a; }
+    .logic-map { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .logic-step { position: relative; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: #fbfdff; }
+    .logic-step b { display: block; margin-bottom: 3px; color: #174d86; }
+    .logic-step p { margin: 0; color: var(--muted); font-size: 14px; }
+    .logic-step:not(:last-child)::after { position: absolute; content: "→"; right: -18px; top: 50%; z-index: 1; transform: translateY(-50%); color: #75a5d4; font-size: 24px; font-weight: 900; }
+    .rule-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .rule-table th, .rule-table td { padding: 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .rule-table th { color: #284c71; background: #edf5fd; }
+    .rule-table td { color: var(--muted); }
+    .rule-table td:first-child { color: #164f8e; font-family: Cambria, "Times New Roman", serif; font-size: 17px; font-weight: 800; }
+    .truth-lab { display: grid; grid-template-columns: minmax(200px, .73fr) minmax(0, 1.27fr); gap: 15px; }
+    .toggle-panel { padding: 15px; border: 1px solid #a8e2d7; border-radius: 14px; background: var(--teal-soft); }
+    .toggle-panel h3 { color: #09665d; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px dashed #9bd8cd; }
+    .toggle-row:first-of-type { border-top: 0; }
+    .toggle-label b { color: #075d56; font-family: Cambria, "Times New Roman", serif; font-size: 20px; }
+    .toggle-label span { display: block; color: #286c65; font-size: 13px; }
+    .toggle { position: relative; width: 68px; height: 36px; padding: 0; border: 0; border-radius: 999px; color: #47706c; background: #d3e7e3; font-weight: 900; transition: .16s ease; }
+    .toggle::after { position: absolute; content: ""; left: 4px; top: 4px; width: 28px; height: 28px; border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,.13); transition: .16s ease; }
+    .toggle[data-value="true"] { color: #fff; background: #08796e; }
+    .toggle[data-value="true"]::after { transform: translateX(32px); }
+    .truth-output { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-content: start; }
+    .truth-result { min-height: 112px; padding: 13px; border: 1px solid var(--line); border-radius: 13px; background: #fbfdff; }
+    .truth-result h4 { margin-bottom: 4px; }
+    .truth-value { display: inline-grid; place-items: center; min-width: 53px; margin-top: 5px; border-radius: 999px; padding: 3px 10px; font-weight: 900; }
+    .truth-value.true { color: #155e38; background: #dff7e8; }
+    .truth-value.false { color: #922f2a; background: #ffe5e2; }
+    .truth-result p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+    .truth-sentence { grid-column: 1 / -1; color: #075c55; border: 1px solid #a9e1d7; border-radius: 12px; padding: 11px 13px; background: #f8fffd; }
+    .truth-sentence b { color: #075c55; }
+    .mistake-list { display: grid; gap: 9px; margin-top: 12px; }
+    .mistake { display: grid; grid-template-columns: 28px 1fr; gap: 9px; align-items: start; padding: 10px 11px; border: 1px solid #fecac7; border-radius: 12px; background: #fff8f7; }
+    .mistake .mark { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: #fff; background: #b84a42; font-weight: 900; }
+    .mistake p { margin: 0; color: #803d39; }
+    .venn-layout { display: grid; grid-template-columns: minmax(280px, 1.06fr) minmax(245px, .94fr); gap: 17px; align-items: center; }
+    .venn-shell { overflow: hidden; border: 1px solid #bfd9f2; border-radius: 16px; padding: 8px; background: #f8fcff; }
+    .venn-shell svg { display: block; width: 100%; max-height: 340px; }
+    .venn-boundary { fill: #fff; stroke: #57718c; stroke-width: 2.2; }
+    .venn-circle { fill: #fff; stroke-width: 2.4; }
+    .venn-circle.a { stroke: #1c75ba; }
+    .venn-circle.b { stroke: #ad5b2c; }
+    .venn-label { fill: #193f64; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 18px; font-weight: 800; }
+    .venn-region { display: none; fill: #63a8e5; opacity: .55; }
+    .venn-region.b { fill: #f3a66c; }
+    .venn-region.both { fill: #9a79d5; }
+    .venn-region.complement { fill: #c5e9db; opacity: .62; }
+    .venn-region.show { display: block; }
+    .set-result { min-height: 90px; margin-top: 12px; padding: 12px; border: 1px solid #a7e2d6; border-radius: 12px; color: #075d56; background: var(--teal-soft); }
+    .set-result .expression { font-family: Cambria, "Times New Roman", serif; font-size: 21px; font-weight: 800; }
+    .set-result p { margin: 4px 0 0; color: #236d65; }
+    .count-flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: center; margin: 12px 0; }
+    .count-box { padding: 12px; border: 1px solid #c4dcef; border-radius: 12px; text-align: center; background: #f9fcff; }
+    .count-box b { display: block; color: #174d86; font-size: 20px; }
+    .count-arrow { color: #75a5d4; font-size: 23px; font-weight: 900; }
+    .quiz-shell { background: linear-gradient(145deg, #fff, #f8fcff); }
+    .quiz-toolbar { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; }
+    .quiz-progress { color: #176251; font-size: 14px; font-weight: 800; }
+    .quiz-question { margin: 0; color: var(--ink); font-size: clamp(18px, 2.5vw, 21px); font-weight: 800; }
+    .quiz-hint { margin-top: 8px; color: var(--muted); font-size: 14px; }
+    .options { display: grid; gap: 8px; margin-top: 14px; }
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--muted);
+      background: #fff;
+      text-align: left;
+    }
+    .option:hover { border-color: #90c8ee; background: var(--blue-soft); }
+    .option-key { display: grid; flex: 0 0 26px; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: #174d86; background: #e9f3fe; font-size: 13px; font-weight: 900; }
+    .quiz-feedback { display: none; margin-top: 12px; border-radius: 12px; padding: 11px 13px; }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.good { color: #1c663c; border: 1px solid #a7e1bb; background: var(--green-soft); }
+    .quiz-feedback.try { color: #8a470c; border: 1px solid #ffd0a2; background: var(--orange-soft); }
+    .quiz-feedback strong { color: inherit; }
+    details { margin-top: 10px; padding: 9px 11px; border: 1px solid #c4dcef; border-radius: 11px; background: #f8fbff; }
+    summary { color: #174d86; cursor: pointer; font-weight: 800; }
+    details p, details ol { margin: 8px 0 0; color: #315a81; }
+    .teacher-card { margin-top: 24px; padding: clamp(19px, 3.4vw, 28px); background: linear-gradient(135deg, #edfbf8, #fff); }
+    .teacher-card h2 { margin-bottom: 6px; color: #075d56; }
+    .teacher-card > p { color: #376d67; }
+    .foot { margin: 18px 0 0; color: #637991; text-align: center; font-size: 13px; }
+    @media (max-width: 880px) {
+      .truth-lab, .venn-layout { grid-template-columns: 1fr; }
+      .logic-map { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .logic-step:nth-child(2)::after { display: none; }
+    }
+    @media (max-width: 620px) {
+      .wrap { padding: 13px 10px 35px; }
+      .hero, .section, .teacher-card { border-radius: 15px; }
+      .two, .three, .truth-output { grid-template-columns: 1fr; }
+      .truth-sentence { grid-column: auto; }
+      .logic-map { grid-template-columns: 1fr; }
+      .logic-step::after { display: none; }
+      .rule-table { font-size: 14px; }
+      .rule-table th, .rule-table td { padding: 8px; }
+      .count-flow { grid-template-columns: 1fr; }
+      .count-arrow { transform: rotate(90deg); text-align: center; }
+      .operation-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .operation-button { min-height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="chapter">s2-2｜邏輯與集合</span>
+      <h1>邏輯與集合：把「話」說對，把「人」數清楚</h1>
+      <p class="lead">邏輯是在判斷一句話何時為真；集合是在整理哪些對象符合條件。兩者都在練習同一件事：<strong>先讀清楚條件，再決定符號</strong>。本頁先用真值表讀語句，再用文氏圖看集合，最後把它們用在計數題。</p>
+      <div class="tag-row">
+        <span class="tag">先備：基本不等式與四則運算</span>
+        <span class="tag violet">核心：否定、且／或、命題、集合運算</span>
+        <span class="tag orange">易錯：至少一個、全部、只有、交集重複計數</span>
+      </div>
+      <nav class="jump-nav" aria-label="本頁段落">
+        <a href="#logic">1. 邏輯語句</a>
+        <a href="#truth-lab">2. 真值觀察</a>
+        <a href="#sets">3. 集合與文氏圖</a>
+        <a href="#practice">4. 分層自測</a>
+      </nav>
+    </section>
+
+    <section class="section" id="logic">
+      <span class="eyebrow">一、先判斷一句話能不能判真偽</span>
+      <h2>命題不是「看起來很像句子」就算</h2>
+      <p class="section-lead">能明確判定真或假的敘述才叫<strong>命題</strong>。例如「7 是質數」可以判定為真；「你午餐吃什麼？」沒有真假，不是命題。設兩個命題為 \(p,q\)，就能用符號把語意看得更清楚。</p>
+      <div class="logic-map">
+        <article class="logic-step"><b>① 找命題</b><p>先問：它能不能被判真或假？</p></article>
+        <article class="logic-step"><b>② 拆條件</b><p>圈出「且、或、若…則…、所有、存在」等關鍵字。</p></article>
+        <article class="logic-step"><b>③ 選符號</b><p>把語句翻成 \(\land,\lor,\to,\neg\) 或量詞。</p></article>
+        <article class="logic-step"><b>④ 代情況檢查</b><p>用真值表或反例，確認不是憑語感猜。</p></article>
+      </div>
+
+      <div class="grid two" style="margin-top:14px">
+        <article class="card tint">
+          <span class="tag">且／交集的語感</span>
+          <h3>\(p\land q\)：兩個都對才對</h3>
+          <p>「今天下雨，<strong>且</strong>我帶雨傘。」只有下雨、也帶雨傘時，整句才為真。</p>
+          <div class="equation">\(p\land q\) ：全對才對</div>
+          <p>看到「所有人都…」時，也要有這種<strong>一個不符合就不成立</strong>的警覺。</p>
+        </article>
+        <article class="card teal">
+          <span class="tag">或／聯集的語感</span>
+          <h3>\(p\lor q\)：至少一個對就對</h3>
+          <p>數學中的「或」通常是<strong>可以兩個都成立</strong>的包含或。例如「\(x\) 是偶數或 \(x\) 是 3 的倍數」。</p>
+          <div class="equation teal">\(p\lor q\) ：全錯才錯</div>
+          <p>若題目特別說「二者擇一」，才是互斥或：剛好一個成立。</p>
+        </article>
+      </div>
+      <div class="callout warn"><strong>先翻語句再算：</strong>「至少一個」是 \(\lor\)，「每一個／都」是 \(\land\)。學生常把「或」誤當成只能選一個；請先用「兩個都符合可不可以？」自問一次。</div>
+    </section>
+
+    <section class="section" id="truth-lab">
+      <span class="eyebrow">二、真值表不是背表，是逐列檢查條件</span>
+      <h2>動手切換 \(p,q\)，看「且、或、若…則…」怎麼變</h2>
+      <p class="section-lead">令 \(p\)：今天下雨；\(q\)：我帶雨傘。切換左右的真假，特別觀察 \(p\to q\) 只有在「前提真、結論假」時才是假的原因。</p>
+      <div class="truth-lab lab">
+        <div class="toggle-panel">
+          <h3>設定這一列的真值</h3>
+          <div class="toggle-row">
+            <div class="toggle-label"><b>p</b><span>今天下雨</span></div>
+            <button class="toggle" id="toggle-p" type="button" data-value="true" aria-pressed="true" aria-label="切換 p 的真假">真</button>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-label"><b>q</b><span>我帶雨傘</span></div>
+            <button class="toggle" id="toggle-q" type="button" data-value="true" aria-pressed="true" aria-label="切換 q 的真假">真</button>
+          </div>
+          <div class="callout" style="margin-bottom:0"><strong>判讀順序：</strong>先確認 \(p\) 是否發生；只有 \(p\) 真時，\(p\to q\) 才要檢查 \(q\)。</div>
+        </div>
+        <div class="truth-output" aria-live="polite">
+          <article class="truth-result"><h4>\(p\land q\)</h4><span class="truth-value" id="and-value"></span><p>下雨且帶雨傘</p></article>
+          <article class="truth-result"><h4>\(p\lor q\)</h4><span class="truth-value" id="or-value"></span><p>下雨或帶雨傘</p></article>
+          <article class="truth-result"><h4>\(p\to q\)</h4><span class="truth-value" id="implies-value"></span><p>若下雨，則帶雨傘</p></article>
+          <article class="truth-result"><h4>\(\neg q\to\neg p\)</h4><span class="truth-value" id="contra-value"></span><p>若沒帶雨傘，則沒下雨</p></article>
+          <div class="truth-sentence" id="truth-sentence"></div>
+        </div>
+      </div>
+      <div class="grid two" style="margin-top:14px">
+        <article class="example">
+          <span class="tag violet">命題、逆、否、逆否</span>
+          <h3>方向不能隨便倒過來</h3>
+          <p>若 \(p\)：\(\triangle ABC\) 是直角三角形，\(q\)：\(\angle A=90^\circ\)。</p>
+          <div class="equation violet">原命題 \(p\to q\)；逆命題 \(q\to p\)</div>
+          <p>能不能倒過來，要看題目的條件是否足夠；但<strong>原命題和逆否命題</strong> \(\neg q\to\neg p\) 永遠等值。</p>
+        </article>
+        <article class="example">
+          <span class="tag orange">充分／必要的翻譯</span>
+          <h3>箭頭從哪裡出發？</h3>
+          <p>\(p\to q\) 時，\(p\) 是 \(q\) 的<strong>充分條件</strong>；\(q\) 是 \(p\) 的<strong>必要條件</strong>。</p>
+          <div class="equation">\(p\Rightarrow q\)：有 \(p\) 就夠推出 \(q\)</div>
+          <p>記法：箭頭的起點是充分，箭頭的終點是必要。不要把「必要」誤解成「只要有它就一定成功」。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <span class="eyebrow">三、否定要整句翻轉，不能只加「不」</span>
+      <h2>笛摩根定律：把外面的否定送進去時，且／或要交換</h2>
+      <p class="section-lead">否定一個複合語句時，最安全的方法是問：「原句在哪些情況下不成立？」這會自然得到「且變或、或變且」；量詞也要「全都變存在、存在變全都」。</p>
+      <div class="grid two">
+        <article class="card violet">
+          <h3>語句版</h3>
+          <div class="equation violet">\(\neg(p\land q)\equiv \neg p\lor\neg q\)</div>
+          <p>「不是兩個都對」＝「至少有一個錯」。</p>
+          <div class="equation violet">\(\neg(p\lor q)\equiv \neg p\land\neg q\)</div>
+          <p>「不是至少一個對」＝「兩個都錯」。</p>
+        </article>
+        <article class="card teal">
+          <h3>集合版（下一節會看到圖）</h3>
+          <div class="equation teal">\((A\cap B)'=A'\cup B'\)</div>
+          <p>不在兩者共同部分的人，等於「不在 \(A\) 或不在 \(B\)」的人。</p>
+          <div class="equation teal">\((A\cup B)'=A'\cap B'\)</div>
+          <p>不在兩者任一部分的人，必須同時不在 \(A\)、也不在 \(B\)。</p>
+        </article>
+      </div>
+      <table class="rule-table" aria-label="常見語句的否定">
+        <thead><tr><th>原敘述</th><th>正確否定</th><th>為什麼</th></tr></thead>
+        <tbody>
+          <tr><td>\(x=1\) 或 \(x=3\)</td><td>\(x\ne1\) 且 \(x\ne3\)</td><td>兩種情形都不可以發生。</td></tr>
+          <tr><td>\(-1\le x\le4\)</td><td>\(x&lt;-1\) 或 \(x&gt;4\)</td><td>不在閉區間內，就是落在左邊或右邊。</td></tr>
+          <tr><td>全班每位同學都有感冒</td><td>存在至少一位同學沒有感冒</td><td>否定「全部」時，只要找一個反例即可。</td></tr>
+          <tr><td>至少有一位同學會游泳</td><td>每位同學都不會游泳</td><td>否定「存在」時，要所有人都不符合。</td></tr>
+        </tbody>
+      </table>
+      <div class="mistake-list">
+        <div class="mistake"><span class="mark">!</span><p><strong>錯誤：</strong>\(\neg(p\lor q)=\neg p\lor\neg q\)。這只排除了其中一項，另一項仍可能成立；正確應是 \(\neg p\land\neg q\)。</p></div>
+        <div class="mistake"><span class="mark">!</span><p><strong>錯誤：</strong>「全班都沒感冒」是「全校沒有人感冒」的否定。範圍已從全班偷換成全校，不能這樣改題目。</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="sets">
+      <span class="eyebrow">四、集合：把符合條件的對象圈在一起</span>
+      <h2>元素、子集、交集、聯集、差集與補集</h2>
+      <p class="section-lead">集合中的元素<strong>沒有順序，也不重複計算</strong>。例如 \(\{1,2,3\}=\{3,2,1\}\)，而 \(\{1,1,2\}=\{1,2\}\)。先決定母集合 \(U\) 的範圍，再談補集 \(A'\) 才有意義。</p>
+      <div class="grid three">
+        <article class="card tint"><span class="tag">讀符號</span><h3>元素與子集</h3><p>\(2\in A\)：2 是 \(A\) 的元素；\(A\subseteq B\)：\(A\) 的每個元素都在 \(B\) 裡。</p><div class="equation">\(\varnothing\subseteq A\)</div><p>空集合是每個集合的子集，因為它沒有任何元素會違反條件。</p></article>
+        <article class="card teal"><span class="tag">看共同與合併</span><h3>交集與聯集</h3><p>\(A\cap B\) 是同時在兩集合；\(A\cup B\) 是至少在其中一個集合。</p><div class="equation teal">\(\cap\)：都符合；\(\cup\)：至少一個符合</div><p>集合的 \(\cup\) 對應邏輯的「或」。</p></article>
+        <article class="card violet"><span class="tag violet">分清方向</span><h3>差集與補集</h3><p>\(A-B\) 是在 \(A\) 但不在 \(B\)；\(A'\) 是在 \(U\) 但不在 \(A\)。</p><div class="equation violet">\(A-B=A\cap B'\)</div><p>差集有方向：通常 \(A-B\ne B-A\)。</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <span class="eyebrow">五、文氏圖：用圖確認你圈的是哪一群</span>
+      <h2>點選運算，讓符號、陰影與元素三者對齊</h2>
+      <p class="section-lead">設 \(U=\{1,2,\ldots,12\}\)，\(A\) 為偶數集合，\(B\) 為 3 的倍數集合。先按運算鈕，再讀右邊「哪些元素符合」，避免只背符號形狀。</p>
+      <div class="venn-layout lab">
+        <div class="venn-shell" aria-label="集合 A 與 B 的文氏圖">
+          <svg viewBox="0 0 500 340" role="img" aria-labelledby="venn-title venn-desc">
+            <title id="venn-title">集合 A 和 B 的文氏圖</title>
+            <desc id="venn-desc">矩形為母集合 U，兩個重疊圓形為集合 A 與 B。</desc>
+            <defs>
+              <clipPath id="clip-a"><circle cx="205" cy="174" r="108" /></clipPath>
+              <clipPath id="clip-b"><circle cx="302" cy="174" r="108" /></clipPath>
+              <mask id="not-a"><rect width="500" height="340" fill="white" /><circle cx="205" cy="174" r="108" fill="black" /></mask>
+              <mask id="not-b"><rect width="500" height="340" fill="white" /><circle cx="302" cy="174" r="108" fill="black" /></mask>
+            </defs>
+            <rect class="venn-boundary" x="24" y="25" width="452" height="288" rx="10" />
+            <rect class="venn-region complement" id="region-complement" x="26" y="27" width="448" height="284" rx="9" mask="url(#not-a)" />
+            <circle class="venn-region" id="region-a" cx="205" cy="174" r="107" />
+            <circle class="venn-region b" id="region-b" cx="302" cy="174" r="107" />
+            <circle class="venn-region both" id="region-both" cx="205" cy="174" r="108" clip-path="url(#clip-b)" />
+            <circle class="venn-region" id="region-a-only" cx="205" cy="174" r="108" mask="url(#not-b)" />
+            <circle class="venn-circle a" cx="205" cy="174" r="108" />
+            <circle class="venn-circle b" cx="302" cy="174" r="108" />
+            <text class="venn-label" x="42" y="55">U</text>
+            <text class="venn-label" x="164" y="83">A：偶數</text>
+            <text class="venn-label" x="306" y="83">B：3 的倍數</text>
+          </svg>
+        </div>
+        <div>
+          <div class="operation-buttons" role="group" aria-label="集合運算選擇">
+            <button class="operation-button" type="button" data-operation="intersection" aria-pressed="true">\(A\cap B\)<br><small>兩邊都在</small></button>
+            <button class="operation-button" type="button" data-operation="union" aria-pressed="false">\(A\cup B\)<br><small>至少在一邊</small></button>
+            <button class="operation-button" type="button" data-operation="difference" aria-pressed="false">\(A-B\)<br><small>在 A、不在 B</small></button>
+            <button class="operation-button" type="button" data-operation="complement" aria-pressed="false">\(A'\)<br><small>不在 A</small></button>
+          </div>
+          <div class="set-result" id="set-result" aria-live="polite"></div>
+          <details>
+            <summary>為什麼 \(A\cap B\) 是 \(\{6,12\}\)？</summary>
+            <p>元素要同時是偶數、又是 3 的倍數，也就是 6 的倍數。在 \(1\) 到 \(12\) 之間只有 6、12；這就是「交集」的逐一篩選。</p>
+          </details>
+          <div class="callout warn"><strong>畫圖前先定 \(U\)：</strong>若沒有說母集合，\(A'\) 不能唯一決定。例如整數中的偶數補集是奇數；但 \(1\) 到 \(12\) 的偶數補集只有 \(\{1,3,5,7,9,11\}\)。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <span class="eyebrow">六、從文氏圖到取捨原理</span>
+      <h2>聯集人數要扣掉「被算兩次」的交集</h2>
+      <div class="grid two">
+        <article class="example">
+          <span class="tag">代表例題</span>
+          <h3>班上 30 人，18 人喜歡籃球，14 人喜歡羽球，6 人兩者都喜歡。至少喜歡一種的有幾人？</h3>
+          <div class="count-flow">
+            <div class="count-box"><b>18</b>籃球</div><span class="count-arrow">＋</span>
+            <div class="count-box"><b>14</b>羽球</div><span class="count-arrow">−</span>
+            <div class="count-box"><b>6</b>兩者都喜歡</div>
+          </div>
+          <div class="equation">\(n(A\cup B)=18+14-6=26\)</div>
+          <p><strong>答：</strong>26 人。交集的 6 人在 \(18+14\) 中出現兩次，所以必須扣回一次。</p>
+        </article>
+        <article class="strategy-card">
+          <span class="tag orange">解題流程</span>
+          <h3>看到「至少」或「剛好」先分區</h3>
+          <ol>
+            <li>寫清 \(U,A,B\) 分別代表誰，不要把「人數」和「集合」混在一起。</li>
+            <li>「至少一種」是 \(A\cup B\)；「兩種都」是 \(A\cap B\)。</li>
+            <li>先放交集，再放只屬於 \(A\) 或只屬於 \(B\) 的人。</li>
+            <li>若問「兩者都不喜歡」，再用 \(n(U)-n(A\cup B)\)。</li>
+          </ol>
+          <div class="callout good"><strong>自我檢查：</strong>聯集人數不可能小於任一集合的人數，也不可能超過 \(n(U)\)。算完先用這兩句驗算。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="practice">
+      <span class="eyebrow">七、基礎 → 進階 → 挑戰自測</span>
+      <h2>先作答，再看針對錯因的回饋</h2>
+      <p class="section-lead">每題答錯都可以直接重做；請不要只看答案，先在回饋中找出自己是把「且／或」弄反、把否定寫少了，或把交集重複算進去了。</p>
+      <div class="quiz-shell" id="quiz-shell">
+        <div class="quiz-toolbar"><span class="quiz-progress" id="quiz-progress"></span><button class="secondary-button" id="next-question" type="button">換下一題</button></div>
+        <p class="quiz-question" id="quiz-question"></p>
+        <p class="quiz-hint" id="quiz-hint"></p>
+        <div class="options" id="quiz-options"></div>
+        <div class="quiz-feedback" id="quiz-feedback" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="teacher-card">
+      <h2>老師投影建議：一節課可這樣走</h2>
+      <p>先讓學生用生活句子判定「什麼叫命題」，再用切換器製造 \(p\to q\) 的反例；後半節把「且／或」轉到文氏圖，最後用取捨原理收束。</p>
+      <div class="grid three">
+        <article class="card"><span class="level">基礎</span><h3>8 分鐘：語意與真值</h3><p>請學生各舉一句命題與非命題，再投影切換 \(p,q\)。追問：「什麼時候『若下雨則帶傘』真的被違反？」</p></article>
+        <article class="card"><span class="level advance">進階</span><h3>12 分鐘：否定的說法</h3><p>先口頭完成「所有人都…」與「至少一人…」的否定，再揭示表格。要求學生說出「存在」或「全部」的改變。</p></article>
+        <article class="card"><span class="level challenge">挑戰</span><h3>10 分鐘：反推分區</h3><p>只給 \(n(U),n(A),n(B),n(A\cap B)\)，請學生先在圖上填交集、只屬於、都不屬於，再列式驗算。</p></article>
+      </div>
+    </section>
+    <p class="foot">邏輯與集合｜重點不是背符號，而是讓條件、圖像與算式說同一件事。</p>
+  </main>
+
+  <script>
+    (() => {
+      const truthState = { p: true, q: true };
+      const toggleP = document.querySelector('#toggle-p');
+      const toggleQ = document.querySelector('#toggle-q');
+      const truthTexts = { true: '真', false: '假' };
+
+      function setTruthBadge(element, value) {
+        element.textContent = truthTexts[value];
+        element.className = `truth-value ${value ? 'true' : 'false'}`;
+      }
+
+      function renderTruthLab() {
+        const { p, q } = truthState;
+        const values = {
+          and: p && q,
+          or: p || q,
+          implies: !p || q,
+          contra: q || !p
+        };
+        setTruthBadge(document.querySelector('#and-value'), values.and);
+        setTruthBadge(document.querySelector('#or-value'), values.or);
+        setTruthBadge(document.querySelector('#implies-value'), values.implies);
+        setTruthBadge(document.querySelector('#contra-value'), values.contra);
+        [toggleP, toggleQ].forEach((button, index) => {
+          const value = index === 0 ? p : q;
+          button.dataset.value = String(value);
+          button.setAttribute('aria-pressed', String(value));
+          button.textContent = truthTexts[value];
+        });
+        const explanation = p && !q
+          ? '現在真的下雨，卻沒有帶雨傘，所以「若下雨，則帶雨傘」被這一個情況反駁，命題為假。'
+          : !p
+            ? '今天沒有下雨，原命題沒有要求你一定要帶傘；前提沒有發生，不能拿來反駁「若下雨，則帶傘」。'
+            : '下雨也帶了雨傘，剛好符合「若下雨，則帶雨傘」的承諾。';
+        document.querySelector('#truth-sentence').innerHTML = `<b>本列判讀：</b>${explanation}`;
+      }
+
+      toggleP.addEventListener('click', () => { truthState.p = !truthState.p; renderTruthLab(); });
+      toggleQ.addEventListener('click', () => { truthState.q = !truthState.q; renderTruthLab(); });
+      renderTruthLab();
+
+      const operations = {
+        intersection: { expression: 'A ∩ B', meaning: '同時是偶數、又是 3 的倍數', elements: '{6, 12}', regions: ['region-both'] },
+        union: { expression: 'A ∪ B', meaning: '是偶數或是 3 的倍數（兩者都有也算）', elements: '{2, 3, 4, 6, 8, 9, 10, 12}', regions: ['region-a', 'region-b'] },
+        difference: { expression: 'A − B', meaning: '是偶數，但不是 3 的倍數', elements: '{2, 4, 8, 10}', regions: ['region-a-only'] },
+        complement: { expression: "A'", meaning: '在 U 裡，但不是偶數', elements: '{1, 3, 5, 7, 9, 11}', regions: ['region-complement'] }
+      };
+      const operationButtons = Array.from(document.querySelectorAll('[data-operation]'));
+      const regionIds = ['region-a', 'region-b', 'region-both', 'region-a-only', 'region-complement'];
+
+      function renderOperation(key) {
+        const operation = operations[key];
+        regionIds.forEach((id) => document.querySelector(`#${id}`).classList.remove('show'));
+        operation.regions.forEach((id) => document.querySelector(`#${id}`).classList.add('show'));
+        operationButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.operation === key)));
+        document.querySelector('#set-result').innerHTML = `<div class="expression">${operation.expression} = ${operation.elements}</div><p>${operation.meaning}。逐一檢查 1 到 12，就會得到這些元素。</p>`;
+      }
+
+      operationButtons.forEach((button) => button.addEventListener('click', () => renderOperation(button.dataset.operation)));
+      renderOperation('intersection');
+
+      const questions = [
+        {
+          level: '基礎',
+          question: '設 p：「2 是偶數」、q：「3 是偶數」。下列哪一句為真？',
+          hint: '先判 p 真、q 假，再逐一代入「且」和「或」。',
+          options: ['p ∧ q', 'p ∨ q', '¬p ∧ q', '¬p ∧ ¬q'],
+          answer: 1,
+          good: '正確。p 真、q 假，所以「至少一個為真」的 p ∨ q 為真。',
+          try: '再想一次：「且」必須兩個都真；現在 q 是假，只有「或」仍可能成立。'
+        },
+        {
+          level: '基礎',
+          question: '「x = 2 或 x = 5」的否定敘述是什麼？',
+          hint: '否定「或」時，兩邊都要不成立。',
+          options: ['x ≠ 2 或 x ≠ 5', 'x ≠ 2 且 x ≠ 5', 'x = 2 且 x = 5', 'x < 2 或 x > 5'],
+          answer: 1,
+          good: '正確。不是「2 或 5」表示既不是 2，也不是 5。',
+          try: '把 x = 2 代進選項檢查：否定句必須在 x = 2 時為假，才真的排除它。'
+        },
+        {
+          level: '進階',
+          question: '「若一個整數是 6 的倍數，則它是偶數」中，「是偶數」是什麼條件？',
+          hint: '看箭頭：6 的倍數 → 偶數。',
+          options: ['6 的倍數的充分條件', '6 的倍數的必要條件', '6 的倍數的充要條件', '和 6 的倍數無關'],
+          answer: 1,
+          good: '正確。箭頭的終點「是偶數」是「是 6 的倍數」的必要條件；但偶數不一定是 6 的倍數。',
+          try: '把句子寫成「6 的倍數 → 偶數」：箭頭起點是充分，箭頭終點是必要。'
+        },
+        {
+          level: '進階',
+          question: 'U={1,2,…,10}，A 為偶數集合，B 為 3 的倍數集合。A − B 是哪一個？',
+          hint: '先列 A={2,4,6,8,10}，再刪掉同時在 B 的元素。',
+          options: ['{3,6,9}', '{6}', '{2,4,8,10}', '{1,5,7,9}'],
+          answer: 2,
+          good: '正確。6 同時在 A、B，要從 A 中拿掉；留下 2、4、8、10。',
+          try: '差集是「先站在 A 裡，再排除 B」。不要誤把 B 的元素整個列出。'
+        },
+        {
+          level: '挑戰',
+          question: '40 人中，22 人參加英文社，17 人參加日文社，8 人兩社都參加。兩社都沒參加的有幾人？',
+          hint: '先求至少參加一社的人數，再從全班扣掉。',
+          options: ['1 人', '9 人', '13 人', '31 人'],
+          answer: 1,
+          good: '正確。聯集為 22+17−8=31，人數 40−31=9。',
+          try: '22+17 時，兩社都參加的 8 人被算了兩次；要先扣回一次，再從 40 人扣掉。'
+        }
+      ];
+      let questionIndex = 0;
+      const progress = document.querySelector('#quiz-progress');
+      const questionEl = document.querySelector('#quiz-question');
+      const hintEl = document.querySelector('#quiz-hint');
+      const optionsEl = document.querySelector('#quiz-options');
+      const feedback = document.querySelector('#quiz-feedback');
+
+      function renderQuestion() {
+        const item = questions[questionIndex];
+        progress.textContent = `${item.level}｜第 ${questionIndex + 1} / ${questions.length} 題`;
+        questionEl.textContent = item.question;
+        hintEl.textContent = `提示：${item.hint}`;
+        feedback.className = 'quiz-feedback';
+        feedback.textContent = '';
+        optionsEl.replaceChildren();
+        item.options.forEach((option, index) => {
+          const button = document.createElement('button');
+          button.className = 'option';
+          button.type = 'button';
+          button.innerHTML = `<span class="option-key">${String.fromCharCode(65 + index)}</span><span>${option}</span>`;
+          button.addEventListener('click', () => answerQuestion(index));
+          optionsEl.append(button);
+        });
+      }
+
+      function answerQuestion(index) {
+        const item = questions[questionIndex];
+        const isCorrect = index === item.answer;
+        feedback.className = `quiz-feedback show ${isCorrect ? 'good' : 'try'}`;
+        feedback.innerHTML = `<strong>${isCorrect ? '答對了。' : '先別急，還可以重試。'}</strong>${isCorrect ? item.good : item.try}`;
+      }
+
+      document.querySelector('#next-question').addEventListener('click', () => {
+        questionIndex = (questionIndex + 1) % questions.length;
+        renderQuestion();
+      });
+      renderQuestion();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>j6-3 機率實驗室：硬幣、骰子、抽球與猜拳｜國三數學</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #172554;
+      --sub: #52627c;
+      --paper: #fff;
+      --page: #f4f8ff;
+      --line: #d7e2f1;
+      --blue: #2563eb;
+      --blue-bg: #eff6ff;
+      --teal: #0f766e;
+      --teal-bg: #ecfdf5;
+      --amber: #b45309;
+      --amber-bg: #fffbeb;
+      --rose: #be123c;
+      --rose-bg: #fff1f2;
+      --violet: #6d28d9;
+      --violet-bg: #f5f3ff;
+      --shadow: 0 16px 38px rgba(30, 64, 175, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 0%, #dff7ff 0, transparent 31rem),
+        radial-gradient(circle at 98% 9%, #e5fff2 0, transparent 28rem),
+        var(--page);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 26px 18px 56px; }
+    .hero, .panel, .card, .lab, .quiz-card { background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .hero { position: relative; overflow: hidden; border-radius: 24px; padding: clamp(25px, 4.8vw, 46px); }
+    .hero::after {
+      content: "1 / 2  3 / 6";
+      position: absolute; right: -13px; bottom: -22px; color: #dbeafe;
+      font: 800 clamp(49px, 10vw, 126px)/1 Georgia, serif; letter-spacing: -5px; transform: rotate(-7deg);
+      pointer-events: none;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    h1, h2, h3 { margin: 0 0 8px; color: #10234a; line-height: 1.35; }
+    h1 { max-width: 880px; font-size: clamp(31px, 5.2vw, 50px); }
+    h2 { font-size: clamp(25px, 3.5vw, 33px); }
+    h3 { font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .lead { max-width: 820px; color: var(--sub); font-size: 17px; }
+    .eyebrows, .nav, .segmented, .action-row, .legend, .object-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .eyebrows { margin-bottom: 13px; }
+    .eyebrow, .tag, .level, .mini-label {
+      display: inline-block; padding: 3px 10px; border: 1px solid #bfdbfe; border-radius: 999px;
+      color: #1d4ed8; background: var(--blue-bg); font-size: 13px; font-weight: 800;
+    }
+    .eyebrow.teal, .tag.teal { color: #0f766e; background: var(--teal-bg); border-color: #99f6e4; }
+    .tag.amber, .mini-label.amber { color: #a16207; background: var(--amber-bg); border-color: #fde68a; }
+    .nav { margin-top: 21px; }
+    .nav a, .back {
+      display: inline-block; color: #1d4ed8; background: #f8fbff; border: 1px solid #cbdaf0;
+      border-radius: 10px; padding: 7px 11px; text-decoration: none; font-size: 14px; font-weight: 800;
+    }
+    .nav a:hover, .back:hover { background: #e8f0ff; }
+    .section { margin-top: 30px; }
+    .section-intro { color: var(--sub); max-width: 920px; }
+    .panel, .card, .lab, .quiz-card { min-width: 0; border-radius: 18px; padding: 19px; }
+    .panel { margin-top: 14px; }
+    .grid { display: grid; gap: 14px; min-width: 0; }
+    .grid > *, .lab-grid > *, .quiz-grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .formula-box {
+      margin: 12px 0; padding: 12px 15px; overflow-x: auto; border: 1px solid #bfdbfe;
+      border-radius: 12px; background: #f8fbff; text-align: center; font-size: 19px;
+    }
+    .formula-box.left { text-align: left; }
+    .callout { margin-top: 13px; padding: 12px 14px; border: 1px solid #bfdbfe; border-left: 5px solid var(--blue); border-radius: 12px; background: var(--blue-bg); }
+    .callout.good { color: #115e59; background: var(--teal-bg); border-color: #99f6e4; border-left-color: var(--teal); }
+    .callout.warn { color: #881337; background: var(--rose-bg); border-color: #fecdd3; border-left-color: var(--rose); }
+    .callout.amber { color: #92400e; background: var(--amber-bg); border-color: #fde68a; border-left-color: var(--amber); }
+    .steps { margin: 10px 0 0; padding-left: 24px; }
+    .steps li { margin: 6px 0; }
+    .muted, .small { color: var(--sub); }
+    .small { font-size: 14px; }
+    .sample-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 8px; margin-top: 12px; }
+    .outcome, .hand, .draw-item {
+      display: grid; place-items: center; min-height: 42px; padding: 7px; border: 1px solid #cbdaf0; border-radius: 10px; background: #fff; color: #244568; font-weight: 800;
+    }
+    .outcome.hit { color: #065f46; border-color: #6ee7b7; background: var(--teal-bg); box-shadow: inset 0 0 0 1px #d1fae5; }
+    .outcome.more { color: #64748b; border-style: dashed; font-weight: 700; }
+    .tool-head { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+    .tool-head p { max-width: 720px; color: var(--sub); }
+    .segmented { margin-top: 13px; }
+    button { font: inherit; }
+    .toggle, .action, .quiz-option {
+      color: #1e4a75; background: #fff; border: 1px solid #a9c7e7; border-radius: 10px; padding: 8px 12px; font-weight: 800; cursor: pointer;
+    }
+    .toggle:hover, .action:hover, .quiz-option:hover { background: #eef6ff; }
+    .toggle.active { color: #fff; border-color: var(--blue); background: var(--blue); }
+    .toggle.teal.active { border-color: var(--teal); background: var(--teal); }
+    .toggle.amber.active { border-color: var(--amber); background: var(--amber); }
+    .action { color: #fff; border-color: var(--teal); background: var(--teal); }
+    .action.secondary { color: #1e4a75; border-color: #a9c7e7; background: #fff; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #38bdf8; outline-offset: 2px; }
+    .lab-grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 1.25fr) minmax(250px, .75fr); margin-top: 14px; }
+    .lab { border-color: #bfd8ec; background: linear-gradient(145deg, #f8fcff, #f1fffa); box-shadow: none; }
+    .lab-result { min-height: 118px; margin-top: 13px; padding: 13px; overflow-x: auto; border: 1px dashed #8cb6d5; border-radius: 12px; background: #fff; color: #244568; }
+    .event-options { display: grid; gap: 8px; margin-top: 10px; }
+    .event-choice { width: 100%; text-align: left; }
+    .event-choice.active { color: #fff; border-color: var(--violet); background: var(--violet); }
+    .run-box { margin-top: 13px; padding: 12px; border: 1px solid #d8e5f1; border-radius: 12px; background: #fff; }
+    .run-output { min-height: 44px; margin: 9px 0 0; color: #31536e; }
+    .legend { margin-top: 9px; color: var(--sub); font-size: 14px; align-items: center; }
+    .legend i { width: 14px; height: 14px; border: 1px solid #6ee7b7; border-radius: 4px; background: var(--teal-bg); }
+    .compare-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 13px; }
+    .compare-card { padding: 14px; border: 1px solid #cbdaf0; border-top: 5px solid var(--blue); border-radius: 13px; background: #fff; }
+    .compare-card.teal-top { border-top-color: var(--teal); }
+    .equals-band { margin-top: 12px; padding: 11px; text-align: center; border: 1px solid #bbf7d0; border-radius: 11px; background: var(--teal-bg); color: #115e59; font-weight: 800; }
+    .object-row { margin-top: 13px; }
+    .draw-visual { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .draw-item { width: 52px; min-height: 52px; border-radius: 50%; font-size: 13px; }
+    .draw-item.card-shape { border-radius: 9px; }
+    .draw-item.red { color: #9f1239; border-color: #fda4af; background: #fff1f2; }
+    .draw-item.blue { color: #1d4ed8; border-color: #93c5fd; background: #eff6ff; }
+    .tree-lines { display: grid; gap: 8px; margin-top: 13px; }
+    .tree-line { display: grid; grid-template-columns: 78px 1fr; gap: 8px; align-items: center; }
+    .tree-line strong { padding: 5px 8px; border-radius: 8px; text-align: center; font-size: 14px; }
+    .tree-line .red-label { color: #9f1239; background: #fff1f2; }
+    .tree-line .blue-label { color: #1d4ed8; background: #eff6ff; }
+    .tree-line span { color: var(--sub); font-size: 14px; }
+    .rps-stage { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 9px; margin-top: 12px; }
+    .hand { min-height: 55px; color: #5b21b6; border-color: #d8b4fe; background: var(--violet-bg); }
+    .count-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 13px; }
+    .count-board div { padding: 10px; border: 1px solid #cbdaf0; border-radius: 11px; background: #fff; text-align: center; }
+    .count-board strong { display: block; color: var(--blue); font-size: 21px; }
+    .quiz-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+    .quiz-card { padding: 16px; box-shadow: none; }
+    .quiz-card h3 { font-size: 18px; }
+    .level.basic { color: #075985; background: #e0f2fe; border-color: #bae6fd; }
+    .level.advanced { color: #a16207; background: var(--amber-bg); border-color: #fde68a; }
+    .level.challenge { color: #6d28d9; background: var(--violet-bg); border-color: #ddd6fe; }
+    .quiz-options { display: grid; gap: 8px; margin-top: 10px; }
+    .quiz-option { text-align: left; font-size: 14px; }
+    .quiz-option.correct { color: #065f46; border-color: #6ee7b7; background: var(--teal-bg); }
+    .quiz-option.wrong { color: #9f1239; border-color: #fda4af; background: var(--rose-bg); }
+    .feedback { min-height: 46px; margin: 10px 0 0; color: #31536e; font-size: 14px; }
+    .teacher-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .teacher-flow div { padding: 13px; border: 1px solid #cbdaf0; border-radius: 13px; background: #f8fbff; }
+    .teacher-flow strong { display: block; margin-bottom: 5px; color: #1d4ed8; }
+    .back-row { margin: 30px 0 0; text-align: center; }
+    @media (max-width: 880px) {
+      .two, .three, .quiz-grid, .teacher-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .lab-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .wrap { padding: 14px 10px 40px; }
+      .hero, .panel, .card, .lab, .quiz-card { border-radius: 14px; padding: 15px; }
+      .two, .three, .quiz-grid, .teacher-flow, .compare-grid { grid-template-columns: 1fr; }
+      .tool-head { display: block; }
+      .count-board { grid-template-columns: 1fr; }
+      .formula-box { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="eyebrows">
+        <span class="eyebrow">國三下・j6-3</span>
+        <span class="eyebrow teal">機率實驗室</span>
+      </div>
+      <h1>機率：先把所有可能結果列清楚，再談「幾分之幾」</h1>
+      <p class="lead">硬幣、骰子、抽球（牌）和猜拳看起來是遊戲，其實都在練同一件事：先決定「一次結果」是什麼，再從等可能的結果中數出符合條件的數量。每個工具都可以先操作，再回頭核對理論機率。</p>
+      <nav class="nav" aria-label="本頁段落">
+        <a href="#start">機率起點</a>
+        <a href="#coins">硬幣</a>
+        <a href="#dice">骰子</a>
+        <a href="#draw">抽球／牌</a>
+        <a href="#rps">猜拳</a>
+        <a href="#check">自我檢查</a>
+      </nav>
+    </header>
+
+    <section class="section" id="start">
+      <h2>1. 機率的起點：每一個基本結果都一樣有機會嗎？</h2>
+      <p class="section-intro">在本頁的公平硬幣、公平骰子、隨機抽取和隨機猜拳中，先把每個<strong>基本結果</strong>看成等可能。這時候才能用「符合事件的結果數 ÷ 全部結果數」。</p>
+      <div class="grid two" style="margin-top:14px">
+        <article class="card">
+          <span class="tag">先定義事件</span>
+          <h3>一句話說清楚你要問什麼</h3>
+          <p>例如「同時丟兩枚硬幣，<strong>恰好一正面</strong>」；事件不是「正面」兩個字而已，而是一群符合條件的結果。</p>
+          <div class="formula-box">\[P(\text{事件})=\frac{\text{符合事件的基本結果數}}{\text{全部基本結果數}}\]</div>
+          <ol class="steps">
+            <li>先決定一次試驗要記錄什麼。</li>
+            <li>列出或有系統地數出全部可能結果。</li>
+            <li>圈出符合條件的結果，再寫成分數。</li>
+          </ol>
+        </article>
+        <article class="card">
+          <span class="tag teal">兩枚硬幣的數線式想像</span>
+          <h3>位置（或先後）不同，就要分開記</h3>
+          <p>把第 1 枚和第 2 枚硬幣分開記錄：正正、正反、反正、反反，共 4 個等可能結果。</p>
+          <div class="sample-grid" aria-label="兩枚硬幣的四個結果">
+            <span class="outcome">正正</span><span class="outcome hit">正反</span><span class="outcome hit">反正</span><span class="outcome">反反</span>
+          </div>
+          <p class="small" style="margin-top:10px">若事件是「恰好一正面」，綠色的正反、反正共 2 個，所以 \(P=\dfrac24=\dfrac12\)。</p>
+          <div class="callout warn"><strong>常見錯誤：</strong>把「正反」和「反正」當成同一個基本結果。它們雖然都符合「一正一反」，但在列舉時是兩條不同的路，因此事件有 2 個結果，不是 1 個。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="coins">
+      <h2>2. 硬幣工具：1、2、3 枚硬幣的樣本空間</h2>
+      <p class="section-intro">每一枚公平硬幣有正、反兩種結果；同時丟 \(n\) 枚，就有 \(2^n\) 個等可能基本結果。先用完整列舉看懂，才用 \(2^n\) 快速計數。</p>
+      <div class="panel">
+        <div class="tool-head">
+          <div><span class="tag">硬幣實驗</span><h3>選硬幣數量，再選事件</h3><p>綠色格子是符合你所選事件的基本結果。可以先猜，再按「丟一次」比較實驗結果。</p></div>
+          <span class="mini-label amber">正 = H，反 = T</span>
+        </div>
+        <div class="lab-grid">
+          <div class="lab">
+            <div class="segmented" aria-label="硬幣數量">
+              <button class="toggle active" type="button" data-coin-count="1">1 枚</button>
+              <button class="toggle" type="button" data-coin-count="2">2 枚</button>
+              <button class="toggle" type="button" data-coin-count="3">3 枚</button>
+            </div>
+            <div class="event-options" id="coin-events" aria-label="硬幣事件">
+              <button class="toggle event-choice active" type="button" data-coin-event="atLeastOne">至少 1 個正面</button>
+              <button class="toggle event-choice" type="button" data-coin-event="exactlyOne">恰好 1 個正面</button>
+              <button class="toggle event-choice" type="button" data-coin-event="allHeads">全部正面</button>
+            </div>
+            <div class="sample-grid" id="coin-space" aria-live="polite"></div>
+            <div class="legend"><i></i> 綠色：符合事件的基本結果</div>
+          </div>
+          <aside class="lab">
+            <h3>理論機率</h3>
+            <div class="lab-result" id="coin-result" aria-live="polite"></div>
+            <div class="run-box">
+              <div class="action-row"><button class="action" id="coin-run" type="button">丟一次</button><button class="action secondary" id="coin-simulate" type="button">模擬 100 次</button></div>
+              <p class="run-output" id="coin-run-output" aria-live="polite">先選一個事件，再開始實驗。</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="dice">
+      <h2>3. 骰子工具：1、2、3 顆，與「同時／分次」的比較</h2>
+      <p class="section-intro">每顆公平骰子有 6 種點數。丟 \(n\) 顆時，基本結果用有順序的 \((a,b,\ldots)\) 記錄，所以總數為 \(6^n\)。兩顆骰子求和時，別把「和」當成全部基本結果；和 7 的來源不只一種。</p>
+      <div class="panel">
+        <div class="tool-head"><div><span class="tag">骰子實驗</span><h3>用系統列舉數出有利結果</h3><p>兩顆骰子可把左、右位置分開；三顆骰子的 \(216\) 種結果太多時，就用規律計數並保留列舉的想法。</p></div></div>
+        <div class="lab-grid">
+          <div class="lab">
+            <div class="segmented" aria-label="骰子數量">
+              <button class="toggle active" type="button" data-dice-count="1">1 顆</button>
+              <button class="toggle" type="button" data-dice-count="2">2 顆</button>
+              <button class="toggle" type="button" data-dice-count="3">3 顆</button>
+            </div>
+            <div class="event-options" id="dice-events" aria-label="骰子事件"></div>
+            <div class="sample-grid" id="dice-space" aria-live="polite"></div>
+            <div class="legend"><i></i> 綠色：符合事件的基本結果（3 顆時只先展示前 18 種）</div>
+          </div>
+          <aside class="lab">
+            <h3>理論機率</h3>
+            <div class="lab-result" id="dice-result" aria-live="polite"></div>
+            <div class="run-box">
+              <div class="action-row"><button class="action" id="dice-run" type="button">丟一次</button><button class="action secondary" id="dice-simulate" type="button">模擬 100 次</button></div>
+              <p class="run-output" id="dice-run-output" aria-live="polite">選擇骰子數量後，這裡會顯示實驗結果。</p>
+            </div>
+          </aside>
+        </div>
+        <div class="compare-grid">
+          <article class="compare-card">
+            <span class="mini-label">一顆骰子丟兩次</span>
+            <h3>先後順序是 \((\text{第一次},\text{第二次})\)</h3>
+            <p>例如先丟 2、再丟 5，記成 \((2,5)\)。一共 \(6\times6=36\) 種基本結果。</p>
+            <div class="formula-box">\[\text{和為 }7:\ (1,6),(2,5),(3,4),(4,3),(5,2),(6,1)\]</div>
+          </article>
+          <article class="compare-card teal-top">
+            <span class="mini-label amber">兩顆骰子同時丟</span>
+            <h3>把左、右骰子分開，仍記為 \((\text{左},\text{右})\)</h3>
+            <p>例如左骰 2、右骰 5，也記成 \((2,5)\)。只要骰子公平且互不影響，仍有 36 種等可能結果。</p>
+            <div class="formula-box">\[P(\text{和為 }7)=\frac6{36}=\frac16\]</div>
+          </article>
+        </div>
+        <div class="equals-band">重點：若每次都公平、彼此獨立，「一顆丟兩次」和「兩顆同時丟」的有序結果模型相同；題目問和、第一／左邊點數等事件時，機率相同。</div>
+        <div class="callout warn"><strong>常見錯誤：</strong>兩顆骰子的「和」只有 2 到 12 共 11 種，卻不是 11 個等可能結果。和 7 有 6 種來源，和 2 只有 \((1,1)\) 一種來源，不能直接說每個和的機率都是 \(\dfrac1{11}\)。</div>
+      </div>
+    </section>
+
+    <section class="section" id="draw">
+      <h2>4. 抽球／牌：取後放回與取後不放回，第二次的分母不同</h2>
+      <p class="section-intro">把袋中的 3 個紅球、2 個藍球換成 3 張紅牌、2 張藍牌，機率結構完全相同。真正要先問的是：第一次抽完以後，<strong>有沒有放回</strong>？</p>
+      <div class="panel">
+        <div class="tool-head"><div><span class="tag">抽取實驗</span><h3>先選物件、再比較規則</h3><p>為了讓每個基本結果等可能，程式把每個球／牌加上編號。顏色相同不代表它們是同一張或同一顆。</p></div></div>
+        <div class="lab-grid">
+          <div class="lab">
+            <div class="object-row" aria-label="抽取物件">
+              <button class="toggle active" type="button" data-draw-object="ball">球袋：3 紅 2 藍</button>
+              <button class="toggle" type="button" data-draw-object="card">色卡：3 紅 2 藍</button>
+            </div>
+            <div class="draw-visual" id="draw-visual" aria-label="袋中的抽取物件"></div>
+            <div class="segmented" aria-label="抽取規則">
+              <button class="toggle teal active" type="button" data-replacement="yes">取後放回</button>
+              <button class="toggle teal" type="button" data-replacement="no">取後不放回</button>
+            </div>
+            <div class="event-options" id="draw-events" aria-label="抽取事件">
+              <button class="toggle event-choice active" type="button" data-draw-event="rr">兩次都是紅</button>
+              <button class="toggle event-choice" type="button" data-draw-event="rb">先紅、後藍</button>
+              <button class="toggle event-choice" type="button" data-draw-event="atLeastBlue">至少抽到 1 個藍</button>
+            </div>
+            <div class="tree-lines" id="draw-tree"></div>
+          </div>
+          <aside class="lab">
+            <h3>把兩次的機率乘起來</h3>
+            <div class="lab-result" id="draw-result" aria-live="polite"></div>
+            <div class="run-box">
+              <div class="action-row"><button class="action" id="draw-run" type="button">抽兩次</button><button class="action secondary" id="draw-simulate" type="button">模擬 100 組</button></div>
+              <p class="run-output" id="draw-run-output" aria-live="polite">注意第二次的分子、分母會不會改變。</p>
+            </div>
+          </aside>
+        </div>
+        <div class="callout amber"><strong>一眼辨認：</strong>放回時，第二次仍是 \(\dfrac35\) 或 \(\dfrac25\)；不放回時，總數從 5 變成 4，而且第一次抽到的顏色數量也會改變。不要只改分母、不改分子。</div>
+      </div>
+    </section>
+
+    <section class="section" id="rps">
+      <h2>5. 猜拳工具：2、3、4 人時，什麼叫「分出勝負」？</h2>
+      <p class="section-intro">每個人都有石頭、剪刀、布 3 種等可能選擇，所以 \(n\) 人共有 \(3^n\) 種有序結果。兩人都出一樣才平手；三人以上還要加上「石頭、剪刀、布三種都出現」——這時沒有一種拳能贏過全部人。</p>
+      <div class="panel">
+        <div class="tool-head"><div><span class="tag">猜拳實驗</span><h3>用拳種集合判斷，不要只看人數</h3><p>若只出現兩種拳，一定有一種拳剋另一種，可以分出勝負；若只出現一種或三種拳，則平手。</p></div></div>
+        <div class="lab-grid">
+          <div class="lab">
+            <div class="segmented" aria-label="猜拳人數">
+              <button class="toggle active" type="button" data-rps-players="2">2 人</button>
+              <button class="toggle" type="button" data-rps-players="3">3 人</button>
+              <button class="toggle" type="button" data-rps-players="4">4 人</button>
+            </div>
+            <div class="rps-stage" id="rps-stage" aria-live="polite"></div>
+            <div class="count-board" aria-label="猜拳結果數量">
+              <div><span class="small">全部結果</span><strong id="rps-total">9</strong></div>
+              <div><span class="small">可分出勝負</span><strong id="rps-win">6</strong></div>
+              <div><span class="small">平手</span><strong id="rps-tie">3</strong></div>
+            </div>
+          </div>
+          <aside class="lab">
+            <h3>理論機率</h3>
+            <div class="lab-result" id="rps-result" aria-live="polite"></div>
+            <div class="run-box">
+              <div class="action-row"><button class="action" id="rps-run" type="button">猜一局</button><button class="action secondary" id="rps-simulate" type="button">模擬 100 局</button></div>
+              <p class="run-output" id="rps-run-output" aria-live="polite">可以先預測這一局會不會分出勝負。</p>
+            </div>
+          </aside>
+        </div>
+        <div class="callout warn"><strong>最常漏掉：</strong>3 人或 4 人若同時出現石頭、剪刀、布，並不是「人多的那一拳贏」，而是三種互相牽制，這一局平手。例：石頭、剪刀、布各有人出現時，沒有唯一贏家。</div>
+      </div>
+    </section>
+
+    <section class="section" id="check">
+      <h2>6. 分層自我檢查：先說樣本空間，再按答案</h2>
+      <p class="section-intro">答錯不會鎖住題目。先回到「全部結果怎麼數」和「哪些結果符合事件」，再試一次。</p>
+      <div class="quiz-grid">
+        <article class="quiz-card">
+          <span class="level basic">基礎・硬幣</span>
+          <h3>同時丟 3 枚硬幣，恰好 1 個正面的機率？</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" type="button" data-correct="true" data-note="3 枚硬幣共有 \(2^3=8\) 種結果；恰好一正面是 正反反、反正反、反反正，共 3 種。">\(\dfrac38\)</button>
+            <button class="quiz-option" type="button" data-note="3 是符合事件的結果數；分母還要放全部的 8 種結果。">\(\dfrac13\)</button>
+            <button class="quiz-option" type="button" data-note="不是每一枚硬幣單獨有 \(\dfrac12\) 就直接把答案寫成 \(\dfrac12\)；事件是三枚合起來的「恰好一正面」。">\(\dfrac12\)</button>
+          </div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+        <article class="quiz-card">
+          <span class="level basic">基礎・骰子</span>
+          <h3>兩顆骰子的點數和為 7，機率？</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" type="button" data-note="和 7 有 6 種來源，不是只有一種。">\(\dfrac1{36}\)</button>
+            <button class="quiz-option" type="button" data-correct="true" data-note="和 7 有 6 種有序結果，總共 36 種，因此 \(\dfrac6{36}=\dfrac16\)。">\(\dfrac16\)</button>
+            <button class="quiz-option" type="button" data-note="2 到 12 雖有 11 個和，但它們不是等可能。">\(\dfrac1{11}\)</button>
+          </div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+        <article class="quiz-card">
+          <span class="level advanced">進階・不放回</span>
+          <h3>3 紅、2 藍中連抽兩個紅球且不放回，機率？</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" type="button" data-note="這是放回時才有的計算，第二次紅球只剩 2 個。">\(\dfrac9{25}\)</button>
+            <button class="quiz-option" type="button" data-correct="true" data-note="第一次紅球 \(\dfrac35\)，抽走一個紅球後第二次為 \(\dfrac24\)，所以 \(\dfrac35\times\dfrac24=\dfrac3{10}\)。">\(\dfrac3{10}\)</button>
+            <button class="quiz-option" type="button" data-note="第二次的總數是 4，不是 5。">\(\dfrac6{25}\)</button>
+          </div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+        <article class="quiz-card">
+          <span class="level challenge">挑戰・4 人猜拳</span>
+          <h3>4 人猜拳，能分出勝負的機率？</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" type="button" data-note="三種拳都出現時也要算平手，所以不是單純排除所有人出同一拳。">\(\dfrac{26}{27}\)</button>
+            <button class="quiz-option" type="button" data-correct="true" data-note="全部 \(3^4=81\) 種；可分勝負的結果有 42 種，故 \(\dfrac{42}{81}=\dfrac{14}{27}\)。">\(\dfrac{14}{27}\)</button>
+            <button class="quiz-option" type="button" data-note="\(\dfrac23\) 是 2 人或 3 人猜拳可以分勝負的機率，不適用於 4 人。">\(\dfrac23\)</button>
+          </div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="teacher-use">
+      <h2>老師投影使用建議：一節課的操作節奏</h2>
+      <div class="teacher-flow">
+        <div><strong>1. 先猜（3 分鐘）</strong>投影兩枚硬幣，問「一正一反有幾種？」先收正反合併或分開的不同答案，再用四格結果釐清。</div>
+        <div><strong>2. 列舉（8 分鐘）</strong>切到兩顆骰子，讓學生先找和為 7 的所有來源；指定左、右骰子，建立有序結果的習慣。</div>
+        <div><strong>3. 改規則（8 分鐘）</strong>在抽球工具只切換「放回／不放回」，請學生先只說第二次分子、分母哪裡變了，再算機率。</div>
+        <div><strong>4. 收束（6 分鐘）</strong>用 3 或 4 人猜拳檢查：三種拳都出現為何平手？最後讓學生完成四題自我檢查。</div>
+      </div>
+      <div class="callout good"><strong>下課前一句話：</strong>「機率不是先背公式；先把所有可能結果定義清楚，確認它們等可能，再數我想要的那些結果。」</div>
+    </section>
+
+    <p class="back-row"><a class="back" href="./index.html#j6">← 回到數學小遊戲教學首頁</a></p>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+      const byId = (id) => document.getElementById(id);
+      let mathQueue = Promise.resolve();
+      function typeset(node) {
+        if (!window.MathJax?.typesetPromise || !node) return;
+        mathQueue = mathQueue.then(() => {
+          window.MathJax.typesetClear?.([node]);
+          return window.MathJax.typesetPromise([node]);
+        }).catch((error) => console.error('MathJax rendering failed:', error));
+      }
+      const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+      function fraction(numerator, denominator) {
+        const divisor = gcd(numerator, denominator) || 1;
+        const reducedNumerator = numerator / divisor;
+        const reducedDenominator = denominator / divisor;
+        return numerator === denominator
+          ? '1'
+          : numerator % denominator === 0
+            ? String(numerator / denominator)
+            : `\\dfrac{${reducedNumerator}}{${reducedDenominator}}`;
+      }
+      function power(base, exponent) { return base ** exponent; }
+      function randomChoice(items) { return items[Math.floor(Math.random() * items.length)]; }
+
+      let coinCount = 1;
+      let coinEvent = 'atLeastOne';
+      const coinEventInfo = {
+        atLeastOne: { label: '至少 1 個正面', test: (outcome) => outcome.includes('正') },
+        exactlyOne: { label: '恰好 1 個正面', test: (outcome) => outcome.filter((side) => side === '正').length === 1 },
+        allHeads: { label: '全部正面', test: (outcome) => outcome.every((side) => side === '正') }
+      };
+      function coinOutcomes() {
+        return Array.from({ length: power(2, coinCount) }, (_, index) => index.toString(2).padStart(coinCount, '0').split('').map((digit) => digit === '0' ? '正' : '反'));
+      }
+      function renderCoins() {
+        document.querySelectorAll('[data-coin-count]').forEach((button) => button.classList.toggle('active', Number(button.dataset.coinCount) === coinCount));
+        document.querySelectorAll('[data-coin-event]').forEach((button) => button.classList.toggle('active', button.dataset.coinEvent === coinEvent));
+        const outcomes = coinOutcomes();
+        const info = coinEventInfo[coinEvent];
+        const hits = outcomes.filter(info.test);
+        byId('coin-space').innerHTML = outcomes.map((outcome) => `<span class="outcome${info.test(outcome) ? ' hit' : ''}">${outcome.join('')}</span>`).join('');
+        byId('coin-result').innerHTML = `
+          <p>丟 \\(${coinCount}\\) 枚硬幣共有 \\(2^{${coinCount}}=${outcomes.length}\\) 個等可能基本結果。</p>
+          <p>「${info.label}」有 \\(${hits.length}\\) 個符合結果：</p>
+          <div class="formula-box">\\[P(\\text{${info.label}})=\\frac{${hits.length}}{${outcomes.length}}=${fraction(hits.length, outcomes.length)}\\]</div>
+          <p class="small">先數綠色格子，再核對分母是否是全部 \\(${outcomes.length}\\) 格。</p>`;
+        typeset(byId('coin-result'));
+      }
+      function singleCoinTrial() { return Array.from({ length: coinCount }, () => Math.random() < .5 ? '正' : '反'); }
+      function runCoin(times) {
+        const info = coinEventInfo[coinEvent];
+        const trials = Array.from({ length: times }, singleCoinTrial);
+        const hits = trials.filter(info.test).length;
+        const output = byId('coin-run-output');
+        if (times === 1) {
+          const outcome = trials[0];
+          output.innerHTML = `這次結果：<strong>${outcome.join('')}</strong>。${info.test(outcome) ? '符合' : '不符合'}「${info.label}」。`;
+        } else {
+          output.innerHTML = `100 次中有 <strong>${hits}</strong> 次符合「${info.label}」，實驗比例為 \\(\\dfrac{${hits}}{100}\\)。多做幾輪，再和理論值比較。`;
+          typeset(output);
+        }
+      }
+      document.querySelectorAll('[data-coin-count]').forEach((button) => button.addEventListener('click', () => { coinCount = Number(button.dataset.coinCount); renderCoins(); }));
+      document.querySelectorAll('[data-coin-event]').forEach((button) => button.addEventListener('click', () => { coinEvent = button.dataset.coinEvent; renderCoins(); }));
+      byId('coin-run').addEventListener('click', () => runCoin(1));
+      byId('coin-simulate').addEventListener('click', () => runCoin(100));
+
+      let diceCount = 1;
+      let diceEvent = 'even';
+      const diceEvents = {
+        1: [
+          { id: 'even', label: '點數是偶數', test: (outcome) => outcome[0] % 2 === 0 },
+          { id: 'six', label: '丟出 6 點', test: (outcome) => outcome[0] === 6 }
+        ],
+        2: [
+          { id: 'sumSeven', label: '兩顆點數和為 7', test: (outcome) => outcome[0] + outcome[1] === 7 },
+          { id: 'anySix', label: '至少一顆是 6 點', test: (outcome) => outcome.includes(6) }
+        ],
+        3: [
+          { id: 'sumTen', label: '三顆點數和為 10', test: (outcome) => outcome.reduce((sum, value) => sum + value, 0) === 10 },
+          { id: 'anySix', label: '至少一顆是 6 點', test: (outcome) => outcome.includes(6) }
+        ]
+      };
+      function diceOutcomes(count = diceCount) {
+        const outcomes = [];
+        function build(current) {
+          if (current.length === count) { outcomes.push(current); return; }
+          for (let value = 1; value <= 6; value += 1) build([...current, value]);
+        }
+        build([]);
+        return outcomes;
+      }
+      function currentDiceInfo() { return diceEvents[diceCount].find((event) => event.id === diceEvent) || diceEvents[diceCount][0]; }
+      function renderDice() {
+        if (!diceEvents[diceCount].some((event) => event.id === diceEvent)) diceEvent = diceEvents[diceCount][0].id;
+        document.querySelectorAll('[data-dice-count]').forEach((button) => button.classList.toggle('active', Number(button.dataset.diceCount) === diceCount));
+        byId('dice-events').innerHTML = diceEvents[diceCount].map((event, index) => `<button class="toggle event-choice${event.id === diceEvent ? ' active' : ''}" type="button" data-live-dice-event="${event.id}">${event.label}</button>`).join('');
+        byId('dice-events').querySelectorAll('[data-live-dice-event]').forEach((button) => button.addEventListener('click', () => { diceEvent = button.dataset.liveDiceEvent; renderDice(); }));
+        const info = currentDiceInfo();
+        const outcomes = diceOutcomes();
+        const hits = outcomes.filter(info.test);
+        const displayed = diceCount === 3 ? outcomes.slice(0, 18) : outcomes;
+        byId('dice-space').innerHTML = displayed.map((outcome) => `<span class="outcome${info.test(outcome) ? ' hit' : ''}">(${outcome.join(',')})</span>`).join('') + (diceCount === 3 ? `<span class="outcome more">…還有 ${outcomes.length - displayed.length} 種</span>` : '');
+        byId('dice-result').innerHTML = `
+          <p>丟 \\(${diceCount}\\) 顆骰子共有 \\(6^{${diceCount}}=${outcomes.length}\\) 個等可能基本結果。</p>
+          <p>「${info.label}」有 \\(${hits.length}\\) 個符合結果。</p>
+          <div class="formula-box">\\[P(\\text{${info.label}})=\\frac{${hits.length}}{${outcomes.length}}=${fraction(hits.length, outcomes.length)}\\]</div>
+          <p class="small">${diceCount === 3 ? '畫面只先列出開頭 18 種；分子仍是把全部 216 種有系統地檢查後的數量。' : '每一組括號內的數字都要保留位置（或先後）資訊。'}</p>`;
+        typeset(byId('dice-result'));
+      }
+      function singleDiceTrial() { return Array.from({ length: diceCount }, () => Math.floor(Math.random() * 6) + 1); }
+      function runDice(times) {
+        const info = currentDiceInfo();
+        const trials = Array.from({ length: times }, singleDiceTrial);
+        const hits = trials.filter(info.test).length;
+        const output = byId('dice-run-output');
+        if (times === 1) {
+          const outcome = trials[0];
+          output.innerHTML = `這次結果：<strong>(${outcome.join(',')})</strong>。${info.test(outcome) ? '符合' : '不符合'}「${info.label}」。`;
+        } else {
+          output.innerHTML = `100 次中有 <strong>${hits}</strong> 次符合「${info.label}」，實驗比例為 \\(\\dfrac{${hits}}{100}\\)。`;
+          typeset(output);
+        }
+      }
+      document.querySelectorAll('[data-dice-count]').forEach((button) => button.addEventListener('click', () => { diceCount = Number(button.dataset.diceCount); diceEvent = diceEvents[diceCount][0].id; renderDice(); }));
+      byId('dice-run').addEventListener('click', () => runDice(1));
+      byId('dice-simulate').addEventListener('click', () => runDice(100));
+
+      let drawObject = 'ball';
+      let replacement = true;
+      let drawEvent = 'rr';
+      const drawItems = [
+        { id: 'R1', color: 'red' }, { id: 'R2', color: 'red' }, { id: 'R3', color: 'red' },
+        { id: 'B1', color: 'blue' }, { id: 'B2', color: 'blue' }
+      ];
+      const drawEventInfo = {
+        rr: { label: '兩次都是紅', test: ([first, second]) => first.color === 'red' && second.color === 'red' },
+        rb: { label: '先紅、後藍', test: ([first, second]) => first.color === 'red' && second.color === 'blue' },
+        atLeastBlue: { label: '至少抽到 1 個藍', test: ([first, second]) => first.color === 'blue' || second.color === 'blue' }
+      };
+      function drawLabel(item) { return `${item.color === 'red' ? '紅' : '藍'}${drawObject === 'ball' ? '球' : '牌'}${item.id.slice(1)}`; }
+      function drawPairs() {
+        const pairs = [];
+        drawItems.forEach((first) => drawItems.forEach((second) => {
+          if (replacement || first.id !== second.id) pairs.push([first, second]);
+        }));
+        return pairs;
+      }
+      function drawFormula() {
+        if (drawEvent === 'rr') return replacement ? '\\dfrac35\\times\\dfrac35=\\dfrac9{25}' : '\\dfrac35\\times\\dfrac24=\\dfrac3{10}';
+        if (drawEvent === 'rb') return replacement ? '\\dfrac35\\times\\dfrac25=\\dfrac6{25}' : '\\dfrac35\\times\\dfrac24=\\dfrac3{10}';
+        return replacement ? '1-\\dfrac35\\times\\dfrac35=\\dfrac{16}{25}' : '1-\\dfrac35\\times\\dfrac24=\\dfrac7{10}';
+      }
+      function renderDraw() {
+        document.querySelectorAll('[data-draw-object]').forEach((button) => button.classList.toggle('active', button.dataset.drawObject === drawObject));
+        document.querySelectorAll('[data-replacement]').forEach((button) => button.classList.toggle('active', (button.dataset.replacement === 'yes') === replacement));
+        document.querySelectorAll('[data-draw-event]').forEach((button) => button.classList.toggle('active', button.dataset.drawEvent === drawEvent));
+        byId('draw-visual').innerHTML = drawItems.map((item) => `<span class="draw-item ${item.color}${drawObject === 'card' ? ' card-shape' : ''}">${drawLabel(item)}</span>`).join('');
+        const noun = drawObject === 'ball' ? '球' : '牌';
+        const secondText = replacement ? `放回後仍有 3 紅、2 藍，共 5 個${noun}` : `不放回後只剩 4 個${noun}；第二次要依第一次的顏色調整`;
+        byId('draw-tree').innerHTML = `
+          <div class="tree-line"><strong class="red-label">第一次紅</strong><span>機率 \\(\\dfrac35\\)；${replacement ? '第二次仍可抽到紅或藍。' : '若已抽紅，剩 2 紅、2 藍。'}</span></div>
+          <div class="tree-line"><strong class="blue-label">第一次藍</strong><span>機率 \\(\\dfrac25\\)；${replacement ? '第二次仍可抽到紅或藍。' : '若已抽藍，剩 3 紅、1 藍。'}</span></div>
+          <p class="small">${secondText}</p>`;
+        const info = drawEventInfo[drawEvent];
+        const pairs = drawPairs();
+        const hits = pairs.filter(info.test);
+        byId('draw-result').innerHTML = `
+          <p>使用${replacement ? '取後放回' : '取後不放回'}，兩次抽取共有 \\(${replacement ? '5\\times5=25' : '5\\times4=20'}\\) 個等可能的「編號${noun}」結果。</p>
+          <p>「${info.label}」符合 \\(${hits.length}\\) 個結果。</p>
+          <div class="formula-box">\\[P(\\text{${info.label}})=${drawFormula()}\\]</div>
+          <p class="small">以顏色計算的乘法式和以編號${noun}列舉的結果數，會得到同一個答案：\\(\\dfrac{${hits.length}}{${pairs.length}}=${fraction(hits.length, pairs.length)}\\)。</p>`;
+        typeset(byId('draw-tree'));
+        typeset(byId('draw-result'));
+      }
+      function singleDrawTrial() {
+        const first = randomChoice(drawItems);
+        const secondPool = replacement ? drawItems : drawItems.filter((item) => item.id !== first.id);
+        return [first, randomChoice(secondPool)];
+      }
+      function runDraw(times) {
+        const info = drawEventInfo[drawEvent];
+        const trials = Array.from({ length: times }, singleDrawTrial);
+        const hits = trials.filter(info.test).length;
+        const output = byId('draw-run-output');
+        if (times === 1) {
+          const [first, second] = trials[0];
+          output.innerHTML = `這次抽到：<strong>${drawLabel(first)} → ${drawLabel(second)}</strong>。${info.test([first, second]) ? '符合' : '不符合'}「${info.label}」。`;
+        } else {
+          output.innerHTML = `100 組中有 <strong>${hits}</strong> 組符合「${info.label}」，實驗比例為 \\(\\dfrac{${hits}}{100}\\)。`;
+          typeset(output);
+        }
+      }
+      document.querySelectorAll('[data-draw-object]').forEach((button) => button.addEventListener('click', () => { drawObject = button.dataset.drawObject; renderDraw(); }));
+      document.querySelectorAll('[data-replacement]').forEach((button) => button.addEventListener('click', () => { replacement = button.dataset.replacement === 'yes'; renderDraw(); }));
+      document.querySelectorAll('[data-draw-event]').forEach((button) => button.addEventListener('click', () => { drawEvent = button.dataset.drawEvent; renderDraw(); }));
+      byId('draw-run').addEventListener('click', () => runDraw(1));
+      byId('draw-simulate').addEventListener('click', () => runDraw(100));
+
+      let rpsPlayers = 2;
+      const rpsHands = ['石頭', '剪刀', '布'];
+      function rpsStats() {
+        const total = power(3, rpsPlayers);
+        const win = 3 * (power(2, rpsPlayers) - 2);
+        return { total, win, tie: total - win };
+      }
+      function rpsTrial() { return Array.from({ length: rpsPlayers }, () => randomChoice(rpsHands)); }
+      function winnerFor(hands) {
+        const set = new Set(hands);
+        if (set.size !== 2) return null;
+        if (set.has('石頭') && set.has('剪刀')) return '石頭';
+        if (set.has('剪刀') && set.has('布')) return '剪刀';
+        return '布';
+      }
+      function renderRps() {
+        document.querySelectorAll('[data-rps-players]').forEach((button) => button.classList.toggle('active', Number(button.dataset.rpsPlayers) === rpsPlayers));
+        byId('rps-stage').innerHTML = Array.from({ length: rpsPlayers }, (_, index) => `<span class="hand">第 ${index + 1} 人<br>？</span>`).join('');
+        const { total, win, tie } = rpsStats();
+        byId('rps-total').textContent = total;
+        byId('rps-win').textContent = win;
+        byId('rps-tie').textContent = tie;
+        const tieExplanation = rpsPlayers === 2
+          ? '平手只有兩人出同一種拳的 3 種結果。'
+          : '平手包含「全部同一種」和「石頭、剪刀、布三種都出現」。';
+        byId('rps-result').innerHTML = `
+          <p>\\(${rpsPlayers}\\) 人共有 \\(3^{${rpsPlayers}}=${total}\\) 個有序結果。</p>
+          <p>只出現兩種拳時可分勝負：選哪兩種拳有 3 種，每一對有 \\(2^{${rpsPlayers}}-2\\) 種「兩種都有人出」的結果。</p>
+          <div class="formula-box">\\[P(\\text{分出勝負})=\\frac{${win}}{${total}}=${fraction(win, total)}\\]</div>
+          <p class="small">${tieExplanation}</p>`;
+        typeset(byId('rps-result'));
+      }
+      function runRps(times) {
+        const trials = Array.from({ length: times }, rpsTrial);
+        const wins = trials.filter((hands) => winnerFor(hands)).length;
+        const output = byId('rps-run-output');
+        if (times === 1) {
+          const hands = trials[0];
+          byId('rps-stage').innerHTML = hands.map((hand, index) => `<span class="hand">第 ${index + 1} 人<br>${hand}</span>`).join('');
+          const winner = winnerFor(hands);
+          output.innerHTML = winner ? `這局出拳：<strong>${hands.join('、')}</strong>。${winner}剋另一種拳，<strong>分出勝負</strong>。` : `這局出拳：<strong>${hands.join('、')}</strong>。${new Set(hands).size === 1 ? '全部同一種拳' : '三種拳都出現'}，<strong>平手</strong>。`;
+        } else {
+          output.innerHTML = `100 局中有 <strong>${wins}</strong> 局分出勝負，實驗比例為 \\(\\dfrac{${wins}}{100}\\)。`;
+          typeset(output);
+        }
+      }
+      document.querySelectorAll('[data-rps-players]').forEach((button) => button.addEventListener('click', () => { rpsPlayers = Number(button.dataset.rpsPlayers); renderRps(); byId('rps-run-output').textContent = '可以先預測這一局會不會分出勝負。'; }));
+      byId('rps-run').addEventListener('click', () => runRps(1));
+      byId('rps-simulate').addEventListener('click', () => runRps(100));
+
+      document.querySelectorAll('.quiz-card').forEach((card) => {
+        const feedback = card.querySelector('.feedback');
+        card.querySelectorAll('.quiz-option').forEach((button) => button.addEventListener('click', () => {
+          const correct = button.dataset.correct === 'true';
+          card.querySelectorAll('.quiz-option').forEach((option) => option.classList.remove('correct', 'wrong'));
+          button.classList.add(correct ? 'correct' : 'wrong');
+          feedback.innerHTML = correct ? `答對！${button.dataset.note}` : `再想一下：${button.dataset.note} 你可以直接改選其他答案。`;
+          typeset(feedback);
+        }));
+      });
+
+      renderCoins();
+      renderDice();
+      renderDraw();
+      renderRps();
+      window.addEventListener('load', () => {
+        ['coin-result', 'dice-result', 'draw-tree', 'draw-result', 'rps-result'].forEach((id) => typeset(byId(id)));
+      }, { once: true });
+    })();
+  </script>
+</body>
+</html>

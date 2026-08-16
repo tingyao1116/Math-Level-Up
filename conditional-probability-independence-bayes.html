@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>條件機率、獨立與貝氏定理｜高二數學</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #172554;
+      --sub: #52627c;
+      --paper: #fff;
+      --line: #d7e2f1;
+      --blue: #2563eb;
+      --blue-bg: #eff6ff;
+      --teal: #0f766e;
+      --teal-bg: #ecfdf5;
+      --amber: #b45309;
+      --amber-bg: #fffbeb;
+      --rose: #be123c;
+      --rose-bg: #fff1f2;
+      --violet: #6d28d9;
+      --violet-bg: #f5f3ff;
+      --shadow: 0 16px 38px rgba(30, 64, 175, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(145deg, #eff6ff 0%, #fbfdff 44%, #ecfdf5 100%);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 26px 18px 52px; }
+    .hero, .card, .example, .quiz-card, .comparison, .lab { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
+    .hero { position: relative; overflow: hidden; padding: clamp(24px, 4.5vw, 42px); }
+    .hero::after {
+      content: "P(A|B)";
+      position: absolute; right: 3%; bottom: -28px; z-index: 0;
+      color: #dbeafe; font: 800 clamp(66px, 13vw, 150px)/1 Georgia, serif;
+      letter-spacing: -5px;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    h1, h2, h3 { margin: 0 0 8px; color: #10234a; line-height: 1.35; }
+    h1 { max-width: 850px; font-size: clamp(31px, 5vw, 49px); }
+    h2 { font-size: clamp(25px, 3.6vw, 32px); }
+    h3 { font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .lead { max-width: 810px; color: var(--sub); font-size: 17px; }
+    .eyebrows, .nav, .toggle-row, .tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .eyebrows { margin-bottom: 13px; }
+    .eyebrow, .tag, .level {
+      display: inline-block; padding: 3px 10px; border: 1px solid #bfdbfe; border-radius: 999px;
+      background: var(--blue-bg); color: #1d4ed8; font-size: 13px; font-weight: 800;
+    }
+    .eyebrow.teal { border-color: #99f6e4; background: var(--teal-bg); color: #0f766e; }
+    .nav { margin-top: 20px; }
+    .nav a, .back {
+      display: inline-block; border: 1px solid #cbdaf0; border-radius: 10px; padding: 7px 11px;
+      background: #f8fbff; color: #1d4ed8; text-decoration: none; font-size: 14px; font-weight: 800;
+    }
+    .nav a:hover, .back:hover { background: #e8f0ff; }
+    .section { margin-top: 30px; }
+    .section-intro { color: var(--sub); }
+    .card, .example, .comparison, .lab { min-width: 0; padding: 19px; }
+    .grid { display: grid; min-width: 0; gap: 14px; }
+    .grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .formula-box {
+      margin: 12px 0; padding: 12px 15px; overflow-x: auto; border: 1px solid #bfdbfe;
+      border-radius: 12px; background: #f8fbff; text-align: center; font-size: 19px;
+    }
+    .formula-box.left { text-align: left; }
+    .callout { margin-top: 13px; padding: 12px 14px; border: 1px solid #bfdbfe; border-left: 5px solid var(--blue); border-radius: 12px; background: var(--blue-bg); }
+    .callout.good { border-color: #99f6e4; border-left-color: var(--teal); background: var(--teal-bg); color: #115e59; }
+    .callout.warn { border-color: #fecdd3; border-left-color: var(--rose); background: var(--rose-bg); color: #881337; }
+    .callout.amber { border-color: #fde68a; border-left-color: var(--amber); background: var(--amber-bg); color: #92400e; }
+    .rule-grid { display: grid; grid-template-columns: 116px 1fr; gap: 12px; align-items: start; }
+    .rule-label { padding: 9px; border-radius: 10px; background: var(--ink); color: #fff; text-align: center; font-weight: 900; }
+    .steps { margin: 10px 0 0; padding-left: 25px; }
+    .steps li { margin: 6px 0; }
+    .muted { color: var(--sub); }
+    .small { font-size: 14px; }
+    .flow { display: grid; grid-template-columns: 1fr 38px 1fr 38px 1fr; align-items: center; margin-top: 14px; }
+    .flow-item { padding: 13px; min-height: 126px; border: 1px solid var(--line); border-radius: 13px; background: #fff; }
+    .flow-item strong { color: var(--blue); }
+    .flow-arrow { color: #94a3b8; text-align: center; font-size: 28px; font-weight: 900; }
+    .compare-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; margin-top: 15px; }
+    .comparison { border-top: 5px solid var(--teal); }
+    .comparison.related { border-top-color: var(--rose); }
+    .comparison h3 { display: flex; align-items: center; gap: 8px; }
+    .comparison .tag { border-color: #99f6e4; background: var(--teal-bg); color: #0f766e; }
+    .comparison.related .tag { border-color: #fecdd3; background: var(--rose-bg); color: #9f1239; }
+    .table-wrap { overflow-x: auto; margin-top: 12px; }
+    table { width: 100%; min-width: 470px; border-collapse: collapse; }
+    th, td { padding: 9px 10px; border: 1px solid var(--line); text-align: center; vertical-align: middle; }
+    th { background: #f8fbff; color: #1e3a8a; }
+    th.row-head { text-align: left; }
+    td.total, th.total { background: #f8fafc; font-weight: 900; }
+    td.hit { background: #effcf8; color: #065f46; font-weight: 900; }
+    .related td.hit { background: #fff1f2; color: #9f1239; }
+    .ratio-board { display: grid; gap: 9px; margin-top: 14px; }
+    .ratio-row { display: grid; grid-template-columns: 110px 1fr 94px; align-items: center; gap: 8px; font-size: 14px; }
+    .bar { display: flex; min-width: 130px; height: 18px; overflow: hidden; border: 1px solid #cbd5e1; border-radius: 999px; background: #f8fafc; }
+    .bar-b { background: #14b8a6; }
+    .bar-not-b { background: #dbeafe; }
+    .related .bar-b { background: #fb7185; }
+    .related .bar-not-b { background: #fde68a; }
+    .ratio-value { font-weight: 900; white-space: nowrap; }
+    .toggle-row { margin-top: 14px; }
+    .view-button, .check-button, .quiz-option {
+      border: 1px solid #bfd3f1; border-radius: 10px; padding: 8px 11px; cursor: pointer;
+      background: #fff; color: #1e40af; font: 800 14px/1.5 "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    }
+    .view-button:hover, .check-button:hover, .quiz-option:hover { background: #eff6ff; }
+    .view-button[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-bg); color: #0f766e; }
+    .meaning { min-height: 4.5em; margin-top: 13px; padding: 11px 13px; border-radius: 11px; background: #f8fafc; color: #334155; }
+    .formula-table th { text-align: left; }
+    .formula-table td { text-align: left; }
+    .example { border-top: 5px solid var(--blue); }
+    .example:nth-of-type(2) { border-top-color: var(--amber); }
+    .example:nth-of-type(3) { border-top-color: var(--violet); }
+    .example-num { display: inline-grid; width: 31px; height: 31px; place-items: center; margin-right: 8px; border-radius: 50%; background: var(--blue); color: #fff; font-weight: 900; }
+    .example:nth-of-type(2) .example-num { background: var(--amber); }
+    .example:nth-of-type(3) .example-num { background: var(--violet); }
+    .tree { display: grid; grid-template-columns: 138px 46px 1fr; gap: 8px; align-items: stretch; margin-top: 14px; }
+    .tree-start, .tree-branch, .tree-leaf { padding: 12px; border-radius: 12px; border: 1px solid var(--line); }
+    .tree-start { display: grid; place-items: center; background: var(--blue-bg); font-weight: 900; text-align: center; }
+    .tree-lines { display: grid; grid-template-rows: 1fr 1fr; align-items: center; color: #94a3b8; font-size: 27px; text-align: center; }
+    .tree-branch { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; background: #fff; }
+    .tree-leaf { background: #f8fafc; }
+    .tree-leaf.good { background: var(--teal-bg); border-color: #99f6e4; }
+    .tree-leaf.warn { background: var(--amber-bg); border-color: #fde68a; }
+    .lab { margin-top: 14px; border-top: 5px solid var(--violet); }
+    .input-table input { width: 76px; padding: 7px; border: 1px solid #b9c9df; border-radius: 8px; color: var(--ink); font: 800 16px/1.3 inherit; text-align: center; }
+    .lab-result { min-height: 6.5em; margin-top: 14px; padding: 12px 13px; border-radius: 12px; background: var(--violet-bg); color: #45208c; }
+    .lab-result.good { background: var(--teal-bg); color: #115e59; }
+    .lab-result.warn { background: var(--rose-bg); color: #881337; }
+    .quiz-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+    .quiz-card { padding: 16px; }
+    .quiz-card h3 { font-size: 18px; }
+    .level { border-color: #fde68a; background: var(--amber-bg); color: #a16207; }
+    .quiz-options { display: grid; gap: 8px; margin-top: 10px; }
+    .quiz-option { text-align: left; }
+    .quiz-option.correct { border-color: #6ee7b7; background: var(--teal-bg); color: #065f46; }
+    .quiz-option.wrong { border-color: #fda4af; background: var(--rose-bg); color: #9f1239; }
+    .feedback { min-height: 3.4em; margin: 9px 0 0; color: var(--sub); font-size: 14px; }
+    details { margin-top: 11px; border: 1px solid var(--line); border-radius: 11px; background: #fbfdff; }
+    summary { padding: 10px 12px; cursor: pointer; color: #1e40af; font-weight: 900; }
+    details > div { padding: 0 12px 12px; }
+    .back { margin-top: 28px; }
+    @media (max-width: 800px) {
+      .wrap { padding: 15px 10px 38px; }
+      .hero, .card, .example, .comparison, .lab, .quiz-card { border-radius: 14px; padding: 15px; }
+      .two, .three, .compare-layout, .quiz-grid { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; gap: 7px; }
+      .flow-arrow { transform: rotate(90deg); height: 30px; }
+      .rule-grid { grid-template-columns: 1fr; gap: 5px; }
+      .rule-label { text-align: left; }
+      .tree { grid-template-columns: 1fr; }
+      .tree-lines { display: none; }
+      .tree-branch { grid-template-columns: 1fr; }
+      .ratio-row { grid-template-columns: 86px 1fr 76px; font-size: 13px; }
+      .formula-box { font-size: 17px; text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="eyebrows">
+        <span class="eyebrow">高中數學・s4-3</span>
+        <span class="eyebrow teal">條件機率 × 獨立 × 貝氏定理</span>
+      </div>
+      <h1>條件機率、獨立與貝氏定理：資訊來了，比例有沒有變？</h1>
+      <p class="lead">這一章的核心不是先背公式，而是先問：<strong>已知新資訊後，原來事件的比例改變了嗎？</strong>沒有改變，就是獨立；改變了，才需要用條件機率更新判斷。最後再用樹狀圖讀懂貝氏定理的「倒過來問」。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#conditional">條件機率</a>
+        <a href="#independence">獨立的二維表</a>
+        <a href="#toolbox">公式工具箱</a>
+        <a href="#bayes">貝氏定理</a>
+        <a href="#check">分層自我檢查</a>
+      </nav>
+    </header>
+
+    <section class="section" id="conditional">
+      <h2>1. 條件機率：把視線縮到「已知 B」的範圍</h2>
+      <p class="section-intro">看到「已知」「在……之中」「已經發生 B」，樣本空間就不再是全部，而是 <strong>B 這一群</strong>。因此分母要換成 \(P(B)\)。</p>
+      <div class="card" style="margin-top:14px;">
+        <div class="rule-grid">
+          <div class="rule-label">定義</div>
+          <div>
+            <p>若 \(P(B)&gt;0\)，在事件 \(B\) 已發生的條件下，事件 \(A\) 發生的機率記為 \(P(A\mid B)\)。</p>
+            <div class="formula-box">\[P(A\mid B)=\frac{P(A\cap B)}{P(B)}=\frac{n(A\cap B)}{n(B)}\]</div>
+          </div>
+        </div>
+        <div class="flow" aria-label="條件機率的三步驟">
+          <div class="flow-item"><strong>① 先圈條件</strong><br>題目說「已知 B」，就只保留 B 裡面的對象。</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-item"><strong>② 再找同時符合</strong><br>在 B 裡面又符合 A 的，就是 \(A\cap B\)。</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-item"><strong>③ 用部分除整群</strong><br>\(n(A\cap B)\div n(B)\)，不是除全體人數。</div>
+        </div>
+        <div class="callout amber"><strong>最常見失誤：</strong>把 \(P(A\mid B)\) 的分母仍寫成全體 \(n(S)\)。只要題目已經告訴你 B 發生，分母就必須改成 \(n(B)\)。</div>
+      </div>
+
+      <article class="example" style="margin-top:14px;">
+        <h3><span class="example-num">例</span>先用資料看見「資訊使比例改變」</h3>
+        <p>某班 100 人，設 \(A\)：小考通過，\(B\)：完成課前複習。完成複習的 40 人中有 32 人通過；未完成的 60 人中有 30 人通過。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th></th><th>通過 \(A\)</th><th>未通過 \(A'\)</th><th class="total">合計</th></tr></thead>
+          <tbody>
+            <tr><th class="row-head">完成複習 \(B\)</th><td class="hit">32</td><td>8</td><td class="total">40</td></tr>
+            <tr><th class="row-head">未完成 \(B'\)</th><td>30</td><td>30</td><td class="total">60</td></tr>
+            <tr><th class="total">合計</th><td class="total">62</td><td class="total">38</td><td class="total">100</td></tr>
+          </tbody>
+        </table></div>
+        <div class="formula-box">\[P(A)=\frac{62}{100}=62\%，\qquad P(A\mid B)=\frac{32}{40}=80\%\]</div>
+        <p>知道「完成複習」後，通過比例從 62% 變成 80%，所以這份資料中的 A、B <strong>不是獨立</strong>。這只是在描述資料的關聯，<strong>不等於已經證明複習一定造成通過</strong>。</p>
+      </article>
+    </section>
+
+    <section class="section" id="independence">
+      <h2>2. 獨立不是「沒交集」，而是每一列的比例都一樣</h2>
+      <p class="section-intro">獨立的直覺是：即使先知道 A 發生，B 的比例仍然不變。二維表裡最清楚的檢查法，就是<strong>比較各列中 B 所占的比例</strong>。</p>
+      <div class="callout good"><strong>一句話判斷：</strong>若 \(P(B\mid A)=P(B)\)，資訊 A 沒有改變 B 的機率，A、B 獨立。反過來 \(P(A\mid B)=P(A)\) 也同樣成立（分母需有意義）。</div>
+
+      <div class="compare-layout">
+        <article class="comparison" id="independent-view">
+          <h3><span class="tag">獨立</span>兩列的 B 比例相同</h3>
+          <p class="small muted">想像重複做「第一個轉盤」與「第二個轉盤」的雙重隨機實驗 100 次；A、B 分別是兩個轉盤上的指定結果。</p>
+          <div class="table-wrap"><table>
+            <thead><tr><th></th><th>第二轉盤 B</th><th>不是 B</th><th class="total">合計</th></tr></thead>
+            <tbody>
+              <tr><th class="row-head">第一轉盤 A</th><td class="hit">12</td><td>18</td><td class="total">30</td></tr>
+              <tr><th class="row-head">不是 A</th><td class="hit">28</td><td>42</td><td class="total">70</td></tr>
+              <tr><th class="total">合計</th><td class="total">40</td><td class="total">60</td><td class="total">100</td></tr>
+            </tbody>
+          </table></div>
+          <div class="ratio-board" aria-label="獨立時的列比例">
+            <div class="ratio-row"><strong>在 A 裡</strong><div class="bar"><span class="bar-b" style="width:40%"></span><span class="bar-not-b" style="width:60%"></span></div><span class="ratio-value">12/30 = 40%</span></div>
+            <div class="ratio-row"><strong>在非 A 裡</strong><div class="bar"><span class="bar-b" style="width:40%"></span><span class="bar-not-b" style="width:60%"></span></div><span class="ratio-value">28/70 = 40%</span></div>
+            <div class="ratio-row"><strong>全體</strong><div class="bar"><span class="bar-b" style="width:40%"></span><span class="bar-not-b" style="width:60%"></span></div><span class="ratio-value">40/100 = 40%</span></div>
+          </div>
+          <div class="meaning"><strong>讀法：</strong>不管先看 A 這 30 次，還是看非 A 這 70 次，B 都占 40%。所以知道 A 並沒有給 B 新資訊：\(P(B\mid A)=P(B)=40\%\)。</div>
+        </article>
+
+        <article class="comparison related" id="related-view">
+          <h3><span class="tag">不獨立</span>兩列的 B 比例不同</h3>
+          <p class="small muted">刻意讓合計仍是 100 次、B 的總數仍是 40 次，方便和左表做公平比較。</p>
+          <div class="table-wrap"><table>
+            <thead><tr><th></th><th>第二轉盤 B</th><th>不是 B</th><th class="total">合計</th></tr></thead>
+            <tbody>
+              <tr><th class="row-head">第一轉盤 A</th><td class="hit">24</td><td>6</td><td class="total">30</td></tr>
+              <tr><th class="row-head">不是 A</th><td class="hit">16</td><td>54</td><td class="total">70</td></tr>
+              <tr><th class="total">合計</th><td class="total">40</td><td class="total">60</td><td class="total">100</td></tr>
+            </tbody>
+          </table></div>
+          <div class="ratio-board" aria-label="不獨立時的列比例">
+            <div class="ratio-row"><strong>在 A 裡</strong><div class="bar"><span class="bar-b" style="width:80%"></span><span class="bar-not-b" style="width:20%"></span></div><span class="ratio-value">24/30 = 80%</span></div>
+            <div class="ratio-row"><strong>在非 A 裡</strong><div class="bar"><span class="bar-b" style="width:22.86%"></span><span class="bar-not-b" style="width:77.14%"></span></div><span class="ratio-value">16/70 ≈ 22.9%</span></div>
+            <div class="ratio-row"><strong>全體</strong><div class="bar"><span class="bar-b" style="width:40%"></span><span class="bar-not-b" style="width:60%"></span></div><span class="ratio-value">40/100 = 40%</span></div>
+          </div>
+          <div class="meaning"><strong>讀法：</strong>全體的 B 是 40%，但一知道 A，B 變成 80%。比例明顯改變，故不能說獨立。</div>
+        </article>
+      </div>
+
+      <div class="lab" id="table-lab">
+        <h3>動手判斷：改四格數字，讓二維表告訴你是否獨立</h3>
+        <p class="muted">輸入四格的「人數／次數」。程式會同時檢查<strong>列比例</strong>與公式 \(P(A\cap B)=P(A)P(B)\)。可先把四格設成 12、18、28、42，再試試看。</p>
+        <div class="table-wrap"><table class="input-table">
+          <thead><tr><th></th><th>B</th><th>\(B'\)</th><th class="total">合計</th></tr></thead>
+          <tbody>
+            <tr><th class="row-head">A</th><td><input id="cell-a" type="number" min="0" value="12" aria-label="A 且 B 的數量"></td><td><input id="cell-b" type="number" min="0" value="18" aria-label="A 且非 B 的數量"></td><td class="total" id="row-a-total">30</td></tr>
+            <tr><th class="row-head">\(A'\)</th><td><input id="cell-c" type="number" min="0" value="28" aria-label="非 A 且 B 的數量"></td><td><input id="cell-d" type="number" min="0" value="42" aria-label="非 A 且非 B 的數量"></td><td class="total" id="row-not-a-total">70</td></tr>
+            <tr><th class="total">合計</th><td class="total" id="col-b-total">40</td><td class="total" id="col-not-b-total">60</td><td class="total" id="all-total">100</td></tr>
+          </tbody>
+        </table></div>
+        <div class="toggle-row">
+          <button class="check-button" type="button" id="reset-independent">載入獨立例子</button>
+          <button class="check-button" type="button" id="reset-related">載入不獨立例子</button>
+        </div>
+        <div class="lab-result" id="lab-result" aria-live="polite">正在計算……</div>
+      </div>
+    </section>
+
+    <section class="section" id="toolbox">
+      <h2>3. 公式工具箱：每一條都要先看「條件」</h2>
+      <p class="section-intro">公式不是不同章節的孤島：條件機率定義移項後就是乘法定理；把樣本空間分開加總就是全機率；最後「倒過來問」便得到貝氏定理。</p>
+      <div class="card" style="margin-top:14px;">
+        <div class="table-wrap"><table class="formula-table">
+          <thead><tr><th>名稱／何時用</th><th>公式</th><th>學生要說得出的意思</th></tr></thead>
+          <tbody>
+            <tr><th>條件機率<br><span class="small muted">已知 B，問 A</span></th><td>\(P(A\mid B)=\dfrac{P(A\cap B)}{P(B)}\)</td><td>分母從全體縮成 B 這一群。</td></tr>
+            <tr><th>乘法定理<br><span class="small muted">同時發生的機率</span></th><td>\(P(A\cap B)=P(B)P(A\mid B)=P(A)P(B\mid A)\)</td><td>先發生哪一件都可以，但後面的機率要帶條件。</td></tr>
+            <tr><th>全機率公式<br><span class="small muted">先依 \(A,A'\) 分類</span></th><td>\(P(B)=P(A)P(B\mid A)+P(A')P(B\mid A')\)</td><td>B 的總量 = 從每條路走到 B 的量加起來。</td></tr>
+            <tr><th>貝氏定理<br><span class="small muted">已知結果 B，倒問原因 A</span></th><td>\(P(A\mid B)=\dfrac{P(A)P(B\mid A)}{\sum_iP(A_i)P(B\mid A_i)}\)</td><td>分子是「A 造成 B」那一條路；分母是所有造成 B 的路。</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="grid two" style="margin-top:14px;">
+        <article class="card">
+          <h3>獨立事件的三種等價說法</h3>
+          <div class="formula-box">\[P(A\cap B)=P(A)P(B)\]</div>
+          <div class="formula-box">\[P(A\mid B)=P(A)\quad (P(B)&gt;0)\]</div>
+          <div class="formula-box">\[P(B\mid A)=P(B)\quad (P(A)&gt;0)\]</div>
+          <p class="small muted">考題通常知道其中一種就能推出另兩種；選題目給的數字最好算的那一種。</p>
+          <p class="small muted">若 A、B 獨立，則 \(A',B\)、\(A,B'\)、\(A',B'\) 也都獨立。</p>
+        </article>
+        <article class="card">
+          <h3>互斥和獨立，千萬別混在一起</h3>
+          <div class="formula-box">\[A\cap B=\varnothing\quad\Rightarrow\quad P(A\cap B)=0\]</div>
+          <p>若 \(P(A)&gt;0,P(B)&gt;0\)，互斥事件不可能獨立，因為 \(P(A)P(B)&gt;0\)，卻不是 0。</p>
+          <div class="callout warn"><strong>關鍵差別：</strong>互斥是「不能同時發生」；獨立是「知道一個，另一個的比例不變」。兩者意思幾乎相反。</div>
+        </article>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <h3>獨立時常用的排容整理</h3>
+        <div class="grid two">
+          <div><div class="formula-box">\[P(A\cup B)=P(A)+P(B)-P(A\cap B)\]</div><p class="small muted">這是一般的排容原理。</p></div>
+          <div><div class="formula-box">\[P(A\cup B)=P(A)+P(B)-P(A)P(B)\]</div><p class="small muted">只有 A、B 獨立時，才可把交集換成乘積。</p></div>
+        </div>
+      </div>
+      <details>
+        <summary>延伸：三個事件不是「兩兩獨立」就夠了</summary>
+        <div>
+          <p>要稱 \(A,B,C\) <strong>相互獨立</strong>，除了三組兩兩關係，還要再檢查三者同時發生的機率：</p>
+          <div class="formula-box">\[P(A\cap B)=P(A)P(B),\quad P(B\cap C)=P(B)P(C),\quad P(C\cap A)=P(C)P(A)\]</div>
+          <div class="formula-box">\[P(A\cap B\cap C)=P(A)P(B)P(C)\]</div>
+          <div class="callout amber"><strong>易錯點：</strong>只驗證前三條時，只能說「兩兩獨立」；最後一條也成立，才能說三事件相互獨立。</div>
+        </div>
+      </details>
+    </section>
+
+    <section class="section" id="bayes">
+      <h2>4. 貝氏定理：看到結果後，倒過來找最可能的原因</h2>
+      <p class="section-intro">樹狀圖很適合先把每一條「原因 → 結果」的機率寫清楚；最後若問「已知結果，原因是什麼」，才從所有到達結果的路徑中取比例。</p>
+      <article class="example" style="margin-top:14px;">
+        <h3><span class="example-num">例</span>門禁異常，忘帶學生證的機率是多少？</h3>
+        <p>設 \(D\)：忘帶學生證，\(E\)：門禁刷卡異常。已知 \(P(D)=4\%\)，\(P(E\mid D)=95\%\)，\(P(E\mid D')=2\%\)。現在刷卡異常，求 \(P(D\mid E)\)。</p>
+        <div class="tree" aria-label="貝氏定理樹狀圖">
+          <div class="tree-start">全體學生<br>10000 人</div>
+          <div class="tree-lines"><span>↗</span><span>↘</span></div>
+          <div class="tree-branch">
+            <div class="tree-leaf good"><strong>忘帶 D：400 人</strong><br>異常率 95%<br>走到異常：\(400\times0.95=380\) 人</div>
+            <div class="tree-leaf warn"><strong>未忘帶 D'：9600 人</strong><br>異常率 2%<br>走到異常：\(9600\times0.02=192\) 人</div>
+          </div>
+        </div>
+        <div class="formula-box">\[P(D\mid E)=\frac{380}{380+192}=\frac{95}{143}\approx66.4\%\]</div>
+        <div class="callout good"><strong>不是 95% 的原因：</strong>95% 是「已知忘帶時，會異常」\(P(E\mid D)\)；題目問的是「已知異常時，忘帶」\(P(D\mid E)\)。方向倒過來，分母也必須改成所有異常的人數。</div>
+        <details><summary>把樹狀圖翻成公式</summary><div><div class="formula-box left">\[P(D\mid E)=\frac{P(D)P(E\mid D)}{P(D)P(E\mid D)+P(D')P(E\mid D')}=\frac{0.04\times0.95}{0.04\times0.95+0.96\times0.02}\]</div><p>先算分子的一條路，再把所有通往 E 的路相加當分母；這就是貝氏定理最穩的使用方式。</p></div></details>
+      </article>
+    </section>
+
+    <section class="section" id="check">
+      <h2>5. 分層自我檢查：先選理由，再看答案</h2>
+      <p class="section-intro">每題都先說「分母應該是誰」或「比例有沒有變」，再按選項。答錯後可以重試，不會鎖住答案。</p>
+      <div class="quiz-grid">
+        <article class="quiz-card" data-quiz="q1">
+          <span class="level">基礎</span>
+          <h3>Q1. 已知 \(P(A\cap B)=0.18,P(B)=0.30\)，則 \(P(A\mid B)\)？</h3>
+          <div class="quiz-options"><button class="quiz-option" data-correct="false">0.18，因為同時發生就是答案</button><button class="quiz-option" data-correct="true">0.6，因為 \(0.18\div0.30=0.6\)</button><button class="quiz-option" data-correct="false">0.54，因為把兩個機率相乘</button></div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+        <article class="quiz-card" data-quiz="q2">
+          <span class="level">進階</span>
+          <h3>Q2. \(P(A)=0.4,P(B)=0.5,P(A\cap B)=0.2\)。A、B 是否獨立？</h3>
+          <div class="quiz-options"><button class="quiz-option" data-correct="true">是，因為 \(0.2=0.4\times0.5\)</button><button class="quiz-option" data-correct="false">否，因為 A、B 有交集</button><button class="quiz-option" data-correct="false">否，因為兩個機率不一樣</button></div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+        <article class="quiz-card" data-quiz="q3">
+          <span class="level">挑戰</span>
+          <h3>Q3. 若 \(P(A)=0.6,P(B\mid A)=0.3,P(B\mid A')=0.1\)，求 \(P(A\mid B)\)。</h3>
+          <div class="quiz-options"><button class="quiz-option" data-correct="false">0.3，只要把條件照抄</button><button class="quiz-option" data-correct="true">\(\frac{0.6\times0.3}{0.6\times0.3+0.4\times0.1}=0.818...\)</button><button class="quiz-option" data-correct="false">0.7，直接將 0.6 和 0.1 相加</button></div>
+          <p class="feedback" aria-live="polite">請選一個答案。</p>
+        </article>
+      </div>
+      <div class="callout amber"><strong>考場收尾口訣：</strong>「已知誰，就除誰；看獨立，就比比例；倒著問，就畫樹。」先把這三句說出口，公式才不會代錯方向。</div>
+      <a class="back" href="./index.html">← 回到數學教學首頁</a>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const ids = ['cell-a', 'cell-b', 'cell-c', 'cell-d'];
+      const inputs = Object.fromEntries(ids.map((id) => [id, document.getElementById(id)]));
+      const output = document.getElementById('lab-result');
+      const targets = {
+        rowA: document.getElementById('row-a-total'),
+        rowNotA: document.getElementById('row-not-a-total'),
+        colB: document.getElementById('col-b-total'),
+        colNotB: document.getElementById('col-not-b-total'),
+        all: document.getElementById('all-total')
+      };
+      const pct = (value) => `${(value * 100).toFixed(value * 100 % 1 ? 1 : 0)}%`;
+      const valueOf = (input) => Math.max(0, Number(input.value) || 0);
+
+      function updateLab() {
+        const a = valueOf(inputs['cell-a']);
+        const b = valueOf(inputs['cell-b']);
+        const c = valueOf(inputs['cell-c']);
+        const d = valueOf(inputs['cell-d']);
+        const rowA = a + b;
+        const rowNotA = c + d;
+        const colB = a + c;
+        const colNotB = b + d;
+        const total = rowA + rowNotA;
+        targets.rowA.textContent = rowA;
+        targets.rowNotA.textContent = rowNotA;
+        targets.colB.textContent = colB;
+        targets.colNotB.textContent = colNotB;
+        targets.all.textContent = total;
+        output.className = 'lab-result';
+        if (!total || !rowA || !rowNotA || !colB) {
+          output.classList.add('warn');
+          output.textContent = '請讓全體、A 這一列、非 A 這一列和 B 這一欄都有資料，才能完整比較條件比例。';
+          return;
+        }
+        const pBgivenA = a / rowA;
+        const pBgivenNotA = c / rowNotA;
+        const pB = colB / total;
+        const pJoint = a / total;
+        const product = (rowA / total) * pB;
+        const independent = a * d === b * c;
+        if (independent) {
+          output.classList.add('good');
+          output.innerHTML = `<strong>判定：獨立。</strong>在 A 裡，B 的比例是 ${a}/${rowA} = ${pct(pBgivenA)}；在非 A 裡是 ${c}/${rowNotA} = ${pct(pBgivenNotA)}；全體也是 ${pct(pB)}。而 P(A∩B)=${pct(pJoint)} = P(A)P(B)=${pct(product)}。`;
+        } else {
+          output.classList.add('warn');
+          output.innerHTML = `<strong>判定：不獨立。</strong>在 A 裡，B 的比例是 ${a}/${rowA} = ${pct(pBgivenA)}；在非 A 裡是 ${c}/${rowNotA} = ${pct(pBgivenNotA)}，兩者不同。且 P(A∩B)=${pct(pJoint)}，P(A)P(B)=${pct(product)}，不相等。`;
+        }
+      }
+
+      ids.forEach((id) => inputs[id].addEventListener('input', updateLab));
+      document.getElementById('reset-independent').addEventListener('click', () => {
+        [12, 18, 28, 42].forEach((number, index) => { inputs[ids[index]].value = number; });
+        updateLab();
+      });
+      document.getElementById('reset-related').addEventListener('click', () => {
+        [24, 6, 16, 54].forEach((number, index) => { inputs[ids[index]].value = number; });
+        updateLab();
+      });
+      updateLab();
+
+      document.querySelectorAll('.quiz-card').forEach((card) => {
+        const feedback = card.querySelector('.feedback');
+        card.querySelectorAll('.quiz-option').forEach((button) => {
+          button.addEventListener('click', () => {
+            const correct = button.dataset.correct === 'true';
+            card.querySelectorAll('.quiz-option').forEach((option) => option.classList.remove('correct', 'wrong'));
+            button.classList.add(correct ? 'correct' : 'wrong');
+            feedback.textContent = correct
+              ? '答對了。你先抓到條件的方向，再做計算。'
+              : '先別急著背數字；回到題目確認「已知誰」與「分母是哪一群」，再試一次。';
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

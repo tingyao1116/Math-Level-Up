@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>指數與對數：公式整理、條件與證明｜s3-2</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, chtml: { displayAlign: 'left' } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root { --ink:#172033; --sub:#506078; --paper:#fff; --line:#d9e2ef; --navy:#183b68; --blue:#1769aa; --blue-pale:#eaf5ff; --teal:#08756a; --teal-pale:#e8fbf7; --gold:#a86604; --gold-pale:#fff8df; --rose:#a33d50; --rose-pale:#fff0f3; }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:linear-gradient(145deg,#eff7ff 0%,#f8fbff 40%,#f4f8f8 100%); font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.78; }
+    .wrap { width:min(1120px,calc(100% - 28px)); margin:0 auto; }
+    .hero,.card { border:1px solid var(--line); border-radius:20px; background:var(--paper); box-shadow:0 12px 30px rgba(24,59,104,.07); }
+    .hero { margin:22px 0 14px; padding:clamp(22px,5vw,42px); background:linear-gradient(132deg,#fff 0%,#edf7ff 67%,#e6faf5 100%); }
+    .eyebrow,.tag,.pill { display:inline-block; border-radius:999px; padding:3px 10px; font-size:13px; font-weight:800; letter-spacing:.03em; }
+    .eyebrow { color:#0e4c80; background:#dceefe; border:1px solid #acd5f5; }.tag { color:#075a52; background:var(--teal-pale); border:1px solid #a8e7db; }.tag.gold { color:#805000; background:var(--gold-pale); border-color:#f2d88a; }
+    h1 { margin:11px 0 10px; color:#102b4c; font-size:clamp(31px,5.6vw,48px); line-height:1.25; } h2 { margin:0; color:var(--navy); font-size:clamp(23px,3.4vw,30px); line-height:1.4; } h3 { margin:0 0 5px; color:#164873; font-size:18px; line-height:1.45; }
+    p { margin:0 0 10px; color:var(--sub); } li { margin-bottom:5px; color:var(--sub); }.lead { max-width:900px; font-size:17px; }
+    .pills,.nav,.section-head { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }.pills { margin-top:15px; }.pill { border:1px solid #cbd7e7; background:#fff; color:#3e5877; font-weight:750; }
+    .nav { margin-top:17px; }.nav a { display:inline-block; border:1px solid var(--navy); border-radius:10px; padding:7px 11px; color:#fff; background:var(--navy); text-decoration:none; font-size:14px; font-weight:800; }.nav a:hover { background:#0d2747; }
+    .card { margin:14px 0; padding:clamp(18px,3vw,27px); }.section-head { justify-content:space-between; margin-bottom:12px; }.section-head>div { min-width:0; }
+    .grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(245px,1fr)); }.two-col { display:grid; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); }.card,.grid>*,.two-col>*,.exercise>*,.lesson-flow>* { min-width:0; }
+    .mini,.example,.notice,.wrong,details,.check-card { border:1px solid var(--line); border-radius:13px; padding:14px; background:#fcfdff; }.mini { border-top:4px solid #5da9df; }.mini.teal { border-top-color:#34a99a; }.mini.gold { border-top-color:#d6a13d; }
+    .formula { display:block; margin:9px 0; padding:9px 12px; overflow-x:auto; border-left:4px solid #3b92cb; border-radius:7px; background:var(--blue-pale); color:#153d67; font-weight:800; }.formula.teal { border-left-color:#20a08d; background:var(--teal-pale); }.formula.gold { border-left-color:#c78a1d; background:var(--gold-pale); }.formula mjx-container[display="true"] { margin:0!important; }
+    .math { color:#153d67; font-weight:800; }.notice { border-color:#a8d6f4; background:#f0f9ff; }.notice strong { color:#115b91; }.wrong { border-color:#f3b7c3; background:var(--rose-pale); }.wrong strong { color:var(--rose); }.example { border-color:#9ce1d3; background:#f2fffc; }.example strong { color:#07665c; }
+    .proof { margin-top:12px; padding-top:11px; border-top:1px solid #d8e6f0; }.proof p:last-child,.mini p:last-child,.example p:last-child,.notice p:last-child,.wrong p:last-child { margin-bottom:0; } details { margin-top:10px; border-color:#b8d7ed; background:#f9fcff; } details[open] { background:#f4faff; } summary { cursor:pointer; color:#164873; font-weight:850; } summary::marker { color:#1d79b7; }
+    .steps { display:grid; gap:9px; margin-top:10px; }.step { display:grid; grid-template-columns:31px 1fr; gap:10px; align-items:start; }.step-no { display:grid; place-items:center; width:29px; height:29px; border-radius:50%; color:#fff; background:var(--blue); font-size:14px; font-weight:900; }
+    .equiv { display:grid; grid-template-columns:minmax(120px,.9fr) 32px minmax(120px,1.1fr); gap:8px; align-items:center; margin:12px 0; }.equiv>div { min-height:74px; padding:11px; border:1px solid #b9d6ea; border-radius:11px; background:#f7fcff; text-align:center; }.equiv .arrow { padding:0; border:0; background:transparent; color:var(--teal); font-size:25px; font-weight:900; }
+    .table-wrap { overflow-x:auto; } table { width:100%; min-width:670px; border-collapse:collapse; } th,td { padding:11px 12px; border:1px solid var(--line); vertical-align:top; text-align:left; } th { color:#153d67; background:#eaf5ff; font-size:15px; } td { color:var(--sub); } td:first-child { color:#173f66; font-weight:800; }
+    .exercise { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); }.check-card { border-top:4px solid #46a78e; }.check-card p { min-height:55px; color:#2f435c; font-weight:700; }.check-card details { padding:9px 11px; background:#fff; }
+    .lesson-flow { display:grid; gap:8px; grid-template-columns:repeat(4,minmax(0,1fr)); }.flow-item { padding:12px; border:1px solid #c7ddeb; border-radius:12px; background:#f8fcff; }.flow-item b { display:block; margin-bottom:4px; color:var(--blue); font-size:14px; }
+    footer { padding:8px 0 26px; color:#617086; text-align:center; font-size:14px; }
+    @media(max-width:740px) { body { font-size:15px; }.wrap { width:min(100% - 20px,1120px); }.hero { margin-top:10px; }.two-col,.exercise,.lesson-flow { grid-template-columns:1fr; }.equiv { grid-template-columns:1fr; }.equiv .arrow { transform:rotate(90deg); justify-self:center; }.section-head { align-items:flex-start; } }
+    @media print { body { background:#fff; }.hero,.card { box-shadow:none; break-inside:avoid; }.nav { display:none; } details { display:block; } details:not([open])>:not(summary) { display:block; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">高中數學・s3-2</span>
+      <h1>指數與對數：公式整理、條件與證明</h1>
+      <p class="lead">這不是一張只背公式的表。先從「同底數相乘時，因子數相加」理解指數律；再用 <span class="math">\(a^x=y\)</span> 與 <span class="math">\(x=\log_a y\)</span> 的互換，推得對數律。每條公式都附上<strong>成立條件</strong>，並把最常混淆的地方直接標出。</p>
+      <div class="pills"><span class="pill">先定義，再運算</span><span class="pill">每條公式有適用條件</span><span class="pill">核心證明可投影講解</span><span class="pill">附基礎・進階・挑戰自檢</span></div>
+      <nav class="nav" aria-label="頁面導覽"><a href="#scope">0. 先定範圍</a><a href="#exponent">1. 指數律</a><a href="#log">2. 對數律</a><a href="#proofs">3. 證明</a><a href="#practice">4. 自我檢查</a></nav>
+    </section>
+
+    <section class="card" id="scope">
+      <div class="section-head"><div><h2>0. 先把使用範圍講清楚</h2><p>公式是否能用，通常不是算式技巧問題，而是底數、真數或分母是否合格。</p></div><span class="tag gold">先看條件，才套公式</span></div>
+      <div class="grid">
+        <article class="mini"><h3>本頁的實數指數範圍</h3><p>為了讓分數次方、指數律與對數能放在同一套規則下，本頁涉及一般實數指數時，採用 <span class="math">\(a>0\)</span>。</p><span class="formula">\(a^0=1,\qquad a^{-n}=\dfrac1{a^n}\quad(a\ne0)\)</span><p>若只處理整數次方，底數可為負；但一旦要接分數次方和對數，正底數最穩定。</p></article>
+        <article class="mini teal"><h3>對數有意義的三個條件</h3><span class="formula teal">\(\log_a x\text{ 有意義}\iff a>0,\ a\ne1,\ x>0\)</span><p><span class="math">\(a\)</span> 是底數，不能是負數、0 或 1；<span class="math">\(x\)</span> 是真數，必須正。</p></article>
+        <article class="mini gold"><h3>分數次方與根號</h3><span class="formula gold">\(a^{\frac1n}=\sqrt[n]{a},\qquad a^{\frac mn}=\sqrt[n]{a^m}\quad(a>0)\)</span><p>若只談根式，奇次根可以接受負數；例如 <span class="math">\(\sqrt[3]{-8}=-2\)</span>。本頁為了和對數律一致，公式表統一用 <span class="math">\(a>0\)</span>。</p></article>
+      </div>
+      <aside class="wrong" style="margin-top:12px;"><strong>截圖公式的校正提醒：</strong>若 <span class="math">\(a^m=b^n\)</span>（正底數、<span class="math">\(m,n\ne0\)</span>），正確的互換是 <span class="math">\(a=b^{n/m}\)</span>，等價地 <span class="math">\(b=a^{m/n}\)</span>；不是一般都能寫成 <span class="math">\(a^{m/n}=b^{n/m}\)</span>。例如 <span class="math">\(4^3=8^2\)</span>，但 <span class="math">\(4^{3/2}=8\)</span>、<span class="math">\(8^{2/3}=4\)</span>，兩者不相等。</aside>
+    </section>
+
+    <section class="card" id="exponent">
+      <div class="section-head"><div><h2>1. 指數：先數「相同底數有幾個」</h2><p>自然數次方的意義是連乘；其餘次方是為了讓同一套規律繼續成立而延伸。</p></div><span class="tag">指數律</span></div>
+      <div class="table-wrap"><table><thead><tr><th>類別</th><th>公式</th><th>何時能用／怎麼想</th></tr></thead><tbody>
+        <tr><td>自然數指數</td><td>\(a^n=\underbrace{a\times a\times\cdots\times a}_{n\text{ 個}}\)</td><td>\(n\) 是正整數。例如 \(2^4=2\times2\times2\times2\)。</td></tr>
+        <tr><td>零次方</td><td>\(a^0=1\)</td><td>\(a\ne0\)。因為 \(a^m\div a^m=a^{m-m}=a^0\)，左邊卻等於 1。</td></tr>
+        <tr><td>負整數指數</td><td>\(a^{-n}=\dfrac1{a^n}\)</td><td>\(a\ne0\)。負號表示「取倒數」，不是答案變負數。</td></tr>
+        <tr><td>分數指數</td><td>\(a^{1/n}=\sqrt[n]{a}\)、\(a^{m/n}=\sqrt[n]{a^m}\)</td><td>本頁採 \(a>0\)、\(n\in\mathbb N\)。先做分母的根，再做分子的次方。</td></tr>
+      </tbody></table></div>
+      <h3 style="margin-top:20px;">指數律總表</h3>
+      <p class="notice">下表若出現分數或實數指數，採 <span class="math">\(a,b>0\)</span>；若只處理整數指數，負底數也可以參與，但除法時底數仍不得是 0。</p>
+      <div class="grid"><article class="mini"><h3>同底數相乘、相除</h3><span class="formula">\(a^m\cdot a^n=a^{m+n}\)</span><span class="formula">\(a^m\div a^n=a^{m-n}\quad(a\ne0)\)</span><p>真的是「乘除」才把指數加減；加法、減法不能合併。</p></article><article class="mini teal"><h3>次方的次方</h3><span class="formula teal">\((a^m)^n=a^{mn}\)</span><p>\(a^m\) 有 \(n\) 組，每一組有 \(m\) 個 \(a\)，所以總數是 \(mn\)。</p></article><article class="mini gold"><h3>乘積、商的次方</h3><span class="formula gold">\((ab)^n=a^n b^n\)</span><span class="formula gold">\(\left(\dfrac ab\right)^n=\dfrac{a^n}{b^n}\quad(b\ne0)\)</span><p>整個乘積／分式要有括號；指數才能分配到每個因子。</p></article></div>
+      <div class="two-col" style="margin-top:12px;"><article class="example"><strong>例題｜先化同底數</strong><p>化簡 <span class="math">\(\dfrac{2^7\cdot4^{-2}}{8^{-1}}\)</span>。</p><span class="formula teal">\(\dfrac{2^7\cdot(2^2)^{-2}}{(2^3)^{-1}}=2^{7-4-(-3)}=2^6=64\)</span><p>分母的 \(2^{-3}\) 被除，指數是再減負 3；括號不能省略。</p></article><article class="wrong"><strong>常見錯誤｜把加法也當成指數相加</strong><p><span class="math">\(2^3+2^4\ne2^7\)</span>。左邊是 <span class="math">\(8+16=24\)</span>，右邊是 <span class="math">\(128\)</span>。</p><p>能用 \(a^{m+n}\) 的前提是 <span class="math">\(a^m\times a^n\)</span>，中間必須是乘號。</p></article></div>
+    </section>
+
+    <section class="card" id="log">
+      <div class="section-head"><div><h2>2. 對數：把「次方的答案」反問回去</h2><p>對數不是新運算；它只是「指數是多少？」的問法。</p></div><span class="tag">指數 ↔ 對數</span></div>
+      <div class="equiv" aria-label="指數式和對數式的互換"><div><b>指數式</b><br>\(a^x=y\)</div><div class="arrow">\(\Longleftrightarrow\)</div><div><b>對數式</b><br>\(x=\log_a y\)</div></div>
+      <p class="notice"><strong>讀法：</strong><span class="math">\(\log_2 8=3\)</span> 表示「以 2 為底，幾次方會得到 8？」因為 <span class="math">\(2^3=8\)</span>，所以答案是 3。</p>
+      <div class="table-wrap" style="margin-top:14px;"><table><thead><tr><th>名稱</th><th>公式</th><th>使用條件與記憶線索</th></tr></thead><tbody>
+        <tr><td>互換／反函數</td><td>\(\log_a(a^x)=x\)<br>\(a^{\log_a x}=x\)</td><td>\(a>0,\ a\ne1\)；第二式另要 \(x>0\)。先指數再對數，或反過來，都回到原數。</td></tr>
+        <tr><td>乘法變加法</td><td>\(\log_a x+\log_a y=\log_a(xy)\)</td><td>\(x>0,y>0\)。乘積裡的指數相加，所以對數把乘法轉成加法。</td></tr>
+        <tr><td>除法變減法</td><td>\(\log_a x-\log_a y=\log_a\!\left(\dfrac{x}{y}\right)\)</td><td>\(x>0,y>0\)。商裡的指數相減。</td></tr>
+        <tr><td>冪次移到前面</td><td>\(r\log_a x=\log_a(x^r)\)</td><td>\(x>0\)，\(r\) 可為實數。把「次方」移到係數；反過來也能使用。</td></tr>
+        <tr><td>換底公式</td><td>\(\log_a b=\dfrac{\log_c b}{\log_c a}\)</td><td>\(a,b,c>0\)，且 \(a\ne1,c\ne1\)。\(c\) 常取 10 或 \(e\)。</td></tr>
+        <tr><td>連鎖、倒數</td><td>\(\log_a b\cdot\log_b c=\log_a c\)<br>\(\log_a b=\dfrac1{\log_b a}\)</td><td>所有出現的底數與真數都要正，且作為底數者不等於 1。</td></tr>
+        <tr><td>交換底數的指數</td><td>\(x^{\log_a y}=y^{\log_a x}\)</td><td>\(a>0,a\ne1,x>0,y>0\)。兩邊都會變成 \(a^{(\log_a x)(\log_a y)}\)。</td></tr>
+      </tbody></table></div>
+      <div class="two-col" style="margin-top:14px;"><article class="example"><strong>例題｜把乘除整理成一個對數</strong><p>化簡 <span class="math">\(\log_2 12-\log_2 3+\frac12\log_2 16\)</span>。</p><span class="formula teal">\(=\log_2\!\left(\frac{12}{3}\right)+\log_2(16^{1/2})=\log_2(4\cdot4)=\log_2 16=4\)</span><p>先把係數 \(\frac12\) 收回成根號，再合併乘除。</p></article><article class="wrong"><strong>最常犯錯｜對數沒有「和差拆開」</strong><p><span class="math">\(\log_a(x+y)\ne\log_a x+\log_a y\)</span>，同樣地 <span class="math">\(\log_a(x-y)\)</span> 也不能拆。</p><p>右邊合併後是 <span class="math">\(\log_a(xy)\)</span>，它對應乘法，不是加法。</p></article></div>
+    </section>
+
+    <section class="card" id="proofs">
+      <div class="section-head"><div><h2>3. 核心公式怎麼證明？</h2><p>先在整數範圍看懂「因子個數」，再以正底數延伸到分數與實數指數。</p></div><span class="tag gold">可直接投影的證明</span></div>
+      <details open><summary>證明 A｜為什麼同底數相乘，指數要相加？</summary><div class="proof"><p>令 <span class="math">\(m,n\)</span> 是正整數。<span class="math">\(a^m\)</span> 有 <span class="math">\(m\)</span> 個 <span class="math">\(a\)</span>；<span class="math">\(a^n\)</span> 有 <span class="math">\(n\)</span> 個 <span class="math">\(a\)</span>。相乘後把兩串連在一起，總共有 <span class="math">\(m+n\)</span> 個 <span class="math">\(a\)</span>：</p><span class="formula">\(a^m\cdot a^n=\underbrace{a\cdots a}_{m\text{ 個}}\underbrace{a\cdots a}_{n\text{ 個}}=\underbrace{a\cdots a}_{m+n\text{ 個}}=a^{m+n}\)</span><p>除法則是反過來約掉 <span class="math">\(n\)</span> 個因子：<span class="math">\(a^m\div a^n=a^{m-n}\)</span>。當 <span class="math">\(m-n\)</span> 是 0 或負數時，這也是定義零次方、負次方的理由。</p></div></details>
+      <details open><summary>證明 B｜為什麼 \((a^m)^n=a^{mn}\)？</summary><div class="proof"><p>\((a^m)^n\) 表示把 <span class="math">\(a^m\)</span> 連乘 <span class="math">\(n\)</span> 次。每一組有 <span class="math">\(m\)</span> 個 <span class="math">\(a\)</span>，共有 <span class="math">\(n\)</span> 組，所以總數是 <span class="math">\(m\times n\)</span> 個：</p><span class="formula">\((a^m)^n=\underbrace{a^m\cdot a^m\cdots a^m}_{n\text{ 組}}=a^{m+m+\cdots+m}=a^{mn}\)</span><p>這是「連加 \(n\) 次 \(m\)」變成乘法的地方；因此次方的次方是<strong>指數相乘</strong>，不是相加。</p></div></details>
+      <details><summary>證明 C｜為什麼 \((ab)^r=a^rb^r\)（正底數的有理數指數）？</summary><div class="proof"><p>先處理 <span class="math">\(r=\frac mn\)</span>，其中 <span class="math">\(n\)</span> 是正整數、<span class="math">\(a,b>0\)</span>。設 <span class="math">\(u=(ab)^{m/n}\)</span>、<span class="math">\(v=a^{m/n}b^{m/n}\)</span>。兩者都為正，且：</p><span class="formula">\(u^n=(ab)^m=a^mb^m=\left(a^{m/n}b^{m/n}\right)^n=v^n\)</span><p>正數的 <span class="math">\(n\)</span> 次方根唯一，所以 <span class="math">\(u=v\)</span>。一般實數指數的嚴格建構會用極限／連續性延伸；高中計算中先掌握這個正底數架構即可。</p></div></details>
+      <details open><summary>證明 D｜為什麼乘法會變成對數加法？</summary><div class="proof"><div class="steps"><div class="step"><div class="step-no">1</div><div>令 <span class="math">\(p=\log_a x\)</span>、<span class="math">\(q=\log_a y\)</span>，依定義可改寫成 <span class="math">\(x=a^p\)</span>、<span class="math">\(y=a^q\)</span>。</div></div><div class="step"><div class="step-no">2</div><div>相乘後用指數律：<span class="math">\(xy=a^p\cdot a^q=a^{p+q}\)</span>。</div></div><div class="step"><div class="step-no">3</div><div>「以 <span class="math">\(a\)</span> 為底幾次方得到 <span class="math">\(xy\)</span>？」答案是 <span class="math">\(p+q\)</span>，故 <span class="math">\(\log_a(xy)=\log_a x+\log_a y\)</span>。</div></div></div></div></details>
+      <details><summary>證明 E｜換底公式從哪裡來？</summary><div class="proof"><p>令 <span class="math">\(y=\log_a b\)</span>，所以 <span class="math">\(a^y=b\)</span>。兩邊同取以 <span class="math">\(c\)</span> 為底的對數：</p><span class="formula">\(\log_c(a^y)=\log_c b\quad\Rightarrow\quad y\log_c a=\log_c b\quad\Rightarrow\quad y=\dfrac{\log_c b}{\log_c a}\)</span><p>再把 <span class="math">\(y\)</span> 換回 <span class="math">\(\log_a b\)</span>，就得到換底公式。分母 <span class="math">\(\log_c a\)</span> 不會是 0，因為 <span class="math">\(a\ne1\)</span>。</p></div></details>
+    </section>
+
+    <section class="card">
+      <div class="section-head"><div><h2>4. 一張解題地圖：看見什麼，先做什麼？</h2><p>公式不是輪流試；先辨認題目的結構，才能選到正確方向。</p></div><span class="tag">解題策略</span></div>
+      <div class="lesson-flow"><div class="flow-item"><b>① 同底數的乘除</b>用 \(a^m a^n\) 或 \(a^m/a^n\) 合併指數。</div><div class="flow-item"><b>② 指數方程式</b>先化同底數；化不出來時再取對數。</div><div class="flow-item"><b>③ 對數的和、差、係數</b>分別改成乘、除、次方，再合併成一個對數。</div><div class="flow-item"><b>④ 出現 log 的式子</b>第一眼先檢查底數和真數條件，再開始運算。</div></div>
+      <div class="two-col" style="margin-top:14px;"><article class="example"><strong>例題｜指數成長模型</strong><p>某菌種原有 <span class="math">\(A\)</span> 個，每隔 <span class="math">\(T\)</span> 小時變成原來的 <span class="math">\(r\)</span> 倍。經過 <span class="math">\(t\)</span> 小時後有多少個？</p><span class="formula teal">\(f(t)=A\,r^{t/T}\qquad(r>0)\)</span><p><span class="math">\(t/T\)</span> 是經過了幾個週期。若每期增加 20%，倍率是 <span class="math">\(r=1.2\)</span>，不是 0.2；若 <span class="math">\(r=2\)</span>，每期才是加倍。</p></article><article class="notice"><strong>指數成長的讀圖提醒</strong><p><span class="math">\(r>1\)</span> 時隨時間增加；<span class="math">\(0<r<1\)</span> 時衰減；<span class="math">\(r=1\)</span> 時不變。</p><p>題目說「增加 <span class="math">\(p\%\)</span>」要換成 <span class="math">\(1+\frac p{100}\)</span> 倍。</p></article></div>
+    </section>
+
+    <section class="card" id="practice">
+      <div class="section-head"><div><h2>5. 三層自我檢查</h2><p>先自行完成；展開後比對關鍵步驟。答錯時先回想「我漏了哪個條件或結構？」</p></div><span class="tag gold">基礎 → 進階 → 挑戰</span></div>
+      <div class="exercise"><article class="check-card"><span class="tag">基礎</span><p>化簡 \(\dfrac{3^5\cdot3^{-2}}{3^4}\)。</p><details><summary>看答案</summary><p>\(3^{5+(-2)-4}=3^{-1}=\dfrac13\)。負指數是倒數。</p></details></article><article class="check-card"><span class="tag">進階</span><p>解 \(\log_2(x-1)+\log_2(x+1)=3\)。</p><details><summary>看答案</summary><p>先有 \(x-1>0\)，即 \(x>1\)。合併為 \(\log_2(x^2-1)=3\)，故 \(x^2-1=8\)，得 \(x=\pm3\)。由條件只留 \(x=3\)。</p></details></article><article class="check-card"><span class="tag">挑戰</span><p>已知 \(\log_2 3=p\)，求 \(\log_6 12\)。</p><details><summary>看答案</summary><p>\(\log_6 12=\dfrac{\log_2 12}{\log_2 6}=\dfrac{2+p}{1+p}\)。換底時，分子、分母必須取同一種底。</p></details></article></div>
+      <aside class="wrong" style="margin-top:14px;"><strong>交卷前 10 秒：</strong>有沒有把 <span class="math">\(\log_a(x+y)\)</span> 拆掉？有沒有忘記真數要正？負指數是否誤當成負數？遇到分母的負指數時，有沒有先保留括號？這四項最容易讓整題失分。</aside>
+    </section>
+    <footer>建議教學順序：用證明 A、B 建立指數律 → 由指數／對數互換推證明 D → 最後用換底公式與含條件的對數方程式做練習。</footer>
+  </main>
+</body>
+</html>

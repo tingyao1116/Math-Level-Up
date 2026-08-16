@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>平面向量：內積與正射影｜互動教學</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root { --ink:#17334b; --muted:#52697b; --line:#d4e2ed; --blue:#176fa8; --blue-soft:#e9f5fc; --teal:#087b70; --teal-soft:#e7f8f3; --orange:#b76316; --orange-soft:#fff3e4; --violet:#6d4ba2; --violet-soft:#f2edff; --red:#ae4950; --red-soft:#fff0f1; --shadow:0 16px 38px rgba(38,74,103,.10); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:radial-gradient(circle at 4% 0%,#d9f3ff 0,transparent 27rem),radial-gradient(circle at 96% 7%,#fff0d5 0,transparent 22rem),#f5f9fc; font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; line-height:1.78; }
+    .wrap { width:min(1160px,calc(100% - 30px)); margin:0 auto; padding:22px 0 62px; }
+    .back { display:inline-block; color:var(--blue); font-weight:850; text-decoration:none; }
+    .back:hover { text-decoration:underline; }
+    .hero { position:relative; overflow:hidden; margin-top:17px; padding:clamp(28px,5vw,55px); border-radius:28px; color:#fff; background:linear-gradient(130deg,#123e6b,#176fa8 54%,#078476); box-shadow:var(--shadow); }
+    .hero::after { content:"·"; position:absolute; right:4%; bottom:-58px; color:rgba(255,255,255,.13); font:900 19rem/1 Georgia,serif; }
+    .hero > * { position:relative; z-index:1; }
+    .eyebrow,.tag,.level,.state { display:inline-block; padding:3px 10px; border-radius:999px; font-size:.86rem; font-weight:850; letter-spacing:.02em; }
+    .eyebrow { color:#e1fbf8; background:rgba(255,255,255,.15); }
+    h1 { margin:9px 0; font-size:clamp(2.1rem,5vw,3.65rem); line-height:1.2; }
+    h2 { margin:0; font-size:clamp(1.58rem,3vw,2.25rem); line-height:1.35; }
+    h3 { margin:0 0 7px; font-size:1.18rem; line-height:1.5; }
+    p { margin:8px 0; }
+    .lead { max-width:820px; margin:0; color:#eafaff; font-size:clamp(1rem,2.1vw,1.14rem); }
+    .nav,.tabs,.tools { display:flex; flex-wrap:wrap; gap:8px; }
+    .nav { margin-top:23px; }
+    .nav a { padding:6px 12px; border:1px solid rgba(255,255,255,.55); border-radius:999px; color:#fff; font-weight:850; text-decoration:none; }
+    .nav a:hover { background:rgba(255,255,255,.16); }
+    .section { margin-top:37px; scroll-margin-top:16px; }
+    .section-head { margin-bottom:16px; }
+    .section-head p,.card > p { color:var(--muted); }
+    .tag { color:var(--blue); background:var(--blue-soft); }
+    .tag.teal,.level.basic,.state.positive { color:var(--teal); background:var(--teal-soft); }
+    .tag.orange,.level.advance { color:var(--orange); background:var(--orange-soft); }
+    .tag.violet,.level.challenge { color:var(--violet); background:var(--violet-soft); }
+    .state.zero { color:var(--blue); background:var(--blue-soft); }
+    .state.negative { color:var(--red); background:var(--red-soft); }
+    .grid2,.grid3,.examples,.practice { display:grid; gap:16px; }
+    .grid2,.examples,.practice { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .grid3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .card,.meaning,.practice-card { min-width:0; padding:clamp(18px,3vw,27px); border:1px solid var(--line); border-radius:20px; background:#fff; box-shadow:0 7px 21px rgba(28,60,88,.05); }
+    .meaning { padding:15px; }
+    .meaning h3 { color:var(--blue); }
+    .meaning p { margin:4px 0; color:var(--muted); font-size:.94rem; }
+    .meaning svg { display:block; width:100%; height:125px; margin:7px 0; }
+    .formula { margin:13px 0; padding:13px 15px; overflow-x:auto; border-left:5px solid var(--blue); border-radius:0 13px 13px 0; color:#143f5d; background:#f0f8fc; font:700 clamp(1.04rem,2.55vw,1.35rem)/1.65 Cambria,"Times New Roman",serif; }
+    .formula.teal { border-color:var(--teal); background:var(--teal-soft); }
+    .formula.orange { border-color:var(--orange); background:var(--orange-soft); }
+    .formula mjx-container[display="true"] { min-width:max-content; margin:.12em 0 !important; }
+    mjx-container { max-width:100%; overflow-x:auto; overflow-y:hidden; }
+    .note,.warning,.teacher,.success { margin-top:13px; padding:12px 14px; border-left:4px solid var(--blue); border-radius:0 12px 12px 0; background:var(--blue-soft); }
+    .warning { border-color:var(--red); background:var(--red-soft); }
+    .teacher { border-color:var(--orange); background:var(--orange-soft); }
+    .success { border-color:var(--teal); background:var(--teal-soft); }
+    .note strong { color:var(--blue); } .warning strong { color:var(--red); } .teacher strong { color:var(--orange); } .success strong { color:var(--teal); }
+    .diagram { display:block; width:min(100%,520px); height:auto; margin:9px auto; }
+    .steps { display:grid; gap:10px; margin-top:14px; }
+    .step { padding:12px 14px; border:1px solid var(--line); border-radius:13px; background:#fbfdff; }
+    .step b { display:inline-grid; place-items:center; width:26px; height:26px; margin-right:7px; border-radius:50%; color:#fff; background:var(--blue); }
+    .proof { margin-top:14px; padding:16px; border:1px solid #ddd1f1; border-radius:16px; background:#fcfaff; }
+    .proof h3 { color:var(--violet); } .proof ol,.example-card ol { margin:8px 0 0; padding-left:1.35rem; color:var(--muted); } .proof li + li,.example-card li + li { margin-top:6px; }
+    .lab { overflow:hidden; border:1px solid #bfdae9; border-radius:20px; background:#fff; }
+    .tabs { padding:16px; border-bottom:1px solid var(--line); background:#fbfdff; }
+    button { border:1px solid #b9d0df; border-radius:11px; padding:9px 11px; color:#30546e; background:#fafdff; font:inherit; font-weight:800; cursor:pointer; }
+    button:hover { background:#edf8fc; }
+    button:focus-visible,a:focus-visible,summary:focus-visible { outline:3px solid #82c9e9; outline-offset:2px; }
+    button.active { color:#fff; border-color:var(--blue); background:var(--blue); }
+    .case { padding:18px; } .case[hidden] { display:none; }
+    .case svg { display:block; width:min(100%,650px); height:auto; margin:0 auto; }
+    .case-copy { margin:0 18px 18px; padding:14px; border:1px solid #bce5d9; border-radius:14px; background:#f0faf7; color:#315b5b; }
+    .case-copy h3 { color:var(--teal); } .case-copy p { margin:5px 0; }
+    .legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:11px; color:var(--muted); font-size:.9rem; }
+    .legend span { display:inline-flex; align-items:center; gap:5px; } .swatch { width:14px; height:4px; border-radius:4px; }
+    .scroll { overflow-x:auto; } table { width:100%; margin-top:14px; border-collapse:collapse; border:1px solid var(--line); } th,td { padding:11px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; } th { color:var(--blue); background:var(--blue-soft); } td { color:var(--muted); }
+    details { margin-top:14px; overflow:hidden; border:1px solid var(--line); border-radius:14px; background:#fbfdff; } summary { padding:12px 14px; color:var(--blue); font-weight:850; cursor:pointer; } details > div { padding:0 14px 14px; color:var(--muted); }
+    .example-card h3 { color:var(--blue); }
+    #quizQuestion { margin:12px 0; padding:14px; border:1px solid var(--line); border-radius:14px; background:#fbfdff; font-size:1.04rem; font-weight:800; }
+    .choices { display:grid; gap:8px; } .choices button { text-align:left; } .choices button.good { color:#087148; border-color:#66c896; background:#ebfaf1; } .choices button.wrong { color:#9c4f1c; border-color:#efbc7a; background:#fff4e8; } .choices button:disabled { cursor:default; }
+    .feedback { min-height:68px; margin-top:12px; padding:12px 13px; border-radius:13px; background:#f3f7fa; color:var(--muted); } .feedback.good { color:#087148; background:#ebfaf1; } .feedback.try { color:#985214; background:#fff5e8; }
+    #nextQuestion { color:#fff; border-color:var(--teal); background:var(--teal); } #hintButton { color:var(--blue); background:var(--blue-soft); }
+    .check { margin:8px 0 0; padding:0; list-style:none; } .check li { margin-top:9px; padding:11px 13px; border:1px solid var(--line); border-radius:12px; background:#fbfdff; color:var(--muted); } .check strong { color:var(--blue); }
+    footer { margin-top:44px; color:var(--muted); text-align:center; }
+    @media (max-width:780px) { .grid2,.grid3,.examples,.practice { grid-template-columns:minmax(0,1fr); } }
+    @media (max-width:520px) { .wrap { width:min(100% - 22px,1160px); padding-top:14px; } .hero { border-radius:22px; } .card,.meaning,.practice-card { padding:17px; border-radius:16px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html#s3">← 回到數學小遊戲首頁</a>
+    <header class="hero">
+      <span class="eyebrow">s3-3・平面向量</span>
+      <h1>內積不是「兩個向量相乘」<br>它在量方向有多一致</h1>
+      <p class="lead">先從「沿著某個方向走了多少」理解內積，再把圖形座標化。你會看見 \(\,x_1x_2+y_1y_2\,\) 不是憑空出現的公式，而是兩個向量在互相垂直座標軸上的投影合起來的結果。</p>
+      <nav class="nav" aria-label="頁面導覽"><a href="#definition">內積的定義</a><a href="#coordinates">座標公式為何成立</a><a href="#projection">正射影互動圖</a><a href="#examples">例題分層</a><a href="#practice">自我檢查</a></nav>
+    </header>
+
+    <section id="definition" class="section">
+      <div class="section-head"><span class="tag teal">觀念起點</span><h2>內積 = 一個向量在另一個方向上的「有效長度」× 那個向量的長度</h2><p>先把兩個向量的起點放在同一點 \(O\)。若 \(\theta\) 是它們的夾角，\(\vec a\) 沿著 \(\vec b\) 方向的帶符號投影長是 \(|\vec a|\cos\theta\)。再乘上 \(|\vec b|\)，就是內積。</p></div>
+      <div class="grid2">
+        <article class="card"><h3>正式定義</h3><div class="formula teal">\[\vec a\cdot\vec b=|\vec a|\,|\vec b|\cos\theta\qquad(0\le\theta\le\pi)\]</div><p>它的答案是<strong>一個數</strong>，不是向量。兩向量越同方向，\(\cos\theta\) 越接近 \(1\)，內積越大；越反方向，內積便越負。</p><div class="note"><strong>先問一句：</strong>「\(\vec a\) 在 \(\vec b\) 方向上，到底貢獻了多少？」這比先背公式更能判斷正負號。</div></article>
+        <article class="card"><h3>用手電筒的影子想像</h3><p>把 \(\vec a\) 想成一根斜桿，光線垂直照到 \(\vec b\) 所在的直線上。桿在這條直線留下的影子，正是 \(\vec a\) 對 \(\vec b\) 的正射影。</p><div class="formula orange">\[\text{帶符號投影長}=|\vec a|\cos\theta=\frac{\vec a\cdot\vec b}{|\vec b|}\]</div><p>影子落在 \(\vec b\) 的正向，投影是正；落在反向，投影是負。若只問「幾何長度」，才再取絕對值。</p></article>
+      </div>
+      <div class="grid3">
+        <article class="meaning"><span class="state positive">銳角：內積為正</span><h3>同方向成分存在</h3><svg viewBox="0 0 300 125" role="img" aria-label="兩向量夾銳角"><defs><marker id="ar1" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7z" fill="#176fa8"/></marker></defs><line x1="37" y1="94" x2="255" y2="94" stroke="#176fa8" stroke-width="5" marker-end="url(#ar1)"/><line x1="37" y1="94" x2="201" y2="35" stroke="#087b70" stroke-width="5" marker-end="url(#ar1)"/><text x="95" y="78" fill="#a55b15" font-size="17">θ &lt; 90°</text><text x="259" y="102" fill="#176fa8" font-size="18">b</text><text x="205" y="33" fill="#087b70" font-size="18">a</text></svg><p>\(\cos\theta>0\)，所以 \(\vec a\cdot\vec b>0\)。</p></article>
+        <article class="meaning"><span class="state zero">直角：內積為零</span><h3>沒有同方向成分</h3><svg viewBox="0 0 300 125" role="img" aria-label="兩向量垂直"><defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7z" fill="#176fa8"/></marker></defs><line x1="50" y1="95" x2="254" y2="95" stroke="#176fa8" stroke-width="5" marker-end="url(#ar2)"/><line x1="50" y1="95" x2="50" y2="22" stroke="#087b70" stroke-width="5" marker-end="url(#ar2)"/><path d="M50 78H67V95" fill="none" stroke="#b76316" stroke-width="3"/><text x="262" y="102" fill="#176fa8" font-size="18">b</text><text x="41" y="21" fill="#087b70" font-size="18">a</text></svg><p>\(\cos90°=0\)，所以 \(\vec a\cdot\vec b=0\)。</p></article>
+        <article class="meaning"><span class="state negative">鈍角：內積為負</span><h3>投影落到反方向</h3><svg viewBox="0 0 300 125" role="img" aria-label="兩向量夾鈍角"><defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7z" fill="#176fa8"/></marker></defs><line x1="48" y1="94" x2="258" y2="94" stroke="#176fa8" stroke-width="5" marker-end="url(#ar3)"/><line x1="48" y1="94" x2="4" y2="40" stroke="#ae4950" stroke-width="5" marker-end="url(#ar3)"/><text x="88" y="75" fill="#a55b15" font-size="17">θ &gt; 90°</text><text x="264" y="102" fill="#176fa8" font-size="18">b</text><text x="11" y="37" fill="#ae4950" font-size="18">a</text></svg><p>\(\cos\theta<0\)，所以 \(\vec a\cdot\vec b<0\)。</p></article>
+      </div>
+      <div class="warning"><strong>常見誤解：</strong>「內積是長度相乘」少了最關鍵的 \(\cos\theta\)。長度永遠非負，但內積可以是負數；負號記錄方向相反。</div>
+    </section>
+
+    <section id="coordinates" class="section">
+      <div class="section-head"><span class="tag">座標化</span><h2>為什麼座標內積是 \(x_1x_2+y_1y_2\)？</h2><p>不是把兩個座標「隨便相乘再相加」。關鍵是：\(x\) 軸與 \(y\) 軸互相垂直，所以不同方向的成分不會互相貢獻內積。</p></div>
+      <div class="grid2">
+        <article class="card">
+          <h3>把向量拆成兩條互相垂直的方向</h3>
+          <svg class="diagram" viewBox="0 0 520 330" role="img" aria-label="座標平面中兩個向量的分量">
+            <defs><marker id="axis" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7z" fill="#637d92"/></marker><marker id="va" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#176fa8"/></marker><marker id="vb" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#b76316"/></marker></defs>
+            <g stroke="#dbe9f1"><path d="M45 50H490M45 100H490M45 150H490M45 200H490M45 250H490M90 22V292M150 22V292M210 22V292M270 22V292M330 22V292M390 22V292M450 22V292"/></g><line x1="48" y1="250" x2="487" y2="250" stroke="#637d92" stroke-width="2.5" marker-end="url(#axis)"/><line x1="90" y1="285" x2="90" y2="25" stroke="#637d92" stroke-width="2.5" marker-end="url(#axis)"/>
+            <line x1="90" y1="250" x2="330" y2="100" stroke="#176fa8" stroke-width="5" marker-end="url(#va)"/><line x1="90" y1="250" x2="270" y2="175" stroke="#b76316" stroke-width="5" marker-end="url(#vb)"/><path d="M330 100V250H90" fill="none" stroke="#176fa8" stroke-width="2.5" stroke-dasharray="7 6"/><path d="M270 175V250H90" fill="none" stroke="#b76316" stroke-width="2.5" stroke-dasharray="7 6"/>
+            <text x="338" y="98" fill="#176fa8" font-size="20" font-weight="700">a = (x₁, y₁)</text><text x="275" y="171" fill="#a55716" font-size="20" font-weight="700">b = (x₂, y₂)</text><text x="194" y="274" fill="#176fa8" font-size="16">x₁</text><text x="53" y="180" fill="#176fa8" font-size="16">y₁</text><text x="162" y="238" fill="#a55716" font-size="16">x₂</text><text x="96" y="215" fill="#a55716" font-size="16">y₂</text>
+          </svg>
+          <p>同軸的 \(x\) 成分彼此量「同方向程度」，\(y\) 成分也一樣；橫向與直向則互相垂直，內積為 \(0\)。</p>
+        </article>
+        <article class="card">
+          <h3>用單位向量拆開，公式自然出現</h3>
+          <div class="formula">\[\vec a=x_1\mathbf i+y_1\mathbf j,\quad\vec b=x_2\mathbf i+y_2\mathbf j\]</div>
+          <p>\(\mathbf i\) 和 \(\mathbf j\) 是長度 \(1\) 的座標軸方向向量，因此 \(\mathbf i\cdot\mathbf i=1\)、\(\mathbf j\cdot\mathbf j=1\)、\(\mathbf i\cdot\mathbf j=0\)。</p>
+          <div class="steps"><div class="step"><b>1</b>把兩向量展開相乘，共有四項。</div><div class="step"><b>2</b>交叉兩項含 \(\mathbf i\cdot\mathbf j\)，因垂直而消失。</div><div class="step"><b>3</b>只剩同軸成分：\(\boxed{\vec a\cdot\vec b=x_1x_2+y_1y_2}\)。</div></div>
+          <div class="teacher"><strong>課堂問法：</strong>「\((3,4)\cdot(2,-1)\) 為什麼不是 \(3\times4+2\times(-1)\)？」要配對的是同一個座標軸，不是同一個向量內的兩個數。</div>
+        </article>
+      </div>
+      <div class="proof"><h3>想確認它和幾何定義完全一致？比較同一條邊的平方長</h3><ol><li>座標計算：\(\lVert\vec a-\vec b\rVert^2=|\vec a|^2+|\vec b|^2-2(x_1x_2+y_1y_2)\)。</li><li>由餘弦定理：\(\lVert\vec a-\vec b\rVert^2=|\vec a|^2+|\vec b|^2-2|\vec a||\vec b|\cos\theta\)。</li><li>兩式描述同一個長度，故 \(x_1x_2+y_1y_2=|\vec a||\vec b|\cos\theta=\vec a\cdot\vec b\)。</li></ol></div>
+    </section>
+
+    <section id="projection" class="section">
+      <div class="section-head"><span class="tag orange">圖像重點</span><h2>正射影：先找垂足 \(H\)，再分清「長度」與「向量」</h2><p>把 \(\vec a,\vec b\) 的起點都放在原點 \(O\)。從 \(A\) 向 \(\vec b\) 所在直線作垂線，垂足是 \(H\)。\(\overrightarrow{OH}\) 就是 \(\vec a\) 在 \(\vec b\) 上的正射影向量。</p></div>
+      <div class="lab">
+        <div class="tabs" id="projectionTabs"><button class="active" type="button" data-case="acute">銳角：投影在正向</button><button type="button" data-case="right">直角：投影在原點</button><button type="button" data-case="obtuse">鈍角：投影在反向</button><button type="button" data-case="slanted">斜向：座標也能算</button></div>
+        <div class="case" data-panel="acute">
+          <svg viewBox="0 0 650 330" role="img" aria-label="向量 a=(4,3) 對 b=(5,0) 的正射影"><defs><marker id="pa1" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#176fa8"/></marker><marker id="pb1" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#b76316"/></marker><marker id="ph1" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#087b70"/></marker></defs><g stroke="#dceaf1"><path d="M50 40V292M100 40V292M150 40V292M200 40V292M250 40V292M300 40V292M350 40V292M400 40V292M450 40V292M500 40V292M550 40V292M600 40V292M35 50H620M35 100H620M35 150H620M35 200H620M35 250H620"/></g><line x1="110" y1="250" x2="590" y2="250" stroke="#b76316" stroke-width="2.5" stroke-dasharray="9 7"/><line x1="110" y1="250" x2="510" y2="250" stroke="#b76316" stroke-width="5" marker-end="url(#pb1)"/><line x1="110" y1="250" x2="430" y2="130" stroke="#176fa8" stroke-width="5" marker-end="url(#pa1)"/><line x1="110" y1="250" x2="430" y2="250" stroke="#087b70" stroke-width="6" marker-end="url(#ph1)"/><line x1="430" y1="130" x2="430" y2="250" stroke="#8155a8" stroke-width="3" stroke-dasharray="8 6"/><path d="M414 234H430V250" fill="none" stroke="#8155a8" stroke-width="2.5"/><text x="98" y="274" fill="#17334b" font-size="18">O</text><text x="436" y="126" fill="#176fa8" font-size="20">A</text><text x="436" y="274" fill="#087b70" font-size="20">H</text><text x="514" y="272" fill="#a55716" font-size="18">b = (5, 0)</text><text x="360" y="126" fill="#176fa8" font-size="18">a = (4, 3)</text><text x="45" y="34" fill="#087b70" font-size="19">內積為正：H 落在 b 的正向</text></svg>
+          <div class="case-copy"><h3>銳角案例：\(\vec a=(4,3)\)，\(\vec b=(5,0)\)</h3><p>\(\vec a\cdot\vec b=20\)，\(|\vec b|^2=25\)，所以 \(\displaystyle\operatorname{proj}_{\vec b}\vec a=\frac{20}{25}(5,0)=(4,0)\)。</p></div>
+        </div>
+        <div class="case" data-panel="right" hidden>
+          <svg viewBox="0 0 650 330" role="img" aria-label="向量 a=(0,4) 對 b=(5,0) 的正射影"><defs><marker id="pa2" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#176fa8"/></marker><marker id="pb2" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#b76316"/></marker></defs><g stroke="#dceaf1"><path d="M50 40V292M100 40V292M150 40V292M200 40V292M250 40V292M300 40V292M350 40V292M400 40V292M450 40V292M500 40V292M550 40V292M600 40V292M35 50H620M35 100H620M35 150H620M35 200H620M35 250H620"/></g><line x1="160" y1="250" x2="590" y2="250" stroke="#b76316" stroke-width="2.5" stroke-dasharray="9 7"/><line x1="160" y1="250" x2="510" y2="250" stroke="#b76316" stroke-width="5" marker-end="url(#pb2)"/><line x1="160" y1="250" x2="160" y2="78" stroke="#176fa8" stroke-width="5" marker-end="url(#pa2)"/><path d="M160 232H178V250" fill="none" stroke="#8155a8" stroke-width="2.5"/><circle cx="160" cy="250" r="7" fill="#087b70"/><text x="147" y="274" fill="#17334b" font-size="18">O = H</text><text x="168" y="75" fill="#176fa8" font-size="20">A</text><text x="514" y="272" fill="#a55716" font-size="18">b = (5, 0)</text><text x="170" y="145" fill="#176fa8" font-size="18">a = (0, 4)</text><text x="45" y="34" fill="#176fa8" font-size="19">內積為 0：a 垂直 b，影子退回原點</text></svg>
+          <div class="case-copy"><h3>直角案例：\(\vec a=(0,4)\)，\(\vec b=(5,0)\)</h3><p>\(\vec a\cdot\vec b=0\)，故 \(\operatorname{proj}_{\vec b}\vec a=\vec0\)。此時垂足 \(H\) 就是原點 \(O\)。</p></div>
+        </div>
+        <div class="case" data-panel="obtuse" hidden>
+          <svg viewBox="0 0 650 330" role="img" aria-label="向量 a=(-3,2) 對 b=(5,0) 的正射影"><defs><marker id="pa3" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#ae4950"/></marker><marker id="pb3" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#b76316"/></marker><marker id="ph3" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#087b70"/></marker></defs><g stroke="#dceaf1"><path d="M50 40V292M100 40V292M150 40V292M200 40V292M250 40V292M300 40V292M350 40V292M400 40V292M450 40V292M500 40V292M550 40V292M600 40V292M35 50H620M35 100H620M35 150H620M35 200H620M35 250H620"/></g><line x1="80" y1="250" x2="590" y2="250" stroke="#b76316" stroke-width="2.5" stroke-dasharray="9 7"/><line x1="300" y1="250" x2="550" y2="250" stroke="#b76316" stroke-width="5" marker-end="url(#pb3)"/><line x1="300" y1="250" x2="150" y2="150" stroke="#ae4950" stroke-width="5" marker-end="url(#pa3)"/><line x1="300" y1="250" x2="150" y2="250" stroke="#087b70" stroke-width="6" marker-end="url(#ph3)"/><line x1="150" y1="150" x2="150" y2="250" stroke="#8155a8" stroke-width="3" stroke-dasharray="8 6"/><path d="M150 232H168V250" fill="none" stroke="#8155a8" stroke-width="2.5"/><text x="289" y="274" fill="#17334b" font-size="18">O</text><text x="157" y="146" fill="#ae4950" font-size="20">A</text><text x="157" y="274" fill="#087b70" font-size="20">H</text><text x="420" y="272" fill="#a55716" font-size="18">b = (5, 0)</text><text x="74" y="145" fill="#ae4950" font-size="18">a = (−3, 2)</text><text x="45" y="34" fill="#ae4950" font-size="19">內積為負：H 落在 b 的反向</text></svg>
+          <div class="case-copy"><h3>鈍角案例：\(\vec a=(-3,2)\)，\(\vec b=(5,0)\)</h3><p>\(\vec a\cdot\vec b=-15\)，所以 \(\displaystyle\operatorname{proj}_{\vec b}\vec a=\frac{-15}{25}(5,0)=(-3,0)\)。負號告訴我們影子指向 \(\vec b\) 的反向。</p></div>
+        </div>
+        <div class="case" data-panel="slanted" hidden>
+          <svg viewBox="0 0 650 330" role="img" aria-label="向量 a=(4,1) 對 b=(2,3) 的正射影"><defs><marker id="pa4" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#176fa8"/></marker><marker id="pb4" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#b76316"/></marker><marker id="ph4" markerWidth="10" markerHeight="10" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9z" fill="#087b70"/></marker></defs><g stroke="#dceaf1"><path d="M50 40V292M100 40V292M150 40V292M200 40V292M250 40V292M300 40V292M350 40V292M400 40V292M450 40V292M500 40V292M550 40V292M600 40V292M35 50H620M35 100H620M35 150H620M35 200H620M35 250H620"/></g><line x1="180" y1="310" x2="470" y2="-20" stroke="#b76316" stroke-width="2.5" stroke-dasharray="9 7"/><line x1="250" y1="250" x2="350" y2="100" stroke="#b76316" stroke-width="5" marker-end="url(#pb4)"/><line x1="250" y1="250" x2="450" y2="200" stroke="#176fa8" stroke-width="5" marker-end="url(#pa4)"/><line x1="250" y1="250" x2="419" y2="-4" stroke="#087b70" stroke-width="6" marker-end="url(#ph4)"/><line x1="450" y1="200" x2="419" y2="-4" stroke="#8155a8" stroke-width="3" stroke-dasharray="8 6"/><text x="238" y="274" fill="#17334b" font-size="18">O</text><text x="456" y="198" fill="#176fa8" font-size="20">A</text><text x="357" y="99" fill="#a55716" font-size="18">b = (2, 3)</text><text x="368" y="220" fill="#176fa8" font-size="18">a = (4, 1)</text><text x="45" y="34" fill="#087b70" font-size="19">不用水平、垂直才能作投影；垂足仍在 b 的所在直線上</text></svg>
+          <div class="case-copy"><h3>斜向案例：\(\vec a=(4,1)\)，\(\vec b=(2,3)\)</h3><p>\(\vec a\cdot\vec b=11\)，\(|\vec b|^2=13\)，所以 \(\displaystyle\operatorname{proj}_{\vec b}\vec a=\frac{11}{13}(2,3)=\left(\frac{22}{13},\frac{33}{13}\right)\)。</p></div>
+        </div>
+      </div>
+      <div class="legend"><span><i class="swatch" style="background:#176fa8"></i>向量 \(\vec a\)</span><span><i class="swatch" style="background:#b76316"></i>方向 \(\vec b\)</span><span><i class="swatch" style="background:#087b70"></i>正射影 \(\overrightarrow{OH}\)</span><span><i class="swatch" style="background:#8155a8"></i>垂線 \(AH\)</span></div>
+      <div class="scroll"><table><thead><tr><th>你要找的是…</th><th>符號</th><th>答案型態</th><th>公式</th></tr></thead><tbody><tr><td>沿 \(\vec b\) 方向的帶符號長</td><td>\(\operatorname{comp}_{\vec b}\vec a\)</td><td>數</td><td>\(\displaystyle\frac{\vec a\cdot\vec b}{|\vec b|}\)</td></tr><tr><td>影子本身：從 \(O\) 指向 \(H\)</td><td>\(\operatorname{proj}_{\vec b}\vec a\)</td><td>向量</td><td>\(\displaystyle\frac{\vec a\cdot\vec b}{|\vec b|^2}\vec b\)</td></tr><tr><td>純粹的幾何長度</td><td>\(|OH|\)</td><td>非負數</td><td>\(\displaystyle\left|\frac{\vec a\cdot\vec b}{|\vec b|}\right|\)</td></tr></tbody></table></div>
+      <div class="warning"><strong>最常混淆：</strong>\(\dfrac{\vec a\cdot\vec b}{|\vec b|}\) 是一個數；\(\dfrac{\vec a\cdot\vec b}{|\vec b|^2}\vec b\) 才是一個向量。題目問「投影向量」時，不能只寫投影長。</div>
+      <details><summary>從「投影向量一定平行 \(\vec b\)」自行推一次公式</summary><div>因為 \(\operatorname{proj}_{\vec b}\vec a\parallel\vec b\)，可設 \(\operatorname{proj}_{\vec b}\vec a=k\vec b\)。兩邊都和 \(\vec b\) 取內積：\(\vec a\cdot\vec b=(k\vec b)\cdot\vec b=k|\vec b|^2\)，故 \(k=\dfrac{\vec a\cdot\vec b}{|\vec b|^2}\)。這個 \(k\) 為負時，影子便指向 \(\vec b\) 的反向。</div></details>
+    </section>
+
+    <section id="examples" class="section">
+      <div class="section-head"><span class="tag violet">分層例題</span><h2>先判讀方向，再代入計算</h2><p>每一題都保留「圖像判讀 → 選公式 → 寫答案型態」三步，避免只會套公式。</p></div>
+      <div class="examples">
+        <article class="card example-card"><span class="level basic">基礎：判定垂直</span><h3>已知 \(\vec a=(3,4)\)，\(\vec b=(4,-3)\)，判斷夾角。</h3><ol><li>\(\vec a\cdot\vec b=3\times4+4\times(-3)=0\)。</li><li>兩向量都不是零向量，內積為 \(0\) 代表 \(\vec a\perp\vec b\)。</li></ol><div class="success"><strong>答案：</strong>夾角為 \(90°\)。</div></article>
+        <article class="card example-card"><span class="level advance">進階：求投影向量</span><h3>求 \(\vec a=(4,1)\) 在 \(\vec b=(2,1)\) 上的正射影向量。</h3><ol><li>\(\vec a\cdot\vec b=9\)，且 \(|\vec b|^2=5\)。</li><li>\(\displaystyle\operatorname{proj}_{\vec b}\vec a=\frac95(2,1)\)。</li></ol><div class="success"><strong>答案：</strong>\(\displaystyle\left(\frac{18}{5},\frac95\right)\)。先留下 \(\frac95\vec b\) 也很清楚。</div></article>
+        <article class="card example-card"><span class="level advance">進階：由內積求夾角</span><h3>若 \(|\vec a|=5\)，\(|\vec b|=4\)，且 \(\vec a\cdot\vec b=-10\)，求夾角。</h3><ol><li>\(\displaystyle\cos\theta=\frac{-10}{5\times4}=-\frac12\)。</li><li>夾角範圍是 \(0°\) 到 \(180°\)，所以取 \(\theta=120°\)。</li></ol><div class="warning"><strong>易錯：</strong>看到 \(\frac12\) 就寫 \(60°\)，漏掉內積的負號。</div></article>
+        <article class="card example-card"><span class="level challenge">挑戰：反向設未知數</span><h3>若 \(\vec u=(2,1)\) 與 \(\vec v=(t,3)\) 垂直，求 \(t\)。</h3><ol><li>垂直 \(\Rightarrow\vec u\cdot\vec v=0\)。</li><li>\(2t+1\times3=0\Rightarrow2t=-3\)。</li></ol><div class="success"><strong>答案：</strong>\(\displaystyle t=-\frac32\)。代回去檢查：\(2(-\frac32)+3=0\)。</div></article>
+      </div>
+    </section>
+
+    <section id="practice" class="section">
+      <div class="section-head"><span class="tag teal">自我檢查</span><h2>三題小練習：答錯可以直接重試</h2><p>先在腦中判斷答案應是正、零或負，再選答案。選錯時不會鎖住選項，請依提示重算。</p></div>
+      <div class="practice">
+        <div class="practice-card"><span class="level basic" id="questionLevel">基礎</span><div id="quizQuestion"></div><div id="quizChoices" class="choices" aria-label="作答選項"></div><div id="quizFeedback" class="feedback" aria-live="polite">選一個答案開始。</div><div class="tools"><button id="hintButton" type="button">看提示</button><button id="nextQuestion" type="button">下一題 →</button></div></div>
+        <aside class="practice-card"><h3>每題的檢查清單</h3><ul class="check"><li><strong>內積：</strong>確認是同軸相乘：\(x_1x_2+y_1y_2\)。</li><li><strong>垂直：</strong>兩向量非零時，內積 \(0\) 才能判為垂直。</li><li><strong>投影：</strong>題目問「向量」時，要把係數乘回 \(\vec b\)。</li><li><strong>角度：</strong>用 \(\cos\theta\) 時保留正負號，才選對銳角或鈍角。</li></ul></aside>
+      </div>
+    </section>
+    <footer>平面向量 s3-3｜建議上課順序：內積意義 → 座標公式 → 正射影 → 分層練習。</footer>
+  </main>
+  <script>
+    (() => {
+      const tabs = Array.from(document.querySelectorAll('#projectionTabs button'));
+      const panels = Array.from(document.querySelectorAll('[data-panel]'));
+      tabs.forEach((button) => {
+        button.addEventListener('click', () => {
+          tabs.forEach((item) => item.classList.toggle('active', item === button));
+          panels.forEach((panel) => { panel.hidden = panel.dataset.panel !== button.dataset.case; });
+        });
+      });
+      const questions = [
+        { level:'基礎：座標內積', text:'若 a = (3, 2)，b = (4, −1)，則 a · b = ?', choices:['14','10','8','−10'], answer:'10', hint:'只配對同一座標軸：3×4 + 2×(−1)。', explanation:'3×4 + 2×(−1) = 12−2 = 10。' },
+        { level:'進階：投影向量', text:'a = (4, 1)，b = (2, 3)。a 在 b 上的正射影向量為何？', choices:['(11/√13, 0)','(22/13, 33/13)','(11/13, 11/13)','(22/5, 33/5)'], answer:'(22/13, 33/13)', hint:'先算 a·b = 11、|b|² = 13；題目問的是「向量」，最後要乘回 b。', explanation:'proj_b a = (11/13)(2,3) = (22/13,33/13)。' },
+        { level:'挑戰：垂直反求', text:'u = (2, 1)，v = (t, 3)，且 u ⟂ v，則 t = ?', choices:['−3/2','3/2','−6','6'], answer:'−3/2', hint:'垂直代表內積為 0，所以 2t + 1×3 = 0。', explanation:'2t+3=0，所以 t=−3/2。' }
+      ];
+      let index = 0;
+      let answered = false;
+      const level = document.getElementById('questionLevel');
+      const text = document.getElementById('quizQuestion');
+      const choices = document.getElementById('quizChoices');
+      const feedback = document.getElementById('quizFeedback');
+      function renderQuestion() {
+        const question = questions[index];
+        answered = false;
+        level.textContent = question.level;
+        text.textContent = question.text;
+        choices.replaceChildren();
+        question.choices.forEach((choice) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = choice;
+          button.addEventListener('click', () => answer(choice, button));
+          choices.append(button);
+        });
+        feedback.className = 'feedback';
+        feedback.textContent = '先在心中判斷答案的正負，再選一個答案。';
+      }
+      function answer(choice, button) {
+        if (answered) return;
+        const question = questions[index];
+        if (choice !== question.answer) {
+          button.classList.add('wrong');
+          feedback.className = 'feedback try';
+          feedback.textContent = '還可以重試。提示：' + question.hint;
+          return;
+        }
+        answered = true;
+        Array.from(choices.children).forEach((item) => {
+          item.disabled = true;
+          if (item.textContent === question.answer) item.classList.add('good');
+        });
+        feedback.className = 'feedback good';
+        feedback.textContent = '答對了。' + question.explanation;
+      }
+      document.getElementById('hintButton').addEventListener('click', () => {
+        feedback.className = 'feedback try';
+        feedback.textContent = '提示：' + questions[index].hint;
+      });
+      document.getElementById('nextQuestion').addEventListener('click', () => {
+        index = (index + 1) % questions.length;
+        renderQuestion();
+      });
+      renderQuestion();
+    })();
+  </script>
+</body>
+</html>
