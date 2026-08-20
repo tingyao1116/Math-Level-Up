@@ -37,23 +37,27 @@
     }
     h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 40px); }
     .lead { margin: 0; color: var(--sub); line-height: 1.8; }
+    .home-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 230px;
+      gap: 18px;
+      align-items: start;
+    }
     .usage-summary {
-      margin-top: 18px;
-      padding: 16px;
+      padding: 10px;
       border: 1px solid #99f6e4;
-      border-radius: 14px;
+      border-radius: 12px;
       background: linear-gradient(135deg, #f0fdfa, #eff6ff);
     }
-    .usage-summary h2 { margin: 0 0 4px; font-size: 20px; }
-    .usage-summary p { margin: 0 0 12px; color: var(--sub); line-height: 1.7; }
+    .usage-summary h2 { margin: 0 0 2px; font-size: 15px; }
+    .usage-summary p { margin: 0 0 6px; color: var(--sub); font-size: 12px; line-height: 1.5; }
     .usage-report-viewport {
       position: relative;
-      width: min(100%, 600px);
-      margin: 0 auto;
-      height: 250px;
+      width: 100%;
+      height: 92px;
       overflow: hidden;
       border: 1px solid #dbe4ef;
-      border-radius: 10px;
+      border-radius: 8px;
       background: #fff;
     }
     .usage-report {
@@ -63,7 +67,7 @@
       width: 600px;
       height: 450px;
       border: 0;
-      transform: translate(-50%, -50%) scale(3.1);
+      transform: translate(-50%, -50%) scale(1.7);
       transform-origin: center;
     }
     .grade-browser { margin-top: 24px; }
@@ -199,35 +203,40 @@
     @media (max-width: 640px) {
       body { padding: 12px; }
       .wrap { padding: 18px; border-radius: 14px; }
+      .home-intro { grid-template-columns: 1fr; }
       .panel-head { flex-direction: column; gap: 8px; }
       .entry-count { align-self: flex-start; }
       .page-controls { align-items: stretch; flex-wrap: wrap; }
       #view-status { width: 100%; order: -1; }
       .page-button { flex: 1 1 140px; }
-      .usage-summary { padding: 14px; }
-      .usage-report-viewport { height: 220px; }
+      .usage-summary { padding: 10px; }
+      .usage-report-viewport { height: 98px; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <h1>數學小遊戲教學首頁</h1>
-    <p class="lead">這裡收集可直接上課展示與學生自學使用的互動頁。先依適合開始的年級選入口；若內容有延伸，卡片內會說明可以往哪個觀念繼續學。</p>
-
-    <section class="usage-summary" aria-labelledby="usage-summary-title">
-      <h2 id="usage-summary-title">網站使用狀況</h2>
-      <p>最近 30 天的匿名使用人數統計。</p>
-      <div class="usage-report-viewport">
-        <iframe
-          class="usage-report"
-          title="最近 30 天網站使用人數"
-          src="https://datastudio.google.com/embed/reporting/07959b74-ea18-4516-b08b-4c423228c92b/page/dfv6F"
-          loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-          sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+    <div class="home-intro">
+      <div>
+        <h1>數學小遊戲教學首頁</h1>
+        <p class="lead">這裡收集可直接上課展示與學生自學使用的互動頁。先依適合開始的年級選入口；若內容有延伸，卡片內會說明可以往哪個觀念繼續學。</p>
       </div>
-    </section>
+
+      <section class="usage-summary" aria-labelledby="usage-summary-title">
+        <h2 id="usage-summary-title">網站使用狀況</h2>
+        <p>最近 30 天匿名使用人數</p>
+        <div class="usage-report-viewport">
+          <iframe
+            class="usage-report"
+            title="最近 30 天網站使用人數"
+            src="https://datastudio.google.com/embed/reporting/07959b74-ea18-4516-b08b-4c423228c92b/page/dfv6F"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+        </div>
+      </section>
+    </div>
 
     <section class="grade-browser" aria-label="依年級選擇教學入口">
       <h2 class="section-title">依章節順序找工具</h2>
