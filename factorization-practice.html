@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="chapter-code" content="j3-3">
+  <title>因式分解練習室｜提公因式、乘法公式、十字交乘</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], processEscapes: true },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root { --ink:#172554;--muted:#475569;--line:#cbd5e1;--paper:#fff;--page:#f8fafc;--blue:#1d4ed8;--blue-soft:#eff6ff;--teal:#0f766e;--teal-soft:#ecfdf5;--violet:#6d28d9;--violet-soft:#f5f3ff;--amber:#b45309;--amber-soft:#fff7ed;--rose:#be123c;--rose-soft:#fff1f2;--green:#166534;--green-soft:#f0fdf4;--shadow:0 14px 34px rgba(15,23,42,.08) }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{min-width:320px;margin:0;color:var(--ink);background:radial-gradient(circle at 95% 0%,#ddd6fe 0,transparent 28%),linear-gradient(145deg,#eff6ff,var(--page) 48%,#ecfdf5);font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.75} button{font:inherit;cursor:pointer}.wrap{width:min(1120px,calc(100% - 28px));margin:0 auto;padding:26px 0 48px}.hero,.section,.card,.practice-box{border:1px solid var(--line);border-radius:20px;background:var(--paper);box-shadow:var(--shadow)}.hero{position:relative;overflow:hidden;padding:clamp(23px,4vw,42px)}.hero::after{content:"×";position:absolute;right:clamp(10px,5vw,66px);bottom:-84px;z-index:0;color:#dbeafe;font:900 clamp(190px,30vw,360px)/1 Georgia,serif;pointer-events:none}.hero>*{position:relative;z-index:1}h1,h2,h3,h4,p{margin-top:0}h1{margin-bottom:8px;font-size:clamp(31px,5vw,49px);line-height:1.24;letter-spacing:.02em}h2{margin-bottom:8px;font-size:clamp(24px,3.3vw,31px);line-height:1.38}h3{margin-bottom:7px;font-size:20px;line-height:1.45}h4{margin-bottom:6px;font-size:16px}p,li{color:var(--muted)}.lead{max-width:805px;margin-bottom:15px;font-size:17px}.back,.nav a,.next-btn,.mode-btn,.choice{min-height:42px;border-radius:10px;font-weight:800;text-decoration:none}.back{display:inline-block;margin-bottom:12px;color:var(--teal)}.pills,.nav,.level-tabs,.button-row,.legend{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.pill,.tag,.level{display:inline-block;border-radius:999px;font-size:13px;font-weight:800}.pill{padding:3px 10px;color:#3730a3;border:1px solid #c4b5fd;background:var(--violet-soft)}.tag{padding:2px 10px;color:#075985;border:1px solid #bae6fd;background:#f0f9ff}.tag.teal{color:#115e59;border-color:#99f6e4;background:var(--teal-soft)}.tag.amber{color:#92400e;border-color:#fed7aa;background:var(--amber-soft)}.nav{margin-top:17px}.nav a{padding:8px 13px;color:#fff;border:1px solid var(--blue);background:var(--blue)}.nav a:hover{background:#1e40af}.section{margin-top:18px;padding:clamp(18px,3vw,30px)}.section-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}.section-head h2{margin:0}.section-intro{max-width:940px;margin-bottom:14px}.grid-2,.grid-3,.formula-grid,.factor-grid{display:grid;gap:13px}.grid-2>*,.grid-3>*,.formula-grid>*,.factor-grid>*{min-width:0}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:17px;box-shadow:none}.card.blue{border-top:5px solid var(--blue);background:linear-gradient(160deg,var(--blue-soft),#fff 45%)}.card.teal{border-top:5px solid var(--teal);background:linear-gradient(160deg,var(--teal-soft),#fff 45%)}.card.violet{border-top:5px solid var(--violet);background:linear-gradient(160deg,var(--violet-soft),#fff 45%)}.card.amber{border-top:5px solid var(--amber);background:linear-gradient(160deg,var(--amber-soft),#fff 45%)}.formula,.equation{display:block;margin:10px 0;padding:10px 12px;overflow-x:auto;border:1px solid #bfdbfe;border-left:4px solid #38bdf8;border-radius:10px;color:#172554;background:#f8fbff;font-weight:800}.equation{border-left:0;text-align:center;font-size:1.06em}.formula mjx-container,.equation mjx-container{max-width:100%}.notice,.mistake,.success-note{padding:13px 14px;border-radius:13px}.notice{border:1px solid #bae6fd;background:#f0f9ff}.notice strong{color:#075985}.mistake{border:1px solid #fed7aa;color:#7c2d12;background:var(--amber-soft)}.mistake strong{color:#9a3412}.success-note{border:1px solid #86efac;color:#166534;background:var(--green-soft)}.route{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:stretch;margin-top:16px}.route-box{padding:12px 10px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center}.route-box strong{display:block;color:var(--blue)}.route-arrow{display:grid;place-items:center;color:var(--blue);font-size:26px;font-weight:900}.practice-box{margin-top:16px;padding:clamp(16px,3vw,24px);box-shadow:none}.practice-box.gcf{border-top:6px solid var(--teal)}.practice-box.formula-practice{border-top:6px solid var(--violet)}.practice-box.cross{border-top:6px solid var(--amber)}.practice-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.practice-head h3{margin:0}.score{padding:4px 11px;border-radius:999px;color:#0f172a;background:#e2e8f0;font-size:14px;font-weight:900;white-space:nowrap}.level-tabs{margin-bottom:13px}.mode-btn{min-height:38px;padding:6px 11px;color:#334155;border:1px solid #cbd5e1;background:#fff}.mode-btn:hover,.mode-btn[aria-pressed="true"]{color:#fff;border-color:var(--teal);background:var(--teal)}.formula-practice .mode-btn:hover,.formula-practice .mode-btn[aria-pressed="true"]{border-color:var(--violet);background:var(--violet)}.cross .mode-btn:hover,.cross .mode-btn[aria-pressed="true"]{border-color:var(--amber);background:var(--amber)}.question-shell{min-height:254px;padding:16px;border:1px solid #dbeafe;border-radius:15px;background:linear-gradient(135deg,#f8fbff,#fff)}.question-kicker{margin-bottom:4px;color:#475569;font-size:14px;font-weight:800}.question{margin:10px 0 14px;padding:14px;overflow-x:auto;border-radius:12px;color:#172554;background:#eff6ff;font-size:clamp(21px,3vw,27px);text-align:center}.prompt{margin-bottom:12px;color:#334155;font-weight:800}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.choice{min-height:50px;padding:9px 11px;color:#172554;border:1px solid #bfdbfe;background:#fff;text-align:left}.choice:hover:not(:disabled){border-color:var(--blue);background:var(--blue-soft)}.choice:focus-visible,.mode-btn:focus-visible,.next-btn:focus-visible,.nav a:focus-visible{outline:3px solid #fbbf24;outline-offset:2px}.choice.correct{border-color:#4ade80;color:#166534;background:var(--green-soft)}.choice.wrong{border-color:#fda4af;color:#9f1239;background:var(--rose-soft)}.choice:disabled{cursor:default}.feedback{min-height:48px;margin-top:13px}.feedback>div{padding:11px 13px;border-radius:11px}.feedback .ok{border:1px solid #86efac;color:#166534;background:var(--green-soft)}.feedback .no{border:1px solid #fecdd3;color:#9f1239;background:var(--rose-soft)}.feedback .explain{margin-top:8px;border:1px solid #bfdbfe;color:#1e3a8a;background:var(--blue-soft)}.next-btn{margin-top:11px;padding:8px 13px;color:#fff;border:1px solid var(--blue);background:var(--blue)}.formula-practice .next-btn{border-color:var(--violet);background:var(--violet)}.cross .next-btn{border-color:var(--amber);background:var(--amber)}.factor-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin:13px 0}.factor-cell{padding:10px 8px;border:1px solid #fed7aa;border-radius:11px;background:#fffbeb;text-align:center}.factor-cell b{display:block;color:#92400e;font-size:13px}.factor-cell span{font-weight:900}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px 10px;border:1px solid var(--line);text-align:left;vertical-align:top}th{color:#1e3a8a;background:#f8fbff}.teacher-flow{margin:0;padding-left:23px}.teacher-flow li{margin:6px 0}.back-bottom{display:inline-block;margin-top:22px;color:var(--teal);font-weight:800;text-decoration:none}@media(max-width:760px){.wrap{width:min(100% - 20px,1120px);padding-top:12px}.hero,.section,.practice-box{border-radius:15px}.grid-2,.grid-3,.choices{grid-template-columns:minmax(0,1fr)}.route{grid-template-columns:minmax(0,1fr)}.route-arrow{transform:rotate(90deg)}.factor-grid{grid-template-columns:repeat(2,minmax(0,1fr)}.question-shell{min-height:0}.choice{text-align:center}}
+  </style>
+  <style>
+    .cross-workbench { margin-top: 14px; padding: 15px; border: 1px solid #fed7aa; border-radius: 14px; background: #fffbeb; }
+    .cross-workbench h4 { margin: 0 0 5px; color: #92400e; }
+    .cross-workbench p { margin-bottom: 10px; }
+    .cross-template { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 12px 0; color: #172554; font: 700 clamp(20px, 3vw, 27px)/1.55 Cambria, "Times New Roman", serif; }
+    .cross-template .times { color: #b45309; font-family: "Noto Sans TC", sans-serif; }
+    .cross-slot { width: clamp(58px, 13vw, 86px); min-height: 42px; padding: 5px 7px; border: 2px solid #f59e0b; border-radius: 9px; color: #172554; background: #fff; font: 800 18px ui-monospace, Consolas, monospace; text-align: center; }
+    .cross-slot:focus { outline: 3px solid #fde68a; outline-offset: 2px; }
+    .cross-template .outer-slot { width: clamp(48px, 10vw, 66px); }
+    .cross-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .cross-action { min-height: 42px; padding: 8px 13px; border: 1px solid #b45309; border-radius: 10px; color: #fff; background: #b45309; font-weight: 800; }
+    .cross-action.secondary { color: #92400e; background: #fff; }
+    .cross-action:disabled, .cross-slot:disabled { cursor: default; opacity: .66; }
+    .cross-attempt-result { min-height: 48px; margin-top: 12px; }
+    .cross-attempt-result > div { padding: 11px 13px; border-radius: 11px; }
+    .cross-attempt-result .try { border: 1px solid #bfdbfe; color: #1e3a8a; background: #eff6ff; }
+    .cross-attempt-result .miss { border: 1px solid #fecdd3; color: #9f1239; background: #fff1f2; }
+    .cross-attempt-result .hit { border: 1px solid #86efac; color: #166534; background: #f0fdf4; }
+    .answer-reveal { margin-top: 12px; padding: 10px 12px; border: 1px solid #fdba74; border-radius: 11px; color: #7c2d12; background: #fff; }
+    .answer-reveal summary { cursor: pointer; color: #92400e; font-weight: 900; }
+    .answer-reveal .formula { margin-bottom: 0; }
+    @media (max-width: 560px) { .cross-template { gap: 4px; font-size: 20px; } .cross-slot { width: 58px; } .cross-template .outer-slot { width: 48px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html#j3">← 回教學首頁</a>
+    <header class="hero">
+      <div class="pills"><span class="pill">國二上｜j3-3 因式分解</span><span class="tag teal">先看結構，再動手拆</span><span class="tag amber">可立即重試</span></div>
+      <h1>因式分解練習室</h1>
+      <p class="lead">因式分解不是把式子「變短」而已，而是把展開的動作倒著做：先找每一項共同擁有的部分，再辨認熟悉的乘法公式；二次式則用十字交乘把兩個一次因式找回來。</p>
+      <nav class="nav" aria-label="本頁章節"><a href="#map">先抓方向</a><a href="#gcf">① 提公因式</a><a href="#formula">② 乘法公式</a><a href="#cross">③ 十字交乘</a><a href="#classroom">上課收束</a></nav>
+    </header>
+
+    <section class="section" id="map">
+      <div class="section-head"><span class="tag">先講觀念</span><h2>看到式子，先問「它原本可能怎麼乘出來？」</h2></div>
+      <p class="section-intro">因式分解和展開互為相反方向。每次選完答案，都請用「再乘回去」驗算；這是最可靠的自我檢查。</p>
+      <div class="route" aria-label="因式分解判斷流程"><div class="route-box"><strong>第一眼</strong>每一項有共同因數嗎？</div><div class="route-arrow">→</div><div class="route-box"><strong>第二眼</strong>是平方差或完全平方嗎？</div><div class="route-arrow">→</div><div class="route-box"><strong>第三眼</strong>是 \(ax^2+bx+c\) 嗎？</div></div>
+      <div class="grid-2" style="margin-top:14px"><article class="card blue"><h3>提公因式：每一項都要除得掉</h3><div class="equation">\[ab+ac=a(b+c)\]</div><p>係數取最大公因數；同字母取每一項都有的最小次方。若把負號提出，括號內<strong>每一項</strong>的正負都會反向。</p></article><article class="card violet"><h3>乘法公式：先把兩端看成平方</h3><div class="equation">\[A^2\pm2AB+B^2=(A\pm B)^2,\qquad A^2-B^2=(A+B)(A-B)\]</div><p>完全平方要檢查中間項是否剛好是 \(\pm2AB\)；平方差則只有兩項，而且是「平方減平方」。</p></article></div>
+      <div class="mistake" style="margin-top:14px"><strong>最常見的失分：</strong>一看見二次式就急著十字交乘。請固定先做「共同因數檢查」；例如 \(2x^2+10x+12\) 應先提出 \(2\)，才得到好讀的 \(x^2+5x+6\)。</div>
+    </section>
+
+    <section class="section" id="gcf">
+      <div class="section-head"><span class="tag teal">練習一</span><h2>提出公因式與分組分解：先在小組內製造共同括號</h2></div>
+      <p class="section-intro">兩項題先練習找完整的共同因式；四項題分成「2 項＋2 項」，六項題分成「3 項＋3 項」。每一組先提出公因式，讓兩組出現相同括號，最後再提出一次。符號特訓則專門處理 \((x-y)\) 與 \((y-x)\) 的變號關係。</p>
+      <div class="notice" style="margin-bottom:14px"><strong>分組的關鍵不是切得平均，而是切完後要有同一個括號。</strong>例如 \(2x^2-3x+4x-6=x(2x-3)+2(2x-3)=(x+2)(2x-3)\)。</div>
+      <div class="notice" style="margin-bottom:14px"><strong>變號法則：</strong>\(a-b=-(b-a)\)，因此 \((a-b)^n=(-1)^n(b-a)^n\)。\(n\) 為奇數時要多一個負號；\(n\) 為偶數時不變號。遇到 \((x-y)\) 與 \((y-x)\) 同時出現時，先逐個改成同一種括號，再提公因式。</div>
+      <div class="grid-2"><article class="card teal"><h3>提出公因式的三個檢查</h3><ol class="teacher-flow"><li>數字：找所有係數的最大公因數。</li><li>字母：只保留每一項都有的字母，次方取最小。</li><li>負號：若提出負號，括號內的每一項都要變號。</li></ol></article><article class="card amber"><h3>符號不是小事：兩個括號互為相反數</h3><div class="equation">\[x-y=-(y-x),\qquad y-x=-(x-y)\]</div><p>因此 \(6x(x-y)=-6x(y-x)\)。只把括號順序顛倒、外面卻不補負號，整個式子的值就反了。</p></article></div>
+      <div class="practice-box gcf" data-widget="gcf"><div class="practice-head"><h3>提公因式闖關</h3><span class="score" id="gcf-score">答對 0 / 0</span></div><div class="level-tabs" aria-label="提公因式難度"><button class="mode-btn" type="button" data-mode="two" aria-pressed="true">兩項起步</button><button class="mode-btn" type="button" data-mode="four" aria-pressed="false">四項練習</button><button class="mode-btn" type="button" data-mode="six" aria-pressed="false">六項挑戰</button><button class="mode-btn" type="button" data-mode="sign" aria-pressed="false">\(x-y\) 符號特訓</button></div><div class="question-shell" id="gcf-question"></div></div>
+    </section>
+
+    <section class="section" id="formula">
+      <div class="section-head"><span class="tag" style="color:#5b21b6;border-color:#c4b5fd;background:#f5f3ff">練習二</span><h2>乘法公式：三種公式混合辨認</h2></div>
+      <p class="section-intro">這一關不先告訴你是哪一種公式。請從項數、首尾是否為平方、中間項是否等於 \(\pm2AB\) 來判斷。</p>
+      <div class="formula-grid grid-3"><article class="card violet"><h3>和的平方</h3><div class="equation">\[A^2+2AB+B^2=(A+B)^2\]</div><p>三項皆正，中間項正。</p></article><article class="card violet"><h3>差的平方</h3><div class="equation">\[A^2-2AB+B^2=(A-B)^2\]</div><p>首尾正，中間項負。</p></article><article class="card violet"><h3>平方差</h3><div class="equation">\[A^2-B^2=(A+B)(A-B)\]</div><p>只有兩項，兩端相減。</p></article></div>
+      <div class="notice" style="margin-top:14px"><strong>快篩：</strong>例如 \(9x^2+12xy+4y^2\)，兩端是 \((3x)^2\) 與 \((2y)^2\)，再驗算 \(2\cdot3x\cdot2y=12xy\)，所以才可寫成 \((3x+2y)^2\)。少了「驗中間項」這一步，就很容易誤判。</div>
+      <div class="practice-box formula-practice" data-widget="formula"><div class="practice-head"><h3>公式偵探</h3><span class="score" id="formula-score">答對 0 / 0</span></div><div class="level-tabs" aria-label="乘法公式題型"><button class="mode-btn" type="button" data-mode="mixed" aria-pressed="true">三種混合出題</button><button class="mode-btn" type="button" data-mode="square" aria-pressed="false">完全平方加強</button><button class="mode-btn" type="button" data-mode="difference" aria-pressed="false">平方差加強</button></div><div class="question-shell" id="formula-question"></div></div>
+    </section>
+
+    <section class="section" id="cross">
+      <div class="section-head"><span class="tag amber">練習三</span><h2>十字交乘：先拆 \(c\)，再用交叉乘積對準 \(b\)</h2></div>
+      <p class="section-intro">目標是把 \(ax^2+bx+c\) 寫成 \((px+q)(rx+s)\)。不要只靠猜；用 \(pr=a\)、\(qs=c\)、\(ps+qr=b\) 三個條件逐一核對。</p>
+      <div class="grid-2"><article class="card amber"><h3>先從領導係數為 1 開始</h3><div class="equation">\[x^2+bx+c=(x+m)(x+n)\]</div><p>只要找兩數 \(m,n\)：乘積是 \(c\)，和是 \(b\)。\(c&gt;0\) 時兩數同號；\(c&lt;0\) 時兩數異號，最後由 \(b\) 決定哪一個絕對值較大。</p></article><article class="card amber"><h3>領導係數不為 1：畫十字前的準備</h3><ol class="teacher-flow"><li>先檢查 \(a,b,c\) 三者是否有共同因數；有就先提出。</li><li>分解 \(a\) 與 \(c\)，安排成 \(pr=a,\;qs=c\)。</li><li>交叉相乘，確認 \(ps+qr=b\)。</li></ol></article></div>
+      <div class="grid-2" style="margin-top:14px"><div class="mistake"><strong>\(c\) 的正負號規則：</strong>\(c&gt;0\) 表示常數 \(q,s\) 同號，符號跟著 \(b\)；\(c&lt;0\) 表示 \(q,s\) 異號，再比較兩條交叉乘積決定 \(b\) 的正負。</div><div class="mistake"><strong>\(b,c\) 有公因數也不能亂提：</strong>只有 \(a,b,c\) <em>三者</em>都有的因數才能提出。例如 \(3x^2+16x+20\) 中，\(16\) 和 \(20\) 都有 \(4\)，但 \(3\) 沒有 \(4\)，所以不能提 \(4\)。</div></div>
+      <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>已知</th><th>要安排的因數</th><th>最後驗算</th></tr></thead><tbody><tr><td>\(ax^2+bx+c\)</td><td>\(pr=a\)，\(qs=c\)</td><td>\(ps+qr=b\)</td></tr></tbody></table></div>
+      <div class="practice-box cross" data-widget="cross"><div class="practice-head"><h3>十字交乘工坊</h3><span class="score" id="cross-score">答對 0 / 0</span></div><div class="level-tabs" aria-label="十字交乘難度"><button class="mode-btn" type="button" data-mode="monic" aria-pressed="true">基礎：\(a=1\)</button><button class="mode-btn" type="button" data-mode="nonmonic" aria-pressed="false">進階：\(a\ne1\)</button></div><div class="question-shell" id="cross-question"></div></div>
+    </section>
+
+    <section class="section" id="classroom"><div class="section-head"><span class="tag teal">收束</span><h2>一堂課可以這樣帶</h2></div><div class="grid-3"><article class="card blue"><h3>基礎</h3><p>先完成提公因式「兩項起步」與符號特訓，要求學生說出：為何 \(x-y\) 變成 \(y-x\) 時外面一定要多一個負號。</p></article><article class="card violet"><h3>進階</h3><p>混合做公式偵探，禁止一眼作答；每一題先口頭說明「平方差」或「中間項是 \(2AB\)」。</p></article><article class="card amber"><h3>挑戰</h3><p>做進階十字交乘，先讓學生寫出 \(a,b,c\)，再講 \(c\) 的正負與共同因數檢查，最後才按答案。</p></article></div><div class="success-note" style="margin-top:14px"><strong>最後一個自我檢查：</strong>不論用哪一種方法分解，拿到因式後都要乘回去。係數、一次項和常數項都對回原式，才是真的完成。</div><a class="back-bottom" href="./index.html#j3">← 回國二上教學入口</a></section>
+  </main>
+  <script>
+    (() => {
+      const gcfProblems={two:[{expression:String.raw`\(6x^2+9x\)`,answer:String.raw`\(3x(2x+3)\)`,options:[String.raw`\(3x(2x+3)\)`,String.raw`\(3x(2x-3)\)`,String.raw`\(3(2x^2+3x)\)`,String.raw`\(6x(x+9)\)`],explanation:String.raw`每一項都有 \(3x\)：\(6x^2\div3x=2x\)，\(9x\div3x=3\)。`},{expression:String.raw`\(-8a^2b+12ab^2\)`,answer:String.raw`\(-4ab(2a-3b)\)`,options:[String.raw`\(-4ab(2a-3b)\)`,String.raw`\(4ab(2a-3b)\)`,String.raw`\(-4ab(2a+3b)\)`,String.raw`\(-4a(2ab-3b)\)`],explanation:String.raw`提出 \(-4ab\) 後，第一項除得 \(2a\)，第二項必須除得 \(-3b\)。負號已經在外面，括號內要同步變號。`}],four:[{expression:String.raw`\(3x^2y-6xy^2+9xy-12y\)`,answer:String.raw`\(3y(x^2-2xy+3x-4)\)`,options:[String.raw`\(3y(x^2-2xy+3x-4)\)`,String.raw`\(3y(x^2-2xy+3x+4)\)`,String.raw`\(3(x^2y-2xy^2+3xy-4y)\)`,String.raw`\(3xy(x-2y+3-4)\)`],explanation:String.raw`四項都含 \(3y\)，但不是每一項都有 \(x\)，所以不能提出 \(3xy\)。`},{expression:String.raw`\(-4p^2q+8pq^2-12pq+16q\)`,answer:String.raw`\(-4q(p^2-2pq+3p-4)\)`,options:[String.raw`\(-4q(p^2-2pq+3p-4)\)`,String.raw`\(4q(p^2-2pq+3p-4)\)`,String.raw`\(-4q(p^2+2pq+3p-4)\)`,String.raw`\(-4pq(p-2q+3-4)\)`],explanation:String.raw`四項都有 \(4q\)，也可刻意提出負的 \(-4q\)；此時括號依序是 \(p^2,-2pq,3p,-4\)。`}],six:[{expression:String.raw`\(6x^3-9x^2+12x-15+18xy-21y\)`,answer:String.raw`\(3(2x^3-3x^2+4x-5+6xy-7y)\)`,options:[String.raw`\(3(2x^3-3x^2+4x-5+6xy-7y)\)`,String.raw`\(3(2x^3-3x^2+4x-5+6xy+7y)\)`,String.raw`\(3x(2x^2-3x+4-5+6y-7y)\)`,String.raw`\(6(x^3-3x^2+2x-5+3xy-7y)\)`],explanation:String.raw`項數增加不改規則：六個係數的最大公因數仍是 \(3\)，但 \(x\) 和 \(y\) 都不是每一項都有。`},{expression:String.raw`\(-10a^2b+15ab^2-20ab+25b-30a+35\)`,answer:String.raw`\(-5(2a^2b-3ab^2+4ab-5b+6a-7)\)`,options:[String.raw`\(-5(2a^2b-3ab^2+4ab-5b+6a-7)\)`,String.raw`\(5(2a^2b-3ab^2+4ab-5b+6a-7)\)`,String.raw`\(-5(2a^2b+3ab^2+4ab-5b+6a-7)\)`,String.raw`\(-5a(2ab-3b^2+4b-5+6-7)\)`],explanation:String.raw`所有項共同的只有 \(5\)。提出 \(-5\) 會使括號內的正負依序反轉，尤其 \(35\div(-5)=-7\)。`}],sign:[{prompt:String.raw`把下式提出 \(12x\) 後，<strong>規定</strong>括號必須寫成 \(y-x\)。`,expression:String.raw`\(12x^2-12xy\)`,answer:String.raw`\(-12x(y-x)\)`,options:[String.raw`\(-12x(y-x)\)`,String.raw`\(12x(y-x)\)`,String.raw`\(12x(x-y)\)`,String.raw`\(-12x(x-y)\)`],explanation:String.raw`原本 \(12x(x-y)\)。因為 \(x-y=-(y-x)\)，改成 \(y-x\) 時，外面的 \(12x\) 必須變成 \(-12x\)。`},{prompt:String.raw`把下式改寫成括號 \(x-y\) 的形式。`,expression:String.raw`\(18m(y-x)\)`,answer:String.raw`\(-18m(x-y)\)`,options:[String.raw`\(-18m(x-y)\)`,String.raw`\(18m(x-y)\)`,String.raw`\(-18m(y-x)\)`,String.raw`\(18m(y+x)\)`],explanation:String.raw`\(y-x=-(x-y)\)，因此 \(18m(y-x)=18m[-(x-y)]=-18m(x-y)\)。`}]};
+      const formulaProblems=[{kind:'square',expression:String.raw`\(x^2+10x+25\)`,answer:String.raw`\((x+5)^2\)`,options:[String.raw`\((x+5)^2\)`,String.raw`\((x-5)^2\)`,String.raw`\((x+25)(x+1)\)`,String.raw`\((x+5)(x-5)\)`],explanation:String.raw`兩端為 \(x^2,5^2\)，中間 \(10x=2\cdot x\cdot5\)，是和的平方。`},{kind:'square',expression:String.raw`\(9a^2+12ab+4b^2\)`,answer:String.raw`\((3a+2b)^2\)`,options:[String.raw`\((3a+2b)^2\)`,String.raw`\((3a-2b)^2\)`,String.raw`\((9a+4b)^2\)`,String.raw`\((3a+2b)(3a-2b)\)`],explanation:String.raw`兩端為 \((3a)^2,(2b)^2\)，中間 \(12ab=2\cdot3a\cdot2b\)。`},{kind:'square',expression:String.raw`\(16p^2-24pq+9q^2\)`,answer:String.raw`\((4p-3q)^2\)`,options:[String.raw`\((4p-3q)^2\)`,String.raw`\((4p+3q)^2\)`,String.raw`\((16p-9q)^2\)`,String.raw`\((4p-3q)(4p+3q)\)`],explanation:String.raw`中間項是負的 \(-2\cdot4p\cdot3q\)，所以是差的平方。`},{kind:'difference',expression:String.raw`\(4x^2-25\)`,answer:String.raw`\((2x+5)(2x-5)\)`,options:[String.raw`\((2x+5)(2x-5)\)`,String.raw`\((2x-5)^2\)`,String.raw`\((4x+5)(x-5)\)`,String.raw`\((2x+5)^2\)`],explanation:String.raw`\(4x^2=(2x)^2\)，\(25=5^2\)，是平方差。`},{kind:'difference',expression:String.raw`\(25m^2-4n^2\)`,answer:String.raw`\((5m+2n)(5m-2n)\)`,options:[String.raw`\((5m+2n)(5m-2n)\)`,String.raw`\((5m-2n)^2\)`,String.raw`\((25m+4n)(m-n)\)`,String.raw`\((5m+2n)^2\)`],explanation:String.raw`平方差要寫成一正一負兩個共軛括號，展開時中間項才會互相消掉。`}];
+      const crossProblems={monic:[{expression:String.raw`\(x^2+7x+12\)`,answer:String.raw`\((x+3)(x+4)\)`,options:[String.raw`\((x+3)(x+4)\)`,String.raw`\((x-3)(x-4)\)`,String.raw`\((x+2)(x+6)\)`,String.raw`\((x-3)(x+4)\)`],a:'1',b:'7',c:'12',pair:String.raw`\(3\times4=12\)，且 \(3+4=7\)`,sign:'c 為正，兩數同號；b 為正，所以兩數都取正。',explanation:String.raw`因此 \(x^2+7x+12=(x+3)(x+4)\)。`},{expression:String.raw`\(x^2-x-12\)`,answer:String.raw`\((x+3)(x-4)\)`,options:[String.raw`\((x+3)(x-4)\)`,String.raw`\((x-3)(x+4)\)`,String.raw`\((x+3)(x+4)\)`,String.raw`\((x-2)(x+6)\)`],a:'1',b:'−1',c:'−12',pair:String.raw`\(3\times(-4)=-12\)，且 \(3+(-4)=-1\)`,sign:'c 為負，兩數異號；絕對值較大的 4 要帶負號，和才是 −1。',explanation:String.raw`因此 \(x^2-x-12=(x+3)(x-4)\)。`},{expression:String.raw`\(x^2-9x+20\)`,answer:String.raw`\((x-4)(x-5)\)`,options:[String.raw`\((x-4)(x-5)\)`,String.raw`\((x+4)(x+5)\)`,String.raw`\((x-2)(x-10)\)`,String.raw`\((x+4)(x-5)\)`],a:'1',b:'−9',c:'20',pair:String.raw`\((-4)\times(-5)=20\)，且 \((-4)+(-5)=-9\)`,sign:'c 為正，兩數同號；b 為負，所以兩數都取負。',explanation:String.raw`因此 \(x^2-9x+20=(x-4)(x-5)\)。`},{expression:String.raw`\(x^2+x-20\)`,answer:String.raw`\((x+5)(x-4)\)`,options:[String.raw`\((x+5)(x-4)\)`,String.raw`\((x-5)(x+4)\)`,String.raw`\((x+5)(x+4)\)`,String.raw`\((x-2)(x+10)\)`],a:'1',b:'1',c:'−20',pair:String.raw`\(5\times(-4)=-20\)，且 \(5+(-4)=1\)`,sign:'c 為負，兩數異號；絕對值較大的 5 帶正號，和才是 1。',explanation:String.raw`因此 \(x^2+x-20=(x+5)(x-4)\)。`}],nonmonic:[{expression:String.raw`\(6x^2+11x+3\)`,answer:String.raw`\((3x+1)(2x+3)\)`,options:[String.raw`\((3x+1)(2x+3)\)`,String.raw`\((3x+3)(2x+1)\)`,String.raw`\((3x-1)(2x-3)\)`,String.raw`\((6x+1)(x+3)\)`],a:'6',b:'11',c:'3',cross:String.raw`(3x)\cdot3+1\cdot(2x)=9x+2x=11x`,gcf:'三個係數沒有共同公因數。',explanation:String.raw`a：\(3\times2=6\)，c：\(1\times3=3\)，兩條交叉乘積相加是 \(11x\)。`},{expression:String.raw`\(6x^2-7x-3\)`,answer:String.raw`\((3x+1)(2x-3)\)`,options:[String.raw`\((3x+1)(2x-3)\)`,String.raw`\((3x-1)(2x+3)\)`,String.raw`\((3x+3)(2x-1)\)`,String.raw`\((6x+1)(x-3)\)`],a:'6',b:'−7',c:'−3',cross:String.raw`(3x)\cdot(-3)+1\cdot(2x)=-9x+2x=-7x`,gcf:'三個係數沒有共同公因數；c 為負，所以常數要一正一負。',explanation:String.raw`a：\(3\times2=6\)，c：\(1\times(-3)=-3\)，交叉後得到 \(-7x\)。`},{expression:String.raw`\(12x^2+11x-5\)`,answer:String.raw`\((3x-1)(4x+5)\)`,options:[String.raw`\((3x-1)(4x+5)\)`,String.raw`\((3x+1)(4x-5)\)`,String.raw`\((6x-1)(2x+5)\)`,String.raw`\((3x+5)(4x-1)\)`],a:'12',b:'11',c:'−5',cross:String.raw`(3x)\cdot5+(-1)\cdot(4x)=15x-4x=11x`,gcf:'三個係數沒有共同公因數。先把 c=−5 寫成 (−1)×5。',explanation:String.raw`c 為負，常數異號；\(15x-4x\) 正好給出中間項 \(11x\)。`},{expression:String.raw`\(2x^2+10x+12\)`,answer:String.raw`\(2(x+2)(x+3)\)`,options:[String.raw`\(2(x+2)(x+3)\)`,String.raw`\((2x+2)(x+3)\)`,String.raw`\(2(x-2)(x-3)\)`,String.raw`\((x+2)(x+6)\)`],a:'2',b:'10',c:'12',cross:String.raw`先提出 \(2\)：\(x^2+5x+6=(x+2)(x+3)\)`,gcf:'a,b,c 三者都有 2，先提出 2；再對括號內做 a=1 的十字交乘。',explanation:String.raw`這題最重要的不是硬排十字，而是先把共同的 \(2\) 提出。`},{expression:String.raw`\(3x^2+16x+20\)`,answer:String.raw`\((3x+10)(x+2)\)`,options:[String.raw`\((3x+10)(x+2)\)`,String.raw`\(4(3x^2+4x+5)\)`,String.raw`\((3x+2)(x+10)\)`,String.raw`\((3x-10)(x-2)\)`],a:'3',b:'16',c:'20',cross:String.raw`(3x)\cdot2+10\cdot x=6x+10x=16x`,gcf:'雖然 b=16 和 c=20 都含 4，但 a=3 不含 4，所以不能提出 4。',explanation:String.raw`這正是 b、c 有公因數時的陷阱：仍要檢查 a 是否也能整除。`},{expression:String.raw`\(8x^2-2x-3\)`,answer:String.raw`\((4x-3)(2x+1)\)`,options:[String.raw`\((4x-3)(2x+1)\)`,String.raw`\((4x+3)(2x-1)\)`,String.raw`\((8x-3)(x+1)\)`,String.raw`\((4x-1)(2x+3)\)`],a:'8',b:'−2',c:'−3',cross:String.raw`(4x)\cdot1+(-3)\cdot(2x)=4x-6x=-2x`,gcf:'三個係數沒有共同公因數；c 為負，所以常數異號。',explanation:String.raw`a：\(4\times2=8\)，c：\((-3)\times1=-3\)，交叉相加是 \(-2x\)。`}]} ;
+      gcfProblems.two[0].options[2] = String.raw`\(3(2x^2+3)\)`;
+      gcfProblems.four[0].options[2] = String.raw`\(3y(x^2-2xy+3x-4y)\)`;
+      Object.values(gcfProblems).flat().forEach((problem) => {
+        if (!problem.prompt) problem.prompt = '選出「提出最大公因式後」的正確結果。';
+      });
+      gcfProblems.two = [
+        { prompt: '找出兩項共有的完整因式；留意 \(z-y\) 與 \(y-z\) 的關係。', expression: String.raw`\(6x^2(y-z)-9xy(z-y)\)`, answer: String.raw`\(3x(y-z)(2x+3y)\)`, options: [String.raw`\(3x(y-z)(2x+3y)\)`, String.raw`\(3x(y-z)(2x-3y)\)`, String.raw`\(3x(z-y)(2x+3y)\)`, String.raw`\(3xy(y-z)(2x+3)\)`], explanation: String.raw`因為 \(z-y=-(y-z)\)，第二項的外負號會再變一次：\(-9xy(z-y)=+9xy(y-z)\)。所以可提出 \(3x(y-z)\)。` },
+        { prompt: '兩個括號表面不同，但平方後可能完全相同。選出完整提出的結果。', expression: String.raw`\(5a(x-y)^2+10b(y-x)^2\)`, answer: String.raw`\(5(x-y)^2(a+2b)\)`, options: [String.raw`\(5(x-y)^2(a+2b)\)`, String.raw`\(5(x-y)^2(a-2b)\)`, String.raw`\(5(x-y)(a+2b)\)`, String.raw`\(-5(x-y)^2(a+2b)\)`], explanation: String.raw`\((y-x)^2=[-(x-y)]^2=(x-y)^2\)。因此兩項共有 \(5(x-y)^2\)。` },
+        { prompt: '先把 \(b-a\) 改寫成 \(-(a-b)\)，再找共同因式。', expression: String.raw`\((a-b)(x+y)-(b-a)(x+y)\)`, answer: String.raw`\(2(a-b)(x+y)\)`, options: [String.raw`\(2(a-b)(x+y)\)`, String.raw`\(0\)`, String.raw`\((a-b)(x+y)\)`, String.raw`\(2(b-a)(x+y)\)`], explanation: String.raw`\(b-a=-(a-b)\)，所以原式是 \((a-b)(x+y)+(a-b)(x+y)\)，合起來有兩份相同因式。` }
+      ];
+      gcfProblems.four = [
+        { prompt: '先展開括號，將四項重新分成兩組，再選出分組分解後的結果。', expression: String.raw`\(x^2(y-z)+y^2(z-x)\)`, answer: String.raw`\((x-y)[xy-z(x+y)]\)`, options: [String.raw`\((x-y)[xy-z(x+y)]\)`, String.raw`\((x+y)[xy-z(x-y)]\)`, String.raw`\((x-y)(xy-z)\)`, String.raw`\((y-x)[xy-z(x+y)]\)`], explanation: String.raw`展開後為 \(x^2y-x^2z+y^2z-xy^2\)。重組成 \(xy(x-y)-z(x^2-y^2)\)，再提出 \(x-y\)。` },
+        { prompt: '分成前兩項與後兩項；每一組先提出公因式。', expression: String.raw`\(2x^2-3x+4x-6\)`, answer: String.raw`\((x+2)(2x-3)\)`, options: [String.raw`\((x+2)(2x-3)\)`, String.raw`\((x-2)(2x+3)\)`, String.raw`\((2x+2)(x-3)\)`, String.raw`\((x+3)(2x-2)\)`], explanation: String.raw`\(2x^2-3x+4x-6=x(2x-3)+2(2x-3)=(x+2)(2x-3)\)。` },
+        { prompt: '先去括號，再重新組合成兩組各兩項。', expression: String.raw`\((a-3)x-(x^2-3a)\)`, answer: String.raw`\((a-x)(x+3)\)`, options: [String.raw`\((a-x)(x+3)\)`, String.raw`\((a+x)(x-3)\)`, String.raw`\((a-x)(x-3)\)`, String.raw`\((a+x)(x+3)\)`], explanation: String.raw`去括號得 \(ax-3x-x^2+3a\)。重組為 \(a(x+3)-x(x+3)\)，共同括號是 \(x+3\)。` }
+      ];
+      gcfProblems.six = [
+        { prompt: '先把六項整理成「前三項＋後三項」，讓兩組出現相同三項式。', expression: String.raw`\(xy^2-2xy-y^2+x+2y-1\)`, answer: String.raw`\((x-1)(y-1)^2\)`, options: [String.raw`\((x-1)(y-1)^2\)`, String.raw`\((x+1)(y-1)^2\)`, String.raw`\((x-1)(y+1)^2\)`, String.raw`\((x-1)(y^2-1)\)`], explanation: String.raw`重新排列：\(x(y^2-2y+1)-(y^2-2y+1)\)。先提出 \(y^2-2y+1\)，再辨認它是 \((y-1)^2\)。` },
+        { prompt: '分成前三項與後三項，各自提出 \(x\) 或 \(-y\)。', expression: String.raw`\(ax-bx+cx-ay+by-cy\)`, answer: String.raw`\((a-b+c)(x-y)\)`, options: [String.raw`\((a-b+c)(x-y)\)`, String.raw`\((a+b+c)(x-y)\)`, String.raw`\((a-b+c)(x+y)\)`, String.raw`\((a+b-c)(x-y)\)`], explanation: String.raw`\(ax-bx+cx=x(a-b+c)\)，而 \(-ay+by-cy=-y(a-b+c)\)。兩組都出現 \(a-b+c\)。` },
+        { prompt: '先把含 \(a\) 的三項與含 \(x\) 的三項分開，再找相同括號。', expression: String.raw`\(a^2-4ax+2ab+3ac-12cx-8bx\)`, answer: String.raw`\((a-4x)(a+2b+3c)\)`, options: [String.raw`\((a-4x)(a+2b+3c)\)`, String.raw`\((a+4x)(a+2b+3c)\)`, String.raw`\((a-4x)(a-2b+3c)\)`, String.raw`\((a-4x)(a+2b-3c)\)`], explanation: String.raw`重新排列為 \(a(a+2b+3c)-4x(a+2b+3c)\)，共同括號是 \(a+2b+3c\)。` },
+        { prompt: '六項先重新排列成 3 項＋3 項，再提出相同的三項式。', expression: String.raw`\(3a^2-6ax-5ac-8bx+4ab+10cx\)`, answer: String.raw`\((a-2x)(3a+4b-5c)\)`, options: [String.raw`\((a-2x)(3a+4b-5c)\)`, String.raw`\((a+2x)(3a+4b-5c)\)`, String.raw`\((a-2x)(3a-4b-5c)\)`, String.raw`\((a-2x)(3a+4b+5c)\)`], explanation: String.raw`重排為 \(a(3a+4b-5c)-2x(3a+4b-5c)\)，於是提出同一個括號。` }
+      ];
+      gcfProblems.sign = [
+        { prompt: '先把 \(n-m\) 改成 \(-(m-n)\)，再提出共同的兩個括號。', expression: String.raw`\((m-n)(x-y)-c(n-m)(x-y)\)`, answer: String.raw`\((m-n)(x-y)(1+c)\)`, options: [String.raw`\((m-n)(x-y)(1+c)\)`, String.raw`\((m-n)(x-y)(1-c)\)`, String.raw`\((n-m)(x-y)(1+c)\)`, String.raw`\((m-n)(y-x)(1+c)\)`], explanation: String.raw`\(n-m=-(m-n)\)，而原式前面還有減號，所以第二項變成加號：\((m-n)(x-y)+c(m-n)(x-y)\)。` },
+        { prompt: '兩個括號方向不同；先把 \(y-x\) 改成 \(-(x-y)\)。', expression: String.raw`\((a+b)(x-y)+m(a+b)(y-x)\)`, answer: String.raw`\((a+b)(x-y)(1-m)\)`, options: [String.raw`\((a+b)(x-y)(1-m)\)`, String.raw`\((a+b)(x-y)(1+m)\)`, String.raw`\((a-b)(x-y)(1-m)\)`, String.raw`\((a+b)(y-x)(1-m)\)`], explanation: String.raw`第二項中的 \(y-x\) 要先變成 \(-(x-y)\)，所以整式是 \((a+b)(x-y)-m(a+b)(x-y)\)。` },
+        { prompt: '這題同時有一次括號與偶次方；先把 \(1-x\) 變成 \(-(x-1)\)。', expression: String.raw`\((x-1)^2+2(1-x)\)`, answer: String.raw`\((x-1)(x-3)\)`, options: [String.raw`\((x-1)(x-3)\)`, String.raw`\((x-1)(x+1)\)`, String.raw`\((x+1)(x-3)\)`, String.raw`\((x-1)^2\)`], explanation: String.raw`\(2(1-x)=-2(x-1)\)，故可提出 \(x-1\)：\((x-1)[(x-1)-2]\)。` },
+        { prompt: '把 \(2-x\) 改成 \(-(x-2)\)，再和 \((x-2)^2\) 合併。', expression: String.raw`\(5(2-x)-(x-2)^2\)`, answer: String.raw`\(-(x-2)(x+3)\)`, options: [String.raw`\(-(x-2)(x+3)\)`, String.raw`\((x-2)(x+3)\)`, String.raw`\(-(x+2)(x-3)\)`, String.raw`\(-(x-2)(x-3)\)`], explanation: String.raw`\(5(2-x)=-5(x-2)\)，所以原式為 \(-(x-2)[5+(x-2)]\)。` },
+        { prompt: '奇次方會變號：\(2-x=-(x-2)\)。先提出 \(x-2\)，再比較括號內的兩個二次式。', expression: String.raw`\((x-2)^3+(2-x)(x^2-4x+1)\)`, answer: String.raw`\(3(x-2)\)`, options: [String.raw`\(3(x-2)\)`, String.raw`\(3(2-x)\)`, String.raw`\((x-2)(2x^2-8x+5)\)`, String.raw`\((x-2)(x^2-4x+5)\)`], explanation: String.raw`原式為 \((x-2)[(x-2)^2-(x^2-4x+1)]\)。而 \((x-2)^2=x^2-4x+4\)，括號內只剩 \(3\)。` },
+        { prompt: '先套用奇次方變號法則，再合併兩個同類的三次式。', expression: String.raw`\((b-a)^3-(a-b)^3\)`, answer: String.raw`\(-2(a-b)^3\)`, options: [String.raw`\(-2(a-b)^3\)`, String.raw`\(0\)`, String.raw`\(2(a-b)^3\)`, String.raw`\(-2(b-a)^3\)`], explanation: String.raw`\((b-a)^3=-(a-b)^3\)，所以是 \(-(a-b)^3-(a-b)^3\)，合併後得到 \(-2(a-b)^3\)。` }
+      ];
+      const gcfModeLabels = { two: '兩項進階', four: '四項分組', six: '六項分組', sign: '變號法則特訓' };
+      const gcfWidget = document.querySelector('[data-widget="gcf"]');
+      if (gcfWidget) Object.entries(gcfModeLabels).forEach(([mode, label]) => {
+        const button = gcfWidget.querySelector(`[data-mode="${mode}"]`);
+        if (button) button.textContent = label;
+      });
+      const widgets={gcf:{mode:'two',cursor:{two:0,four:0,six:0,sign:0},correct:0,total:0,current:null},formula:{mode:'mixed',cursor:{mixed:0,square:0,difference:0},correct:0,total:0,current:null},cross:{mode:'monic',cursor:{monic:0,nonmonic:0},correct:0,total:0,current:null}};
+      function typeset(target){if(!window.MathJax||!window.MathJax.typesetPromise)return;window.MathJax.typesetClear([target]);window.MathJax.typesetPromise([target]).catch(()=>{})}function updateScore(name){const state=widgets[name];document.querySelector(`#${name}-score`).textContent=`答對 ${state.correct} / ${state.total}`}function getProblems(name,mode){if(name==='gcf')return gcfProblems[mode];if(name==='formula')return mode==='mixed'?formulaProblems:formulaProblems.filter(p=>p.kind===mode);return crossProblems[mode]}function nextProblem(name){const state=widgets[name],list=getProblems(name,state.mode),index=state.cursor[state.mode]%list.length;state.cursor[state.mode]+=1;state.current=list[index];renderProblem(name)}
+      function renderProblem(name){const state=widgets[name],problem=state.current,mount=document.querySelector(`#${name}-question`),defaultPrompt=name==='gcf'?'選出正確的提出公因式結果。':name==='formula'?'選出正確的因式分解，並想一想它屬於哪一個公式。':'選出正確的十字交乘結果。';const guide=name==='cross'&&state.mode==='monic'?`<div class="notice"><strong>先看 \(c=${problem.c}\)：</strong>${problem.sign}<br><strong>找數：</strong>${problem.pair}</div>`:name==='cross'&&state.mode==='nonmonic'?`<div class="notice"><strong>共同因數檢查：</strong>${problem.gcf}</div>`:'';mount.innerHTML=`<div class="question-kicker">${name==='gcf'?'先圈共同部分':name==='formula'?'從結構辨認公式':state.mode==='monic'?'乘積 c、和 b':'a、c 分解後做交叉驗算'}</div><div class="question">${problem.expression}</div><div class="prompt">${problem.prompt||defaultPrompt}</div>${guide}<div class="choices" role="group" aria-label="選擇答案">${problem.options.map((option,index)=>`<button type="button" class="choice" data-choice="${index}"><span>${String.fromCharCode(65+index)}. </span>${option}</button>`).join('')}</div><div class="feedback" aria-live="polite"></div>`;mount.querySelectorAll('.choice').forEach(button=>button.addEventListener('click',()=>checkAnswer(name,Number(button.dataset.choice))));typeset(mount)}
+      function checkAnswer(name,selected){const state=widgets[name],problem=state.current,mount=document.querySelector(`#${name}-question`),answerIndex=problem.options.indexOf(problem.answer),buttons=Array.from(mount.querySelectorAll('.choice')),feedback=mount.querySelector('.feedback');buttons.forEach((button,index)=>{button.disabled=true;if(index===answerIndex)button.classList.add('correct');if(index===selected&&selected!==answerIndex)button.classList.add('wrong')});state.total+=1;const correct=selected===answerIndex;if(correct)state.correct+=1;const extra=name==='cross'&&state.mode==='nonmonic'&&problem.cross?`<div class="explain"><strong>交叉驗算：</strong>\(${problem.cross}\)</div>`:'';feedback.innerHTML=`<div class="${correct?'ok':'no'}"><strong>${correct?'答對！':'這一題先別急，看看綠色的正確答案。'}</strong> ${problem.explanation}</div>${extra}<button type="button" class="next-btn">下一題</button>`;feedback.querySelector('.next-btn').addEventListener('click',()=>nextProblem(name));updateScore(name);typeset(feedback)}
+      document.querySelectorAll('[data-widget]').forEach(widget=>{const name=widget.dataset.widget;widget.querySelectorAll('.mode-btn').forEach(button=>button.addEventListener('click',()=>{widgets[name].mode=button.dataset.mode;widget.querySelectorAll('.mode-btn').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));nextProblem(name)}))});window.addEventListener('load',()=>{nextProblem('gcf');nextProblem('formula');nextProblem('cross')});
+      function toInteger(value) {
+        const text = String(value || '').trim().replace(/−/g, '-');
+        return /^[+-]?\d+$/.test(text) ? Number(text) : null;
+      }
+
+      function linearText(coefficient, constant) {
+        const lead = coefficient === 1 ? 'x' : coefficient === -1 ? '−x' : `${coefficient}x`;
+        return `(${lead} ${constant >= 0 ? '+' : '−'} ${Math.abs(constant)})`;
+      }
+
+      function candidateText(outer, p, q, r, s) {
+        const factor = `${linearText(p, q)}${linearText(r, s)}`;
+        return outer === 1 ? factor : `${outer}·${factor}`;
+      }
+
+      function renderCrossAttempt() {
+        const state = widgets.cross;
+        const problem = state.current;
+        const mount = document.querySelector('#cross-question');
+        const isMonic = state.mode === 'monic';
+        state.crossRegistered = false;
+        state.crossSolved = false;
+        const guide = isMonic
+          ? String.raw`<div class='notice'><strong>先自己試：</strong>請填入兩個整數 \(m,n\)，使 \(m+n=b=${problem.b}\)、\(mn=c=${problem.c}\)。${problem.sign}</div>`
+          : String.raw`<div class='notice'><strong>先做共同因數檢查：</strong>${problem.gcf}<br>接著自己填入 \(g,p,q,r,s\)，驗算 \(gpr=a\)、\(gqs=c\)、\(g(ps+qr)=b\)。</div>`;
+        const template = isMonic
+          ? `<div class='cross-template' aria-label='填入兩個一次因式'><span>(x +</span><label><span class='sr-only'>第一個常數</span><input class='cross-slot' id='cross-q' inputmode='numeric' autocomplete='off' aria-label='第一個常數 m'></label><span>)</span><span class='times'>×</span><span>(x +</span><label><span class='sr-only'>第二個常數</span><input class='cross-slot' id='cross-s' inputmode='numeric' autocomplete='off' aria-label='第二個常數 n'></label><span>)</span></div>`
+          : `<div class='cross-template' aria-label='填入十字交乘的候選因式'><label><span class='sr-only'>外面提出的共同因數</span><input class='cross-slot outer-slot' id='cross-g' inputmode='numeric' autocomplete='off' aria-label='外面提出的共同因數 g'></label><span class='times'>·</span><span>(</span><label><span class='sr-only'>第一個 x 的係數</span><input class='cross-slot' id='cross-p' inputmode='numeric' autocomplete='off' aria-label='第一個 x 的係數 p'></label><span>x +</span><label><span class='sr-only'>第一個常數</span><input class='cross-slot' id='cross-q' inputmode='numeric' autocomplete='off' aria-label='第一個常數 q'></label><span>)</span><span class='times'>×</span><span>(</span><label><span class='sr-only'>第二個 x 的係數</span><input class='cross-slot' id='cross-r' inputmode='numeric' autocomplete='off' aria-label='第二個 x 的係數 r'></label><span>x +</span><label><span class='sr-only'>第二個常數</span><input class='cross-slot' id='cross-s' inputmode='numeric' autocomplete='off' aria-label='第二個常數 s'></label><span>)</span></div>`;
+        mount.innerHTML = `<div class='question-kicker'>${isMonic ? '先試兩數的和與積' : '先自己安排 a、c 的因數，再驗算交叉和'}</div><div class='question'>${problem.expression}</div><div class='prompt'>不要先看候選因式。請填入一組你想驗證的數；負數可直接輸入負號。</div>${guide}<div class='cross-workbench'><h4>我的十字交乘嘗試</h4><p>${isMonic ? '只填兩個常數；首項係數固定都是 1。' : '外面的共同因數填在第一格；若沒有共同因數，填 1。'}</p>${template}<div class='cross-actions'><button type='button' class='cross-action' id='cross-try'>試算交叉乘積</button><button type='button' class='cross-action secondary' id='cross-check'>檢查這組因式</button><button type='button' class='cross-action secondary' id='cross-clear'>清除重試</button></div><div class='cross-attempt-result' id='cross-attempt-result' aria-live='polite'></div><details class='answer-reveal'><summary>卡住時再展開：提示與完整因式</summary><p>${problem.explanation}</p><div class='formula'><strong>一組完整因式：</strong>${problem.answer}</div></details></div>`;
+        mount.querySelector('#cross-try').addEventListener('click', () => checkCrossAttempt(false));
+        mount.querySelector('#cross-check').addEventListener('click', () => checkCrossAttempt(true));
+        mount.querySelector('#cross-clear').addEventListener('click', () => renderCrossAttempt());
+        typeset(mount);
+      }
+
+      function checkCrossAttempt(finalCheck) {
+        const state = widgets.cross;
+        const problem = state.current;
+        const mount = document.querySelector('#cross-question');
+        const output = mount.querySelector('#cross-attempt-result');
+        const isMonic = state.mode === 'monic';
+        const g = isMonic ? 1 : toInteger(mount.querySelector('#cross-g').value);
+        const p = isMonic ? 1 : toInteger(mount.querySelector('#cross-p').value);
+        const q = toInteger(mount.querySelector('#cross-q').value);
+        const r = isMonic ? 1 : toInteger(mount.querySelector('#cross-r').value);
+        const s = toInteger(mount.querySelector('#cross-s').value);
+        if ([g, p, q, r, s].some((value) => value === null) || g === 0 || p === 0 || r === 0) {
+          output.innerHTML = String.raw`<div class='miss'><strong>還不能試算：</strong>請在每個空格填入整數；外面因數 \(g\) 與兩個 \(x\) 的係數不能是 0。</div>`;
+          typeset(output);
+          return;
+        }
+        const targetA = toInteger(problem.a);
+        const targetB = toInteger(problem.b);
+        const targetC = toInteger(problem.c);
+        const actualA = g * p * r;
+        const actualB = g * (p * s + q * r);
+        const actualC = g * q * s;
+        const coefficientMatch = actualA === targetA && actualB === targetB && actualC === targetC;
+        const requiredOuter = problem.requiredOuter || 1;
+        const fullyFactored = coefficientMatch && (isMonic || g === requiredOuter);
+        const report = `<ul class='teacher-flow'><li>首項：${g} × ${p} × ${r} = ${actualA}（目標 ${targetA}）</li><li>常數：${g} × ${q} × ${s} = ${actualC}（目標 ${targetC}）</li><li>交叉和：${g} × [(${p} × ${s}) + (${q} × ${r})] = ${actualB}（目標 ${targetB}）</li></ul><p><strong>這組候選：</strong>${candidateText(g, p, q, r, s)}</p>`;
+        if (!finalCheck) {
+          output.innerHTML = `<div class='try'><strong>${coefficientMatch ? '三個係數都對上了。' : '先比對三個係數，再調整一格試試。'}</strong>${report}${coefficientMatch && !fullyFactored ? `<p>展開雖然相等，但這題要先把共同因數 ${requiredOuter} 提到括號外。</p>` : ''}</div>`;
+          return;
+        }
+        if (!state.crossRegistered) {
+          state.total += 1;
+          state.crossRegistered = true;
+        }
+        if (!fullyFactored) {
+          output.innerHTML = `<div class='miss'><strong>這一組還沒完成。</strong>${report}${coefficientMatch ? `<p>先把共同因數 ${requiredOuter} 寫在括號外，再檢查一次。</p>` : '<p>至少有一個係數沒有對上原式；調整後可繼續嘗試。</p>'}</div>`;
+          updateScore('cross');
+          return;
+        }
+        if (!state.crossSolved) {
+          state.correct += 1;
+          state.crossSolved = true;
+        }
+        mount.querySelectorAll('input, .cross-action').forEach((element) => { element.disabled = true; });
+        output.innerHTML = `<div class='hit'><strong>答對！</strong>${report}<p>你是先用自己的候選因式驗證三個係數，而不是靠選項反推。</p><button type='button' class='next-btn' id='cross-next'>下一題</button></div>`;
+        output.querySelector('#cross-next').addEventListener('click', () => nextProblem('cross'));
+        updateScore('cross');
+      }
+
+      crossProblems.nonmonic[3].requiredOuter = 2;
+      const renderMultipleChoiceProblem = renderProblem;
+      renderProblem = function (name) {
+        if (name === 'cross') return renderCrossAttempt();
+        return renderMultipleChoiceProblem(name);
+      };
+    })();
+  </script>
+</body>
+</html>

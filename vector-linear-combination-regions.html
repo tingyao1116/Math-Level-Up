@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>平面向量分量：係數、七區與共線｜互動教學</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      startup: {
+        pageReady() {
+          return MathJax.startup.defaultPageReady().then(() => {
+            window.dispatchEvent(new Event('mathjax-ready'));
+          });
+        }
+      }
+    };
+  </script>
+  <script async id="mathjax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #14293c;
+      --muted: #53677a;
+      --paper: #f5f9fc;
+      --card: #fff;
+      --line: #d4e2eb;
+      --blue: #146ca7;
+      --blue-pale: #e6f4ff;
+      --teal: #087970;
+      --teal-pale: #e5f8f3;
+      --orange: #b65b12;
+      --orange-pale: #fff1e4;
+      --violet: #6946a1;
+      --violet-pale: #f1ebff;
+      --red: #b13f48;
+      --red-pale: #fff0f1;
+      --shadow: 0 16px 42px rgba(31, 65, 93, .11);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at 4% 0%, #d9f3ff 0, transparent 30rem), radial-gradient(circle at 96% 5%, #fff0cb 0, transparent 25rem), var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.8;
+    }
+    .wrap { width: min(1170px, calc(100% - 32px)); margin: 0 auto; padding: 25px 0 58px; }
+    .back { color: var(--blue); font-weight: 850; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero { margin: 18px 0 30px; padding: clamp(27px, 5vw, 54px); border-radius: 28px; color: #fff; background: linear-gradient(130deg, #173c67, #176eaa 52%, #078174); box-shadow: var(--shadow); }
+    .eyebrow, .tag, .level { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .86rem; font-weight: 850; letter-spacing: .02em; }
+    .eyebrow { color: #dcf7ff; background: rgba(255,255,255,.15); }
+    h1 { margin: 9px 0 8px; font-size: clamp(2rem, 5vw, 3.45rem); line-height: 1.18; }
+    .lead { max-width: 870px; margin: 0; color: #ecfaff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 23px; }
+    .nav a { padding: 7px 13px; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; color: #fff; font-weight: 850; text-decoration: none; }
+    .nav a:hover { background: rgba(255,255,255,.15); }
+    section { scroll-margin-top: 16px; }
+    .section { margin-top: 39px; }
+    .section-head { margin-bottom: 15px; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.2rem); line-height: 1.35; }
+    h3 { margin: 0 0 8px; font-size: 1.18rem; line-height: 1.5; }
+    h4 { margin: 0 0 5px; font-size: 1rem; }
+    .section-head p, .card > p { margin: 5px 0 0; color: var(--muted); }
+    .tag { color: var(--blue); background: var(--blue-pale); }
+    .tag.teal { color: var(--teal); background: var(--teal-pale); }
+    .tag.orange { color: var(--orange); background: var(--orange-pale); }
+    .tag.violet { color: var(--violet); background: var(--violet-pale); }
+    .card { padding: clamp(18px, 3vw, 27px); border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: 0 7px 21px rgba(28, 60, 88, .05); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .three-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .formula { margin: 13px 0; padding: 13px 14px; border-radius: 13px; color: #143d59; background: #eff8fc; font-family: Cambria, "Times New Roman", serif; font-size: clamp(1.06rem, 2.7vw, 1.42rem); font-weight: 700; line-height: 1.62; text-align: center; }
+    .formula.small { font-size: 1.02rem; }
+    .math { font-family: Cambria, "Times New Roman", serif; font-size: 1.06em; white-space: nowrap; }
+    mjx-container { margin: 0 !important; }
+    .formula mjx-container[display="true"] { margin: .12em 0 !important; }
+    .note, .teacher-note, .error-note, .success-note { margin-top: 13px; padding: 12px 14px; border-left: 4px solid var(--blue); border-radius: 0 12px 12px 0; background: var(--blue-pale); }
+    .teacher-note { border-color: var(--orange); background: var(--orange-pale); }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .success-note { border-color: var(--teal); background: var(--teal-pale); }
+    .note a, .teacher-note a { color: #075f8d; font-weight: 850; }
+    .comparison { width: 100%; border-collapse: collapse; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; }
+    .comparison th, .comparison td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .comparison tr:last-child td { border-bottom: 0; }
+    .comparison th { color: #17415e; background: #edf7fd; font-weight: 850; }
+    .walk-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .walk-card { position: relative; min-width: 0; padding: 17px 16px 15px 54px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+    .walk-number { position: absolute; top: 14px; left: 14px; display: grid; place-items: center; width: 29px; height: 29px; border-radius: 50%; color: #fff; background: var(--blue); font-family: Cambria, "Times New Roman", serif; font-weight: 900; }
+    .walk-card:nth-child(2) .walk-number { background: var(--teal); }
+    .walk-card:nth-child(3) .walk-number { background: var(--orange); }
+    .walk-card:nth-child(4) .walk-number { background: var(--violet); }
+    .walk-card p { margin: 3px 0 0; color: var(--muted); }
+    .activity-layout { display: grid; grid-template-columns: minmax(310px, 1fr) minmax(295px, .92fr); gap: 18px; align-items: start; }
+    .diagram-frame { padding: 8px; border: 1px solid #bdd8e7; border-radius: 18px; background: linear-gradient(135deg, #fff, #f0f9fc); }
+    #component-map, #coefficient-plane, #collinear-map, #bisector-map { display: block; width: 100%; height: auto; touch-action: none; user-select: none; }
+    #component-map { min-height: 390px; cursor: crosshair; }
+    #coefficient-plane { min-height: 360px; cursor: crosshair; }
+    .drag-chip { margin: 9px 0 0; padding: 8px 10px; border-radius: 10px; color: #30566d; background: #eff8fc; font-size: .92rem; font-weight: 750; }
+    .control-title { margin: 0; color: #23455e; font-size: 1.03rem; }
+    .range-stack { display: grid; gap: 9px; margin-top: 14px; }
+    .range-item { padding: 10px 11px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    .range-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    label { color: #324b61; font-size: .95rem; font-weight: 850; }
+    output { color: var(--blue); font-family: Cambria, "Times New Roman", serif; font-size: 1.15rem; font-weight: 850; }
+    input[type="range"] { width: 100%; margin: 6px 0 0; accent-color: var(--blue); }
+    input[type="number"] { width: 92px; min-height: 36px; padding: 5px 8px; border: 1px solid #b4c8d6; border-radius: 9px; color: var(--ink); background: #fff; font: inherit; text-align: center; }
+    .coefficient-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 11px; }
+    .coefficient-inputs label { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 10px; background: #fbfdff; }
+    .button-row, .preset-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    button { min-height: 39px; padding: 8px 12px; border: 1px solid transparent; border-radius: 10px; color: #fff; background: var(--blue); cursor: pointer; font: inherit; font-weight: 850; }
+    button:hover { background: #10598f; }
+    button.alt { color: #31516a; border-color: #c9dae5; background: #edf5f9; }
+    button.alt:hover { background: #dcebf3; }
+    button.is-selected { color: #fff; border-color: var(--orange); background: var(--orange); }
+    button:focus, input:focus, a:focus, summary:focus { outline: 3px solid #83cae9; outline-offset: 2px; }
+    .live-panel { min-height: 219px; margin-top: 15px; padding: 14px; border: 1px solid #bfdbe9; border-radius: 14px; background: #f3faff; }
+    .live-panel h3 { color: #15517d; }
+    .live-panel p { margin: 5px 0 0; color: #365d75; }
+    .live-formula { display: block; margin-top: 9px; color: #075f58; font-family: Cambria, "Times New Roman", serif; font-size: 1.16rem; font-weight: 800; }
+    .region-key { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 13px; }
+    .region-key div { padding: 8px 10px; border: 1px solid var(--line); border-left: 5px solid var(--blue); border-radius: 9px; color: #38566b; background: #fbfdff; font-size: .9rem; }
+    .region-key div:nth-child(2) { border-color: #d0672b; }
+    .region-key div:nth-child(3) { border-color: #b04a91; }
+    .region-key div:nth-child(4) { border-color: #7071ba; }
+    .region-key div:nth-child(5) { border-color: #0b9080; }
+    .region-key div:nth-child(6) { border-color: #6f9f37; }
+    .region-key div:nth-child(7) { border-color: #a27035; }
+    .vector-diagram { display: block; width: 100%; height: auto; min-height: 242px; }
+    .diagram-label { fill: #18364e; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 15px; font-weight: 900; paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+    .diagram-small { fill: #46647a; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 12px; font-weight: 750; paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+    .level { margin-bottom: 8px; }
+    .level.basic { color: #0d665f; background: var(--teal-pale); }
+    .level.advance { color: #945605; background: #fff4db; }
+    .level.challenge { color: #68449d; background: var(--violet-pale); }
+    details { margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; background: #fbfdff; }
+    summary { padding: 9px 11px; cursor: pointer; color: var(--blue); font-weight: 850; }
+    details p, details div { margin: 0; padding: 0 12px 12px; color: #3c5168; }
+    .quiz-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+    .quiz-card { padding: 15px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
+    .quiz-card p { margin: 5px 0 11px; color: var(--muted); }
+    .quiz-card .button-row { margin-top: 0; }
+    .quiz-feedback { min-height: 58px; margin-top: 12px; padding: 11px 13px; border-radius: 11px; color: #2c526a; background: #eff7fb; }
+    .quiz-feedback.correct { color: #075f58; background: var(--teal-pale); }
+    .quiz-feedback.incorrect { color: #8a3940; background: var(--red-pale); }
+    .footer { margin: 38px 0 0; color: #607789; font-size: .94rem; text-align: center; }
+    @media (max-width: 820px) {
+      .grid, .activity-layout, .three-grid, .quiz-grid { grid-template-columns: 1fr; }
+      .walk-grid { grid-template-columns: 1fr; }
+      .comparison { display: block; overflow-x: auto; }
+    }
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 22px, 1170px); padding-top: 15px; }
+      .hero { border-radius: 22px; }
+      .region-key, .coefficient-inputs { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← 回到數學小遊戲首頁</a>
+
+    <header class="hero">
+      <span class="eyebrow">平面向量・線性組合・仿射座標</span>
+      <h1>把兩個向量做分量：終點會落在哪一區？</h1>
+      <p class="lead">從「走一段 \(\vec{AB}\)、再走一段 \(\vec{AC}\)」開始，讀懂 \(\vec{AP}=u\vec{AB}+v\vec{AC}\) 的係數。拖曳終點或係數點，觀察三條界線如何把平面分成七區；再連到共線與角平分線的向量條件。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#addition">向量加法</a>
+        <a href="#regions">拖曳七區</a>
+        <a href="#collinear">共線條件</a>
+        <a href="#bisector">角平分線與合力</a>
+        <a href="#practice">例題與自檢</a>
+      </nav>
+    </header>
+
+    <section id="addition" class="section" aria-labelledby="addition-title">
+      <div class="section-head">
+        <span class="tag orange">先有路徑，才有公式</span>
+        <h2 id="addition-title">向量相加有兩種看法：接力走路，或同一起點的合力</h2>
+        <p>兩種畫法算的是同一個向量；差別在於我們想看「移動的路徑」還是「兩股力一起作用的結果」。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <h3>三角形法：新起點接在舊終點</h3>
+          <svg class="vector-diagram" viewBox="0 0 500 255" role="img" aria-label="向量三角形法，先走 a 再走 b，得到 a 加 b">
+            <defs><marker id="walk-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#176eaa"/></marker><marker id="walk-arrow2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#078174"/></marker><marker id="walk-result" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#b65b12"/></marker></defs>
+            <path d="M65 190 L225 80" fill="none" stroke="#176eaa" stroke-width="5" marker-end="url(#walk-arrow)"/>
+            <path d="M225 80 L420 148" fill="none" stroke="#078174" stroke-width="5" marker-end="url(#walk-arrow2)"/>
+            <path d="M65 190 L420 148" fill="none" stroke="#b65b12" stroke-width="5" stroke-dasharray="9 6" marker-end="url(#walk-result)"/>
+            <circle cx="65" cy="190" r="5" fill="#fff" stroke="#29495f" stroke-width="2"/><circle cx="225" cy="80" r="5" fill="#fff" stroke="#29495f" stroke-width="2"/><circle cx="420" cy="148" r="5" fill="#fff" stroke="#29495f" stroke-width="2"/>
+            <text class="diagram-label" x="125" y="116">第一段</text><text class="diagram-label" x="310" y="93">第二段</text><text class="diagram-label" x="210" y="198">合位移</text>
+            <text class="diagram-small" x="51" y="218">起點</text><text class="diagram-small" x="196" y="61">舊終點＝新起點</text>
+          </svg>
+          <p class="note"><strong>路徑語言：</strong>先位移 \(\vec a\)，再從那裡位移一個平移過去的 \(\vec b\)。從最初起點直接指向最後終點，就是 \(\vec a+\vec b\)。</p>
+        </article>
+        <article class="card">
+          <h3>平行四邊形法：同一起點看合力</h3>
+          <svg class="vector-diagram" viewBox="0 0 500 255" role="img" aria-label="向量平行四邊形法，同一個起點的兩力相加得到對角線合力">
+            <defs><marker id="force-arrow1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#176eaa"/></marker><marker id="force-arrow2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#078174"/></marker><marker id="force-result" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#b65b12"/></marker></defs>
+            <path d="M75 190 L222 70" fill="none" stroke="#176eaa" stroke-width="5" marker-end="url(#force-arrow1)"/>
+            <path d="M75 190 L388 145" fill="none" stroke="#078174" stroke-width="5" marker-end="url(#force-arrow2)"/>
+            <path d="M222 70 L455 26 L388 145" fill="none" stroke="#95aab7" stroke-width="2.5" stroke-dasharray="8 6"/>
+            <path d="M75 190 L455 26" fill="none" stroke="#b65b12" stroke-width="5" marker-end="url(#force-result)"/>
+            <circle cx="75" cy="190" r="5" fill="#fff" stroke="#29495f" stroke-width="2"/>
+            <text class="diagram-label" x="130" y="105">力 1</text><text class="diagram-label" x="218" y="184">力 2</text><text class="diagram-label" x="284" y="88">合力</text>
+            <text class="diagram-small" x="42" y="218">同一起點</text>
+          </svg>
+          <p class="teacher-note"><strong>力量語言：</strong>兩個力從同一點拉，合力是平行四邊形的對角線。之後的「等大兩力合力沿角平分線」，就是這張圖的特例。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="regions" class="section" aria-labelledby="regions-title">
+      <div class="section-head">
+        <span class="tag teal">主互動：兩邊同步拖拉</span>
+        <h2 id="regions-title">\(\vec{AP}=u\vec{AB}+v\vec{AC}\)：三個權重，把平面切成七區</h2>
+        <p>左圖拖橘色 \(P\)；右圖拖係數點 \((u,v)\)。兩圖會立即同步。不要先背區域名稱，先看三個數的正負：\(1-u-v\)、\(u\)、\(v\)。</p>
+      </div>
+      <article class="card">
+        <div class="activity-layout">
+          <div>
+            <h3>幾何平面：終點 \(P\) 的位置</h3>
+            <div class="diagram-frame"><svg id="component-map" viewBox="0 0 560 430" role="img" aria-label="三角形 ABC 與可拖曳終點 P，顯示向量分量終點位置"></svg></div>
+            <p class="drag-chip">操作：拖曳橘色 \(P\)（或在圖上點選）來改變兩個係數。\(u+v=1\) 是邊 \(BC\) 的界線；圖上也會畫出三條邊的延長線。</p>
+          </div>
+          <div>
+            <h3>係數平面：像 \((x,y)\) 正負一樣讀 \((u,v)\)</h3>
+            <div class="diagram-frame"><svg id="coefficient-plane" viewBox="0 0 520 430" role="img" aria-label="u v 係數平面，以 u 等於零、v 等於零、u 加 v 等於一分成七個區塊"></svg></div>
+            <p class="drag-chip">這裡多了一條 \(u+v=1\)，所以不只四象限；\(u=0\)、\(v=0\)、\(u+v=1\) 三線把平面分成 <strong>七個開放區域</strong>。</p>
+          </div>
+        </div>
+        <div class="activity-layout" style="margin-top:18px">
+          <div>
+            <h3 class="control-title">調整係數</h3>
+            <div class="range-stack">
+              <div class="range-item"><div class="range-top"><label for="u-range">\(\vec{AB}\) 的係數 \(u\)</label><output id="u-output"></output></div><input id="u-range" type="range" min="-1.4" max="2.4" step="0.05" value="0.35"></div>
+              <div class="range-item"><div class="range-top"><label for="v-range">\(\vec{AC}\) 的係數 \(v\)</label><output id="v-output"></output></div><input id="v-range" type="range" min="-1.4" max="2.4" step="0.05" value="0.25"></div>
+            </div>
+            <div class="coefficient-inputs">
+              <label for="u-number">輸入 \(u\)<input id="u-number" type="number" min="-1.4" max="2.4" step="0.05" value="0.35"></label>
+              <label for="v-number">輸入 \(v\)<input id="v-number" type="number" min="-1.4" max="2.4" step="0.05" value="0.25"></label>
+            </div>
+            <div class="preset-grid" aria-label="七區預設位置">
+              <button class="alt region-preset" data-u=".35" data-v=".25" type="button">△內部</button>
+              <button class="alt region-preset" data-u=".75" data-v=".25" type="button">BC 上</button>
+              <button class="alt region-preset" data-u="1.15" data-v=".45" type="button">BC 外側</button>
+              <button class="alt region-preset" data-u="-.35" data-v=".55" type="button">AC 的 B 對側</button>
+              <button class="alt region-preset" data-u=".55" data-v="-.35" type="button">AB 的 C 對側</button>
+              <button class="alt region-preset" data-u="-.45" data-v="-.30" type="button">A 扇形</button>
+              <button class="alt region-preset" data-u="1.35" data-v="-.40" type="button">B 扇形</button>
+              <button class="alt region-preset" data-u="-.35" data-v="1.35" type="button">C 扇形</button>
+            </div>
+          </div>
+          <div id="region-live" class="live-panel" aria-live="polite"></div>
+        </div>
+        <div class="region-key" aria-label="七個區塊對照">
+          <div>① \(1-u-v>0,u>0,v>0\)：\(\triangle ABC\) 內</div>
+          <div>② \(1-u-v<0,u>0,v>0\)：\(BC\) 的另一側</div>
+          <div>③ \(1-u-v>0,u<0,v>0\)：\(AC\) 的 \(B\) 對側</div>
+          <div>④ \(1-u-v>0,u>0,v<0\)：\(AB\) 的 \(C\) 對側</div>
+          <div>⑤ \(u<0,v<0\)：\(A\) 頂點扇形</div>
+          <div>⑥ \(1-u-v<0,v<0\)：\(B\) 頂點扇形</div>
+          <div>⑦ \(1-u-v<0,u<0\)：\(C\) 頂點扇形</div>
+        </div>
+        <div class="error-note"><strong>一定要修正的口訣：</strong>若 \(u,v>0\)，才可說 \(u+v<1\) 時 \(P\) 在 \(\triangle ABC\) 內、\(u+v=1\) 時在 \(BC\) 上、\(u+v>1\) 時在 \(BC\) 的另一側。若 \(u\) 或 \(v\) 是負數，\(u+v<1\) 仍只表示「以 \(BC\) 為基準，\(P\) 與 \(A\) 同側」，未必在三角形內。</div>
+      </article>
+    </section>
+
+    <section class="section" aria-labelledby="why-title">
+      <div class="section-head">
+        <span class="tag violet">把圖翻成可判讀的式子</span>
+        <h2 id="why-title">為什麼是這三個數？因為 \(P\) 其實是 \(A,B,C\) 的權重組合</h2>
+      </div>
+      <article class="card">
+        <div class="formula">\[\vec{OP}=(1-u-v)\vec{OA}+u\vec{OB}+v\vec{OC}\]</div>
+        <p>從 \(\vec{AP}=u\vec{AB}+v\vec{AC}\) 展開：\(\vec{AP}=\vec{OP}-\vec{OA}\)、\(\vec{AB}=\vec{OB}-\vec{OA}\)、\(\vec{AC}=\vec{OC}-\vec{OA}\)，整理後便得到上式。三個係數的和永遠是 \(1\)。</p>
+        <div class="three-grid" style="margin-top:15px">
+          <div class="note"><strong>看 \(1-u-v\)：</strong>以 \(BC\) 為準。正：同 \(A\) 側；零：在 \(BC\) 上；負：在另一側。</div>
+          <div class="note"><strong>看 \(u\)：</strong>以 \(AC\) 為準。正：同 \(B\) 側；零：在 \(AC\) 上；負：在 \(B\) 的對側。</div>
+          <div class="note"><strong>看 \(v\)：</strong>以 \(AB\) 為準。正：同 \(C\) 側；零：在 \(AB\) 上；負：在 \(C\) 的對側。</div>
+        </div>
+        <div class="teacher-note"><strong>教學說法：</strong>三角形內的點，是三個頂點都「有正的份量」湊出來的。只要其中一個頂點權重變成負的，終點就跨過該頂點的對邊；這就是七區圖比死背不等式更可靠的原因。</div>
+      </article>
+    </section>
+
+    <section id="collinear" class="section" aria-labelledby="collinear-title">
+      <div class="section-head">
+        <span class="tag orange">截圖中的共線條件</span>
+        <h2 id="collinear-title">共線：兩個係數的和要是 \(1\)</h2>
+        <p>把 \(C\) 限制在 \(A,B\) 所在的直線上。滑桿的 \(r\) 是「從 \(A\) 走 \(r\) 倍 \(\vec{AB}\)」；它同時顯示內分、外分與向量係數和為 \(1\) 的關係。</p>
+      </div>
+      <article class="card">
+        <div class="activity-layout">
+          <div>
+            <div class="diagram-frame"><svg id="collinear-map" viewBox="0 0 590 250" role="img" aria-label="A B C 三點共線，可調整 C 的內外分位置"></svg></div>
+            <p class="drag-chip">把 \(r\) 從 \(0\) 拉到 \(1\)：\(C\) 由 \(A\) 走到 \(B\)。越過 \(0\) 或 \(1\) 後，\(C\) 仍共線，但改成外分。</p>
+          </div>
+          <div>
+            <h3 class="control-title">調整共線參數 \(r\)</h3>
+            <div class="range-stack"><div class="range-item"><div class="range-top"><label for="r-range">\(\vec{AC}=r\vec{AB}\)</label><output id="r-output"></output></div><input id="r-range" type="range" min="-1" max="2" step="0.1" value="0.4"></div></div>
+            <div id="collinear-live" class="live-panel" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="grid" style="margin-top:16px">
+          <div class="formula small">\[A,B,C\text{ 共線}\iff \vec{OC}=(1-r)\vec{OA}+r\vec{OB}\quad((1-r)+r=1)\]</div>
+          <div class="formula small">\[\overline{CA}:\overline{CB}=m:n\quad\Longrightarrow\quad \vec{OC}=\frac{n}{m+n}\vec{OA}+\frac{m}{m+n}\vec{OB}\]</div>
+        </div>
+        <details>
+          <summary>再看三個點的齊次共線寫法</summary>
+          <div>若題目給的是三個位置向量，常把共線寫成 \(\alpha\vec{OA}+\beta\vec{OB}+\gamma\vec{OC}=\vec 0\)，而且 \(\alpha+\beta+\gamma=0\)。重點不是硬背字母，而是：<strong>位置向量的線性關係，係數總和為 \(0\)</strong>，才不會因為原點 \(O\) 換了位置而改變真偽。</div>
+        </details>
+      </article>
+    </section>
+
+    <section id="bisector" class="section" aria-labelledby="bisector-title">
+      <div class="section-head">
+        <span class="tag teal">等大力量的合力</span>
+        <h2 id="bisector-title">角平分線：先把兩個方向的「力量」調成一樣大</h2>
+        <p>兩支向量夾成一個角。若兩支實際向量等長，直接相加的合力沿內角平分線；若不等長，要先把其中一支乘上適當係數，才會得到角平分線方向。</p>
+      </div>
+      <article class="card">
+        <div class="activity-layout">
+          <div>
+            <div class="diagram-frame"><svg id="bisector-map" viewBox="0 0 560 350" role="img" aria-label="兩個可調整的力量與合力，顯示等大力量時合力在角平分線"></svg></div>
+            <p class="drag-chip">藍、綠箭頭是兩個力；橘色是原本合力；紫色是把第二力調到同樣大小後的角平分線方向。按「設成同力量」可讓兩者重合。</p>
+          </div>
+          <div>
+            <h3 class="control-title">調整方向與大小</h3>
+            <div class="range-stack">
+              <div class="range-item"><div class="range-top"><label for="theta-one">\(\vec F_1\) 方向</label><output id="theta-one-output"></output></div><input id="theta-one" type="range" min="-70" max="70" step="1" value="48"></div>
+              <div class="range-item"><div class="range-top"><label for="theta-two">\(\vec F_2\) 方向</label><output id="theta-two-output"></output></div><input id="theta-two" type="range" min="-70" max="70" step="1" value="-22"></div>
+              <div class="range-item"><div class="range-top"><label for="force-one">\(|\vec F_1|\)</label><output id="force-one-output"></output></div><input id="force-one" type="range" min="2" max="6" step=".1" value="4"></div>
+              <div class="range-item"><div class="range-top"><label for="force-two">\(|\vec F_2|\)</label><output id="force-two-output"></output></div><input id="force-two" type="range" min="2" max="6" step=".1" value="4"></div>
+            </div>
+            <div class="button-row"><button id="equal-force" type="button">設成同力量</button></div>
+            <div id="bisector-live" class="live-panel" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="formula">\[\vec{AB}+\alpha\vec{AC}\text{ 為 }\angle BAC\text{ 的內角平分線方向}\quad\Longleftrightarrow\quad |\vec{AB}|=|\alpha\vec{AC}|\quad(\alpha>0)\]</div>
+        <div class="teacher-note"><strong>不是「兩邊一樣長」才有角平分線：</strong>任兩個不共線方向都可以先單位化：\(\frac{\vec{AB}}{|\vec{AB}|}+\frac{\vec{AC}}{|\vec{AC}|}\) 指向內角平分線。若題目剛好給兩力等長，分母相同，就自然化成 \(\vec{AB}+\vec{AC}\)。</div>
+      </article>
+    </section>
+
+    <section id="practice" class="section" aria-labelledby="practice-title">
+      <div class="section-head">
+        <span class="tag violet">基礎 → 進階 → 挑戰</span>
+        <h2 id="practice-title">例題、易錯點與立即自檢</h2>
+        <p>先判三個權重的正負，再說位置；不要只盯著 \(u+v\)。</p>
+      </div>
+      <div class="quiz-grid">
+        <article class="quiz-card">
+          <span class="level basic">基礎</span>
+          <h3>三角形內嗎？</h3>
+          <p>\(\vec{AP}=\frac14\vec{AB}+\frac13\vec{AC}\)。\(P\) 在哪裡？</p>
+          <div class="button-row"><button class="alt quiz-answer" data-answer="correct" data-message="正確：\(u=\frac14>0\)、\(v=\frac13>0\)、\(1-u-v=\frac{5}{12}>0\)，三個頂點權重都正，所以在三角形內。" type="button">△ABC 內</button><button class="alt quiz-answer" data-answer="wrong" data-message="先算 \(1-u-v\)，還要一起看 \(u,v\) 是否都正。" type="button">BC 外側</button></div>
+        </article>
+        <article class="quiz-card">
+          <span class="level advance">進階</span>
+          <h3>跨過哪一邊？</h3>
+          <p>\(\vec{AP}=1.2\vec{AB}+0.25\vec{AC}\)。\(P\) 在哪一側？</p>
+          <div class="button-row"><button class="alt quiz-answer" data-answer="wrong" data-message="\(u,v\) 都正，但 \(u+v=1.45>1\)，所以不是在三角形內。" type="button">△ABC 內</button><button class="alt quiz-answer" data-answer="correct" data-message="正確：\(1-u-v=-0.45<0\)，所以 \(P\) 跨過 \(BC\)，落在與 \(A\) 相反的一側。" type="button">BC 的另一側</button></div>
+        </article>
+        <article class="quiz-card">
+          <span class="level challenge">挑戰</span>
+          <h3>負係數的陷阱</h3>
+          <p>\(\vec{AP}=-0.25\vec{AB}+0.6\vec{AC}\)。最準確的判斷是？</p>
+          <div class="button-row"><button class="alt quiz-answer" data-answer="wrong" data-message="雖然 \(u+v=0.35<1\)，但 \(u<0\)，所以不能說在三角形內。" type="button">△ABC 內</button><button class="alt quiz-answer" data-answer="correct" data-message="正確：\(u<0\) 表示 \(P\) 在 \(AC\) 的 \(B\) 對側；同時 \(1-u-v=0.65>0\)，仍與 \(A\) 在 \(BC\) 同側。" type="button">AC 的 B 對側</button></div>
+        </article>
+      </div>
+      <div id="quiz-feedback" class="quiz-feedback" aria-live="polite">選一個答案；回饋會把判斷拆成三個權重，方便回頭修正口訣。</div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card"><span class="level advance">例題</span><h3>從內分比反推分量</h3><p>若 \(C\) 在 \(AB\) 上，且 \(\overline{AC}:\overline{CB}=2:3\)，則 \(\vec{AC}=\frac25\vec{AB}\)。因為從 \(A\) 到 \(C\) 走的是全段的 \(\frac{2}{2+3}\)，不是 \(\frac{3}{5}\)。</p><details><summary>為什麼位置向量的權重反過來？</summary><div>\(C\) 靠近 \(A\) 時，\(\vec{OC}\) 應該比較像 \(\vec{OA}\)，所以 \(\vec{OA}\) 前的係數是對面那段 \(CB\) 的比例。這正是 \(\vec{OC}=\frac35\vec{OA}+\frac25\vec{OB}\) 的直覺來源。</div></details></article>
+        <article class="card"><span class="level challenge">挑戰</span><h3>角平分線係數</h3><p>若 \(|\vec{AB}|=6\)、\(|\vec{AC}|=4\)，求讓 \(\vec{AB}+\alpha\vec{AC}\) 沿角平分線的 \(\alpha\)。</p><details><summary>查看解答</summary><div>令兩個相加的向量等長：\(6=|\alpha|\cdot4\)。取內角平分線時 \(\alpha>0\)，故 \(\alpha=\frac32\)。所以要加的是 \(\vec{AB}+\frac32\vec{AC}\)，不是直接加 \(\vec{AB}+\vec{AC}\)。</div></details></article>
+      </div>
+      <div class="note"><strong>延伸回國中面積比：</strong><a href="./triangle-area-segment-ratios.html">三角形內點：面積比與線段比</a> 已經把三角形內部的情況寫成 \(\vec{AK}=u\vec{AB}+v\vec{AC}\)。本頁則把限制放寬到整個平面，專門解釋係數為負、係數和跨過 \(1\) 時，終點為什麼會到三角形外。</div>
+    </section>
+
+    <p class="footer">平面向量分量：先把終點看成 \(A,B,C\) 的三個權重，再用正負號判讀邊與區域；共線和角平分線都是同一套向量語言的延伸。</p>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      const mainSvg = $('component-map');
+      const coeffSvg = $('coefficient-plane');
+      const state = { u: 0.35, v: 0.25, dragging: null, r: 0.4, thetaOne: 48, thetaTwo: -22, forceOne: 4, forceTwo: 4 };
+      const mainPoints = { A: { x: 158, y: 348 }, B: { x: 492, y: 330 }, C: { x: 302, y: 66 } };
+      const coeffBounds = { min: -1.4, max: 2.4, left: 55, right: 480, top: 32, bottom: 390 };
+      let typesetTimer = null;
+
+      const fmt = (value) => {
+        const rounded = Math.round(Number(value) * 100) / 100;
+        return Math.abs(rounded - Math.round(rounded)) < 1e-8 ? String(Math.round(rounded)) : String(rounded);
+      };
+      const math = (tex) => `\\(${tex}\\)`;
+      const escapeHtml = (text) => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, Number(value)));
+      const same = (value) => Math.abs(value) < 0.0001;
+      const point = (p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
+      const add = (p, q) => ({ x: p.x + q.x, y: p.y + q.y });
+      const scale = (p, k) => ({ x: p.x * k, y: p.y * k });
+      const sub = (p, q) => ({ x: p.x - q.x, y: p.y - q.y });
+      const pointP = () => add(mainPoints.A, add(scale(sub(mainPoints.B, mainPoints.A), state.u), scale(sub(mainPoints.C, mainPoints.A), state.v)));
+      const lambda = () => 1 - state.u - state.v;
+      const svgPointer = (svg, event) => {
+        const matrix = svg.getScreenCTM();
+        if (!matrix) return { x: 0, y: 0 };
+        const p = svg.createSVGPoint();
+        p.x = event.clientX;
+        p.y = event.clientY;
+        return p.matrixTransform(matrix.inverse());
+      };
+      const typesetMath = (nodes = [document.body]) => {
+        window.clearTimeout(typesetTimer);
+        typesetTimer = window.setTimeout(() => {
+          if (!window.MathJax?.typesetPromise) return;
+          window.MathJax.typesetClear(nodes);
+          window.MathJax.typesetPromise(nodes).catch((error) => console.warn('MathJax typesetting failed:', error));
+        }, 0);
+      };
+      window.addEventListener('mathjax-ready', () => typesetMath());
+
+      function coefficientsFromMain(pointOnSvg) {
+        const b = sub(mainPoints.B, mainPoints.A);
+        const c = sub(mainPoints.C, mainPoints.A);
+        const p = sub(pointOnSvg, mainPoints.A);
+        const det = b.x * c.y - b.y * c.x;
+        return { u: (p.x * c.y - p.y * c.x) / det, v: (b.x * p.y - b.y * p.x) / det };
+      }
+
+      function regionInfo() {
+        const u = state.u;
+        const v = state.v;
+        const a = lambda();
+        if (same(u) && same(v)) return { name: '頂點 A', color: '#087970', detail: '兩個分量都為 0，所以 P=A。' };
+        if (same(a) && same(v)) return { name: '頂點 B', color: '#d0672b', detail: 'u=1、v=0，所以 P=B。' };
+        if (same(a) && same(u)) return { name: '頂點 C', color: '#b04a91', detail: 'u=0、v=1，所以 P=C。' };
+        if (same(a)) return { name: '對邊 BC 上', color: '#d0672b', detail: '1-u-v=0，P 是 B、C 的仿射組合。' };
+        if (same(u)) return { name: '直線 AC 上', color: '#b04a91', detail: 'u=0，P 只沿著 AC 的方向移動。' };
+        if (same(v)) return { name: '直線 AB 上', color: '#7071ba', detail: 'v=0，P 只沿著 AB 的方向移動。' };
+        if (a > 0 && u > 0 && v > 0) return { name: '△ABC 內部', color: '#176eaa', detail: '三個頂點權重都正，P 是三個頂點的內部加權平均。' };
+        if (a < 0 && u > 0 && v > 0) return { name: 'BC 的另一側', color: '#d0672b', detail: 'P 跨過 BC，落在與 A 相反的一側。' };
+        if (a > 0 && u < 0 && v > 0) return { name: 'AC 的 B 對側', color: '#b04a91', detail: 'u<0：以 AC 為準，P 與 B 在不同側。' };
+        if (a > 0 && u > 0 && v < 0) return { name: 'AB 的 C 對側', color: '#7071ba', detail: 'v<0：以 AB 為準，P 與 C 在不同側。' };
+        if (a > 0 && u < 0 && v < 0) return { name: 'A 頂點扇形', color: '#0b9080', detail: 'u、v 都負，P 位在 A 外側的扇形區。' };
+        if (a < 0 && u > 0 && v < 0) return { name: 'B 頂點扇形', color: '#6f9f37', detail: '1-u-v 與 v 為負，P 位在 B 外側的扇形區。' };
+        return { name: 'C 頂點扇形', color: '#a27035', detail: '1-u-v 與 u 為負，P 位在 C 外側的扇形區。' };
+      }
+
+      function renderComponentMap() {
+        const P = pointP();
+        const A = mainPoints.A;
+        const B = mainPoints.B;
+        const C = mainPoints.C;
+        const bDirection = sub(B, A);
+        const cDirection = sub(C, A);
+        const line = (origin, direction) => {
+          const start = add(origin, scale(direction, -1.3));
+          const end = add(origin, scale(direction, 1.8));
+          return `<path d="M${point(start)} L${point(end)}" fill="none" stroke="#9aadb9" stroke-width="1.8" stroke-dasharray="7 6"/>`;
+        };
+        const info = regionInfo();
+        mainSvg.innerHTML = `
+          <defs>
+            <marker id="main-blue-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#176eaa"/></marker>
+            <marker id="main-teal-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#078174"/></marker>
+            <marker id="main-orange-arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#b65b12"/></marker>
+          </defs>
+          <rect x="0" y="0" width="560" height="430" rx="13" fill="#fbfdff"/>
+          ${line(A, bDirection)}${line(A, cDirection)}${line(B, sub(C, B))}
+          <path d="M${point(A)} L${point(B)} L${point(C)} Z" fill="#dff2fb" fill-opacity=".48" stroke="#29495f" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M${point(A)} L${point(add(A, scale(bDirection, state.u)))}" fill="none" stroke="#176eaa" stroke-width="4" marker-end="url(#main-blue-arrow)"/>
+          <path d="M${point(add(A, scale(bDirection, state.u)))} L${point(P)}" fill="none" stroke="#078174" stroke-width="4" marker-end="url(#main-teal-arrow)"/>
+          <path d="M${point(A)} L${point(P)}" fill="none" stroke="#b65b12" stroke-width="4.8" marker-end="url(#main-orange-arrow)"/>
+          <circle cx="${A.x}" cy="${A.y}" r="6" fill="#fff" stroke="#29495f" stroke-width="2.5"/><circle cx="${B.x}" cy="${B.y}" r="6" fill="#fff" stroke="#29495f" stroke-width="2.5"/><circle cx="${C.x}" cy="${C.y}" r="6" fill="#fff" stroke="#29495f" stroke-width="2.5"/>
+          <circle id="main-point" cx="${P.x}" cy="${P.y}" r="9" fill="#fff" stroke="${info.color}" stroke-width="4"/>
+          <text class="diagram-label" x="${A.x - 21}" y="${A.y + 25}">A</text><text class="diagram-label" x="${B.x + 11}" y="${B.y + 5}">B</text><text class="diagram-label" x="${C.x - 3}" y="${C.y - 12}">C</text>
+          <text class="diagram-label" x="${P.x + 12}" y="${P.y - 11}" fill="${info.color}">P</text>
+          <text class="diagram-small" x="${A.x + bDirection.x * .26 - 20}" y="${A.y + bDirection.y * .26 - 13}">u·AB</text>
+          <text class="diagram-small" x="${A.x + bDirection.x * state.u + cDirection.x * state.v * .45 + 9}" y="${A.y + bDirection.y * state.u + cDirection.y * state.v * .45 - 10}">v·AC</text>
+          <text class="diagram-small" x="${(B.x + C.x) / 2 + 9}" y="${(B.y + C.y) / 2 - 4}">u+v=1</text>
+        `;
+      }
+
+      const coeffToScreen = (u, v) => ({ x: coeffBounds.left + (u - coeffBounds.min) / (coeffBounds.max - coeffBounds.min) * (coeffBounds.right - coeffBounds.left), y: coeffBounds.bottom - (v - coeffBounds.min) / (coeffBounds.max - coeffBounds.min) * (coeffBounds.bottom - coeffBounds.top) });
+      const screenToCoeff = (p) => ({ u: coeffBounds.min + (p.x - coeffBounds.left) / (coeffBounds.right - coeffBounds.left) * (coeffBounds.max - coeffBounds.min), v: coeffBounds.min + (coeffBounds.bottom - p.y) / (coeffBounds.bottom - coeffBounds.top) * (coeffBounds.max - coeffBounds.min) });
+      const intersection = (a, b, constraint) => {
+        const fa = constraint.a * a.x + constraint.b * a.y + constraint.c;
+        const fb = constraint.a * b.x + constraint.b * b.y + constraint.c;
+        const t = fa / (fa - fb);
+        return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+      };
+      const clipPolygon = (polygon, constraint) => {
+        const output = [];
+        polygon.forEach((current, index) => {
+          const previous = polygon[(index + polygon.length - 1) % polygon.length];
+          const currInside = constraint.a * current.x + constraint.b * current.y + constraint.c >= -0.00001;
+          const prevInside = constraint.a * previous.x + constraint.b * previous.y + constraint.c >= -0.00001;
+          if (currInside) {
+            if (!prevInside) output.push(intersection(previous, current, constraint));
+            output.push(current);
+          } else if (prevInside) output.push(intersection(previous, current, constraint));
+        });
+        return output;
+      };
+      const negateConstraint = (constraint) => ({ a: -constraint.a, b: -constraint.b, c: -constraint.c });
+      const polyFor = (constraints) => constraints.reduce((polygon, constraint) => clipPolygon(polygon, constraint), [
+        { x: coeffBounds.min, y: coeffBounds.min }, { x: coeffBounds.max, y: coeffBounds.min }, { x: coeffBounds.max, y: coeffBounds.max }, { x: coeffBounds.min, y: coeffBounds.max }
+      ]);
+      const polyPath = (polygon) => polygon.map((p, index) => `${index ? 'L' : 'M'}${point(coeffToScreen(p.x, p.y))}`).join(' ') + ' Z';
+
+      function renderCoefficientPlane() {
+        const uPositive = { a: 1, b: 0, c: 0 };
+        const vPositive = { a: 0, b: 1, c: 0 };
+        const aPositive = { a: -1, b: -1, c: 1 };
+        const regions = [
+          { color: '#ccecff', constraints: [aPositive, uPositive, vPositive] },
+          { color: '#ffe0d1', constraints: [negateConstraint(aPositive), uPositive, vPositive] },
+          { color: '#f5d8ee', constraints: [aPositive, negateConstraint(uPositive), vPositive] },
+          { color: '#e2e1fb', constraints: [aPositive, uPositive, negateConstraint(vPositive)] },
+          { color: '#d5f1ec', constraints: [aPositive, negateConstraint(uPositive), negateConstraint(vPositive)] },
+          { color: '#e7f1ce', constraints: [negateConstraint(aPositive), uPositive, negateConstraint(vPositive)] },
+          { color: '#f2e4c9', constraints: [negateConstraint(aPositive), negateConstraint(uPositive), vPositive] }
+        ];
+        const origin = coeffToScreen(0, 0);
+        const unitX = coeffToScreen(1, 0);
+        const unitY = coeffToScreen(0, 1);
+        const sumStart = coeffToScreen(coeffBounds.min, 1 - coeffBounds.min);
+        const sumEnd = coeffToScreen(coeffBounds.max, 1 - coeffBounds.max);
+        const current = coeffToScreen(state.u, state.v);
+        coeffSvg.innerHTML = `
+          <defs><marker id="coeff-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#536e80"/></marker></defs>
+          <rect x="0" y="0" width="520" height="430" rx="13" fill="#fbfdff"/>
+          ${regions.map((region) => { const polygon = polyFor(region.constraints); return polygon.length > 2 ? `<path d="${polyPath(polygon)}" fill="${region.color}"/>` : ''; }).join('')}
+          <path d="M${coeffBounds.left} ${origin.y} L${coeffBounds.right + 10} ${origin.y}" stroke="#536e80" stroke-width="2" marker-end="url(#coeff-arrow)"/>
+          <path d="M${origin.x} ${coeffBounds.bottom} L${origin.x} ${coeffBounds.top - 10}" stroke="#536e80" stroke-width="2" marker-end="url(#coeff-arrow)"/>
+          <path d="M${sumStart.x} ${sumStart.y} L${sumEnd.x} ${sumEnd.y}" stroke="#b65b12" stroke-width="3" stroke-dasharray="8 5"/>
+          <path d="M${unitX.x} ${unitX.y - 5} L${unitX.x} ${unitX.y + 5} M${unitY.x - 5} ${unitY.y} L${unitY.x + 5} ${unitY.y}" stroke="#536e80" stroke-width="2"/>
+          <circle id="coefficient-point" cx="${current.x}" cy="${current.y}" r="9" fill="#fff" stroke="#b65b12" stroke-width="4"/>
+          <text class="diagram-label" x="${coeffBounds.right - 5}" y="${origin.y - 12}">u</text><text class="diagram-label" x="${origin.x + 11}" y="${coeffBounds.top + 5}">v</text>
+          <text class="diagram-small" x="${unitX.x - 4}" y="${origin.y + 21}">1</text><text class="diagram-small" x="${origin.x - 18}" y="${unitY.y + 4}">1</text>
+          <text class="diagram-small" x="${coeffToScreen(.64,.36).x + 8}" y="${coeffToScreen(.64,.36).y - 10}">u+v=1</text>
+          <text class="diagram-small" x="${coeffToScreen(.33,.31).x - 15}" y="${coeffToScreen(.33,.31).y + 4}">△內</text><text class="diagram-small" x="${coeffToScreen(1.36,.78).x - 12}" y="${coeffToScreen(1.36,.78).y}">BC 外</text>
+          <text class="diagram-small" x="${coeffToScreen(-.72,.55).x - 15}" y="${coeffToScreen(-.72,.55).y}">AC 外</text><text class="diagram-small" x="${coeffToScreen(.55,-.7).x - 14}" y="${coeffToScreen(.55,-.7).y}">AB 外</text>
+          <text class="diagram-small" x="${coeffToScreen(-.65,-.65).x - 3}" y="${coeffToScreen(-.65,-.65).y}">A 區</text><text class="diagram-small" x="${coeffToScreen(1.42,-.62).x - 4}" y="${coeffToScreen(1.42,-.62).y}">B 區</text><text class="diagram-small" x="${coeffToScreen(-.58,1.42).x - 4}" y="${coeffToScreen(-.58,1.42).y}">C 區</text>
+          <text class="diagram-small" x="${current.x + 12}" y="${current.y - 12}">(${fmt(state.u)}, ${fmt(state.v)})</text>
+        `;
+      }
+
+      function updateRegionText() {
+        const a = lambda();
+        const info = regionInfo();
+        const bcSide = a > 0 ? '和 A 同側' : a < 0 ? '在 A 的對側' : '正在 BC 上';
+        const acSide = state.u > 0 ? '和 B 同側' : state.u < 0 ? '在 B 的對側' : '正在 AC 上';
+        const abSide = state.v > 0 ? '和 C 同側' : state.v < 0 ? '在 C 的對側' : '正在 AB 上';
+        $('region-live').innerHTML = `
+          <h3 style="color:${info.color}">目前：${info.name}</h3>
+          <p>${info.detail}</p>
+          <span class="live-formula">${math(`\\vec{AP}=${fmt(state.u)}\\vec{AB}+${fmt(state.v)}\\vec{AC}`)}</span>
+          <span class="live-formula">${math(`\\vec{OP}=(${fmt(a)})\\vec{OA}+(${fmt(state.u)})\\vec{OB}+(${fmt(state.v)})\\vec{OC}`)}</span>
+          <p><strong>三條邊的讀法：</strong>對 \(BC\)：${bcSide}；對 \(AC\)：${acSide}；對 \(AB\)：${abSide}。</p>
+        `;
+        typesetMath([$('region-live')]);
+      }
+
+      function syncInputs() {
+        $('u-range').value = state.u;
+        $('v-range').value = state.v;
+        $('u-number').value = fmt(state.u);
+        $('v-number').value = fmt(state.v);
+        $('u-output').textContent = fmt(state.u);
+        $('v-output').textContent = fmt(state.v);
+      }
+      function renderRegions() {
+        syncInputs();
+        renderComponentMap();
+        renderCoefficientPlane();
+        updateRegionText();
+      }
+      function setCoefficients(u, v) {
+        state.u = clamp(u, -1.4, 2.4);
+        state.v = clamp(v, -1.4, 2.4);
+        renderRegions();
+      }
+
+      function renderCollinear() {
+        const r = state.r;
+        const A = { x: 140, y: 130 };
+        const B = { x: 455, y: 130 };
+        const C = { x: A.x + r * (B.x - A.x), y: 130 };
+        const inside = r > 0 && r < 1;
+        const location = same(r) ? 'C 與 A 重合' : same(r - 1) ? 'C 與 B 重合' : inside ? 'C 在 AB 之間（內分）' : 'C 在 AB 的延長線上（外分）';
+        $('collinear-map').innerHTML = `
+          <defs><marker id="line-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#7a94a6"/></marker><marker id="r-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#b65b12"/></marker></defs>
+          <rect x="0" y="0" width="590" height="250" rx="13" fill="#fbfdff"/>
+          <path d="M40 130 L548 130" stroke="#7a94a6" stroke-width="2.5" marker-end="url(#line-arrow)"/>
+          <path d="M${A.x} ${A.y} L${C.x} ${C.y}" stroke="#b65b12" stroke-width="5" marker-end="url(#r-arrow)"/>
+          <circle cx="${A.x}" cy="${A.y}" r="8" fill="#fff" stroke="#29495f" stroke-width="3"/><circle cx="${B.x}" cy="${B.y}" r="8" fill="#fff" stroke="#29495f" stroke-width="3"/><circle cx="${C.x}" cy="${C.y}" r="9" fill="#fff" stroke="#b65b12" stroke-width="4"/>
+          <text class="diagram-label" x="${A.x - 8}" y="${A.y - 20}">A</text><text class="diagram-label" x="${B.x - 8}" y="${B.y - 20}">B</text><text class="diagram-label" x="${C.x - 7}" y="${C.y + 33}">C</text>
+          <text class="diagram-small" x="${(A.x + C.x) / 2 - 42}" y="${A.y - 14}">r·AB</text><text class="diagram-small" x="48" y="191">直線 AB</text>
+        `;
+        const leftWeight = 1 - r;
+        $('r-output').textContent = fmt(r);
+        const collinearDescription = inside
+          ? `此時 ${math(fmt(r))} 是從 A 到 B 的比例；若寫成 ${math('\\overline{AC}:\\overline{CB}')}，比例為 ${math(`${fmt(r)}:${fmt(1 - r)}`)}。`
+          : '係數仍然相加為 1，所以共線條件仍成立；只是其中一段變成外分，解題時要留意有向線段的正負。';
+        $('collinear-live').innerHTML = `
+          <h3>${location}</h3>
+          <span class="live-formula">${math(`\\vec{AC}=${fmt(r)}\\vec{AB}`)}</span>
+          <span class="live-formula">${math(`\\vec{OC}=(${fmt(leftWeight)})\\vec{OA}+(${fmt(r)})\\vec{OB}`)}</span>
+          <p>${collinearDescription}</p>
+        `;
+        typesetMath([$('collinear-live')]);
+      }
+
+      const forceVector = (length, degrees) => ({ x: length * Math.cos(degrees * Math.PI / 180), y: -length * Math.sin(degrees * Math.PI / 180) });
+      function drawArrow(start, vector, color, marker, width = 4, dash = '') {
+        const end = { x: start.x + vector.x, y: start.y + vector.y };
+        return `<path d="M${start.x} ${start.y} L${end.x} ${end.y}" fill="none" stroke="${color}" stroke-width="${width}" ${dash ? `stroke-dasharray="${dash}"` : ''} marker-end="url(#${marker})"/>`;
+      }
+      function renderBisector() {
+        const scaleLength = 31;
+        const O = { x: 106, y: 263 };
+        const f1 = scale(forceVector(state.forceOne, state.thetaOne), scaleLength);
+        const f2 = scale(forceVector(state.forceTwo, state.thetaTwo), scaleLength);
+        const raw = add(f1, f2);
+        const alpha = state.forceOne / state.forceTwo;
+        const equalized = add(f1, scale(f2, alpha));
+        const equal = Math.abs(state.forceOne - state.forceTwo) < 0.06;
+        const mid = (state.thetaOne + state.thetaTwo) / 2;
+        const guide = scale(forceVector(7.1, mid), scaleLength);
+        $('bisector-map').innerHTML = `
+          <defs>
+            <marker id="f1-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#176eaa"/></marker>
+            <marker id="f2-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#078174"/></marker>
+            <marker id="raw-arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#b65b12"/></marker>
+            <marker id="bisector-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#6946a1"/></marker>
+          </defs>
+          <rect x="0" y="0" width="560" height="350" rx="13" fill="#fbfdff"/>
+          ${drawArrow(O, guide, '#b7a7d6', 'bisector-arrow', 2.2, '7 6')}
+          ${drawArrow(O, f1, '#176eaa', 'f1-arrow', 4.8)}${drawArrow(O, f2, '#078174', 'f2-arrow', 4.8)}
+          ${drawArrow(O, raw, '#b65b12', 'raw-arrow', 4.8)}${drawArrow(O, equalized, '#6946a1', 'bisector-arrow', 3.8, '8 5')}
+          <circle cx="${O.x}" cy="${O.y}" r="6" fill="#fff" stroke="#29495f" stroke-width="2.5"/>
+          <text class="diagram-label" x="${O.x + f1.x * .56 - 15}" y="${O.y + f1.y * .56 - 10}" fill="#176eaa">F₁</text><text class="diagram-label" x="${O.x + f2.x * .56 + 8}" y="${O.y + f2.y * .56 + 14}" fill="#078174">F₂</text>
+          <text class="diagram-small" x="${O.x + raw.x * .53 + 8}" y="${O.y + raw.y * .53 - 9}" fill="#a94d0c">原合力</text><text class="diagram-small" x="${O.x + equalized.x * .71 + 9}" y="${O.y + equalized.y * .71 + 15}" fill="#6946a1">角平分線方向</text>
+          <text class="diagram-small" x="26" y="325">虛紫線：兩力等大時的內角平分線方向</text>
+        `;
+        $('theta-one-output').textContent = `${fmt(state.thetaOne)}°`;
+        $('theta-two-output').textContent = `${fmt(state.thetaTwo)}°`;
+        $('force-one-output').textContent = fmt(state.forceOne);
+        $('force-two-output').textContent = fmt(state.forceTwo);
+        $('bisector-live').innerHTML = `
+          <h3>${equal ? '兩力等大：橘色合力就是角平分線' : '兩力不等大：橘色合力會偏向較大的力'}</h3>
+          <span class="live-formula">${math(`|\\vec F_1|=${fmt(state.forceOne)},\\quad |\\vec F_2|=${fmt(state.forceTwo)}`)}</span>
+          <p>${equal ? `此時 \\(\\vec F_1+\\vec F_2\\) 的方向就是兩向量夾角的內角平分線。` : `令 \\(\\alpha=\\frac{|\\vec F_1|}{|\\vec F_2|}=${fmt(alpha)}\\)，則 \\(\\vec F_1+\\alpha\\vec F_2\\) 中兩項等長，紫色方向才是角平分線。`}</p>
+        `;
+        typesetMath([$('bisector-live')]);
+      }
+
+      function bindInputs() {
+        $('u-range').addEventListener('input', (event) => setCoefficients(event.target.value, state.v));
+        $('v-range').addEventListener('input', (event) => setCoefficients(state.u, event.target.value));
+        $('u-number').addEventListener('change', (event) => setCoefficients(event.target.value, state.v));
+        $('v-number').addEventListener('change', (event) => setCoefficients(state.u, event.target.value));
+        document.querySelectorAll('.region-preset').forEach((button) => button.addEventListener('click', () => setCoefficients(button.dataset.u, button.dataset.v)));
+        $('r-range').addEventListener('input', (event) => { state.r = Number(event.target.value); renderCollinear(); });
+        ['theta-one', 'theta-two', 'force-one', 'force-two'].forEach((id) => $(id).addEventListener('input', (event) => {
+          const key = { 'theta-one': 'thetaOne', 'theta-two': 'thetaTwo', 'force-one': 'forceOne', 'force-two': 'forceTwo' }[id];
+          state[key] = Number(event.target.value);
+          renderBisector();
+        }));
+        $('equal-force').addEventListener('click', () => { state.forceTwo = state.forceOne; $('force-two').value = state.forceTwo; renderBisector(); });
+        document.querySelectorAll('.quiz-answer').forEach((button) => button.addEventListener('click', () => {
+          const feedback = $('quiz-feedback');
+          feedback.innerHTML = escapeHtml(button.dataset.message);
+          feedback.className = `quiz-feedback ${button.dataset.answer === 'correct' ? 'correct' : 'incorrect'}`;
+          typesetMath([feedback]);
+        }));
+      }
+
+      function bindDragging() {
+        const startDrag = (name) => (event) => { state.dragging = name; event.currentTarget.setPointerCapture?.(event.pointerId); event.preventDefault(); updateDrag(event); };
+        const updateDrag = (event) => {
+          if (!state.dragging) return;
+          if (state.dragging === 'main') {
+            const next = coefficientsFromMain(svgPointer(mainSvg, event));
+            setCoefficients(next.u, next.v);
+          } else {
+            const next = screenToCoeff(svgPointer(coeffSvg, event));
+            setCoefficients(next.u, next.v);
+          }
+        };
+        const endDrag = () => { state.dragging = null; };
+        mainSvg.addEventListener('pointerdown', startDrag('main'));
+        coeffSvg.addEventListener('pointerdown', startDrag('coeff'));
+        window.addEventListener('pointermove', updateDrag);
+        window.addEventListener('pointerup', endDrag);
+        window.addEventListener('pointercancel', endDrag);
+      }
+
+      bindInputs();
+      bindDragging();
+      renderRegions();
+      renderCollinear();
+      renderBisector();
+    })();
+  </script>
+</body>
+</html>

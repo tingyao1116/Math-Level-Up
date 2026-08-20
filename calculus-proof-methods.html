@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>微積分核心定理與進階微分：從證明到解題｜高三</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, chtml: { displayAlign: 'left' } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root { --ink:#17233a; --sub:#52637b; --paper:#fff; --line:#d7e2ee; --navy:#153f70; --blue:#2478b9; --sky:#edf7ff; --teal:#08796d; --mint:#eafbf6; --gold:#9b6307; --warm:#fff7df; --rose:#a23b52; --pink:#fff0f4; }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; } body { margin:0; color:var(--ink); background:linear-gradient(145deg,#eef8ff 0%,#f8fbff 46%,#f3fbf8 100%); font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.78; }
+    .wrap { width:min(1120px,calc(100% - 28px)); margin:0 auto; }.hero,.card { border:1px solid var(--line); border-radius:21px; background:var(--paper); box-shadow:0 12px 30px rgba(21,63,112,.07); }.hero { margin:22px 0 14px; padding:clamp(22px,5vw,42px); background:linear-gradient(132deg,#fff 0%,#ecf8ff 65%,#e8fbf4 100%); }.card { margin:14px 0; padding:clamp(18px,3vw,28px); }
+    .eyebrow,.tag,.pill { display:inline-block; border-radius:999px; padding:3px 10px; font-size:13px; font-weight:800; letter-spacing:.03em; }.eyebrow { color:#0d4e83; background:#dceefe; border:1px solid #acd7f5; }.tag { color:#066257; background:var(--mint); border:1px solid #a6e5d9; }.tag.gold { color:#7b5003; background:var(--warm); border-color:#f1d58c; }.pill { color:#3a5877; border:1px solid #cbd8e8; background:#fff; }
+    h1 { margin:11px 0 10px; color:#102e51; font-size:clamp(30px,5.4vw,47px); line-height:1.28; } h2 { margin:0; color:var(--navy); font-size:clamp(23px,3.4vw,30px); line-height:1.4; } h3 { margin:0 0 5px; color:#164b78; font-size:18px; line-height:1.45; } p { margin:0 0 10px; color:var(--sub); } li { margin-bottom:5px; color:var(--sub); }.lead { max-width:920px; font-size:17px; }.math { color:#153e69; font-weight:800; }
+    .pills,.nav,.section-head { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }.pills { margin-top:15px; }.nav { margin-top:17px; }.nav a { display:inline-block; border:1px solid var(--navy); border-radius:10px; padding:7px 11px; color:#fff; background:var(--navy); text-decoration:none; font-size:14px; font-weight:800; }.nav a:hover { background:#0d2949; }.section-head { justify-content:space-between; gap:12px; margin-bottom:12px; }.section-head>div { min-width:0; }
+    .grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(245px,1fr)); }.two-col { display:grid; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); }.three-col { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); }.card,.grid>*,.two-col>*,.three-col>* { min-width:0; }
+    .mini,.example,.notice,.wrong,.proof,details,.check-card,.diagram { border:1px solid var(--line); border-radius:13px; padding:14px; background:#fcfdff; }.mini { border-top:4px solid #5da9df; }.mini.teal { border-top-color:#37aa98; }.mini.gold { border-top-color:#d7a137; }.formula { display:block; margin:9px 0; padding:9px 12px; overflow-x:auto; border-left:4px solid #3b92cb; border-radius:7px; background:var(--sky); color:#153d67; font-weight:800; }.formula.teal { border-left-color:#20a08d; background:var(--mint); }.formula.gold { border-left-color:#c88c20; background:var(--warm); }.formula mjx-container[display="true"] { margin:0!important; }
+    .notice { border-color:#a6d5f1; background:#f0f9ff; }.notice strong { color:#115c92; }.wrong { border-color:#f0b4c0; background:var(--pink); }.wrong strong { color:var(--rose); }.example { border-color:#9bdfd1; background:#f2fffb; }.example strong { color:#07665c; }.proof { margin-top:10px; border-color:#b7d7eb; background:#f8fcff; }.proof p:last-child,.mini p:last-child,.example p:last-child,.notice p:last-child,.wrong p:last-child { margin-bottom:0; }
+    details { margin-top:10px; border-color:#b8d7ed; background:#f9fcff; } details[open] { background:#f4faff; } summary { cursor:pointer; color:#164873; font-weight:850; } summary::marker { color:#1d79b7; }.steps { display:grid; gap:9px; margin-top:10px; }.step { display:grid; grid-template-columns:31px 1fr; gap:10px; align-items:start; }.step-no { display:grid; place-items:center; width:29px; height:29px; border-radius:50%; color:#fff; background:var(--blue); font-size:14px; font-weight:900; }
+    .flow { display:grid; gap:8px; grid-template-columns:repeat(5,minmax(0,1fr)); }.flow-item { padding:12px; border:1px solid #c6ddeb; border-radius:12px; background:#f8fcff; }.flow-item b { display:block; margin-bottom:4px; color:var(--blue); font-size:14px; }.diagram { margin-top:13px; padding:10px; overflow-x:auto; background:#fff; }.diagram svg { display:block; width:100%; min-width:590px; height:auto; }.diagram text { font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; fill:#244a75; }.caption { margin-top:8px; font-size:14px; color:#61758e; }.term-table { width:100%; min-width:720px; border-collapse:collapse; }.table-wrap { overflow-x:auto; } th,td { padding:11px 12px; border:1px solid var(--line); vertical-align:top; text-align:left; } th { color:#153d67; background:#eaf5ff; font-size:15px; } td { color:var(--sub); } td:first-child { color:#173f66; font-weight:800; }
+    .check-card { border-top:4px solid #46a78e; }.check-card p { min-height:54px; color:#2e435d; font-weight:700; }.check-card details { padding:9px 11px; background:#fff; }.anchor-note { font-size:14px; color:#61758e; }.back { color:#0f5f9d; font-weight:800; text-decoration:none; } footer { padding:8px 0 26px; color:#617086; text-align:center; font-size:14px; }
+    @media(max-width:740px) { body { font-size:15px; }.wrap { width:min(100% - 20px,1120px); }.hero { margin-top:10px; }.two-col,.three-col,.flow { grid-template-columns:1fr; }.section-head { align-items:flex-start; } }
+    @media print { body { background:#fff; }.hero,.card { box-shadow:none; break-inside:avoid; }.nav { display:none; } details { display:block; } details:not([open])>:not(summary) { display:block; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">高三・微積分證明與進階微分</span>
+      <h1>微積分核心定理與進階微分<br>從「為什麼」走到「怎麼算」</h1>
+      <p class="lead">這一頁把常見公式放回它們的來源：<strong>單位圓的基本極限</strong>帶出三角微分；<strong>自然底與反函數</strong>帶出指數、對數微分；<strong>累積面積</strong>連接微分與積分；最後再用羅必達與五種進階工具處理較複雜的題目。</p>
+      <div class="pills"><span class="pill">先說前提，再用公式</span><span class="pill">證明可投影講解</span><span class="pill">每節有易錯點</span><span class="pill">基礎・進階・挑戰自檢</span></div>
+      <nav class="nav" aria-label="頁面導覽"><a href="#route">學習地圖</a><a href="#sin">sin 微分</a><a href="#exp-log">指數・對數</a><a href="#ftc">微積分定理</a><a href="#lhopital">羅必達</a><a href="#tools">進階方法</a><a href="#practice">自我檢查</a></nav>
+    </section>
+
+    <section class="card" id="route">
+      <div class="section-head"><div><h2>0. 先知道公式從哪裡來</h2><p>計算時可以依題型選工具；證明時則有先後關係。下方順序避免把尚未建立的公式拿來證明自己。</p></div><span class="tag gold">證明順序 ≠ 考試出題順序</span></div>
+      <div class="flow"><div class="flow-item"><b>① 極限與弧度</b>單位圓面積比較，得到 \(\lim\frac{\sin h}{h}=1\)。</div><div class="flow-item"><b>② 累積量</b>先由短區間面積建立 FTC（一）與（二）。</div><div class="flow-item"><b>③ 定義 \(\ln x\)</b>用 \(\int_1^x\frac1t\,dt\) 得到 \((\ln x)'=1/x\)。</div><div class="flow-item"><b>④ 反函數 \(e^x\)</b>由 \(\ln(e^x)=x\) 推 \((e^x)'=e^x\)。</div><div class="flow-item"><b>⑤ 進階工具</b>柯西中值定理、鏈鎖律與 FTC 支援後面的解題法。</div></div>
+      <aside class="notice" style="margin-top:14px;"><strong>上課提醒：</strong>三角函數微分中的角度必須用<strong>弧度</strong>。若用度數，\(\lim_{\theta\to0}\frac{\sin\theta}{\theta}=\frac{\pi}{180}\)，不是 1；這正是公式前面的常數會不同的原因。</aside>
+    </section>
+
+    <section class="card" id="sin">
+      <div class="section-head"><div><h2>1. \(\sin x\) 的微分：由單位圓夾擠出發</h2><p>不要只背 \((\sin x)'=\cos x\)。最關鍵的來源，是單位圓中「內三角形 &lt; 扇形 &lt; 外三角形」。</p></div><span class="tag">基本極限 → 微分定義</span></div>
+      <div class="diagram" role="img" aria-label="單位圓中的 sin theta、小扇形和 tan theta 面積比較圖">
+        <svg viewBox="0 0 860 410" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#465a76"/></marker></defs>
+          <text x="32" y="42" font-size="25" font-weight="700">單位圓：弧長 θ、直角三角形與基本極限</text>
+          <line x1="70" y1="292" x2="505" y2="292" stroke="#465a76" stroke-width="3" marker-end="url(#arr)"/><line x1="250" y1="370" x2="250" y2="75" stroke="#465a76" stroke-width="3" marker-end="url(#arr)"/>
+          <circle cx="250" cy="292" r="146" fill="none" stroke="#2b75b7" stroke-width="4"/><path d="M250 292 L378 222 L378 292 Z" fill="#dff2e9" stroke="#178b69" stroke-width="3"/><path d="M250 292 L396 292 L378 222 Z" fill="#fff2cf" stroke="#c8870a" stroke-width="3"/>
+          <line x1="250" y1="292" x2="378" y2="222" stroke="#164873" stroke-width="4"/><line x1="378" y1="222" x2="378" y2="292" stroke="#249870" stroke-width="4"/><path d="M305 292 A55 55 0 0 0 298 266" fill="none" stroke="#c8870a" stroke-width="4"/>
+          <circle cx="378" cy="222" r="6" fill="#164873"/><text x="393" y="220" font-size="19">(cos θ, sin θ)</text><text x="304" y="273" font-size="25" fill="#b26e00">θ</text><text x="304" y="323" font-size="20" fill="#a26400">cos θ</text><text x="390" y="265" font-size="20" fill="#08796d">sin θ</text><text x="76" y="320" font-size="19">O</text><text x="486" y="314" font-size="20">x</text><text x="264" y="94" font-size="20">y</text>
+          <text x="530" y="142" font-size="20" font-weight="700">0 &lt; sin θ &lt; θ &lt; tan θ</text><text x="530" y="176" font-size="17">θ 要用弧度；三者比較的是</text><text x="530" y="201" font-size="17">面積的 2 倍</text><text x="530" y="237" font-size="18">除以 sin θ，再取倒數：</text><text x="530" y="273" font-size="20" font-weight="700">cos θ &lt; (sin θ)/θ &lt; 1</text><text x="530" y="316" font-size="16">θ → 0 時左右皆趨近 1，故中間也趨近 1。</text>
+        </svg>
+        <p class="caption">圖中的 \(\theta\) 是單位圓上的弧長，因此「扇形面積 = \(\frac12\theta\)」才剛好成立。</p>
+      </div>
+      <div class="two-col" style="margin-top:14px;">
+        <article class="mini"><h3>先得到兩個基本極限</h3><span class="formula">\[\boxed{\lim_{h\to0}\frac{\sin h}{h}=1}\]</span><p>正向極限由圖的夾擠得到；\(\frac{\sin h}{h}\) 是偶函數，所以左右極限相同。</p><span class="formula teal">\[\frac{\cos h-1}{h}=-\sin\frac h2\cdot\frac{\sin(h/2)}{h/2}\to0\]</span><p>因此 \(\boxed{\lim_{h\to0}\frac{\cos h-1}{h}=0}\)。</p></article>
+        <article class="wrong"><strong>最容易少掉的一句：</strong><p>由 \(1&lt;\frac{\theta}{\sin\theta}&lt;\frac1{\cos\theta}\) 取倒數時，因為每一項都正，<strong>不等號方向要反向</strong>，才會得到 \(\cos\theta&lt;\frac{\sin\theta}{\theta}&lt;1\)。</p><p>這裡不是代入 \(\theta=0\)：分式在 \(\theta=0\) 根本沒有定義；我們討論的是「越靠近 0」的極限。</p></article>
+      </div>
+      <details open><summary>完整證明｜為什麼 \((\sin x)'=\cos x\)？</summary><div class="proof"><p>從微分的差商定義開始，使用和角公式後，剛好出現上面兩個基本極限：</p><span class="formula">\[\begin{aligned}\frac{d}{dx}\sin x&=\lim_{h\to0}\frac{\sin(x+h)-\sin x}{h}\\&=\lim_{h\to0}\frac{\sin x\cos h+\cos x\sin h-\sin x}{h}\\&=\sin x\lim_{h\to0}\frac{\cos h-1}{h}+\cos x\lim_{h\to0}\frac{\sin h}{h}\\&=\sin x\cdot0+\cos x\cdot1=\boxed{\cos x}.\end{aligned}\]</span><p>同理可得 \(\boxed{(\cos x)'=-\sin x}\)。</p></div></details>
+      <article class="example" style="margin-top:12px;"><strong>例題｜先看外層，再乘內層</strong><p>\(y=\sin(3x^2-1)\)。令 \(u=3x^2-1\)，則 \(y'=\cos u\cdot u'\)，所以 \(\boxed{y'=6x\cos(3x^2-1)}\)。</p><p><strong>易錯點：</strong>\(\sin u\) 的導數不是只有 \(\cos u\)；內層 \(u\) 會變，必須再乘 \(u'\)。</p></article>
+    </section>
+
+    <section class="card" id="exp-log">
+      <div class="section-head"><div><h2>2. 指數、對數的微分：自然底與反函數</h2><p>先整理考試時會用的微分規則；嚴格且不循環的證明會在建立微積分基本定理後，於第 3 節末補回。</p></div><span class="tag">差商 + 反函數</span></div>
+      <div class="grid">
+        <article class="mini"><h3>一般底數先露出一個常數</h3><span class="formula">\[\frac{d}{dx}a^x=a^x\lim_{h\to0}\frac{a^h-1}{h}\qquad(a>0,a\ne1)\]</span><p>無論 \(x\) 在哪裡，差商都分離成 \(a^x\) 乘上一個只與底數 \(a\) 有關的常數。</p></article>
+        <article class="mini teal"><h3>自然底 \(e\) 的角色</h3><span class="formula teal">\[\boxed{\lim_{h\to0}\frac{e^h-1}{h}=1}\quad\Longrightarrow\quad\boxed{(e^x)'=e^x}\]</span><p>這是很方便的<strong>計算引擎</strong>；但它本身就是關鍵引理，不能拿來當作唯一的證明。第 3 節會用 \(\ln x\) 的積分定義與反函數，完成不循環的推導。</p></article>
+        <article class="mini gold"><h3>回到任意正底數</h3><span class="formula gold">\[a^x=e^{x\ln a}\quad\Rightarrow\quad\boxed{(a^x)'=a^x\ln a}\]</span><p>這一步使用鏈鎖律。若指數還有內層 \(u(x)\)，最後還要乘 \(u'(x)\)。</p></article>
+      </div>
+      <div class="two-col" style="margin-top:14px;">
+        <article class="example"><strong>例題｜指數函數</strong><p>\(y=5^{2x-3}\)。先視為 \(e^{(2x-3)\ln5}\)，所以</p><span class="formula teal">\[\boxed{y'=2\cdot5^{2x-3}\ln5}.\]</span><p>只有底數是 \(e\) 時，才可把 \(\ln a\) 省略。</p></article>
+        <article class="wrong"><strong>不要把板書的「尋找目標」當成等式：</strong><p>\(a^h\approx1+h\) 是在 \(h\) 很小時描述「差商趨近 1」的想法，不是說每個有限的 \(h\) 都有 \(a^h=1+h\)。真正使用的是上面的<strong>極限</strong>。</p></article>
+      </div>
+      <aside class="notice" style="margin-top:12px;"><strong>計算時先用：</strong>\(\boxed{(\ln u)'=\frac{u'}u}\)，且實數範圍中要先有 \(u&gt;0\)。下節的「不循環證明」會先證 \((\ln x)'=1/x\)，再用反函數證 \((e^x)'=e^x\)。</aside>
+    </section>
+
+    <section class="card" id="ftc">
+      <div class="section-head"><div><h2>3. 微積分基本定理：面積為什麼能被微分與計算？</h2><p>第一部分回答「累積到 \(t\) 的量，瞬時增加多快？」；第二部分回答「如何把面積算成端點的差？」</p></div><span class="tag gold">積分 ↔ 微分</span></div>
+      <div class="diagram" role="img" aria-label="累積面積 A(t) 與最後一小段面積的示意圖">
+        <svg viewBox="0 0 860 360" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#465a76"/></marker></defs>
+          <text x="30" y="39" font-size="25" font-weight="700">累積量 A(t) 與最後一小段面積</text><line x1="70" y1="284" x2="805" y2="284" stroke="#465a76" stroke-width="3" marker-end="url(#arr2)"/><line x1="100" y1="325" x2="100" y2="78" stroke="#465a76" stroke-width="3" marker-end="url(#arr2)"/>
+          <path d="M122 201 C215 155,290 166,365 201 S505 292,590 271 S686 187,760 217" fill="none" stroke="#2b75b7" stroke-width="4"/>
+          <path d="M215 173 C277 160,322 180,365 201 S505 292,590 271 L590 284 L215 284 Z" fill="#d9ecfa" opacity=".95"/><path d="M590 271 C616 267,639 253,666 231 L666 284 L590 284 Z" fill="#dff2e9" opacity=".98"/>
+          <line x1="215" y1="284" x2="215" y2="300" stroke="#465a76" stroke-width="3"/><line x1="590" y1="284" x2="590" y2="300" stroke="#465a76" stroke-width="3"/><line x1="666" y1="284" x2="666" y2="300" stroke="#465a76" stroke-width="3"/><text x="207" y="324" font-size="20">a</text><text x="584" y="324" font-size="20">t</text><text x="645" y="324" font-size="20">t+Δt</text><text x="110" y="98" font-size="20">y</text><text x="782" y="273" font-size="20">x</text><text x="334" y="206" font-size="20">A(t) = ∫ₐᵗ f(x) dx</text><text x="617" y="188" font-size="18" fill="#08796d">約為 f(t)·Δt</text>
+        </svg>
+        <p class="caption">把右側綠色小面積除以寬度 \(\Delta t\)，就是這一小段的「平均高度」；寬度縮到 0 時，平均高度趨近 \(f(t)\)。</p>
+      </div>
+      <div class="two-col" style="margin-top:14px;">
+        <article class="mini"><h3>基本定理（一）｜累積量的導數</h3><p>若 \(f\) 在區間上連續，令</p><span class="formula">\[A(t)=\int_a^t f(x)\,dx\]</span><p>則 \(\boxed{A'(t)=f(t)}\)。因為</p><span class="formula teal">\[\frac{A(t+\Delta t)-A(t)}{\Delta t}=\frac{\int_t^{t+\Delta t}f(x)\,dx}{\Delta t}\to f(t).\]</span><p>最後一步由連續性與夾擠：短區間內最小、最大函數值都趨近 \(f(t)\)。</p></article>
+        <article class="mini gold"><h3>基本定理（二）｜端點代入</h3><p>若 \(F'(x)=f(x)\)，則</p><span class="formula gold">\[\boxed{\int_a^b f(x)\,dx=F(b)-F(a)=\left[F(x)\right]_a^b}.\]</span><p>理由是 \(A'(x)=F'(x)\)，故 \(A-F\) 是常數；再用 \(A(a)=0\) 找出這個常數是 \(-F(a)\)。</p></article>
+      </div>
+      <div class="two-col" style="margin-top:14px;"><article class="example"><strong>例題｜基本定理（二）</strong><p>\(\int_0^2(3x^2+2)\,dx=\left[x^3+2x\right]_0^2=(8+4)-0=\boxed{12}\)。</p><p><strong>易錯點：</strong>定積分是數值，不能留下 \(+C\)；\(+C\) 只出現在不定積分。</p></article><article class="example"><strong>例題｜先回到函數值，再乘上內層</strong><p>\(\frac d{dx}\int_3^{x^2}\sqrt{1+t^3}\,dt\)</p><span class="formula teal">\[=\sqrt{1+(x^2)^3}\cdot2x=\boxed{2x\sqrt{1+x^6}}.\]</span><p>上限是 \(x^2\)，所以不是只代 \(x^2\)，還要乘 \((x^2)'\)。</p></article></div>
+      <details open><summary>不循環的證明順序｜先 \(\ln x\)，再 \(e^x\)</summary><div class="proof"><div class="steps"><div class="step"><div class="step-no">1</div><div>對 \(x&gt;0\) 定義 \(\displaystyle\ln x=\int_1^x\frac1t\,dt\)。由基本定理（一），立刻有 \(\boxed{(\ln x)'=\frac1x}\)。</div></div><div class="step"><div class="step-no">2</div><div>\(\ln x\) 單調遞增，因此有反函數；把它的反函數定義為自然指數函數 \(E(x)=e^x\)。所以 \(\ln(E(x))=x\)。</div></div><div class="step"><div class="step-no">3</div><div>兩邊微分：\(\frac1{E(x)}E'(x)=1\)，故 \(\boxed{E'(x)=E(x)}\)，也就是 \(\boxed{(e^x)'=e^x}\)。</div></div></div><p style="margin-top:10px;">這條路徑沒有先假設 \(\lim_{h\to0}\frac{e^h-1}{h}=1\)。嚴格建構時，還要證明這個 \(\ln x\) 的值域是所有實數；高中課堂可先把它視為已建立的分析結果。</p></div></details>
+    </section>
+
+    <section class="card" id="lhopital">
+      <div class="section-head"><div><h2>4. 羅必達定理：不是「看到極限就微分」</h2><p>它的證明核心是柯西中值定理：在足夠小的區間內，函數值的比值可由某個中間點的導數比值代表。</p></div><span class="tag">柯西中值定理</span></div>
+      <div class="two-col"><article class="mini"><h3>先檢查可不可以用</h3><ol><li>代入後必須是 \(\frac00\) 或 \(\frac\infty\infty\) 型。</li><li>\(f,g\) 在 \(c\) 附近（不含 \(c\)）可微，且 \(g'(x)\ne0\)。</li><li>\(\lim\frac{f'(x)}{g'(x)}\) 存在，或發散到 \(\pm\infty\)。</li></ol><span class="formula">\[\boxed{\lim_{x\to c}\frac{f(x)}{g(x)}=\lim_{x\to c}\frac{f'(x)}{g'(x)}}\]</span></article><article class="wrong"><strong>三種不能直接套的型態：</strong><p>\(0\cdot\infty\)、\(\infty-\infty\)、\(1^\infty\) 都不是分式型。必須先改寫，例如把乘法改成除法，或對冪次先取對數。</p><p>每微分一次都要重新看型態；若不再是 \(\frac00\) 或 \(\frac\infty\infty\)，就應停下來代入或改用其他方法。</p></article></div>
+      <details><summary>證明主線｜\(0/0\) 型為什麼成立？</summary><div class="proof"><p>先以右極限為例，令 \(f(x),g(x)\to0\)。把 \(c\) 處的值補成 0，並在 \([c,x]\) 上使用柯西中值定理；存在介於 \(c\) 與 \(x\) 的 \(z\)，使</p><span class="formula">\[\frac{f(x)}{g(x)}=\frac{f(x)-f(c)}{g(x)-g(c)}=\frac{f'(z)}{g'(z)}.\]</span><p>當 \(x\to c^+\) 時，夾在中間的 \(z\) 也必趨近 \(c^+\)，所以導數比的極限會帶回原比值。左極限同理。這說明了為何它需要可微、\(g'\ne0\) 等條件。</p></div></details>
+      <article class="example" style="margin-top:12px;"><strong>例題｜需要連用兩次</strong><p>\(\displaystyle\lim_{x\to0}\frac{\ln(\cos2x)}{7x^2}\) 代入是 \(0/0\)。</p><span class="formula teal">\[\begin{aligned}\lim_{x\to0}\frac{\ln(\cos2x)}{7x^2}&=\lim_{x\to0}\frac{-2\tan2x}{14x}\\&=\lim_{x\to0}\frac{-2\sec^2(2x)}{14}=\boxed{-\frac27}.\end{aligned}\]</span><p>第一輪後仍是 \(0/0\)，才能再用一次；第二輪後可直接代入 \(x=0\)。</p></article>
+    </section>
+
+    <section class="card" id="tools">
+      <div class="section-head"><div><h2>5. 常用進階方法：辨認結構，再選工具</h2><p>這些方法都不是新公式牆，而是把已知的鏈鎖律、反函數與微積分基本定理，放到正確的結構上。</p></div><span class="tag gold">五種解題辨識</span></div>
+      <div class="three-col">
+        <article class="mini"><h3>5.1 對數微分法</h3><p><strong>何時用：</strong>未知函數同時在底數與指數，如 \(x^x\)、\(u(x)^{v(x)}\)。</p><span class="formula">\[y=x^x\Rightarrow\ln y=x\ln x\Rightarrow\boxed{y'=x^x(\ln x+1)}\]</span><p>一般式（\(u&gt;0\)）：\(\boxed{(u^v)'=u^v(v'\ln u+v\frac{u'}u)}\)。</p></article>
+        <article class="mini teal"><h3>5.2 隱函數微分</h3><p><strong>何時用：</strong>\(y\) 無法或不宜先解成 \(y=\cdots\)。把 \(y\) 當作 \(y(x)\)。</p><span class="formula teal">\[x^2+y^2=25\Rightarrow2x+2y\,y'=0\Rightarrow\boxed{y'=-\frac xy}\]</span><p>在 \((4,3)\)，斜率 \(\boxed{-\frac43}\)。\(y^2\) 微分要寫 \(2y\,y'\)，不能漏掉 \(y'\)。</p></article>
+        <article class="mini gold"><h3>5.3 反函數微分</h3><p><strong>何時用：</strong>題目給 \(f(c)\) 卻要 \((f^{-1})'\)，通常不必先求反函數。</p><span class="formula gold">\[\boxed{(f^{-1})'(x)=\frac1{f'(f^{-1}(x))}}\]</span><p>由 \(f(f^{-1}(x))=x\) 微分而來；前提是對應點的 \(f'\ne0\)。</p></article>
+      </div>
+      <div class="two-col" style="margin-top:14px;">
+        <article class="mini"><h3>5.4 萊布尼茲法則：積分上下限在動</h3><p>先分辨「只是端點動」還是「被積函數也含 \(x\)」。</p><span class="formula">\[\boxed{\frac d{dx}\int_{u(x)}^{v(x)}f(t)\,dt=f(v)v'-f(u)u'}\]</span><span class="formula teal">\[\boxed{\frac d{dx}\int_{u(x)}^{v(x)}F(x,t)\,dt=F(x,v)v'-F(x,u)u'+\int_{u(x)}^{v(x)}\frac{\partial F}{\partial x}(x,t)\,dt}\]</span><p><strong>口訣：</strong>上限「加」、下限「減」，各自乘自己的導數；若裡面也隨 \(x\) 變，還要加一項。</p></article>
+        <article class="mini gold"><h3>5.5 奇偶函數的對稱積分</h3><p>只在<strong>對稱區間</strong> \([-a,a]\) 才能立刻簡化：</p><span class="formula gold">\[\boxed{f\text{ 奇}\Rightarrow\int_{-a}^{a}f(x)\,dx=0}\]</span><span class="formula gold">\[\boxed{f\text{ 偶}\Rightarrow\int_{-a}^{a}f(x)\,dx=2\int_0^a f(x)\,dx}\]</span><p>奇函數左右是有向面積相消；偶函數左右面積相同。先判奇偶，再積分，往往比硬算快。</p></article>
+      </div>
+      <div class="two-col" style="margin-top:14px;">
+        <article class="example"><strong>例題｜反函數 × 萊布尼茲</strong><p>\(f(x)=\int_0^x\sqrt{1+\cos^2t}\,dt\)，且 \(A=f(5\pi/6)\)。求 \((f^{-1})'(A)\)。</p><span class="formula teal">\[f'(x)=\sqrt{1+\cos^2x},\quad f^{-1}(A)=\frac{5\pi}6\]</span><span class="formula teal">\[(f^{-1})'(A)=\frac1{f'(5\pi/6)}=\frac1{\sqrt{1+3/4}}=\boxed{\frac2{\sqrt7}}.\]</span><p>關鍵是 \(A=f(c)\) 立刻告訴我們 \(f^{-1}(A)=c\)，不必求出 \(A\)。</p></article>
+        <article class="example"><strong>例題｜奇偶拆開後再算</strong><p>\(\displaystyle\int_{-2}^{2}\left(x^3\cos x+\frac{x^2}{1+x^2}\right)dx\)</p><p>\(x^3\cos x\) 為奇函數，積分為 0；\(\frac{x^2}{1+x^2}\) 為偶函數：</p><span class="formula teal">\[2\int_0^2\left(1-\frac1{1+x^2}\right)dx=\boxed{4-2\tan^{-1}2}.\]</span></article>
+      </div>
+      <aside class="wrong" style="margin-top:14px;"><strong>方法選錯的警報：</strong>\(\frac d{dx}\int_a^{h(x)}f(t)dt\) 中，\(t\) 是積分的<strong>虛變數</strong>，代入上限後才回到 \(x\)。不要把 \(f(t)\) 直接當 \(f(x)\) 微分；也不要忘記下限變動時前面是減號。</aside>
+    </section>
+
+    <section class="card" id="practice">
+      <div class="section-head"><div><h2>6. 三層自我檢查</h2><p>先遮住答案完成，再打開核對。若錯了，優先找「我漏掉的條件／內層／負號」而不是只重算一遍。</p></div><span class="tag gold">基礎 → 進階 → 挑戰</span></div>
+      <div class="three-col">
+        <article class="check-card"><span class="tag">基礎</span><p>求 \(\frac d{dx}\int_0^{x^3}(1+t^2)\,dt\)。</p><details><summary>看答案與關鍵</summary><p>\(\boxed{3x^2(1+x^6)}\)。先由 FTC 代入 \(t=x^3\)，再乘 \((x^3)'=3x^2\)。</p></details></article>
+        <article class="check-card"><span class="tag">進階</span><p>圓 \(x^2+y^2=10\) 在 \((1,3)\) 的切線斜率？</p><details><summary>看答案與關鍵</summary><p>\(2x+2yy'=0\)，代入 \((1,3)\)：\(2+6y'=0\)，故 \(\boxed{-\frac13}\)。</p></details></article>
+        <article class="check-card"><span class="tag">挑戰</span><p>求 \(\frac d{dx}\int_x^{x^2}(t+x)\,dt\)。</p><details><summary>看答案與關鍵</summary><p>被積函數含 \(x\)：\((x^2+x)\cdot2x-(x+x)\cdot1+\int_x^{x^2}1dt\)，整理為 \(\boxed{2x^3+3x^2-3x}\)。</p></details></article>
+      </div>
+      <div class="two-col" style="margin-top:14px;"><article class="check-card"><span class="tag">挑戰</span><p>用對數微分求 \(\frac d{dx}\bigl(x^{\sin x}\bigr)\)，\(x&gt;0\)。</p><details><summary>看答案與關鍵</summary><p>\(\ln y=\sin x\ln x\)。所以 \(\frac{y'}y=\cos x\ln x+\frac{\sin x}{x}\)，故 \(\boxed{x^{\sin x}(\cos x\ln x+\frac{\sin x}{x})}\)。</p></details></article><article class="check-card"><span class="tag">挑戰</span><p>為何 \(\int_{-1}^{1}x\frac{e^x}{1+e^{2x}}\,dx=0\)？</p><details><summary>看答案與關鍵</summary><p>\(\frac{e^x}{1+e^{2x}}=\frac1{e^{-x}+e^x}\) 是偶函數，乘上 \(x\) 後變奇函數；又積分區間對稱，所以答案 \(\boxed0\)。</p></details></article></div>
+      <p class="anchor-note" style="margin-top:14px;">建議上課節奏：先投影第 1、3 節的兩張圖建立直覺，再用第 4 節處理「為何可微分分子分母」，最後挑第 5 節中最符合當天單元的例題練習。</p>
+    </section>
+    <footer><a class="back" href="./index.html#s5">← 回高三教學入口</a><br>本頁採用：觀念與圖像 → 定理條件 → 證明主線 → 例題 → 易錯點 → 分層練習。</footer>
+  </main>
+</body>
+</html>

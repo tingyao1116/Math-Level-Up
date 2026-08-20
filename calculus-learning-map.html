@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>微積分學習地圖：從定義到微分與積分｜高三</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      chtml: { displayAlign: 'left' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root { --ink:#172033; --sub:#536276; --line:#d7e3ee; --blue:#1769aa; --pale:#edf7ff; --teal:#08756a; --mint:#e8fbf7; --gold:#9a6107; --warm:#fff8df; --rose:#a23e52; --pink:#fff1f4; }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; }
+    body { min-width:320px; margin:0; color:var(--ink); background:linear-gradient(140deg,#eff8ff,#f8fbff 55%,#f1faf7); font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.78; }
+    .wrap { width:min(1100px,calc(100% - 32px)); margin:auto; }.hero,.card { border:1px solid var(--line); border-radius:22px; background:#fff; box-shadow:0 10px 27px rgba(28,59,89,.07); }.hero { margin:24px 0 17px; padding:clamp(24px,5vw,47px); background:linear-gradient(135deg,#fff,#f1faff 72%,#eefcf8); }.card { margin:16px 0; padding:clamp(18px,3vw,28px); }
+    .eyebrow,.tag,.chip { display:inline-block; border-radius:999px; padding:3px 10px; font-size:13px; font-weight:800; letter-spacing:.04em; }.eyebrow { color:#0d4f7d; background:#dcefff; border:1px solid #bddcf4; }.tag,.chip { color:#075f55; background:var(--mint); border:1px solid #aeeade; }.tag.gold { color:#805006; background:var(--warm); border-color:#efd98b; }
+    h1 { margin:10px 0; max-width:780px; font-size:clamp(31px,5vw,48px); line-height:1.22; }.lead { max-width:790px; margin:0; color:#3d506a; font-size:clamp(16px,2.1vw,19px); }.pills,.nav,.buttons { display:flex; flex-wrap:wrap; gap:8px; }.pills,.nav { margin-top:17px; }.nav a { color:#154e78; text-decoration:none; background:#fff; border:1px solid #b9d9ef; border-radius:9px; padding:6px 10px; font-weight:700; font-size:14px; }.nav a:hover,.small-btn:hover { color:#fff; background:var(--blue); border-color:var(--blue); }
+    .section-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; } h2 { margin:0; font-size:clamp(23px,3.2vw,30px); line-height:1.35; } h2 span { color:var(--blue); }.section-head p { margin:5px 0 0; color:var(--sub); }.tag { flex:0 0 auto; }
+    .map { display:grid; grid-template-columns:repeat(7,minmax(112px,1fr)); gap:8px; overflow-x:auto; margin-top:20px; padding:2px 2px 10px; }.map-step { position:relative; min-width:112px; min-height:110px; padding:12px; border:1px solid var(--line); border-radius:15px; background:#fff; }.map-step:not(:last-child)::after { content:"→"; position:absolute; right:-15px; top:38px; z-index:1; color:#6893b6; font-size:23px; font-weight:900; }.map-step b,.map-step small { display:block; }.map-step small { color:var(--sub); font-size:13px; line-height:1.55; }.map-step:nth-child(2) { background:var(--pale); }.map-step:nth-child(3) { background:var(--mint); }.map-step:nth-child(4),.map-step:nth-child(5) { background:var(--warm); }.map-step:nth-child(6),.map-step:nth-child(7) { background:#f1efff; }
+    .callout { margin-top:16px; padding:13px 16px; border-left:5px solid var(--blue); border-radius:0 12px 12px 0; background:var(--pale); color:#294866; }.guide { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:17px 0 12px; padding:12px 14px; border:1px solid #c9ddef; border-radius:14px; background:#f8fcff; }.guide p { margin:0; color:#3f5872; font-size:14px; }.small-btn { color:#0c557e; background:#fff; border:1px solid #9ac9e8; border-radius:9px; padding:6px 10px; font:inherit; font-size:14px; font-weight:800; cursor:pointer; }
+    details { margin:10px 0; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:#fff; } details[open] { border-color:#a9cfe8; box-shadow:0 6px 18px rgba(23,105,170,.07); } summary { display:flex; align-items:center; gap:12px; padding:16px 18px; cursor:pointer; list-style:none; font-weight:800; } summary::-webkit-details-marker { display:none; } summary::after { content:"＋"; margin-left:auto; color:var(--blue); font-size:23px; line-height:1; } details[open] summary { color:#104f7e; background:#f5fbff; border-bottom:1px solid #d9e8f3; } details[open] summary::after { content:"－"; }.num { display:grid; place-items:center; flex:0 0 30px; width:30px; height:30px; border-radius:50%; color:#fff; background:var(--blue); font-size:14px; }.summary-sub { color:#64748b; font-size:14px; font-weight:600; }.body { padding:4px 18px 20px; }.body h3 { margin:17px 0 6px; color:#19496e; font-size:18px; }.body p { margin:6px 0; }
+    .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px; }.mini,.example,.mistake,.check { min-width:0; padding:13px 15px; border:1px solid #dbe7ef; border-radius:13px; background:#fbfdff; }.mini h4 { margin:0 0 5px; color:#284e6c; font-size:16px; }.mini p,.mini ul { margin:5px 0; color:#405368; }.mini ul { padding-left:1.2em; }.formula { margin:11px 0; padding:10px 13px; overflow-x:auto; color:#153e62; background:#f4faff; border:1px solid #cfe4f5; border-radius:11px; }.example { margin-top:14px; border-color:#efd98b; background:var(--warm); }.example b { color:#815006; }.mistake { margin-top:14px; border-color:#fac8d2; background:var(--pink); color:#6e3241; }.mistake b { color:#9a3147; }.check { margin-top:14px; border-color:#b7e4dc; background:var(--mint); }.check b { color:#08675d; }.answer { margin-top:8px; color:#234b48; font-size:14px; }.answer summary { display:block; padding:0; color:#0c665c; font-size:14px; }.answer summary::after { display:none; }.answer[open] summary { border:0; background:transparent; }
+    .bridge { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px; margin-top:16px; }.bridge-box { padding:15px; border:1px solid #d9d2ff; border-radius:14px; background:#f1efff; }.bridge-box b { display:block; color:#4b3d9d; }.arrow { color:#6559ad; font-size:30px; font-weight:900; } footer { padding:8px 0 28px; color:#66758a; text-align:center; font-size:14px; }
+    @media(max-width:760px) { .wrap { width:min(100% - 20px,1100px); }.hero { margin-top:10px; }.section-head,.guide { display:block; }.tag { margin-top:10px; }.buttons { margin-top:10px; }.small-btn { flex:1; }.two,.bridge { grid-template-columns:1fr; }.arrow { transform:rotate(90deg); text-align:center; }.summary-sub { display:none; }.map { grid-template-columns:repeat(7,132px); }.map-step:not(:last-child)::after { right:-17px; } }
+    @media print { body { background:#fff; }.hero,.card,details { box-shadow:none; }.nav,.guide { display:none; } details:not([open]) > :not(summary) { display:block; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">高三・微積分總覽</span>
+      <h1>微積分學習地圖：從定義到微分與積分</h1>
+      <p class="lead">微積分不是兩張公式表，而是一條追問「函數怎麼變」的路：先讓 \(x\) 靠近，再用極限把瞬間變化說清楚；微分用來看變化率，積分用來累積改變。先看整體地圖，再依需要打開每一站的細節。</p>
+      <div class="pills"><span class="chip">先觀念，後規則</span><span class="chip">每站附代表例題</span><span class="chip">標出常見誤解</span><span class="chip">基礎・進階・挑戰自檢</span></div>
+      <nav class="nav" aria-label="微積分章節導覽"><a href="#map">先看大方向</a><a href="#details">逐站展開</a><a href="#connection">最後串回來</a><a href="./index.html#s5">回高三入口</a></nav>
+    </section>
+
+    <section class="card" id="map">
+      <div class="section-head"><div><h2>先看全圖：<span>每一站都在回答一個問題</span></h2><p>不必一次記完；先知道下一個概念為何會出現，學習就不會變成零散的公式。</p></div><span class="tag">先掌握方向</span></div>
+      <div class="map" aria-label="微積分概念流程">
+        <div class="map-step"><b>0. 函數語言</b><small>輸入改變，輸出怎麼跟著變？</small></div>
+        <div class="map-step"><b>1. 極限</b><small>靠近某點時，值趨向哪裡？</small></div>
+        <div class="map-step"><b>2. 連續</b><small>圖形能不能一筆畫過？</small></div>
+        <div class="map-step"><b>3. 微分定義</b><small>某一瞬間的變化率怎麼量？</small></div>
+        <div class="map-step"><b>4. 微分應用</b><small>哪裡上升、下降、最高或最低？</small></div>
+        <div class="map-step"><b>5. 不定積分</b><small>已知變化率，怎麼找回原函數？</small></div>
+        <div class="map-step"><b>6. 定積分</b><small>許多極小量累加，總共是多少？</small></div>
+      </div>
+      <p class="callout"><strong>最重要的主線：</strong>極限讓無限靠近可以精確計算；因此能定義微分與積分。微分與積分看似相反，卻由微積分基本定理連在一起。</p>
+    </section>
+
+    <section class="card" id="details">
+      <div class="section-head"><div><h2>逐站打開：<span>先讀摘要，再看細節</span></h2><p>每一列預設只露出本站任務。上課可按順序展開；自學時可直接跳到卡住的地方。</p></div><span class="tag gold">可開合學習</span></div>
+      <div class="guide"><p><strong>使用建議：</strong>第一次先閱讀摘要；第二次展開例題；最後再作一題自我檢查。</p><div class="buttons"><button class="small-btn" type="button" id="expandAll">全部展開</button><button class="small-btn" type="button" id="collapseAll">收合細節</button></div></div>
+
+      <details>
+        <summary><span class="num">0</span><span>函數與代數準備 <span class="summary-sub">｜先確認誰在變、誰跟著變</span></span></summary>
+        <div class="body"><h3>為什麼微積分要從函數開始？</h3><p>微積分研究的是輸入 \(x\) 改一點，輸出 \(f(x)\) 如何改變。先讀懂函數，才知道後面的極限在靠近什麼、導數在量什麼。</p><div class="two"><div class="mini"><h4>先備重點</h4><ul><li>定義域與值域。</li><li>反函數與複合函數。</li><li>絕對值與分段函數。</li></ul></div><div class="mini"><h4>與本章的連結</h4><p>因式分解、分式運算、三角恆等式與弧度制，常用來把極限中的式子整理成可判讀的樣子。</p></div></div><div class="example"><b>基礎例題｜平均變化率</b><p>若 \(f(x)=x^2\)，當 \(x\) 從 \(3\) 變成 \(3.1\)，函數值從 \(9\) 變成 \(9.61\)。平均變化率為 \(\frac{9.61-9}{3.1-3}=6.1\)。若改變越來越小，這個比值會靠近多少？</p></div><div class="mistake"><b>常見錯誤：</b>把 \(f(x)\) 當成 \(f\times x\)。\(f(x)\) 是函數在輸入 \(x\) 時的整個輸出值。</div></div>
+      </details>
+
+      <details>
+        <summary><span class="num">1</span><span>極限 <span class="summary-sub">｜靠近，不等於一定取到</span></span></summary>
+        <div class="body"><h3>極限在說什麼？</h3><p>\(\lim_{x\to a}f(x)=L\) 表示：當 \(x\) 越來越靠近 \(a\) 時，\(f(x)\) 越來越靠近 \(L\)。</p><div class="formula">\[\lim_{x\to a}f(x)=L\qquad\text{重點是附近，不是只代 }x=a\text{。}\]</div><div class="two"><div class="mini"><h4>先分左右</h4><p>兩側都靠近同一個值，極限才存在：\(\lim_{x\to a^-}f(x)=\lim_{x\to a^+}f(x)\)。</p></div><div class="mini"><h4>常用策略</h4><p>直接代入、因式分解約分、有理化、夾擠定理；三角極限必須使用弧度制。</p></div></div><div class="example"><b>代表例題｜\(\frac{0}{0}\) 是訊號，不是答案</b><p>\(\displaystyle \lim_{x\to2}\frac{x^2-4}{x-2}=\lim_{x\to2}(x+2)=4\)。先分解並約去 \(x-2\)，再代入。</p></div><div class="check"><b>自我檢查</b><p>\(\displaystyle \lim_{x\to3}\frac{x^2-9}{x-3}\) 是多少？</p><details class="answer"><summary>看答案與理由</summary><p>\(6\)。因為 \(x^2-9=(x-3)(x+3)\)。</p></details></div></div>
+      </details>
+
+      <details>
+        <summary><span class="num">2</span><span>連續 <span class="summary-sub">｜點的函數值，要接上附近的趨勢</span></span></summary>
+        <div class="body"><h3>一筆畫背後的正式條件</h3><p>函數在 \(x=a\) 連續，須有 \(f(a)\) 有定義、\(\lim_{x\to a}f(x)\) 存在，且兩者相等。</p><div class="formula">\[\boxed{\lim_{x\to a}f(x)=f(a)}\]</div><div class="example"><b>進階例題｜補哪一個值才能連續？</b><p>若 \(\displaystyle f(x)=\frac{x^2-1}{x-1}\)（\(x\ne1\)），則 \(\lim_{x\to1}f(x)=2\)。定義 \(f(1)=2\)，就補上了洞。</p></div><div class="mistake"><b>常見錯誤：</b>極限存在不代表函數連續；還必須檢查 \(f(a)\) 是否存在且是否等於該極限。</div></div>
+      </details>
+
+      <details>
+        <summary><span class="num">3</span><span>微分定義與基本規則 <span class="summary-sub">｜平均變化率縮到一瞬間</span></span></summary>
+        <div class="body"><h3>從割線到切線</h3><p>令第二點不斷靠近第一點，割線斜率的極限就是切線斜率，也就是導數。</p><div class="formula">\[f'(a)=\lim_{h\to0}\frac{f(a+h)-f(a)}{h}\]</div><div class="example"><b>代表例題｜由定義微分</b><p>\(\displaystyle f(x)=x^2\) 時，\(\displaystyle f'(x)=\lim_{h\to0}\frac{(x+h)^2-x^2}{h}=\lim_{h\to0}(2x+h)=2x\)。</p></div><div class="two"><div class="mini"><h4>規則是捷徑</h4><p>\((x^n)'=nx^{n-1}\)，但它量的仍是瞬間變化率。</p></div><div class="mini"><h4>連鎖律</h4><p>若 \(y=f(g(x))\)，則 \(\frac{dy}{dx}=\frac{dy}{du}\frac{du}{dx}\)。</p></div></div><div class="mistake"><b>常見錯誤：</b>\((x^2+1)^5\) 微分後，除了 \(5(x^2+1)^4\)，還要乘上內層導數 \(2x\)。</div></div>
+      </details>
+
+      <details>
+        <summary><span class="num">4</span><span>微分的應用 <span class="summary-sub">｜用導數讀出函數的行為</span></span></summary>
+        <div class="body"><h3>導數的正負告訴我們圖形往哪裡走</h3><div class="two"><div class="mini"><h4>遞增與遞減</h4><p>在某區間 \(f'(x)>0\)，函數遞增；\(f'(x)<0\)，函數遞減。</p></div><div class="mini"><h4>極值與最佳化</h4><p>先找 \(f'(x)=0\) 或不存在的關鍵點，再看導數符號與端點。</p></div></div><div class="example"><b>進階例題｜找最低點</b><p>\(f(x)=x^2-4x+1\)，\(f'(x)=2x-4\)。在 \(x=2\) 的左右，導數由負變正，所以最低值為 \(f(2)=-3\)。</p></div><div class="check"><b>挑戰自檢</b><p>若 \(f'(x)=(x-1)(x+2)\)，判斷遞增與遞減區間。</p><details class="answer"><summary>看答案與理由</summary><p>遞增於 \((-\infty,-2)\)、\((1,\infty)\)，遞減於 \((-2,1)\)。</p></details></div></div>
+      </details>
+
+      <details>
+        <summary><span class="num">5</span><span>不定積分 <span class="summary-sub">｜從變化率倒推原函數</span></span></summary>
+        <div class="body"><h3>積分的第一個意思：找回反導函數</h3><p>若 \(F'(x)=f(x)\)，\(F(x)\) 是 \(f(x)\) 的反導函數。常數微分後變成 \(0\)，所以必須保留 \(C\)。</p><div class="formula">\[\int f(x)\,dx=F(x)+C\]</div><div class="example"><b>基礎例題</b><p>\(\displaystyle \int(6x^2-4x+3)\,dx=2x^3-2x^2+3x+C\)。微分右邊即可驗算。</p></div><div class="mistake"><b>常見錯誤：</b>漏掉 \(+C\)。例如 \(x^2\) 與 \(x^2+7\) 的導數相同。</div></div>
+      </details>
+
+      <details>
+        <summary><span class="num">6</span><span>定積分與微積分基本定理 <span class="summary-sub">｜把極小變化量累積成總量</span></span></summary>
+        <div class="body"><h3>積分的第二個意思：把很多小份量加起來</h3><p>每一小段近似為 \(f(x_i)\Delta x\)；切得無限細後的總和就是定積分。若 \(f(x)\ge0\)，可視為曲線下的面積。</p><div class="formula">\[\int_a^b f(x)\,dx=F(b)-F(a)\qquad\text{其中 }F'(x)=f(x)\]</div><div class="example"><b>代表例題</b><p>\(\displaystyle \int_0^2(2x+1)\,dx=[x^2+x]_0^2=6\)。此區間上函數為正，所以定積分值也就是面積。</p></div><div class="two"><div class="mini"><h4>基本定理的橋梁</h4><p>微分描述局部變化率；積分描述總累積量。兩者可透過反導函數接通。</p></div><div class="mini"><h4>生活直覺</h4><p>速度對時間的定積分是位移；流量對時間的定積分是總水量。</p></div></div><div class="check"><b>自我檢查</b><p>\(\displaystyle \int_1^3 2x\,dx\) 是多少？</p><details class="answer"><summary>看答案與理由</summary><p>\(\displaystyle [x^2]_1^3=8\)。</p></details></div></div>
+      </details>
+    </section>
+
+    <section class="card" id="connection">
+      <div class="section-head"><div><h2>最後串回來：<span>微分與積分是一組往返工具</span></h2><p>遇題時先問它是在求某一刻怎麼變，還是一段期間累積多少。</p></div><span class="tag">解題選工具</span></div>
+      <div class="bridge"><div class="bridge-box"><b>微分：局部觀點</b>已知函數 \(f(x)\)，求瞬間變化率、切線、速度，或判斷增減與極值。</div><div class="arrow" aria-hidden="true">⇄</div><div class="bridge-box"><b>積分：整體觀點</b>已知變化率或每小段的量，累積成位移、面積、總量，或倒推原函數。</div></div>
+      <p class="callout"><strong>課堂收尾問句：</strong>速度是每一刻的變化率，位移是整段時間的累積；由速度回到位移，需要積分。這正是微積分最核心的來回關係。</p>
+    </section>
+  </main>
+  <footer>微積分學習地圖・先看方向，再逐步打開定義、例題與練習。</footer>
+  <script>
+    const lessonDetails = Array.from(document.querySelectorAll('#details > details'));
+    document.querySelector('#expandAll').addEventListener('click', () => lessonDetails.forEach((item) => { item.open = true; }));
+    document.querySelector('#collapseAll').addEventListener('click', () => lessonDetails.forEach((item) => { item.open = false; }));
+  </script>
+</body>
+</html>

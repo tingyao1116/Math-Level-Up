@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
+  <script src="./site-analytics.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>數學小遊戲教學首頁</title>
@@ -192,7 +193,7 @@
         <button class="grade-tab" id="tab-j3" type="button" role="tab" aria-selected="false" aria-controls="grade-j3" data-grade="j3" data-label="國三" data-count="6" tabindex="-1">國三</button>
         <button class="grade-tab" id="tab-s1" type="button" role="tab" aria-selected="false" aria-controls="grade-s1" data-grade="s1" data-label="高一" data-count="12" tabindex="-1">高一</button>
         <button class="grade-tab" id="tab-s2" type="button" role="tab" aria-selected="false" aria-controls="grade-s2" data-grade="s2" data-label="高二" data-count="5" tabindex="-1">高二</button>
-        <button class="grade-tab" id="tab-s3" type="button" role="tab" aria-selected="false" aria-controls="grade-s3" data-grade="s3" data-label="高三" data-count="0" tabindex="-1">高三</button>
+        <button class="grade-tab" id="tab-s3" type="button" role="tab" aria-selected="false" aria-controls="grade-s3" data-grade="s3" data-label="高三" data-count="4" tabindex="-1">高三</button>
         <button class="grade-tab" id="tab-other" type="button" role="tab" aria-selected="false" aria-controls="grade-other" data-grade="other" data-label="其他" data-count="2" tabindex="-1">其他</button>
       </nav>
 
@@ -338,10 +339,22 @@
             <a class="btn" href="./triangle-centers-learning.html">開啟三角形四心教學頁</a>
           </article>
           <article class="card">
+            <div class="badge">三角形・全等與相似</div>
+            <h3>三角形全等判定：SSA、RHS 與 AA</h3>
+            <p>從 SSS、SAS、ASA、AAS、RHS 建立判定流程；用吊車動態圖看出 SSA 的無解、一解與兩解，再用旋轉圖形記號練習分辨全等與 AA 相似。</p>
+            <a class="btn" href="./triangle-congruence-learning.html">開啟全等判定互動教學頁</a>
+          </article>
+          <article class="card">
             <div class="badge">圓與角度</div>
             <h3>圓心半徑、切割線與圓周角</h3>
             <p>從「圓周上的點到圓心等距離」出發，理解扇形弓形、切線與割線，再用弧度讀懂圓心角、圓周角、圓內外角與弦切角。</p>
             <a class="btn" href="./circle-properties-angles.html">開啟圓的重要性質教學頁</a>
+          </article>
+          <article class="card">
+            <div class="badge">代數・因式分解</div>
+            <h3>因式分解練習室：公因式、公式與十字交乘</h3>
+            <p>從兩項、四項、六項的提出公因式，到 \(x-y\) 與 \(y-x\) 的變號；再混合辨認三種乘法公式，並以 \(c\) 的正負與共同因數檢查完成十字交乘。</p>
+            <a class="btn" href="./factorization-practice.html">開啟因式分解練習室</a>
           </article>
           <article class="card">
             <div class="badge">平面幾何・面積比</div>
@@ -429,6 +442,12 @@
             <a class="btn" href="./high-school-polynomials.html">開啟高中多項式：餘式定理與插值法</a>
           </article>
           <article class="card">
+            <div class="badge">一元二次方程式・配方法</div>
+            <h3>配方法、公式解與韋達定理</h3>
+            <p>從十字交乘與有理根還原開始，逐步配方推得公式解；再用「根 → 方程式」的雙向欄位，直觀看懂兩根和、兩根積與兩根差。</p>
+            <a class="btn" href="./quadratic-formula-completing-square.html">開啟一元二次方程式教學頁</a>
+          </article>
+          <article class="card">
             <div class="badge">排列組合・機率前置</div>
             <h3>排列組合：判斷、分組與條件排列</h3>
             <p>從排列、組合、重複選取到分組分堆、有相同物排列與錯排；再用「相鄰綁一起、不相鄰插空隙」整理常見題型，附互動計算器與自我檢查。</p>
@@ -501,14 +520,10 @@
         <div class="panel-head">
           <div>
             <h2>高三</h2>
-            <p>這一區會放入高三統整、複習與選修延伸工具；目前可先從高二的空間、矩陣與最值內容銜接。</p>
+            <p>整合向量、指數對數與微積分的高三統整頁；可用於課堂證明、考前複習與進階題型的自我檢查。</p>
           </div>
-          <span class="entry-count">整理中</span>
+          <span class="entry-count">4 個入口</span>
         </div>
-        <article class="empty-card">
-          <h3>高三入口正在整理</h3>
-          <p>目前尚未有專屬頁面。保留此入口後，新增高三複習工具時不必再調整首頁結構。</p>
-        </article>
         <div class="grid">
           <article class="card">
             <div class="badge">平面向量・內積與投影</div>
@@ -517,10 +532,28 @@
             <a class="btn" href="./planar-vectors-dot-product.html">開啟平面向量教學頁</a>
           </article>
           <article class="card">
+            <div class="badge">平面向量・線性組合</div>
+            <h3>向量分量：係數、七區、共線與角平分線</h3>
+            <p>同步拖曳終點與 \(u,v\) 係數平面，從三個權重的正負判讀三角形內外、三邊延長線分出的七區；再連到內外分共線與等大兩力的角平分線合力。</p>
+            <a class="btn" href="./vector-linear-combination-regions.html">開啟向量分量互動教學頁</a>
+          </article>
+          <article class="card">
             <div class="badge">指數・對數・公式證明</div>
             <h3>指數與對數：公式整理、條件與證明</h3>
             <p>從連乘與反函數出發，整理指數律、對數律、換底公式與成長模型；每條重點公式都有成立條件、可投影的證明、例題與自我檢查。</p>
             <a class="btn" href="./exponent-logarithm-formula-proofs.html">開啟 s3-2 指數對數整理</a>
+          </article>
+          <article class="card">
+            <div class="badge">微積分・概念主線</div>
+            <h3>微積分學習地圖：從定義到微分與積分</h3>
+            <p>用可開合的學習地圖串起函數、極限、連續、微分定義與應用、不定積分、定積分；每一站都有直覺、代表例題、常見錯誤與分層自檢。</p>
+            <a class="btn" href="./calculus-learning-map.html">開啟微積分學習地圖</a>
+          </article>
+          <article class="card">
+            <div class="badge">微積分・證明與進階微分</div>
+            <h3>微積分核心定理與進階微分</h3>
+            <p>從單位圓證明 sin 微分，接到指數、對數微分與兩部分微積分基本定理；再用羅必達、對數微分、隱函數、萊布尼茲法則、反函數與奇偶積分處理進階題型。</p>
+            <a class="btn" href="./calculus-proof-methods.html">開啟微積分證明與進階方法</a>
           </article>
         </div>
       </section>
@@ -571,6 +604,7 @@
         { id: 's2', label: '高一下', note: '數列、排列組合、資料分析與三角比。' },
         { id: 's3', label: '高二上', note: '函數變化、最值與高二延伸圖形。' },
         { id: 's4', label: '高二下', note: '空間向量、三平面與矩陣。' },
+        { id: 's5', label: '高三', note: '微積分證明、進階微分與考前統整。' },
         { id: 'other', label: '其他工具', note: '不綁定章節的課堂暖身與解題輔助工具。' }
       ];
       const catalog = window.MATH_PAGE_CHAPTER_CATALOG || {};

@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="chapter-code" content="j4-3">
+  <title>三角形全等判定｜SSS、SAS、ASA、AAS、RHS 與 SSA</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      startup: { pageReady() { return MathJax.startup.defaultPageReady().then(() => window.dispatchEvent(new Event('mathjax-ready'))); } }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #17283b;
+      --muted: #526477;
+      --paper: #f7fafc;
+      --card: #fff;
+      --line: #d5e1eb;
+      --blue: #1769aa;
+      --blue-pale: #eaf5ff;
+      --purple: #7b3dae;
+      --purple-pale: #f6edff;
+      --orange: #b86000;
+      --orange-pale: #fff2df;
+      --green: #087960;
+      --green-pale: #e7f8f1;
+      --red: #b2384c;
+      --red-pale: #fff0f3;
+      --gold: #886000;
+      --gold-pale: #fff7dd;
+      --shadow: 0 14px 34px rgba(22, 48, 79, .09);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at 5% 0%, #dff3ff 0, transparent 29rem), radial-gradient(circle at 98% 7%, #fff0d7 0, transparent 25rem), var(--paper);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.76;
+    }
+    .wrap { width: min(1160px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 60px; }
+    .back { color: var(--blue); font-weight: 900; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .hero {
+      margin: 18px 0 31px;
+      padding: clamp(28px, 5vw, 54px);
+      border-radius: 29px;
+      color: #fff;
+      background: linear-gradient(135deg, #153d66, #1769aa 52%, #4b8fc7);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow, .tag, .method-pill { display: inline-block; border-radius: 999px; font-size: .86rem; font-weight: 900; letter-spacing: .02em; }
+    .eyebrow { padding: 3px 11px; color: #d9f2ff; background: rgba(255,255,255,.15); }
+    h1 { margin: 10px 0 8px; font-size: clamp(2rem, 5vw, 3.45rem); line-height: 1.2; }
+    h2 { margin: 0; font-size: clamp(1.55rem, 3.3vw, 2.18rem); line-height: 1.35; }
+    h3 { margin: 0 0 7px; font-size: 1.18rem; line-height: 1.45; }
+    .lead { max-width: 875px; margin: 0; color: #ecf8ff; font-size: 1.08rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .nav a { padding: 7px 13px; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; color: #fff; font-weight: 850; text-decoration: none; }
+    .nav a:hover { background: rgba(255,255,255,.15); }
+    section { scroll-margin-top: 17px; }
+    .section { margin-top: 40px; }
+    .section-head { margin-bottom: 15px; }
+    .section-head p, .card p { margin: 5px 0 0; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card { min-width: 0; padding: clamp(18px, 3vw, 27px); border: 1px solid var(--line); border-radius: 19px; background: var(--card); box-shadow: 0 6px 20px rgba(34, 60, 89, .045); }
+    .tag { padding: 3px 10px; color: var(--blue); background: var(--blue-pale); }
+    .tag.purple { color: var(--purple); background: var(--purple-pale); }
+    .tag.orange { color: var(--orange); background: var(--orange-pale); }
+    .tag.green { color: var(--green); background: var(--green-pale); }
+    .tag.red { color: var(--red); background: var(--red-pale); }
+    .tag.gold { color: var(--gold); background: var(--gold-pale); }
+    .method-pill { min-width: 48px; padding: 2px 10px; color: #fff; background: var(--blue); text-align: center; }
+    .method-pill.rhs { background: var(--green); }
+    .method-pill.warn { background: var(--red); }
+    .method-pill.sim { background: var(--purple); }
+    .formula { overflow-x: auto; margin: 14px 0; padding: 12px 14px; border-radius: 13px; color: #103a59; background: #f0f8fd; font-family: Cambria, "Times New Roman", serif; font-size: clamp(1.1rem, 2.6vw, 1.48rem); font-weight: 700; line-height: 1.6; text-align: center; }
+    .formula mjx-container[display="true"] { margin: .25em 0 !important; }
+    .callout, .error-note, .teacher-note, .success-note { margin-top: 15px; padding: 12px 15px; border-left: 4px solid var(--blue); border-radius: 0 12px 12px 0; background: var(--blue-pale); }
+    .error-note { border-color: var(--red); background: var(--red-pale); }
+    .teacher-note { border-color: var(--gold); background: var(--gold-pale); }
+    .success-note { border-color: var(--green); background: var(--green-pale); }
+    .method-card { position: relative; overflow: hidden; }
+    .method-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; background: var(--blue); }
+    .method-card.rhs::before { background: var(--green); }
+    .method-card .method-body { padding-left: 5px; }
+    .method-card ul, .compact-list { margin: 9px 0 0; padding-left: 1.25em; }
+    .method-card li, .compact-list li { margin: 5px 0; }
+    .decision-path { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; margin-top: 16px; }
+    .decision-step { position: relative; min-height: 122px; padding: 13px 12px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .decision-step:not(:last-child)::after { content: "→"; position: absolute; top: 42px; right: -16px; z-index: 2; color: var(--blue); font-size: 1.35rem; font-weight: 900; }
+    .decision-step strong { display: block; color: var(--blue); }
+    .decision-step p { margin: 5px 0 0; color: var(--muted); font-size: .93rem; }
+    .two-column { display: grid; grid-template-columns: minmax(0, 1.22fr) minmax(285px, .78fr); gap: 17px; align-items: stretch; }
+    .diagram-card { padding: 12px; }
+    canvas { display: block; width: 100%; border: 1px solid #d5e3ec; border-radius: 14px; background: linear-gradient(180deg, #fbfdff, #f4f9fc); touch-action: none; }
+    .diagram-caption { margin: 7px 5px 0; color: var(--muted); font-size: .92rem; text-align: center; }
+    .control-panel { display: grid; gap: 13px; align-content: start; }
+    .control-group { padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdff; }
+    .control-label { display: block; margin-bottom: 8px; color: #32485e; font-weight: 900; }
+    label.range-row { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; color: #314960; font-weight: 800; }
+    label.range-row input { grid-column: 1 / -1; width: 100%; accent-color: var(--blue); }
+    output { min-width: 52px; padding: 2px 7px; border-radius: 8px; color: #174563; background: #e8f3fa; text-align: center; font-family: ui-monospace, Consolas, monospace; font-size: .9rem; }
+    .preset-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+    button { min-height: 40px; padding: 8px 13px; border: 1px solid transparent; border-radius: 10px; color: #fff; background: var(--blue); cursor: pointer; font: inherit; font-weight: 900; }
+    button:hover { background: #10598f; }
+    button.secondary { color: #194461; background: #dceef8; }
+    button.secondary:hover { background: #c8e4f3; }
+    button.active-choice { color: #fff; background: var(--purple); }
+    button:focus, input:focus, a:focus { outline: 3px solid #83caec; outline-offset: 2px; }
+    .status { margin: 0; padding: 13px; border-radius: 12px; color: #294d66; background: #ebf5fb; font-weight: 750; }
+    .status.two { color: #69401b; background: #fff2df; }
+    .status.none { color: #91313d; background: var(--red-pale); }
+    .case-table-wrap { overflow-x: auto; }
+    table { width: 100%; min-width: 690px; border-collapse: collapse; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: center; vertical-align: top; }
+    th { color: #174563; background: #ecf7fd; font-weight: 900; }
+    th:first-child, td:first-child { text-align: left; }
+    .counter-card canvas { aspect-ratio: 2.25 / 1; }
+    .quiz-card { padding: clamp(19px, 4vw, 30px); }
+    .quiz-top { display: flex; align-items: end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .progress { color: #49667b; font-weight: 900; }
+    .question { margin: 14px 0 10px; font-size: clamp(1.15rem, 3vw, 1.48rem); font-weight: 900; line-height: 1.58; }
+    .quiz-canvas { aspect-ratio: 2.35 / 1; min-height: 240px; }
+    .choice-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-top: 14px; }
+    .choice-button { color: #28465d; border-color: #c9d9e5; background: #fff; }
+    .choice-button:hover { color: #fff; border-color: var(--blue); background: var(--blue); }
+    .feedback { min-height: 48px; margin-top: 14px; padding: 10px 12px; border-radius: 10px; color: #31536a; background: #e9f3f9; font-weight: 750; }
+    .feedback.good { color: #08634d; background: var(--green-pale); }
+    .feedback.bad { color: #91313d; background: var(--red-pale); }
+    .tools { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 14px; }
+    .similarity-layout { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(280px, .82fr); gap: 17px; align-items: stretch; }
+    .toggle-buttons { display: grid; gap: 8px; }
+    .similarity-result { margin-top: 12px; padding: 12px; border-radius: 12px; color: #51396e; background: var(--purple-pale); font-weight: 750; }
+    details { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; background: #fbfdff; }
+    summary { padding: 11px 13px; cursor: pointer; color: #174563; font-weight: 900; }
+    details > div { padding: 0 14px 14px; }
+    .footer { margin: 44px 0 0; color: var(--muted); text-align: center; }
+    @media (max-width: 900px) {
+      .decision-path { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .decision-step:not(:last-child)::after { display: none; }
+      .grid.three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .two-column, .similarity-layout { grid-template-columns: 1fr; }
+      .choice-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .quiz-canvas { min-height: 205px; }
+    }
+    @media (max-width: 590px) {
+      .wrap { width: min(100% - 22px, 1160px); padding-top: 15px; }
+      .hero { border-radius: 21px; }
+      .grid, .grid.three, .decision-path { grid-template-columns: 1fr; }
+      .preset-grid, .choice-list { grid-template-columns: 1fr; }
+      .quiz-canvas { min-height: 180px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html#j5">← 回數學教學工具首頁</a>
+
+    <section class="hero">
+      <span class="eyebrow">國二下幾何｜看標記，不靠目測</span>
+      <h1>三角形全等判定</h1>
+      <p class="lead">兩個三角形「看起來一樣」還不夠；要有足以鎖死形狀與大小的條件。本頁先整理 SSS、SAS、ASA、AAS、RHS，再用吊車看懂 SSA 為什麼可能有兩個圖形；最後用旋轉、翻面與直角三角形記號做判讀。</p>
+      <nav class="nav" aria-label="頁面導覽">
+        <a href="#methods">五種可判全等</a>
+        <a href="#ssa">SSA 與 RHS</a>
+        <a href="#crane">吊車兩解互動圖</a>
+        <a href="#practice">標記判讀練習</a>
+        <a href="#similarity">AA 與相似縮放</a>
+      </nav>
+    </section>
+
+    <section id="methods" class="section">
+      <div class="section-head">
+        <h2>先抓核心：全等 = 形狀相同，而且大小相同</h2>
+        <p>如果 \(\triangle ABC\cong\triangle DEF\)，對應頂點的順序很重要：\(A\leftrightarrow D\)、\(B\leftrightarrow E\)、\(C\leftrightarrow F\)。對應邊相等、對應角也相等；但在證明前，先確認已知條件真的能保證全等。</p>
+      </div>
+      <article class="card">
+        <div class="decision-path" aria-label="全等判定流程">
+          <div class="decision-step"><strong>① 三邊都有？</strong><p>三組對應邊都等長，直接是 SSS。</p></div>
+          <div class="decision-step"><strong>② 兩邊夾一角？</strong><p>那一角必須剛好夾在兩已知邊中間，才是 SAS。</p></div>
+          <div class="decision-step"><strong>③ 一邊二角？</strong><p>角邊角 ASA 或角角邊 AAS 都能鎖住三角形。</p></div>
+          <div class="decision-step"><strong>④ 直角 + 斜邊 + 一股？</strong><p>專用的 RHS；可用畢氏定理補出另一股。</p></div>
+          <div class="decision-step"><strong>⑤ 是兩邊一非夾角？</strong><p>小心 SSA：可能 0 個、1 個或 2 個，不可直接判全等。</p></div>
+        </div>
+        <div class="teacher-note"><strong>上課先問：</strong>「已知條件是把三角形『鎖死』了，還是仍可以把一個頂點翻到另一個位置？」學生能回答這句，就不會把所有兩邊一角都誤當 SAS。</div>
+      </article>
+
+      <div class="grid" style="margin-top:16px">
+        <article class="card method-card">
+          <div class="method-body">
+            <span class="method-pill">SSS</span>
+            <h3>三邊對應相等</h3>
+            <div class="formula">\[AB=DE,\quad BC=EF,\quad CA=FD\]</div>
+            <p>三條邊的長度都固定，三角形沒有可以活動的空間。最適合邊上有三種刻痕的圖。</p>
+          </div>
+        </article>
+        <article class="card method-card">
+          <div class="method-body">
+            <span class="method-pill">SAS</span>
+            <h3>兩邊及其夾角對應相等</h3>
+            <div class="formula">\[AB=DE,\quad \angle B=\angle E,\quad BC=EF\]</div>
+            <p><strong>夾角</strong>是兩條已知邊碰在一起的角。若標的是另一個角，就可能變成 SSA。</p>
+          </div>
+        </article>
+        <article class="card method-card">
+          <div class="method-body">
+            <span class="method-pill">ASA</span>
+            <h3>一邊及其兩端角對應相等</h3>
+            <div class="formula">\[\angle A=\angle D,\quad AB=DE,\quad \angle B=\angle E\]</div>
+            <p>兩角一邊。第三角其實也被 \(180^\circ\) 決定，所以形狀與大小都固定。</p>
+          </div>
+        </article>
+        <article class="card method-card">
+          <div class="method-body">
+            <span class="method-pill">AAS</span>
+            <h3>一邊及兩角對應相等</h3>
+            <div class="formula">\[\angle A=\angle D,\quad \angle C=\angle F,\quad AB=DE\]</div>
+            <p>已知邊不夾在兩角中間也沒關係；先由內角和求第三角，就能視為 ASA。</p>
+          </div>
+        </article>
+        <article class="card method-card rhs">
+          <div class="method-body">
+            <span class="method-pill rhs">RHS</span>
+            <h3>直角三角形的斜邊與一股</h3>
+            <div class="formula">\[\angle A=\angle D=90^\circ,\quad BC=EF,\quad AB=DE\]</div>
+            <p>RHS 的 H 是斜邊（hypotenuse），S 是一股（side）。它不是「有直角就一定 RHS」；斜邊與一股都要知道。</p>
+          </div>
+        </article>
+        <article class="card method-card" style="--blue: var(--purple)">
+          <div class="method-body">
+            <span class="method-pill sim">AA</span>
+            <h3>兩角相等：只能保證相似</h3>
+            <div class="formula">\[\angle A=\angle D,\quad \angle B=\angle E\]</div>
+            <p>角度決定形狀，卻沒有決定大小；比例可能是 \(2\)、\(\frac12\) 或其他倍數，所以不能直接說全等。</p>
+          </div>
+        </article>
+      </div>
+      <div class="error-note"><strong>最常犯的錯：</strong>把「兩邊一角」一律說成 SAS。先用手指指出那一角的兩條邊：兩條都在已知邊裡才是 SAS；少了其中一條就是 SSA，要另外判斷。</div>
+    </section>
+
+    <section id="ssa" class="section">
+      <div class="section-head">
+        <h2>SSA 為什麼不保證全等？RHS 又為什麼是例外？</h2>
+        <p>SSA 的意思是「兩邊與一個<strong>非夾角</strong>」。頂點可能落在兩個不同位置，於是得到兩個不全等的三角形；這就是模稜兩可的情形。</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <span class="tag red">SSA：不一定全等</span>
+          <h3>同一組條件，頂點可在圓弧的兩側</h3>
+          <p>固定 \(\angle A\)、邊 \(AC=b\)，再要求 \(BC=a\)。點 \(C\) 已確定；點 \(B\) 是「以 \(C\) 為圓心、半徑 \(a\)」的圓與射線 \(\overrightarrow{AB}\) 的交點。圓可能交到兩次。</p>
+          <div class="formula">\[\text{SSA}\;\Rightarrow\;\text{可能無解、恰一解或兩解}\]</div>
+          <ul class="compact-list">
+            <li>兩個交點：兩個三角形都有同樣的兩邊與非夾角，卻一大一小。</li>
+            <li>所以 SSA 不是「一定不全等」；精確說法是<strong>不能保證全等</strong>。</li>
+            <li>題目若再給額外條件，例如銳角／鈍角、邊的大小關係，可能只剩一個圖形。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <span class="tag green">RHS：直角時可鎖住</span>
+          <h3>斜邊與一股，能補出第三邊</h3>
+          <p>若 \(\angle A=90^\circ\)，且已知斜邊 \(c\) 與一股 \(p\)，那另一股 \(q\) 沒有選擇：</p>
+          <div class="formula">\[q=\sqrt{c^2-p^2}\]</div>
+          <p>三邊已經確定，實際上可回到 SSS。這就是 RHS 成立的原因。請注意：這裡已知的必須真的是<strong>斜邊</strong>和一股。</p>
+          <div class="success-note"><strong>口訣：</strong>直角標記 + 斜邊刻痕 + 一股刻痕，才叫 RHS；兩股和直角則是 SAS，不需要硬叫 RHS。</div>
+        </article>
+      </div>
+      <article class="card counter-card" style="margin-top:16px">
+        <span class="tag orange">兩個經典反例</span>
+        <h3>同樣可寫成 SSA，但三角形大小不同</h3>
+        <canvas id="counterCanvas" width="900" height="400" role="img" aria-label="等腰三角形非中線切割與等腰梯形對角線切割，顯示 SSA 不保證全等"></canvas>
+        <p class="diagram-caption">左：等腰 △ 的頂點連到底邊非中點，兩小 △ 有等腰邊、共用邊與相等的底角，卻不全等。　右：等腰梯形的對角線切成兩 △，兩腰相等、對角線共用、平行線內錯角相等，仍可因兩底不等而不全等。</p>
+      </article>
+    </section>
+
+    <section id="crane" class="section">
+      <div class="section-head">
+        <h2>吊車示意：SSA 何時有 0、1、2 個三角形？</h2>
+        <p>把吊車臂視為 \(AC=b=8\)，地面射線是 \(\overrightarrow{AB}\)，固定仰角 \(\theta=\angle A\)，再調整繩（或量到的距離）\(BC=a\)。虛線圓與地面的交點，就是可能的 \(B\) 位置。</p>
+      </div>
+      <div class="two-column">
+        <article class="card diagram-card">
+          <canvas id="craneCanvas" width="920" height="475" role="img" aria-label="吊車臂與地面交點的 SSA 兩解互動示意"></canvas>
+          <p class="diagram-caption">藍色為吊車臂 \(AC=b\)；橘色虛線圓的半徑是 \(a=BC\)。綠／紫色端點都是符合條件的 \(B\)。</p>
+        </article>
+        <aside class="control-panel" aria-label="吊車 SSA 控制">
+          <div class="control-group">
+            <label class="range-row" for="thetaRange"><span>仰角 \(\theta\)</span><output id="thetaOut">38°</output><input id="thetaRange" type="range" min="20" max="155" step="1" value="38"></label>
+            <label class="range-row" for="aRange"><span>已知長度 \(a=BC\)</span><output id="aOut">6.0</output><input id="aRange" type="range" min="1" max="13" step="0.1" value="6"></label>
+          </div>
+          <div class="control-group">
+            <span class="control-label">快速看四種情況</span>
+            <div class="preset-grid">
+              <button class="secondary" type="button" data-crane="none">銳角：無解</button>
+              <button class="secondary" type="button" data-crane="one">銳角：一解</button>
+              <button class="secondary" type="button" data-crane="two">銳角：兩解</button>
+              <button class="secondary" type="button" data-crane="obtuse">鈍角：一解</button>
+            </div>
+          </div>
+          <p id="craneStatus" class="status" aria-live="polite"></p>
+          <div class="control-group">
+            <span class="control-label">用高先判斷</span>
+            <div class="formula">\[h=b\sin\theta\]</div>
+            <p style="margin:0;color:var(--muted);font-size:.93rem">當 \(\theta\) 是銳角：\(a<h\) 無解；\(a=h\) 恰一解；\(h<a<b\) 有兩解；\(a\ge b\) 只留一個非退化解。當 \(\theta\) 是鈍角：若 \(a\le b\)，交點在射線反向或退化；\(a>b\) 才有一解。</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="practice" class="section">
+      <div class="section-head">
+        <h2>看標記判斷：旋轉、翻面也要找到對應關係</h2>
+        <p>每題的兩個 △ 故意不一定同方向。請<strong>忽略畫得多大、哪一邊朝上</strong>，只使用邊上的刻痕、角弧與直角記號。很多題是直角 △，但不表示答案一定是 RHS。</p>
+      </div>
+      <article class="card quiz-card">
+        <div class="quiz-top">
+          <div><span class="tag purple">互動判讀</span><h3 style="margin-top:7px">先說出判定理由，再按答案</h3></div>
+          <span id="quizProgress" class="progress">第 1 / 10 題</span>
+        </div>
+        <p id="quizQuestion" class="question"></p>
+        <canvas id="quizCanvas" class="quiz-canvas" width="920" height="390" role="img" aria-label="兩個帶有邊角標記的三角形判讀題"></canvas>
+        <div id="choiceList" class="choice-list" role="group" aria-label="選擇全等判定"></div>
+        <p id="quizFeedback" class="feedback" aria-live="polite">提示：先找已知的邊，再檢查已知角是否真的夾在那兩邊中間。</p>
+        <div class="tools"><button id="nextQuestion" type="button" class="secondary">換一題 →</button><button id="resetQuiz" type="button" class="secondary">從第 1 題重新開始</button></div>
+      </article>
+      <div class="teacher-note"><strong>教師帶法：</strong>讓學生先用手指沿著「有記號的邊」走一圈，說出第一組對應頂點，再看角記號落在哪裡。這比背 SSS、SAS 名稱更能避免把翻轉圖形配錯。</div>
+    </section>
+
+    <section id="similarity" class="section">
+      <div class="section-head">
+        <h2>AA 不是全等：它保證相似，卻保不住大小</h2>
+        <p>縮放前後，角度沒有改變，所以有 AA；但邊長全部乘上同一個比例 \(k\)。只有 \(k=1\) 時，兩個三角形才同時相似又全等。</p>
+      </div>
+      <div class="similarity-layout">
+        <article class="card diagram-card">
+          <canvas id="similarityCanvas" width="920" height="500" role="img" aria-label="以三角形內或外的縮放中心做相似縮放的互動圖"></canvas>
+          <p class="diagram-caption">深藍：原 △\(ABC\)；紫色：縮放後 △\(A'B'C'\)；虛線通過縮放中心 \(O\)。</p>
+        </article>
+        <aside class="control-panel" aria-label="相似縮放控制">
+          <div class="control-group">
+            <span class="control-label">① 選縮放中心的位置</span>
+            <div class="toggle-buttons" role="group" aria-label="縮放中心位置">
+              <button id="insideCenter" type="button" class="active-choice">O 在三角形內</button>
+              <button id="outsideCenter" type="button" class="secondary">O 在三角形外</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="range-row" for="scaleRange"><span>② 縮放倍數 \(k\)</span><output id="scaleOut">1.30</output><input id="scaleRange" type="range" min="0.35" max="1.45" step="0.05" value="1.30"></label>
+            <p style="margin:8px 0 0;color:var(--muted);font-size:.93rem">\(0<k<1\)：縮小，像點靠近 \(O\)。　\(k>1\)：放大，像點遠離 \(O\)。</p>
+          </div>
+          <div id="similarityResult" class="similarity-result" aria-live="polite"></div>
+          <div class="formula">\[\angle A'=\angle A,\qquad \frac{A'B'}{AB}=\frac{B'C'}{BC}=\frac{C'A'}{CA}=k\]</div>
+        </aside>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card"><span class="tag purple">例題｜基礎</span><h3>AA 為什麼不能判全等？</h3><p>兩個三角形都有 \(40^\circ\)、\(65^\circ\) 兩角，且其中一個的對應邊是另一個的 \(2\) 倍。它們相似嗎？全等嗎？</p><div class="callout"><strong>答：</strong>相似，因為 AA；不全等，因為對應邊長比例是 \(2\ne1\)。第三角同為 \(75^\circ\)，但大小不同。</div></article>
+        <article class="card"><span class="tag gold">自我檢查</span><h3>何時 AA 也會得到全等？</h3><p>若除了兩角相等外，又知道一組對應邊相等，縮放倍數就是 \(k=1\)。此時可把「兩角 + 一邊」改用 ASA 或 AAS 判定全等。</p><div class="success-note"><strong>關鍵：</strong>AA 本身只說形狀；再加上一個實際長度，才把大小固定。</div></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <h2>一分鐘收束：判定前先問兩句</h2>
+        <ol class="compact-list">
+          <li><strong>已知角是兩已知邊的夾角嗎？</strong>是，才可考慮 SAS；不是就停下來檢查 SSA。</li>
+          <li><strong>這個直角 △ 的已知兩邊是斜邊加一股嗎？</strong>是，才是 RHS；兩股加直角則是 SAS。</li>
+          <li><strong>只有兩個角相等嗎？</strong>那是 AA 相似；請再找一組實際對應邊長，才能決定是否全等。</li>
+        </ol>
+        <details><summary>展開：如何寫成正式證明？</summary><div>先依圖形寫清楚對應，例如「在 \(\triangle ABC\) 與 \(\triangle DEF\) 中，\(AB=DE\)、\(\angle B=\angle E\)、\(BC=EF\)，故 \(\triangle ABC\cong\triangle DEF\)（SAS）。」最後才可推出對應元素相等，例如 \(\angle A=\angle D\)。不要先把想證明的角相等當成全等條件。</div></details>
+      </article>
+    </section>
+    <p class="footer">三角形全等判定｜先看記號與對應，再決定方法。</p>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      let typesetTimer = null;
+      const typesetElement = (element) => {
+        window.clearTimeout(typesetTimer);
+        typesetTimer = window.setTimeout(() => {
+          if (!window.MathJax?.typesetPromise) return;
+          window.MathJax.typesetClear([element]);
+          window.MathJax.typesetPromise([element]).catch(() => {});
+        }, 0);
+      };
+      const point = (x, y) => ({ x, y });
+      const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+      const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
+      const fit = (canvas, logicalWidth, logicalHeight) => {
+        const rect = canvas.getBoundingClientRect();
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.round(rect.width * ratio));
+        canvas.height = Math.max(1, Math.round(rect.width * ratio * logicalHeight / logicalWidth));
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(canvas.width / logicalWidth, 0, 0, canvas.height / logicalHeight, 0, 0);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        return ctx;
+      };
+      const text = (ctx, label, x, y, size = 18, color = '#17283b', align = 'center') => {
+        ctx.save(); ctx.fillStyle = color; ctx.font = `800 ${size}px "Microsoft JhengHei", sans-serif`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(label, x, y); ctx.restore();
+      };
+      const line = (ctx, a, b, color = '#1769aa', width = 3, dash = []) => {
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.restore();
+      };
+      const drawTriangle = (ctx, pts, color = '#1769aa', width = 3, fill = null) => {
+        ctx.save(); ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); pts.slice(1).forEach((p) => ctx.lineTo(p.x, p.y)); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } ctx.strokeStyle = color; ctx.lineWidth = width; ctx.stroke(); ctx.restore();
+      };
+      const drawVertex = (ctx, p, label, offset = point(0, -18), color = '#173f5e') => {
+        ctx.save(); ctx.fillStyle = color; ctx.beginPath(); ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.restore(); text(ctx, label, p.x + offset.x, p.y + offset.y, 17, color);
+      };
+      const sideTick = (ctx, a, b, count, color = '#b86000') => {
+        const dx = b.x - a.x; const dy = b.y - a.y; const len = Math.hypot(dx, dy); const ux = dx / len; const uy = dy / len; const nx = -uy; const ny = ux; const mid = point((a.x + b.x) / 2, (a.y + b.y) / 2);
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+        for (let i = 0; i < count; i += 1) { const shift = (i - (count - 1) / 2) * 8; const cx = mid.x + ux * shift; const cy = mid.y + uy * shift; ctx.beginPath(); ctx.moveTo(cx - nx * 7, cy - ny * 7); ctx.lineTo(cx + nx * 7, cy + ny * 7); ctx.stroke(); }
+        ctx.restore();
+      };
+      const normalizedDiff = (start, end) => { let d = end - start; while (d <= -Math.PI) d += Math.PI * 2; while (d > Math.PI) d -= Math.PI * 2; return d; };
+      const angleMark = (ctx, pts, index, count = 1, right = false, color = '#7b3dae') => {
+        const v = pts[index]; const p1 = pts[(index + 2) % 3]; const p2 = pts[(index + 1) % 3];
+        const a1 = Math.atan2(p1.y - v.y, p1.x - v.x); const rawA2 = Math.atan2(p2.y - v.y, p2.x - v.x); const diff = normalizedDiff(a1, rawA2); const a2 = a1 + diff;
+        ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.5;
+        if (right) {
+          const u1 = point(Math.cos(a1), Math.sin(a1)); const u2 = point(Math.cos(a2), Math.sin(a2)); const r = 18;
+          ctx.beginPath(); ctx.moveTo(v.x + u1.x * r, v.y + u1.y * r); ctx.lineTo(v.x + u1.x * r + u2.x * r, v.y + u1.y * r + u2.y * r); ctx.lineTo(v.x + u2.x * r, v.y + u2.y * r); ctx.stroke();
+        } else {
+          for (let i = 0; i < count; i += 1) { const r = 17 + i * 7; ctx.beginPath(); ctx.arc(v.x, v.y, r, a1, a2, diff < 0); ctx.stroke(); }
+        }
+        ctx.restore();
+      };
+      const circle = (ctx, center, radius, color, width = 2, dash = []) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.beginPath(); ctx.arc(center.x, center.y, radius, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); };
+
+      function drawCounterexamples() {
+        const canvas = $('counterCanvas'); const ctx = fit(canvas, 900, 400); ctx.clearRect(0, 0, 900, 400);
+        ctx.save(); ctx.fillStyle = '#f4f9fd'; ctx.fillRect(0, 0, 900, 400); ctx.restore();
+        text(ctx, '等腰 △：頂點連到底邊的非中點', 225, 28, 18, '#174563');
+        const A = point(72, 313), B = point(377, 313), C = point(225, 78), D = point(270, 313);
+        drawTriangle(ctx, [A, B, C], '#1769aa', 3, 'rgba(23,105,170,.04)'); line(ctx, C, D, '#7b3dae', 3);
+        sideTick(ctx, A, C, 1); sideTick(ctx, B, C, 1); sideTick(ctx, C, D, 2, '#087960');
+        angleMark(ctx, [A, B, C], 0, 1, false, '#7b3dae'); angleMark(ctx, [B, A, C], 0, 1, false, '#7b3dae');
+        drawVertex(ctx, A, 'A', point(-14, 19)); drawVertex(ctx, B, 'B', point(14, 19)); drawVertex(ctx, C, 'C', point(0, -18)); drawVertex(ctx, D, 'D', point(0, 20), '#7b3dae');
+        text(ctx, 'AC = BC　、　CD 共用　、　∠A = ∠B', 225, 350, 16, '#4b6174'); text(ctx, '但 AD ≠ DB，所以兩小 △ 不全等', 225, 378, 16, '#b2384c');
+        ctx.save(); ctx.strokeStyle = '#d5e1eb'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(450, 38); ctx.lineTo(450, 380); ctx.stroke(); ctx.restore();
+        text(ctx, '等腰梯形：對角線切成兩個 △', 675, 28, 18, '#174563');
+        const P = point(505, 295), Q = point(837, 295), R = point(766, 105), S = point(576, 105);
+        drawTriangle(ctx, [P, Q, R], '#1769aa', 3, 'rgba(23,105,170,.04)'); drawTriangle(ctx, [P, R, S], '#1769aa', 3, 'rgba(123,61,174,.035)'); line(ctx, P, R, '#7b3dae', 3);
+        sideTick(ctx, Q, R, 1); sideTick(ctx, P, S, 1); sideTick(ctx, P, R, 2, '#087960');
+        angleMark(ctx, [P, Q, R], 0, 1, false, '#7b3dae'); angleMark(ctx, [R, S, P], 0, 1, false, '#7b3dae');
+        drawVertex(ctx, P, 'A', point(-12, 19)); drawVertex(ctx, Q, 'B', point(13, 19)); drawVertex(ctx, R, 'C', point(12, -17)); drawVertex(ctx, S, 'D', point(-12, -17));
+        text(ctx, 'AD = BC　、　AC 共用　、　∠BAC = ∠DCA', 675, 350, 16, '#4b6174'); text(ctx, '但 AB ≠ CD，所以 △ABC 與 △CDA 不全等', 675, 378, 16, '#b2384c');
+      }
+
+      const thetaRange = $('thetaRange'); const aRange = $('aRange');
+      const presets = { none: [38, 3.4], one: [38, 8], two: [38, 6], obtuse: [120, 9.5] };
+      function drawCrane() {
+        const canvas = $('craneCanvas'); const ctx = fit(canvas, 920, 475); ctx.clearRect(0, 0, 920, 475);
+        const theta = Number(thetaRange.value); const a = Number(aRange.value); const b = 8; const rad = theta * Math.PI / 180; const scale = 34; const groundY = 365; const A = point(185, groundY); const C = point(A.x + b * Math.cos(rad) * scale, A.y - b * Math.sin(rad) * scale); const h = b * Math.sin(rad);
+        $('thetaOut').value = `${theta}°`; $('aOut').value = a.toFixed(1);
+        ctx.save(); ctx.fillStyle = '#f8fcff'; ctx.fillRect(0, 0, 920, 475); ctx.restore();
+        line(ctx, point(35, groundY), point(885, groundY), '#243e52', 3, [4, 5]); text(ctx, '地面射線  AB', 786, groundY + 25, 15, '#526477');
+        // simple crane truck and boom, kept deliberately schematic so the geometry remains the focus
+        ctx.save(); ctx.fillStyle = '#f3b62e'; ctx.strokeStyle = '#a96400'; ctx.lineWidth = 2; ctx.fillRect(90, 374, 126, 28); ctx.strokeRect(90, 374, 126, 28); ctx.fillRect(129, 348, 60, 26); ctx.strokeRect(129, 348, 60, 26); ctx.beginPath(); ctx.arc(119, 407, 12, 0, Math.PI * 2); ctx.arc(190, 407, 12, 0, Math.PI * 2); ctx.fillStyle = '#273b4e'; ctx.fill(); ctx.restore();
+        ctx.save(); ctx.strokeStyle = '#e19810'; ctx.lineWidth = 11; ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(C.x, C.y); ctx.stroke(); ctx.strokeStyle = '#fff2bd'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(C.x, C.y); ctx.stroke(); ctx.restore();
+        line(ctx, A, C, '#1769aa', 3); circle(ctx, C, a * scale, '#b86000', 2.2, [7, 6]);
+        const delta = a * a - h * h; const candidates = [];
+        if (delta >= -0.00001) {
+          const root = Math.sqrt(Math.max(0, delta)); const x1 = b * Math.cos(rad) - root; const x2 = b * Math.cos(rad) + root;
+          [x1, x2].forEach((x) => { if (x > 0.005 && !candidates.some((value) => Math.abs(value - x) < 0.03)) candidates.push(x); });
+        }
+        candidates.forEach((x, index) => {
+          const B = point(A.x + x * scale, groundY); const color = index === 0 ? '#087960' : '#7b3dae'; line(ctx, C, B, color, 3.5); ctx.save(); ctx.fillStyle = color; ctx.beginPath(); ctx.arc(B.x, B.y, 6, 0, Math.PI * 2); ctx.fill(); ctx.restore(); text(ctx, candidates.length > 1 ? `B${index + 1}` : 'B', B.x, B.y + 22, 17, color);
+        });
+        drawVertex(ctx, A, 'A', point(-14, -19)); drawVertex(ctx, C, 'C', point(0, -19));
+        // angle arc at A
+        ctx.save(); ctx.strokeStyle = '#7b3dae'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(A.x, A.y, 38, -rad, 0); ctx.stroke(); ctx.restore(); text(ctx, 'θ', A.x + 48, A.y - 17, 17, '#7b3dae');
+        text(ctx, 'AC = b = 8', (A.x + C.x) / 2, (A.y + C.y) / 2 - 20, 16, '#1769aa'); text(ctx, `h = b sin θ = ${h.toFixed(2)}`, 113, 74, 16, '#526477', 'left'); text(ctx, `BC = a = ${a.toFixed(1)}`, clamp(C.x + a * scale + 58, 105, 807), clamp(C.y - 15, 36, 328), 16, '#b86000');
+        const status = $('craneStatus'); status.className = 'status';
+        if (!candidates.length) { status.classList.add('none'); status.innerHTML = `<strong>目前：無解。</strong>圓沒有和正向地面射線相交。這組 SSA 條件畫不出非退化三角形。`; }
+        else if (candidates.length === 2) { status.classList.add('two'); status.innerHTML = `<strong>目前：兩個解。</strong>同樣的 \\(a,b,\\theta\\) 得到兩個不同的 \\(B\\)；這正是 SSA 不能保證全等。`; }
+        else { status.innerHTML = `<strong>目前：恰一解。</strong>只有一個交點落在正向射線上，因此這組特定條件只畫得出一個非退化三角形。`; }
+        typesetElement(status);
+      }
+      thetaRange.addEventListener('input', drawCrane); aRange.addEventListener('input', drawCrane);
+      document.querySelectorAll('[data-crane]').forEach((button) => button.addEventListener('click', () => { const [theta, a] = presets[button.dataset.crane]; thetaRange.value = theta; aRange.value = a; drawCrane(); }));
+
+      const quizRecords = [
+        { answer: 'SSS', prompt: '三組對應邊都有相同刻痕。可用哪一種判定？', sides: [[0,1,1],[1,2,2],[2,0,3]], angles: [] },
+        { answer: 'SAS', prompt: '這兩個都是直角三角形；已知的是兩股與它們夾住的直角。請選真正的判定理由。', sides: [[0,1,1],[0,2,2]], angles: [[0,0,true]], right: true },
+        { answer: 'RHS', prompt: '有直角記號，且斜邊與其中一股分別有對應刻痕。可用哪一種判定？', sides: [[1,2,1],[0,1,2]], angles: [[0,0,true]], right: true },
+        { answer: 'ASA', prompt: '同一條邊的兩端角都被標出，且那條邊相等。可用哪一種判定？', sides: [[0,1,1]], angles: [[0,1,false],[1,2,false]] },
+        { answer: 'AAS', prompt: '兩個角與一條不夾在兩角中間的邊相等。可用哪一種判定？', sides: [[0,1,2]], angles: [[0,1,false],[2,2,false]] },
+        { answer: 'SAS', prompt: '圖形翻轉了；兩條已知邊相等，直角正好夾在這兩邊之間。它不是 RHS，理由是？', sides: [[0,1,1],[0,2,2]], angles: [[0,0,true]], right: true },
+        { answer: 'SSA（不保證）', prompt: '兩邊相等，且標出的角沒有夾住那兩邊。這組資訊能保證全等嗎？', sides: [[0,1,1],[1,2,2]], angles: [[0,1,false]] },
+        { answer: 'AA（只相似）', prompt: '只有兩組對應角相等；它們能保證全等，還是只能保證相似？', sides: [], angles: [[0,1,false],[1,2,false]] },
+        { answer: '條件不足', prompt: '只有兩條對應邊相等，沒有角或第三邊資訊。能判全等嗎？', sides: [[0,1,1],[1,2,2]], angles: [] },
+        { answer: 'RHS', prompt: '即使兩個直角三角形方向不同，只要斜邊與一股對應相等，就可用哪一種？', sides: [[1,2,1],[0,2,2]], angles: [[0,0,true]], right: true }
+      ];
+      const choices = ['SSS', 'SAS', 'ASA', 'AAS', 'RHS', 'SSA（不保證）', 'AA（只相似）', '條件不足'];
+      let quizIndex = 0; let answered = false;
+      const pointsLeft = [point(105, 318), point(330, 318), point(105, 92)];
+      const pointsRight = [point(745, 92), point(520, 92), point(745, 318)];
+      const labelsLeft = ['A', 'B', 'C']; const labelsRight = ['D', 'E', 'F'];
+      function drawQuiz() {
+        const record = quizRecords[quizIndex]; const canvas = $('quizCanvas'); const ctx = fit(canvas, 920, 390); ctx.clearRect(0, 0, 920, 390); ctx.save(); ctx.fillStyle = '#fbfdff'; ctx.fillRect(0, 0, 920, 390); ctx.restore();
+        drawTriangle(ctx, pointsLeft, '#1769aa', 4, 'rgba(23,105,170,.045)'); drawTriangle(ctx, pointsRight, '#1769aa', 4, 'rgba(23,105,170,.045)');
+        record.sides.forEach(([from, to, count]) => { sideTick(ctx, pointsLeft[from], pointsLeft[to], count); sideTick(ctx, pointsRight[from], pointsRight[to], count); });
+        record.angles.forEach(([index, count, right]) => { angleMark(ctx, pointsLeft, index, count, right); angleMark(ctx, pointsRight, index, count, right); });
+        const offsetsLeft = [point(-18, 20), point(18, 20), point(-19, -17)]; const offsetsRight = [point(18, -17), point(-19, -17), point(18, 20)];
+        pointsLeft.forEach((p, i) => drawVertex(ctx, p, labelsLeft[i], offsetsLeft[i])); pointsRight.forEach((p, i) => drawVertex(ctx, p, labelsRight[i], offsetsRight[i]));
+        text(ctx, '△ ABC', 218, 44, 19, '#174563'); text(ctx, '△ DEF（旋轉／翻面）', 653, 44, 19, '#174563'); text(ctx, '只讀取記號，不讀取畫面比例', 460, 366, 15, '#526477');
+      }
+      function answerExplanation(record) {
+        const map = {
+          SSS: '三組邊長都被鎖住，三角形大小與形狀唯一，故為 SSS。',
+          SAS: '兩條有刻痕的邊剛好夾住已知角，這是 SAS。直角只是其中的夾角，不必叫 RHS。',
+          ASA: '已知邊正好在兩個已知角之間，這是 ASA。',
+          AAS: '兩角加上一條非夾邊；第三角可由內角和確定，因此可判全等，是 AAS。',
+          RHS: '直角三角形中，斜邊與一股已知；另一股可由畢氏定理確定，所以是 RHS。',
+          'SSA（不保證）': '標記形成兩邊與非夾角（SSA）。頂點仍可能翻到另一個位置，因此不能保證全等。',
+          'AA（只相似）': '兩角相等只固定形狀；沒有邊長比例為 1 的資訊，因此只能判相似。',
+          '條件不足': '只有兩邊相等時，第三個頂點還可移動；條件不足，不能判全等。'
+        };
+        return map[record.answer];
+      }
+      function renderQuiz() {
+        const record = quizRecords[quizIndex]; $('quizProgress').textContent = `第 ${quizIndex + 1} / ${quizRecords.length} 題`; $('quizQuestion').textContent = record.prompt; const list = $('choiceList'); list.replaceChildren();
+        choices.forEach((choice) => { const button = document.createElement('button'); button.type = 'button'; button.className = 'choice-button'; button.textContent = choice; button.addEventListener('click', () => { if (answered) return; answered = true; const right = choice === record.answer; const feedback = $('quizFeedback'); feedback.className = `feedback ${right ? 'good' : 'bad'}`; feedback.innerHTML = right ? `<strong>答對了。</strong>${answerExplanation(record)}` : `<strong>再想一次。</strong>正確答案是「${record.answer}」。${answerExplanation(record)}`; }); list.append(button); });
+        answered = false; $('quizFeedback').className = 'feedback'; $('quizFeedback').textContent = '提示：先找已知的邊，再檢查已知角是否真的夾在那兩邊中間。'; drawQuiz();
+      }
+      $('nextQuestion').addEventListener('click', () => { quizIndex = (quizIndex + 1) % quizRecords.length; renderQuiz(); }); $('resetQuiz').addEventListener('click', () => { quizIndex = 0; renderQuiz(); });
+
+      const scaleRange = $('scaleRange'); let centerMode = 'inside';
+      function drawSimilarity() {
+        const canvas = $('similarityCanvas'); const ctx = fit(canvas, 920, 500); ctx.clearRect(0, 0, 920, 500); const k = Number(scaleRange.value); const original = [point(355, 94), point(185, 365), point(500, 352)]; const O = centerMode === 'inside' ? point(350, 275) : point(108, 255); const image = original.map((p) => point(O.x + k * (p.x - O.x), O.y + k * (p.y - O.y)));
+        ctx.save(); ctx.fillStyle = '#fbfdff'; ctx.fillRect(0, 0, 920, 500); ctx.restore();
+        original.forEach((p, i) => line(ctx, O, image[i], '#a29ab5', 1.8, [6, 6])); drawTriangle(ctx, original, '#1769aa', 4, 'rgba(23,105,170,.07)'); drawTriangle(ctx, image, '#7b3dae', 4, 'rgba(123,61,174,.07)');
+        const offsetOriginal = [point(0, -18), point(-17, 19), point(16, 18)]; const offsetImage = [point(0, -18), point(-16, 18), point(17, 18)]; original.forEach((p, i) => drawVertex(ctx, p, ['A', 'B', 'C'][i], offsetOriginal[i], '#1769aa')); image.forEach((p, i) => drawVertex(ctx, p, ["A'", "B'", "C'"][i], offsetImage[i], '#7b3dae'));
+        ctx.save(); ctx.fillStyle = '#b86000'; ctx.beginPath(); ctx.arc(O.x, O.y, 6, 0, Math.PI * 2); ctx.fill(); ctx.restore(); text(ctx, 'O（縮放中心）', O.x, O.y - 22, 16, '#b86000');
+        text(ctx, centerMode === 'inside' ? 'O 在 △ABC 內部' : 'O 在 △ABC 外部', 744, 66, 18, '#526477'); text(ctx, `k = ${k.toFixed(2)}`, 744, 95, 19, '#7b3dae');
+        $('scaleOut').value = k.toFixed(2); const result = $('similarityResult');
+        if (Math.abs(k - 1) < 0.001) result.innerHTML = '<strong>k = 1：</strong>像與原圖完全重合；此時相似比為 1，所以也全等。';
+        else result.innerHTML = `<strong>k = ${k.toFixed(2)}：</strong>三個角仍相等，但每一邊都變成原來的 ${k.toFixed(2)} 倍，因此是相似、不是全等。`;
+      }
+      scaleRange.addEventListener('input', drawSimilarity);
+      $('insideCenter').addEventListener('click', () => { centerMode = 'inside'; $('insideCenter').className = 'active-choice'; $('outsideCenter').className = 'secondary'; drawSimilarity(); });
+      $('outsideCenter').addEventListener('click', () => { centerMode = 'outside'; $('outsideCenter').className = 'active-choice'; $('insideCenter').className = 'secondary'; drawSimilarity(); });
+
+      let resizeTimer = null;
+      window.addEventListener('resize', () => { window.clearTimeout(resizeTimer); resizeTimer = window.setTimeout(() => { drawCounterexamples(); drawCrane(); drawQuiz(); drawSimilarity(); }, 100); });
+      window.addEventListener('mathjax-ready', () => { if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise().catch(() => {}); });
+      drawCounterexamples(); drawCrane(); renderQuiz(); drawSimilarity();
+    })();
+  </script>
+</body>
+</html>
