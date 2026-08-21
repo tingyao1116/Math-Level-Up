@@ -25,13 +25,14 @@ window.MATH_PAGE_CHAPTER_CATALOG = {
   "circle-properties-angles.html": { "chapterCode": "j5-2", "order": 10 },
   "triangle-centers-learning.html": { "chapterCode": "j5-3", "order": 10 },
   "triangle-congruence-learning.html": { "chapterCode": "j4-3", "order": 30 },
+  "j6-2-solids-cone-net.html": { "chapterCode": "j6-2", "order": 10 },
   "j6-3-probability-learning.html": { "chapterCode": "j6-3", "order": 10 },
   "exponent-scientific-notation-learning.html": { "chapterCode": "s1-1", "order": 10 },
   "absolute-value-learning.html": { "chapterCode": "s1-1", "order": 20 },
   "line-from-points.html": { "chapterCode": "s1-2", "order": 10 },
   "triangle-centers-senior-learning.html": { "chapterCode": "s1-2+s3-3", "order": 20 },
   "function-graphs-basic.html": { "chapterCode": "s1-3", "order": 10 },
-  "polynomial-division-learning.html": { "chapterCode": "s1-3", "order": 20 },
+  "polynomial-division-learning.html": { "chapterCode": "j3-1", "order": 10 },
   "high-school-polynomials.html": { "chapterCode": "s1-3", "order": 30 },
   "quadratic-formula-completing-square.html": { "chapterCode": "j3-4", "order": 10 },
   "sequence-recursion-ap-gp-learning.html": { "chapterCode": "s2-1", "order": 10 },
@@ -56,6 +57,8 @@ window.MATH_PAGE_CHAPTER_CATALOG = {
   "matrix-rotation-reflection.html": { "chapterCode": "s4-4", "order": 20 },
   "maze-game.html": { "chapterCode": "other", "order": 10 },
   "memory-game.html": { "chapterCode": "other", "order": 20 },
-  "minesweeper-screenshot-solver.html": { "chapterCode": "other", "order": 30 },
-  "queen-solver.html": { "chapterCode": "other", "order": 40 }
+  "number-sums-game.html": { "chapterCode": "other", "order": 30 },
+  "not-not-game.html": { "chapterCode": "other", "order": 35 },
+  "minesweeper-screenshot-solver.html": { "chapterCode": "other", "order": 40 },
+  "queen-solver.html": { "chapterCode": "other", "order": 50 }
 };

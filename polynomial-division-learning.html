@@ -4,6 +4,7 @@
   <script src="./site-analytics.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="chapter-code" content="j3-1">
   <title>多項式除法與不等式：長除法、綜合除法與號誌表</title>
   <style>
     :root {
@@ -265,7 +266,7 @@
   <main class="wrap">
     <header class="hero">
       <div class="tag-row">
-        <span class="tag">高一・多項式除法</span>
+        <span class="tag">國二上・j3-1 多項式除法</span>
         <span class="tag orange">長除法：乘回後相減</span>
         <span class="tag teal">綜合除法：乘後相加</span>
       </div>
@@ -276,8 +277,7 @@
         <a href="#principle">除法原理三型</a>
         <a href="#scaling">四種倍數變化</a>
         <a href="#division-examples">商與餘式例題</a>
-        <a href="#theorem">餘式與因式定理</a>
-        <a href="#inequalities">二次與高次不等式</a>
+        <a href="#inequalities">高中延伸：不等式</a>
       </nav>
     </header>
 
@@ -410,7 +410,7 @@
 
     <section class="section" id="division-examples">
       <h2>4. 除法原理例題：不必每次都做長除法</h2>
-      <p class="section-lead">以下題目都從 <span class="formula">A=BQ+R</span> 出發。真正關鍵是：餘式一定要比除式次數低；遇到一次式時，可以直接代入它的根。</p>
+      <p class="section-lead">以下題目都從 <span class="formula">A=BQ+R</span> 出發。國二先抓住一件事：餘式一定要比除式次數低。</p>
 
       <div class="example-grid">
         <article class="card example-card">
@@ -437,9 +437,14 @@
           </ol>
           <div class="answer-box"><strong>答案：</strong>餘式是 <span class="formula">10x−12</span>。</div>
         </article>
+      </div>
 
+      <details class="practice">
+        <summary>高中延伸 s1-3：餘式定理把「除法」變成「代根」</summary>
+        <p>下列兩題會用到「除以 <span class="formula">x−c</span> 的餘式可由 <span class="formula">P(c)</span> 求得」的餘式定理；這是高中 <span class="formula">s1-3</span> 的內容。先完成本頁的除法原理，再到 <a href="./high-school-polynomials.html#theorem">高中多項式：餘式與因式定理</a> 學正式理由。</p>
+        <div class="example-grid">
         <article class="card example-card orange-top">
-          <span class="label orange">例題 3：一次式除法，用代根最快</span>
+          <span class="label orange">高中延伸例題 1：一次式除法，用代根最快</span>
           <h3>代入 x=1，把複合式直接變成數字</h3>
           <p>已知 <span class="formula">f(x)</span> 除以 <span class="formula">x−1</span> 的餘式為 2，<span class="formula">g(x)</span> 除以 <span class="formula">x<sup>2</sup>+x−2</span> 的餘式為 <span class="formula">3x−5</span>。求 <span class="formula">x<sup>2</sup>[f(x)+1][g(x)−2]</span> 除以 <span class="formula">x−1</span> 的餘式。</p>
           <ol class="solution-list">
@@ -451,7 +456,7 @@
         </article>
 
         <article class="card example-card purple-top">
-          <span class="label" style="background:#ede9fe;color:#5b21b6;">例題 4：ax−b 與 x−b/a</span>
+          <span class="label" style="background:#ede9fe;color:#5b21b6;">高中延伸例題 2：ax−b 與 x−b/a</span>
           <h3>先把同一個根寫出來</h3>
           <p>已知 <span class="formula">f(x)</span> 除以 <span class="formula">3x−2</span> 的餘式為 r。求 <span class="formula">(2x+3)f(x)</span> 除以 <span class="formula">x−2/3</span> 的餘式。</p>
           <ol class="solution-list">
@@ -461,38 +466,20 @@
           </ol>
           <div class="answer-box"><strong>答案：</strong>餘式是 <span class="formula">13r/3</span>。</div>
         </article>
-      </div>
+        </div>
+      </details>
 
       <details class="practice">
         <summary>自我檢查：商與餘式的變化</summary>
         <p>已知 <span class="formula">f(x)</span> 除以 <span class="formula">2x+1</span> 的商為 <span class="formula">Q(x)</span>、餘式為 r。</p>
         <p>1. <span class="formula">f(x)</span> 除以 <span class="formula">x+1/2</span> 的商、餘式各是什麼？<br>2. <span class="formula">xf(x)</span> 除以 <span class="formula">2x+1</span> 的餘式是什麼？</p>
-        <p><strong>答案：</strong>1. 因 <span class="formula">2x+1=2(x+1/2)</span>，商為 <span class="formula">2Q(x)</span>，餘式為 r。<br>2. 代根 <span class="formula">x=−1/2</span>，餘式為 <span class="formula">−r/2</span>。</p>
+        <p><strong>答案：</strong>1. 因 <span class="formula">2x+1=2(x+1/2)</span>，商為 <span class="formula">2Q(x)</span>，餘式為 r。<br>2. 將 <span class="formula">xf(x)=x(2x+1)Q(x)+xr=(2x+1)(xQ(x)+r/2)−r/2</span>，所以餘式為 <span class="formula">−r/2</span>。</p>
       </details>
     </section>
 
-    <section class="section" id="theorem">
-      <h2>5. 最後收束：餘式定理與因式定理</h2>
-      <div class="grid two">
-        <article class="card theorem">
-          <span class="label">餘式定理</span>
-          <p>若 <span class="formula">P(x)</span> 除以 <span class="formula">x−c</span> 的餘式是 R，則</p>
-          <div class="equation formula">P(x)=(x−c)Q(x)+R</div>
-          <p>令 <span class="formula">x=c</span>，第一項變 0，所以 <strong class="formula">P(c)=R</strong>。</p>
-        </article>
-        <article class="card theorem">
-          <span class="label">因式定理</span>
-          <p>餘式為 0 就是整除，因此</p>
-          <div class="equation formula">P(c)=0 ⇔ (x−c) 是 P(x) 的因式</div>
-          <p class="small">注意：因式是 <span class="formula">x+3</span> 時，要代入的是 <span class="formula">c=−3</span>。</p>
-        </article>
-      </div>
-      <div class="callout" style="margin-top:14px;"><strong>回到本頁例題：</strong><span class="formula">P(x)=2x<sup>3</sup>−3x<sup>2</sup>−11x+6</span>，除以 <span class="formula">x−3</span> 的餘式是 0，所以 <span class="formula">P(3)=0</span>，因此 <span class="formula">x−3</span> 是 <span class="formula">P(x)</span> 的因式。</div>
-    </section>
-
     <section class="section" id="inequalities">
-      <h2>6. 不等式：先用二次函數定規則，再推進到高次</h2>
-      <p class="section-lead">解不等式不是只找根，而是判斷每個區間的正負。二次式可以用判別式快速分類；高次式則把根排在數線上，做號誌表。</p>
+      <h2>5. 高中延伸：二次與高次不等式</h2>
+      <p class="section-lead">這一節不列入國二上核心；保留給想先預習的學生。解不等式不是只找根，而是判斷每個區間的正負：二次式可用判別式分類，高次式則把根排在數線上做號誌表。</p>
 
       <div class="inequality-intro">
         <article class="card">

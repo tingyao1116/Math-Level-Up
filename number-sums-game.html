@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="chapter-code" content="other">
+  <title>Number Sums 數字加總挑戰</title>
+  <style>
+    :root {
+      --ink: #172554;
+      --sub: #475569;
+      --line: #d8e1ee;
+      --paper: #ffffff;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #15803d;
+      --warning: #c2410c;
+      --danger: #be123c;
+      --soft-blue: #eff6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 22px;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(145deg, #e0f2fe 0%, #f8fafc 48%, #fef3c7 100%);
+    }
+    .app {
+      width: min(1040px, 100%);
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid #cbd9ec;
+      border-radius: 24px;
+      background: var(--paper);
+      box-shadow: 0 18px 46px rgba(30, 64, 175, .13);
+    }
+    .hero {
+      padding: 26px clamp(18px, 4vw, 34px) 22px;
+      color: #fff;
+      background: linear-gradient(125deg, #1d4ed8, #0f766e);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0 0 9px;
+      padding: 5px 10px;
+      border: 1px solid rgba(255,255,255,.38);
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    h1 { margin: 0 0 9px; font-size: clamp(29px, 5vw, 42px); letter-spacing: .01em; }
+    .lead { max-width: 760px; margin: 0; line-height: 1.8; font-size: 17px; }
+    .content { padding: clamp(16px, 3vw, 30px); }
+    .control-card, .how-to, .teacher-note {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+    }
+    .control-card { padding: 16px; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: 12px 18px;
+    }
+    .control-group { display: grid; gap: 6px; }
+    .control-label { color: var(--sub); font-size: 14px; font-weight: 800; }
+    select, button { font: inherit; }
+    select {
+      min-height: 42px;
+      border: 1px solid #b8c7dc;
+      border-radius: 10px;
+      padding: 7px 34px 7px 11px;
+      color: var(--ink);
+      background: #fff;
+      font-weight: 700;
+    }
+    .mode-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+    .mode-button, .secondary-button, .primary-button {
+      min-height: 42px;
+      border: 1px solid #adc1df;
+      border-radius: 10px;
+      padding: 8px 13px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+    }
+    .mode-button { color: #334155; background: #f8fafc; }
+    .mode-button[aria-pressed="true"] { border-color: var(--primary); color: #fff; background: var(--primary); box-shadow: 0 4px 11px rgba(37,99,235,.22); }
+    .primary-button { border-color: var(--primary); color: #fff; background: var(--primary); }
+    .secondary-button { color: #1e3a8a; background: #eff6ff; }
+    button:hover { transform: translateY(-1px); }
+    .primary-button:hover { background: var(--primary-dark); }
+    .game-status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .status-chip {
+      min-width: 0;
+      border: 1px solid #d7e2f0;
+      border-radius: 13px;
+      padding: 10px 12px;
+      background: #f8fbff;
+    }
+    .status-chip span { display: block; color: var(--sub); font-size: 13px; font-weight: 700; }
+    .status-chip strong { display: block; margin-top: 2px; font-size: 18px; }
+    .message {
+      min-height: 1.65em;
+      margin: 0 0 16px;
+      padding: 10px 12px;
+      border: 1px solid #d8e6f7;
+      border-radius: 12px;
+      color: #334155;
+      background: #f8fbff;
+      line-height: 1.65;
+      font-weight: 700;
+    }
+    .message.success { border-color: #86efac; color: #166534; background: #f0fdf4; }
+    .message.warning { border-color: #fdba74; color: #9a3412; background: #fff7ed; }
+    .board-card {
+      overflow: auto;
+      border: 1px solid #c9d9ec;
+      border-radius: 18px;
+      padding: clamp(10px, 2vw, 18px);
+      background: linear-gradient(180deg, #fafdff, #f4f8ff);
+    }
+    .puzzle-layout {
+      --size: 4;
+      display: grid;
+      grid-template-columns: 70px minmax(260px, 1fr);
+      grid-template-rows: 65px minmax(260px, 1fr);
+      gap: 7px;
+      width: min(780px, 100%);
+      min-width: 360px;
+      margin: 0 auto;
+    }
+    .corner-label {
+      display: grid;
+      place-items: center;
+      border: 1px dashed #b9cbe2;
+      border-radius: 11px;
+      color: #52667f;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+    }
+    .column-targets, .row-targets, .number-board {
+      display: grid;
+      gap: 3px;
+    }
+    .column-targets, .number-board { grid-template-columns: repeat(var(--size), minmax(0, 1fr)); }
+    .row-targets { grid-template-rows: repeat(var(--size), minmax(0, 1fr)); }
+    .target {
+      display: grid;
+      place-content: center;
+      min-width: 0;
+      border: 1px solid #cdd9e8;
+      border-radius: 9px;
+      padding: 3px;
+      color: #1e3a8a;
+      background: #eef4ff;
+      line-height: 1.05;
+      text-align: center;
+    }
+    .target small { display: block; overflow: hidden; color: #52667f; font-size: 10px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .target b { display: block; margin: 2px 0 1px; font-size: clamp(16px, 3.2vw, 25px); }
+    .target .now { display: block; color: #52667f; font-size: 10px; font-weight: 800; }
+    .target.matched { border-color: #86efac; color: #166534; background: #f0fdf4; }
+    .target.over { border-color: #fecaca; color: #b91c1c; background: #fff1f2; }
+    .number-board {
+      overflow: hidden;
+      border: 3px solid #1e3a8a;
+      border-radius: 12px;
+      background: #b7c8df;
+      box-shadow: 0 4px 0 rgba(30,58,138,.12);
+    }
+    .number-cell {
+      position: relative;
+      display: grid;
+      min-width: 0;
+      aspect-ratio: 1;
+      place-items: center;
+      overflow: hidden;
+      border: 0;
+      color: #173554;
+      background: #fff;
+      cursor: pointer;
+      font-size: clamp(18px, 4.7vw, 34px);
+      font-weight: 900;
+      isolation: isolate;
+    }
+    .number-cell:hover { z-index: 2; background: #f0f7ff; }
+    .number-cell:focus-visible { z-index: 4; outline: 3px solid #f59e0b; outline-offset: -3px; }
+    .number-cell::before {
+      position: absolute;
+      z-index: -1;
+      width: 66%;
+      height: 66%;
+      border: 0 solid currentColor;
+      border-radius: 50%;
+      content: "";
+      transition: border-width .12s ease, transform .12s ease;
+    }
+    .number-cell.selected { color: #0f3f80; }
+    .number-cell.selected::before { border-width: 4px; transform: scale(1.05); }
+    .number-cell.selected::after {
+      position: absolute;
+      right: 6px;
+      bottom: 3px;
+      color: #166534;
+      content: "✓";
+      font-size: clamp(11px, 2.4vw, 17px);
+      font-weight: 900;
+    }
+    .number-cell.color-cell { color: #203a56; background: var(--region-bg); }
+    .number-cell.color-cell:hover { filter: brightness(.97); }
+    .number-cell.color-cell.selected { color: #19324d; }
+    .number-cell.color-cell.selected::before { border-color: var(--region-ink); }
+    .number-cell.plain-cell.selected::before { border-color: #2563eb; }
+    .region-label {
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      z-index: 1;
+      max-width: calc(100% - 4px);
+      overflow: hidden;
+      color: var(--region-ink);
+      font-size: clamp(8px, 1.7vw, 12px);
+      font-weight: 900;
+      line-height: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 16px;
+      margin: 13px auto 0;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .legend-mark {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      margin: 0 5px -4px 0;
+      border: 3px solid #2563eb;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .legend-color {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      margin: 0 5px -4px 0;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #fbb6ce, #bae6fd, #bbf7d0, #fef08a);
+    }
+    .game-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 16px; }
+    .how-to { margin-top: 18px; padding: 0 16px; }
+    .how-to summary { padding: 14px 0; cursor: pointer; font-weight: 900; }
+    .how-to-content { padding: 0 0 15px; color: #334155; line-height: 1.75; }
+    .how-to-content ol { margin: 7px 0; padding-left: 1.4em; }
+    .how-to-content p { margin: 9px 0 0; }
+    .mistake { border-left: 4px solid #f59e0b; padding-left: 10px; color: #7c2d12; font-weight: 700; }
+    .teacher-note { margin-top: 14px; padding: 13px 15px; color: #334155; line-height: 1.75; }
+    .teacher-note strong { color: #0f3f80; }
+    .back { display: inline-block; margin-top: 18px; color: #1d4ed8; font-weight: 900; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    @media (max-width: 620px) {
+      body { padding: 10px; }
+      .app { border-radius: 17px; }
+      .hero { padding: 21px 17px 18px; }
+      .lead { font-size: 15px; }
+      .content { padding: 13px; }
+      .controls { align-items: stretch; }
+      .control-group { width: 100%; }
+      .mode-switch { display: grid; grid-template-columns: 1fr 1fr; }
+      .mode-button { padding-inline: 8px; font-size: 14px; }
+      .game-status { gap: 6px; }
+      .status-chip { padding: 8px; }
+      .status-chip strong { font-size: 15px; }
+      .board-card { padding: 9px; }
+      .puzzle-layout { grid-template-columns: 57px minmax(245px, 1fr); grid-template-rows: 52px minmax(245px, 1fr); gap: 4px; min-width: 306px; }
+      .target b { font-size: 17px; }
+      .target small, .target .now { font-size: 8px; }
+      .number-board { border-width: 2px; border-radius: 9px; }
+      .number-cell.selected::before { border-width: 3px; }
+      .how-to { padding: 0 13px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <p class="eyebrow">數感暖身・邏輯推理</p>
+      <h1>Number Sums 數字加總挑戰</h1>
+      <p class="lead">點選你要保留的數字，讓每一列、每一欄的加總剛好等於外側目標。彩色模式會額外給出同色連通區塊的目標和：多一條線索，也多一層交叉檢查。</p>
+    </header>
+
+    <div class="content">
+      <section class="control-card" aria-label="遊戲設定">
+        <div class="controls">
+          <div class="control-group">
+            <label class="control-label" for="sizeSelect">棋盤大小（由小到大）</label>
+            <select id="sizeSelect">
+              <option value="4">基礎：4 × 4</option>
+              <option value="5">練習：5 × 5</option>
+              <option value="6">進階：6 × 6</option>
+              <option value="7">挑戰：7 × 7</option>
+              <option value="8">高手：8 × 8</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <span class="control-label">提示模式</span>
+            <div class="mode-switch" role="group" aria-label="選擇提示模式">
+              <button class="mode-button" id="plainMode" type="button" aria-pressed="true">無色：列＋欄</button>
+              <button class="mode-button" id="colorMode" type="button" aria-pressed="false">有色：列＋欄＋區塊</button>
+            </div>
+          </div>
+          <button class="primary-button" id="newGameButton" type="button">換一題</button>
+        </div>
+      </section>
+
+      <section class="game-status" aria-label="遊戲進度">
+        <div class="status-chip"><span>目前難度</span><strong id="difficultyStatus">4 × 4</strong></div>
+        <div class="status-chip"><span>已完成條件</span><strong id="progressStatus">0 / 8</strong></div>
+        <div class="status-chip"><span>計時</span><strong id="timerStatus">00:00</strong></div>
+      </section>
+      <p class="message" id="message" role="status" aria-live="polite">先從一個目標較小、可快速湊出的列或欄開始；每次點選後都觀察加總變化。</p>
+
+      <section class="board-card" aria-label="Number Sums 棋盤">
+        <div class="puzzle-layout" id="puzzleLayout">
+          <div class="corner-label">列目標<br>欄目標</div>
+          <div class="column-targets" id="columnTargets" aria-label="欄目標"></div>
+          <div class="row-targets" id="rowTargets" aria-label="列目標"></div>
+          <div class="number-board" id="numberBoard" aria-label="數字棋盤"></div>
+        </div>
+        <div class="legend" id="legend">
+          <span><i class="legend-mark"></i>藍色圈：已選取、要納入加總</span>
+        </div>
+        <div class="game-actions">
+          <button class="secondary-button" id="checkButton" type="button">檢查目前加總</button>
+          <button class="secondary-button" id="hintButton" type="button">提示：先看哪個條件？</button>
+          <button class="secondary-button" id="clearButton" type="button">清除本次選取</button>
+        </div>
+      </section>
+
+      <details class="how-to" open>
+        <summary>怎麼玩？先懂規則，再開始選</summary>
+        <div class="how-to-content">
+          <ol>
+            <li>外側的大數字是<strong>目標和</strong>；不是要把整列或整欄所有數字都加起來。</li>
+            <li>點一下格子把它圈起來，表示「這個數字要算進去」；再點一次可取消。</li>
+            <li>每列與每欄的「已選和」都要剛好等於目標。紅色表示超過，綠色表示已剛好達標。</li>
+            <li>選<strong>有色：列＋欄＋區塊</strong>時，每一個同色連通區也有自己的目標和，格子左上角的 <strong>Σ</strong> 會標在該區塊的起點。</li>
+          </ol>
+          <p class="mistake">常見錯誤：只湊好某一列，就忘了同一格也同時影響它所在的欄（以及彩色模式中的區塊）。每選一個數，至少回頭看兩個方向。</p>
+        </div>
+      </details>
+
+      <aside class="teacher-note">
+        <strong>教學使用建議：</strong>先用 4 × 4 的彩色模式，請學生說出「這一格同時屬於哪一列、哪一欄、哪一色塊」；熟悉交叉條件後，再切到無色模式，讓學生練習只靠列欄加總做逆推。可由基礎、進階到挑戰逐步加大棋盤。
+      </aside>
+      <a class="back" href="./index.html#other">← 回到數學小遊戲首頁</a>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const sizeSelect = document.querySelector('#sizeSelect');
+      const plainModeButton = document.querySelector('#plainMode');
+      const colorModeButton = document.querySelector('#colorMode');
+      const newGameButton = document.querySelector('#newGameButton');
+      const clearButton = document.querySelector('#clearButton');
+      const checkButton = document.querySelector('#checkButton');
+      const hintButton = document.querySelector('#hintButton');
+      const puzzleLayout = document.querySelector('#puzzleLayout');
+      const rowTargets = document.querySelector('#rowTargets');
+      const columnTargets = document.querySelector('#columnTargets');
+      const numberBoard = document.querySelector('#numberBoard');
+      const legend = document.querySelector('#legend');
+      const difficultyStatus = document.querySelector('#difficultyStatus');
+      const progressStatus = document.querySelector('#progressStatus');
+      const timerStatus = document.querySelector('#timerStatus');
+      const message = document.querySelector('#message');
+
+      const regionColors = [
+        { bg: '#fecdd3', ink: '#9f1239' },
+        { bg: '#fbcfe8', ink: '#9d174d' },
+        { bg: '#bfdbfe', ink: '#1d4ed8' },
+        { bg: '#bbf7d0', ink: '#166534' },
+        { bg: '#fde68a', ink: '#92400e' },
+        { bg: '#ddd6fe', ink: '#5b21b6' },
+        { bg: '#bae6fd', ink: '#0c4a6e' },
+        { bg: '#fed7aa', ink: '#9a3412' },
+        { bg: '#ccfbf1', ink: '#115e59' },
+        { bg: '#e9d5ff', ink: '#6b21a8' },
+        { bg: '#d9f99d', ink: '#3f6212' },
+        { bg: '#c7d2fe', ink: '#3730a3' }
+      ];
+
+      const state = {
+        size: 4,
+        colorMode: false,
+        values: [],
+        selected: [],
+        regions: [],
+        solution: [],
+        rowTargets: [],
+        columnTargets: [],
+        regionTargets: [],
+        startedAt: null,
+        elapsedMs: 0,
+        completed: false,
+        timerId: null
+      };
+
+      function shuffle(list) {
+        const copy = [...list];
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function emptyGrid(size, value = false) {
+        return Array.from({ length: size }, () => Array(size).fill(value));
+      }
+
+      function cellKey(row, col) {
+        return `${row}-${col}`;
+      }
+
+      function neighbours(row, col, size) {
+        return [[row - 1, col], [row + 1, col], [row, col - 1], [row, col + 1]]
+          .filter(([r, c]) => r >= 0 && r < size && c >= 0 && c < size);
+      }
+
+      function makeRegions(size) {
+        const regionCount = Math.min(size * size, Math.max(4, Math.round(size * 1.45)));
+        const regions = emptyGrid(size, -1);
+        const cells = shuffle(Array.from({ length: size * size }, (_, index) => index));
+        for (let id = 0; id < regionCount; id += 1) {
+          const cell = cells[id];
+          regions[Math.floor(cell / size)][cell % size] = id;
+        }
+
+        let open = size * size - regionCount;
+        while (open > 0) {
+          let expanded = false;
+          shuffle(Array.from({ length: regionCount }, (_, id) => id)).forEach((id) => {
+            const frontier = [];
+            for (let row = 0; row < size; row += 1) {
+              for (let col = 0; col < size; col += 1) {
+                if (regions[row][col] !== id) continue;
+                neighbours(row, col, size).forEach(([nextRow, nextCol]) => {
+                  if (regions[nextRow][nextCol] === -1) frontier.push([nextRow, nextCol]);
+                });
+              }
+            }
+            if (!frontier.length) return;
+            const [row, col] = frontier[Math.floor(Math.random() * frontier.length)];
+            regions[row][col] = id;
+            open -= 1;
+            expanded = true;
+          });
+          if (!expanded) break;
+        }
+        return regions;
+      }
+
+      function ensureAtLeastOnePerLine(solution, size) {
+        for (let row = 0; row < size; row += 1) {
+          if (!solution[row].some(Boolean)) solution[row][Math.floor(Math.random() * size)] = true;
+        }
+        for (let col = 0; col < size; col += 1) {
+          if (!solution.some((row) => row[col])) solution[Math.floor(Math.random() * size)][col] = true;
+        }
+      }
+
+      function ensureAtLeastOnePerRegion(solution, regions, size) {
+        const count = Math.max(...regions.flat()) + 1;
+        for (let id = 0; id < count; id += 1) {
+          const hasSelected = solution.some((row, rowIndex) => row.some((selected, colIndex) => selected && regions[rowIndex][colIndex] === id));
+          if (hasSelected) continue;
+          const candidates = [];
+          for (let row = 0; row < size; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+              if (regions[row][col] === id) candidates.push([row, col]);
+            }
+          }
+          const [row, col] = candidates[Math.floor(Math.random() * candidates.length)];
+          solution[row][col] = true;
+        }
+      }
+
+      function sumForRow(row, mask = state.selected) {
+        return state.values[row].reduce((sum, value, col) => sum + (mask[row][col] ? value : 0), 0);
+      }
+
+      function sumForColumn(col, mask = state.selected) {
+        return state.values.reduce((sum, row, rowIndex) => sum + (mask[rowIndex][col] ? row[col] : 0), 0);
+      }
+
+      function sumForRegion(id, mask = state.selected) {
+        let sum = 0;
+        for (let row = 0; row < state.size; row += 1) {
+          for (let col = 0; col < state.size; col += 1) {
+            if (state.regions[row][col] === id && mask[row][col]) sum += state.values[row][col];
+          }
+        }
+        return sum;
+      }
+
+      function buildPuzzle() {
+        stopTimer();
+        state.size = Number(sizeSelect.value);
+        state.values = Array.from({ length: state.size }, () => Array.from({ length: state.size }, () => Math.floor(Math.random() * 9) + 1));
+        state.regions = makeRegions(state.size);
+        state.solution = Array.from({ length: state.size }, () => Array.from({ length: state.size }, () => Math.random() < (state.size <= 5 ? .45 : .39)));
+        ensureAtLeastOnePerLine(state.solution, state.size);
+        ensureAtLeastOnePerRegion(state.solution, state.regions, state.size);
+        ensureAtLeastOnePerLine(state.solution, state.size);
+        state.selected = emptyGrid(state.size);
+        state.rowTargets = Array.from({ length: state.size }, (_, row) => sumForRow(row, state.solution));
+        state.columnTargets = Array.from({ length: state.size }, (_, col) => sumForColumn(col, state.solution));
+        const regionCount = Math.max(...state.regions.flat()) + 1;
+        state.regionTargets = Array.from({ length: regionCount }, (_, id) => sumForRegion(id, state.solution));
+        state.startedAt = null;
+        state.elapsedMs = 0;
+        state.completed = false;
+        setMessage('新題目準備好了。先找目標較小、容易湊出的列或欄，再利用交叉條件排除選項。');
+        render();
+      }
+
+      function targetClass(now, target) {
+        if (now === target) return 'matched';
+        if (now > target) return 'over';
+        return '';
+      }
+
+      function createTarget(label, now, target) {
+        const targetBox = document.createElement('div');
+        targetBox.className = `target ${targetClass(now, target)}`;
+        targetBox.setAttribute('aria-label', `${label}：已選 ${now}，目標 ${target}`);
+        targetBox.innerHTML = `<small>${label}</small><b>${target}</b><span class="now">${now} / ${target}</span>`;
+        return targetBox;
+      }
+
+      function firstRegionCell(regionId) {
+        for (let row = 0; row < state.size; row += 1) {
+          for (let col = 0; col < state.size; col += 1) {
+            if (state.regions[row][col] === regionId) return cellKey(row, col);
+          }
+        }
+        return '';
+      }
+
+      function render() {
+        puzzleLayout.style.setProperty('--size', state.size);
+        rowTargets.replaceChildren();
+        columnTargets.replaceChildren();
+        numberBoard.replaceChildren();
+
+        for (let col = 0; col < state.size; col += 1) {
+          columnTargets.append(createTarget(`欄 ${col + 1}`, sumForColumn(col), state.columnTargets[col]));
+        }
+        for (let row = 0; row < state.size; row += 1) {
+          rowTargets.append(createTarget(`列 ${row + 1}`, sumForRow(row), state.rowTargets[row]));
+        }
+
+        for (let row = 0; row < state.size; row += 1) {
+          for (let col = 0; col < state.size; col += 1) {
+            const regionId = state.regions[row][col];
+            const cell = document.createElement('button');
+            cell.type = 'button';
+            cell.className = `number-cell ${state.colorMode ? 'color-cell' : 'plain-cell'}${state.selected[row][col] ? ' selected' : ''}`;
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+            cell.setAttribute('aria-pressed', String(state.selected[row][col]));
+            cell.setAttribute('aria-label', `第 ${row + 1} 列第 ${col + 1} 欄，數字 ${state.values[row][col]}，${state.selected[row][col] ? '已選取' : '未選取'}`);
+            if (state.colorMode) {
+              const color = regionColors[regionId % regionColors.length];
+              cell.style.setProperty('--region-bg', color.bg);
+              cell.style.setProperty('--region-ink', color.ink);
+              if (firstRegionCell(regionId) === cellKey(row, col)) {
+                const label = document.createElement('span');
+                label.className = 'region-label';
+                label.textContent = `Σ ${state.regionTargets[regionId]}`;
+                cell.append(label);
+              }
+            }
+            const value = document.createElement('span');
+            value.textContent = state.values[row][col];
+            cell.append(value);
+            cell.addEventListener('click', () => toggleCell(row, col));
+            numberBoard.append(cell);
+          }
+        }
+
+        legend.innerHTML = state.colorMode
+          ? '<span><i class="legend-mark"></i>藍色圈：已選取、要納入加總</span><span><i class="legend-color"></i>同色區塊：也要滿足左上角 Σ 目標</span>'
+          : '<span><i class="legend-mark"></i>藍色圈：已選取、要納入加總</span>';
+        updateStatus();
+      }
+
+      function completedCounts() {
+        const rows = state.rowTargets.filter((target, row) => sumForRow(row) === target).length;
+        const columns = state.columnTargets.filter((target, col) => sumForColumn(col) === target).length;
+        const regions = state.colorMode ? state.regionTargets.filter((target, id) => sumForRegion(id) === target).length : 0;
+        return { rows, columns, regions, total: state.size * 2 + (state.colorMode ? state.regionTargets.length : 0) };
+      }
+
+      function updateStatus() {
+        const counts = completedCounts();
+        difficultyStatus.textContent = `${state.size} × ${state.size}${state.colorMode ? '・彩色' : '・無色'}`;
+        progressStatus.textContent = `${counts.rows + counts.columns + counts.regions} / ${counts.total}`;
+        timerStatus.textContent = formatTime(state.elapsedMs);
+      }
+
+      function toggleCell(row, col) {
+        if (state.completed) return;
+        if (!state.startedAt) {
+          state.startedAt = Date.now() - state.elapsedMs;
+          startTimer();
+        }
+        state.selected[row][col] = !state.selected[row][col];
+        render();
+        if (isSolved()) {
+          state.completed = true;
+          stopTimer();
+          render();
+          setMessage(`全部條件都剛好達標！完成 ${state.size} × ${state.size} ${state.colorMode ? '彩色區塊' : '列欄'}挑戰，用時 ${formatTime(state.elapsedMs)}。`, 'success');
+        }
+      }
+
+      function isSolved() {
+        const rowsDone = state.rowTargets.every((target, row) => sumForRow(row) === target);
+        const columnsDone = state.columnTargets.every((target, col) => sumForColumn(col) === target);
+        const regionsDone = !state.colorMode || state.regionTargets.every((target, id) => sumForRegion(id) === target);
+        return rowsDone && columnsDone && regionsDone;
+      }
+
+      function setMessage(text, kind = '') {
+        message.textContent = text;
+        message.className = `message${kind ? ` ${kind}` : ''}`;
+      }
+
+      function formatTime(milliseconds) {
+        const seconds = Math.floor(milliseconds / 1000);
+        return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+      }
+
+      function startTimer() {
+        stopTimer();
+        state.timerId = window.setInterval(() => {
+          state.elapsedMs = Date.now() - state.startedAt;
+          timerStatus.textContent = formatTime(state.elapsedMs);
+        }, 250);
+      }
+
+      function stopTimer() {
+        if (state.timerId) window.clearInterval(state.timerId);
+        state.timerId = null;
+      }
+
+      function clearSelections() {
+        if (state.completed) return;
+        state.selected = emptyGrid(state.size);
+        state.startedAt = null;
+        state.elapsedMs = 0;
+        stopTimer();
+        render();
+        setMessage('已清除所有圈選。目標不變，可以換一條思路重新推。');
+      }
+
+      function checkCurrent() {
+        if (isSolved()) {
+          setMessage(`全部條件都剛好達標！完成時間 ${formatTime(state.elapsedMs)}。`, 'success');
+          return;
+        }
+        const counts = completedCounts();
+        const overRows = state.rowTargets.filter((target, row) => sumForRow(row) > target).length;
+        const overColumns = state.columnTargets.filter((target, col) => sumForColumn(col) > target).length;
+        const overRegions = state.colorMode ? state.regionTargets.filter((target, id) => sumForRegion(id) > target).length : 0;
+        const overCount = overRows + overColumns + overRegions;
+        const prefix = overCount ? `目前有 ${overCount} 個條件超過目標，先取消會讓它超過的格子。` : '還沒有超標，方向正確。';
+        setMessage(`${prefix} 已完成 ${counts.rows + counts.columns + counts.regions} / ${counts.total} 個條件。`, overCount ? 'warning' : '');
+      }
+
+      function giveHint() {
+        const options = [];
+        state.rowTargets.forEach((target, row) => {
+          const now = sumForRow(row);
+          if (now !== target) options.push({ label: `第 ${row + 1} 列`, now, target });
+        });
+        state.columnTargets.forEach((target, col) => {
+          const now = sumForColumn(col);
+          if (now !== target) options.push({ label: `第 ${col + 1} 欄`, now, target });
+        });
+        if (state.colorMode) {
+          state.regionTargets.forEach((target, id) => {
+            const now = sumForRegion(id);
+            if (now !== target) options.push({ label: `色塊 Σ ${target}`, now, target });
+          });
+        }
+        if (!options.length) {
+          setMessage('每個條件都已達標，恭喜完成！', 'success');
+          return;
+        }
+        options.sort((a, b) => Math.abs(a.target - a.now) - Math.abs(b.target - b.now));
+        const clue = options[0];
+        const difference = clue.target - clue.now;
+        setMessage(`建議先看「${clue.label}」：目前已選和是 ${clue.now}，目標是 ${clue.target}，${difference > 0 ? `還差 ${difference}` : `超過 ${Math.abs(difference)}`}。提示不會直接圈出答案。`, difference < 0 ? 'warning' : '');
+      }
+
+      function setMode(colorMode) {
+        state.colorMode = colorMode;
+        plainModeButton.setAttribute('aria-pressed', String(!colorMode));
+        colorModeButton.setAttribute('aria-pressed', String(colorMode));
+        buildPuzzle();
+      }
+
+      sizeSelect.addEventListener('change', buildPuzzle);
+      plainModeButton.addEventListener('click', () => setMode(false));
+      colorModeButton.addEventListener('click', () => setMode(true));
+      newGameButton.addEventListener('click', buildPuzzle);
+      clearButton.addEventListener('click', clearSelections);
+      checkButton.addEventListener('click', checkCurrent);
+      hintButton.addEventListener('click', giveHint);
+      buildPuzzle();
+    })();
+  </script>
+</body>
+</html>

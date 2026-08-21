@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="chapter-code" content="j6-2">
+  <title>j6-2 角柱、角錐與圓錐展開圖｜國三數學</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #172554;
+      --sub: #52627c;
+      --paper: #fff;
+      --page: #f5f8ff;
+      --line: #d7e2f1;
+      --blue: #2563eb;
+      --blue-bg: #eff6ff;
+      --teal: #0f766e;
+      --teal-bg: #ecfdf5;
+      --amber: #b45309;
+      --amber-bg: #fffbeb;
+      --rose: #be123c;
+      --rose-bg: #fff1f2;
+      --violet: #6d28d9;
+      --violet-bg: #f5f3ff;
+      --shadow: 0 16px 38px rgba(30, 64, 175, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 4% 0%, #dff7ff 0, transparent 30rem),
+        radial-gradient(circle at 100% 12%, #e6fff2 0, transparent 25rem),
+        var(--page);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 26px 18px 56px; }
+    .hero, .panel, .card, .quiz-card, details { background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .hero { position: relative; overflow: hidden; border-radius: 24px; padding: clamp(25px, 4.8vw, 46px); }
+    .hero::after {
+      content: "△  ◇  ◯";
+      position: absolute; right: -18px; bottom: -33px; color: #dbeafe;
+      font: 800 clamp(62px, 12vw, 150px)/1 Georgia, serif; letter-spacing: -10px; transform: rotate(-7deg);
+      pointer-events: none;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    h1, h2, h3 { margin: 0 0 8px; color: #10234a; line-height: 1.35; }
+    h1 { max-width: 880px; font-size: clamp(31px, 5.2vw, 50px); }
+    h2 { font-size: clamp(25px, 3.5vw, 33px); }
+    h3 { font-size: 20px; }
+    p { margin: 0 0 10px; }
+    .lead { max-width: 840px; color: var(--sub); font-size: 17px; }
+    .eyebrows, .nav, .tag-row, .legend, .formula-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .eyebrows { margin-bottom: 13px; }
+    .eyebrow, .tag, .level, .mini-label {
+      display: inline-block; padding: 3px 10px; border: 1px solid #bfdbfe; border-radius: 999px;
+      color: #1d4ed8; background: var(--blue-bg); font-size: 13px; font-weight: 800;
+    }
+    .eyebrow.teal, .tag.teal { color: #0f766e; background: var(--teal-bg); border-color: #99f6e4; }
+    .tag.amber, .mini-label.amber { color: #a16207; background: var(--amber-bg); border-color: #fde68a; }
+    .tag.violet { color: #6d28d9; background: var(--violet-bg); border-color: #ddd6fe; }
+    .nav { margin-top: 21px; }
+    .nav a, .back {
+      display: inline-block; color: #1d4ed8; background: #f8fbff; border: 1px solid #cbdaf0;
+      border-radius: 10px; padding: 7px 11px; text-decoration: none; font-size: 14px; font-weight: 800;
+    }
+    .nav a:hover, .back:hover { background: #e8f0ff; }
+    .section { margin-top: 31px; }
+    .section-intro { max-width: 920px; color: var(--sub); }
+    .panel, .card, .quiz-card, details { min-width: 0; border-radius: 18px; padding: 19px; }
+    .panel { margin-top: 14px; }
+    .grid { display: grid; gap: 14px; min-width: 0; }
+    .grid > *, .diagram-grid > *, .quiz-grid > * { min-width: 0; }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .diagram-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+    .diagram-card { padding: 15px; border: 1px solid #cbdaf0; border-radius: 15px; background: linear-gradient(145deg, #fbfdff, #f2fbff); }
+    .diagram-card svg, .net-frame svg, .memory-figure svg { display: block; width: 100%; height: auto; }
+    .diagram-card svg { max-height: 250px; }
+    .formula-box {
+      margin: 12px 0; padding: 12px 15px; overflow-x: auto; overflow-y: hidden; border: 1px solid #bfdbfe;
+      border-radius: 12px; background: #f8fbff; text-align: center; font-size: 19px;
+    }
+    .formula-box.left { text-align: left; }
+    .callout { margin-top: 14px; padding: 12px 14px; border: 1px solid #bfdbfe; border-left: 5px solid var(--blue); border-radius: 12px; background: var(--blue-bg); }
+    .callout.good { color: #115e59; background: var(--teal-bg); border-color: #99f6e4; border-left-color: var(--teal); }
+    .callout.warn { color: #881337; background: var(--rose-bg); border-color: #fecdd3; border-left-color: var(--rose); }
+    .callout.amber { color: #92400e; background: var(--amber-bg); border-color: #fde68a; border-left-color: var(--amber); }
+    .steps { margin: 9px 0 0; padding-left: 24px; }
+    .steps li { margin: 6px 0; }
+    .small, .muted { color: var(--sub); }
+    .small { font-size: 14px; }
+    .count-key { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .count-key div { padding: 12px; border: 1px solid #cbdaf0; border-radius: 12px; background: #fff; }
+    .count-key strong { display: block; color: var(--blue); font-size: 18px; }
+    .observe-table-wrap { margin-top: 15px; overflow-x: auto; border: 1px solid #cbdaf0; border-radius: 14px; background: #fff; }
+    .observe-table { width: 100%; min-width: 710px; border-collapse: collapse; }
+    .observe-table caption { padding: 13px 15px 7px; color: var(--sub); text-align: left; font-weight: 700; }
+    .observe-table th, .observe-table td { padding: 11px 10px; border-top: 1px solid #dbe6f2; text-align: center; vertical-align: middle; }
+    .observe-table thead th { border-top: 0; color: #1e3a5f; background: #f1f7ff; }
+    .observe-table th:first-child, .observe-table td:first-child { min-width: 180px; text-align: left; }
+    .object-name { display: block; font-weight: 800; }
+    .object-note { display: block; color: var(--sub); font-size: 13px; }
+    .count-input {
+      width: 64px; min-height: 41px; padding: 6px 7px; color: var(--ink); border: 2px solid #b8cce2;
+      border-radius: 9px; background: #fff; text-align: center; font: inherit; font-weight: 800;
+    }
+    .count-input:focus { outline: 3px solid #7dd3fc; outline-offset: 1px; }
+    .count-input.is-correct { color: #065f46; border-color: #34d399; background: var(--teal-bg); }
+    .count-input.is-wrong { color: #9f1239; border-color: #fb7185; background: var(--rose-bg); }
+    .cell-status { display: block; min-height: 22px; margin-top: 3px; color: var(--sub); font-size: 12px; font-weight: 800; }
+    .cell-status.correct { color: #047857; }
+    .cell-status.wrong { color: #be123c; }
+    details { margin-top: 14px; box-shadow: none; }
+    summary { cursor: pointer; color: #1d4ed8; font-weight: 800; }
+    .rule-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    .rule-card { padding: 14px; border: 1px solid #cbdaf0; border-top: 5px solid var(--blue); border-radius: 13px; background: #fff; }
+    .rule-card.teal-top { border-top-color: var(--teal); }
+    .net-frame { margin-top: 14px; padding: 13px; overflow: hidden; border: 1px solid #c7d9ed; border-radius: 16px; background: linear-gradient(145deg, #f8fcff, #f1fffa); }
+    .control-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; }
+    .control-card { padding: 14px; border: 1px solid #cbdaf0; border-radius: 13px; background: #fff; }
+    label.range-label { display: flex; justify-content: space-between; gap: 14px; color: #1e3a5f; font-weight: 800; }
+    input[type="range"] { width: 100%; accent-color: var(--blue); }
+    .live-value { color: var(--blue); white-space: nowrap; }
+    .formula-row { align-items: stretch; margin-top: 13px; }
+    .formula-row > div { flex: 1 1 220px; }
+    .formula-row .formula-box { margin: 0; }
+    .memory-figure { margin-top: 14px; padding: 12px; border: 1px solid #d8e5f1; border-radius: 14px; background: #fbfdff; }
+    .memory-caption { margin-top: 7px; color: var(--sub); font-size: 14px; }
+    .quiz-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+    .quiz-card { box-shadow: none; }
+    .level.basic { color: #075985; background: #e0f2fe; border-color: #bae6fd; }
+    .level.advanced { color: #a16207; background: var(--amber-bg); border-color: #fde68a; }
+    .level.challenge { color: #6d28d9; background: var(--violet-bg); border-color: #ddd6fe; }
+    .answer { margin-top: 11px; padding: 10px; border: 1px solid #c7d9ed; border-radius: 10px; background: #f8fbff; }
+    .teacher-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .teacher-flow div { padding: 13px; border: 1px solid #cbdaf0; border-radius: 13px; background: #f8fbff; }
+    .teacher-flow strong { display: block; margin-bottom: 5px; color: #1d4ed8; }
+    .back-row { margin: 30px 0 0; text-align: center; }
+    @media (max-width: 880px) {
+      .two, .three, .quiz-grid, .teacher-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .control-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .wrap { padding: 14px 10px 40px; }
+      .hero, .panel, .card, .quiz-card, details { border-radius: 14px; padding: 15px; }
+      .two, .three, .diagram-grid, .rule-grid, .quiz-grid, .teacher-flow, .count-key { grid-template-columns: 1fr; }
+      .formula-box { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="eyebrows">
+        <span class="eyebrow">國三下・j6-2</span>
+        <span class="eyebrow teal">立體幾何・展開圖</span>
+      </div>
+      <h1>角柱、角錐先數清楚；圓錐攤開後，面積公式就看得見</h1>
+      <p class="lead">先從可數的多面體觀察點、邊、面的規律，再把圓錐的側面攤成扇形。這樣「扇形角度為何是 \(\dfrac rR\times360^\circ\)」與圓錐表面積公式，都不是憑空背下來的。</p>
+      <nav class="nav" aria-label="本頁段落">
+        <a href="#polyhedra">角柱與角錐</a>
+        <a href="#table">觀察填表</a>
+        <a href="#cone-net">圓錐展開圖</a>
+        <a href="#circle-area">圓面積的記憶</a>
+        <a href="#check">自我檢查</a>
+      </nav>
+    </header>
+
+    <section class="section" id="polyhedra">
+      <h2>1. 先辨認：角柱和角錐數的是「多面體」</h2>
+      <p class="section-intro">「點、邊、面」的計數適用於表面由平面多邊形組成的立體。看圖時，即使有些線被遮住，也還是存在；先把底面是哪一個多邊形看出來，再數會最穩。</p>
+      <div class="diagram-grid">
+        <article class="diagram-card">
+          <span class="tag">角柱</span>
+          <h3>有兩個全等、平行的底面</h3>
+          <svg viewBox="0 0 500 280" role="img" aria-label="三角柱示意圖：兩個三角形底面以三個側面連接">
+            <defs><style>.p{fill:#eff6ff;stroke:#2563eb;stroke-width:4;stroke-linejoin:round}.e{fill:none;stroke:#2563eb;stroke-width:4;stroke-linecap:round}.d{fill:none;stroke:#6485a7;stroke-width:3;stroke-dasharray:8 7}.t{fill:#1e3a5f;font:700 18px 'Microsoft JhengHei',sans-serif}.s{fill:#52627c;font:16px 'Microsoft JhengHei',sans-serif}</style></defs>
+            <polygon class="p" points="82,200 197,231 146,95"></polygon>
+            <polygon class="p" points="272,103 391,133 338,25"></polygon>
+            <path class="e" d="M82 200 272 103M197 231 391 133M146 95 338 25"></path>
+            <path class="d" d="M82 200 197 231M272 103 391 133"></path>
+            <text class="t" x="38" y="58">下底：三角形</text><text class="t" x="303" y="236">上底：三角形</text>
+            <text class="s" x="155" y="266">側面共有 3 個長方形</text>
+          </svg>
+          <p>底面是 \(n\) 邊形時，會有兩個 \(n\) 邊形底面；對應頂點用側邊連起來。</p>
+        </article>
+        <article class="diagram-card">
+          <span class="tag teal">角錐</span>
+          <h3>只有一個底面，側邊全會聚到頂點</h3>
+          <svg viewBox="0 0 500 280" role="img" aria-label="四角錐示意圖：一個四邊形底面和共同頂點">
+            <defs><style>.p{fill:#ecfdf5;stroke:#0f766e;stroke-width:4;stroke-linejoin:round}.e{fill:none;stroke:#0f766e;stroke-width:4;stroke-linecap:round}.d{fill:none;stroke:#56978f;stroke-width:3;stroke-dasharray:8 7}.t{fill:#134e4a;font:700 18px 'Microsoft JhengHei',sans-serif}.s{fill:#52627c;font:16px 'Microsoft JhengHei',sans-serif}</style></defs>
+            <polygon class="p" points="103,211 299,236 407,168 211,145"></polygon>
+            <path class="e" d="M247 33 103 211M247 33 407 168M247 33 211 145"></path>
+            <path class="d" d="M247 33 299 236M103 211 299 236"></path>
+            <circle cx="247" cy="33" r="7" fill="#0f766e"></circle>
+            <text class="t" x="265" y="39">共同頂點</text><text class="t" x="173" y="269">底面：四邊形</text>
+            <text class="s" x="46" y="90">每一個底邊連到共同頂點，形成一個三角形側面</text>
+          </svg>
+          <p>底面是 \(n\) 邊形時，頂點只有一個；每一條底邊配一個三角形側面。</p>
+        </article>
+      </div>
+      <div class="count-key">
+        <div><strong>點（頂點）</strong>平面多邊形相接的角。被遮住的頂點仍要算。</div>
+        <div><strong>邊</strong>兩個平面相交形成的線段。虛線常表示看不見的邊。</div>
+        <div><strong>面</strong>包住立體的一片平面多邊形。底面也要算進去。</div>
+      </div>
+      <div class="callout warn"><strong>先不要把圓錐混進來：</strong>圓錐的側面是曲面、底面是圓，不是由多邊形組成的多面體；本節的「點、邊、面」表格只用在角柱與角錐。</div>
+    </section>
+
+    <section class="section" id="table">
+      <h2>2. 觀察填表：每填一格就立即核對</h2>
+      <p class="section-intro">先不急著背公式。請看「底面有幾條邊」，把每個立體的點、邊、面填入。輸入後會立刻顯示對錯；答錯時先回到圖形，分別圈出上底、下底、側邊或共同頂點。</p>
+      <div class="panel">
+        <div class="tag-row"><span class="tag">基礎觀察</span><span class="mini-label amber">答案皆為整數</span></div>
+        <div class="observe-table-wrap">
+          <table class="observe-table">
+            <caption>請填入每一個多面體的個數。綠色表示正確；紅色時請重新觀察，不會鎖住你的答案。</caption>
+            <thead>
+              <tr><th scope="col">立體與底面</th><th scope="col">點</th><th scope="col">邊</th><th scope="col">面</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="object-name">三角柱</span><span class="object-note">兩個三角形底面</span></td>
+                <td><input class="count-input" id="tri-prism-v" inputmode="numeric" aria-label="三角柱的點數" data-answer="6"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="tri-prism-e" inputmode="numeric" aria-label="三角柱的邊數" data-answer="9"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="tri-prism-f" inputmode="numeric" aria-label="三角柱的面數" data-answer="5"><span class="cell-status" aria-live="polite"></span></td>
+              </tr>
+              <tr>
+                <td><span class="object-name">四角柱</span><span class="object-note">兩個四邊形底面</span></td>
+                <td><input class="count-input" id="quad-prism-v" inputmode="numeric" aria-label="四角柱的點數" data-answer="8"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="quad-prism-e" inputmode="numeric" aria-label="四角柱的邊數" data-answer="12"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="quad-prism-f" inputmode="numeric" aria-label="四角柱的面數" data-answer="6"><span class="cell-status" aria-live="polite"></span></td>
+              </tr>
+              <tr>
+                <td><span class="object-name">五角柱</span><span class="object-note">兩個五邊形底面</span></td>
+                <td><input class="count-input" id="pent-prism-v" inputmode="numeric" aria-label="五角柱的點數" data-answer="10"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="pent-prism-e" inputmode="numeric" aria-label="五角柱的邊數" data-answer="15"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="pent-prism-f" inputmode="numeric" aria-label="五角柱的面數" data-answer="7"><span class="cell-status" aria-live="polite"></span></td>
+              </tr>
+              <tr>
+                <td><span class="object-name">三角錐</span><span class="object-note">一個三角形底面與一個頂點</span></td>
+                <td><input class="count-input" id="tri-pyramid-v" inputmode="numeric" aria-label="三角錐的點數" data-answer="4"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="tri-pyramid-e" inputmode="numeric" aria-label="三角錐的邊數" data-answer="6"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="tri-pyramid-f" inputmode="numeric" aria-label="三角錐的面數" data-answer="4"><span class="cell-status" aria-live="polite"></span></td>
+              </tr>
+              <tr>
+                <td><span class="object-name">四角錐</span><span class="object-note">一個四邊形底面與一個頂點</span></td>
+                <td><input class="count-input" id="quad-pyramid-v" inputmode="numeric" aria-label="四角錐的點數" data-answer="5"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="quad-pyramid-e" inputmode="numeric" aria-label="四角錐的邊數" data-answer="8"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="quad-pyramid-f" inputmode="numeric" aria-label="四角錐的面數" data-answer="5"><span class="cell-status" aria-live="polite"></span></td>
+              </tr>
+              <tr>
+                <td><span class="object-name">五角錐</span><span class="object-note">一個五邊形底面與一個頂點</span></td>
+                <td><input class="count-input" id="pent-pyramid-v" inputmode="numeric" aria-label="五角錐的點數" data-answer="6"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="pent-pyramid-e" inputmode="numeric" aria-label="五角錐的邊數" data-answer="10"><span class="cell-status" aria-live="polite"></span></td>
+                <td><input class="count-input" id="pent-pyramid-f" inputmode="numeric" aria-label="五角錐的面數" data-answer="6"><span class="cell-status" aria-live="polite"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details>
+          <summary>填完後再打開：把觀察整理成 \(n\) 邊形底面的規律</summary>
+          <div class="rule-grid">
+            <article class="rule-card">
+              <span class="tag">\(n\) 角柱</span>
+              <p>兩個底面各有 \(n\) 個點，對應點之間另有 \(n\) 條側邊；側面也是 \(n\) 個。</p>
+              <div class="formula-box">\[\text{點}=2n,\qquad \text{邊}=3n,\qquad \text{面}=n+2\]</div>
+            </article>
+            <article class="rule-card teal-top">
+              <span class="tag teal">\(n\) 角錐</span>
+              <p>底面提供 \(n\) 個點、\(n\) 條邊；再加一個共同頂點及 \(n\) 條側邊，側面有 \(n\) 個三角形。</p>
+              <div class="formula-box">\[\text{點}=n+1,\qquad \text{邊}=2n,\qquad \text{面}=n+1\]</div>
+            </article>
+          </div>
+          <div class="callout amber"><strong>易錯點：</strong>角柱的面不是 \(n\)，因為還有 2 個底面；角錐的點不是 \(n\)，因為還要加上那個共同頂點。</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" id="cone-net">
+      <h2>3. 圓錐展開：側面是一個扇形，底面是一個圓</h2>
+      <p class="section-intro">把圓錐的側面沿著一條母線剪開、攤平，會得到一個扇形。扇形的半徑是圓錐的母線長 \(R\)，扇形的弧長則剛好等於圓錐底面的圓周長 \(2\pi r\)。請拖動下方的 \(r\) 和 \(R\)，看角度與面積如何一起改變。</p>
+      <div class="net-frame">
+        <svg id="cone-net-svg" viewBox="0 0 760 370" role="img" aria-label="圓錐與其展開圖：側面是半徑為 R 的扇形，底面是半徑為 r 的圓">
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#2563eb"></path></marker>
+          </defs>
+          <g aria-hidden="true">
+            <path d="M82 198 L160 55 L238 198 Z" fill="#e0f2fe" stroke="#2563eb" stroke-width="3"></path>
+            <ellipse cx="160" cy="199" rx="78" ry="20" fill="#eff6ff" stroke="#2563eb" stroke-width="3"></ellipse>
+            <path d="M82 198 Q160 219 238 198" fill="none" stroke="#2563eb" stroke-width="3"></path>
+            <line x1="160" y1="199" x2="235" y2="199" stroke="#b45309" stroke-width="3"></line>
+            <line x1="160" y1="55" x2="238" y2="198" stroke="#0f766e" stroke-width="3"></line>
+            <text x="194" y="186" fill="#a16207" font-size="19" font-weight="700">\(r\)</text>
+            <text x="210" y="112" fill="#0f766e" font-size="19" font-weight="700">\(R\)</text>
+            <text x="112" y="254" fill="#1e3a5f" font-size="19" font-weight="700">圓錐</text>
+          </g>
+          <path d="M286 170 H340" stroke="#2563eb" stroke-width="4" marker-end="url(#arrowhead)"></path>
+          <g>
+            <path id="sector-shape" d="" fill="#dcfce7" stroke="#0f766e" stroke-width="3"></path>
+            <line id="sector-radius-line" x1="475" y1="198" x2="475" y2="72" stroke="#0f766e" stroke-width="3"></line>
+            <text id="sector-r-label" x="482" y="133" fill="#0f766e" font-size="19" font-weight="700">R</text>
+            <text id="sector-angle-label" x="393" y="300" fill="#134e4a" font-size="18" font-weight="700"></text>
+            <text id="sector-arc-label" x="357" y="329" fill="#52627c" font-size="16"></text>
+            <text x="402" y="355" fill="#1e3a5f" font-size="19" font-weight="700">圓錐側面攤成的扇形</text>
+          </g>
+          <g>
+            <circle id="base-circle" cx="665" cy="196" r="64" fill="#fff7ed" stroke="#b45309" stroke-width="3"></circle>
+            <line id="base-radius-line" x1="665" y1="196" x2="729" y2="196" stroke="#b45309" stroke-width="3"></line>
+            <text id="base-r-label" x="690" y="184" fill="#a16207" font-size="19" font-weight="700">r</text>
+            <text x="623" y="295" fill="#1e3a5f" font-size="19" font-weight="700">圓錐底面</text>
+          </g>
+        </svg>
+      </div>
+      <div class="control-grid">
+        <article class="control-card">
+          <label class="range-label" for="base-radius"><span>底面半徑 \(r\)</span><span class="live-value" id="r-value">3</span></label>
+          <input id="base-radius" type="range" min="1" max="8" value="3" step="1">
+          <p class="small">\(r\) 決定底面圓周長 \(2\pi r\)，也就是展開後扇形的弧長。</p>
+        </article>
+        <article class="control-card">
+          <label class="range-label" for="slant-height"><span>母線長 \(R\)</span><span class="live-value" id="R-value">5</span></label>
+          <input id="slant-height" type="range" min="2" max="12" value="5" step="1">
+          <p class="small">真實圓錐須 \(R>r\)。若 \(R\) 太小，工具會自動調整為比 \(r\) 大 1。</p>
+        </article>
+      </div>
+      <div class="formula-row" id="cone-formulas">
+        <div class="formula-box" id="angle-formula" aria-live="polite"></div>
+        <div class="formula-box" id="area-formula" aria-live="polite"></div>
+      </div>
+      <div class="grid two" style="margin-top:14px">
+        <article class="card">
+          <span class="tag">為什麼是 \(\dfrac rR\) 倍？</span>
+          <ol class="steps">
+            <li>扇形弧長 \(=\dfrac{\theta}{360^\circ}\times2\pi R\)。</li>
+            <li>它必須接回底面圓，所以扇形弧長 \(=2\pi r\)。</li>
+            <li>令兩者相等並約去 \(2\pi\)，得到 \(\dfrac{\theta}{360^\circ}=\dfrac rR\)。</li>
+          </ol>
+          <div class="formula-box">\[\theta=\frac rR\times360^\circ\]</div>
+        </article>
+        <article class="card">
+          <span class="tag teal">表面積從展開圖讀出來</span>
+          <p>側面就是這個扇形，底面就是右側的圓。因此先算側面積，再加上底面積。</p>
+          <div class="formula-box">\[\begin{aligned}A_{\text{側}}&=\frac{\theta}{360^\circ}\pi R^2=\frac rR\pi R^2=\pi rR\\A_{\text{表}}&=A_{\text{側}}+A_{\text{底}}=\pi rR+\pi r^2=\pi r(R+r)\end{aligned}\]</div>
+          <div class="callout warn"><strong>常見錯誤：</strong>\(R\) 是斜斜的母線長，不是圓錐垂直的高 \(h\)。算側面積與展開扇形時要用 \(R\)。</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="circle-area">
+      <h2>4. 圓面積的「半徑 × 弧長 ÷ 2」：是好記法，不是直接證明</h2>
+      <p class="section-intro">扇形半徑為 \(R\)、弧長為 \(L\) 時，面積可以寫成 \(\dfrac12RL\)。整個圓可視為圓心角 \(360^\circ\) 的扇形；此時 \(R=r\)、弧長 \(L=2\pi r\)，所以得到熟悉的圓面積公式。</p>
+      <div class="grid two">
+        <article class="card">
+          <span class="tag">公式連結</span>
+          <div class="formula-box">\[A_{\text{扇形}}=\frac12\times R\times L\]</div>
+          <p>若是整個圓，\(L\) 是整個圓周的弧長（圓周長）\(2\pi r\)：</p>
+          <div class="formula-box">\[A_{\text{圓}}=\frac12\times r\times(2\pi r)=\pi r^2\]</div>
+          <p class="small">所以可以把「半徑 \(r\)」和「圓周長 \(2\pi r\)」一起記成 \(\dfrac{r\times\text{弧長}}2\)。</p>
+        </article>
+        <article class="card">
+          <span class="tag amber">記憶時怎麼想？</span>
+          <p>可暫時把 \(r\) 想成「高」，把半個圓周長 \(\pi r\) 想成「底」，於是面積像 \(\pi r\times r\)。這是幫你回想公式的圖像，不是把原本的圓直接當成底高圖形。</p>
+          <div class="memory-figure">
+            <svg viewBox="0 0 560 250" role="img" aria-label="圓被切成許多扇形後交錯排列，近似平行四邊形的示意圖">
+              <defs><style>.o{fill:#eff6ff;stroke:#2563eb;stroke-width:3}.w{fill:none;stroke:#7aa0c6;stroke-width:2}.a{fill:#dcfce7;stroke:#0f766e;stroke-width:2}.b{fill:#f0fdf4;stroke:#0f766e;stroke-width:2}.t{fill:#1e3a5f;font:700 16px 'Microsoft JhengHei',sans-serif}.s{fill:#52627c;font:14px 'Microsoft JhengHei',sans-serif}</style></defs>
+              <circle class="o" cx="108" cy="119" r="75"></circle>
+              <path class="w" d="M108 119V44M108 119 161 66M108 119 183 119M108 119 161 172M108 119V194M108 119 55 172M108 119 33 119M108 119 55 66"></path>
+              <text class="t" x="44" y="222">切成許多很小的扇形</text>
+              <path class="a" d="M282 58 310 192 338 58Z M338 58 366 192 394 58Z M394 58 422 192 450 58Z M450 58 478 192 506 58Z" opacity=".94"></path>
+              <path class="b" d="M310 192 338 58 366 192Z M366 192 394 58 422 192Z M422 192 450 58 478 192Z M478 192 506 58 534 192Z" opacity=".94"></path>
+              <path d="M281 193H535" stroke="#0f766e" stroke-width="3"></path><path d="M282 58H506" stroke="#0f766e" stroke-width="3"></path>
+              <path d="M262 58V192" stroke="#b45309" stroke-width="3"></path><path d="M257 58H267M257 192H267" stroke="#b45309" stroke-width="3"></path>
+              <text class="t" x="358" y="223">底約為 \(\pi r\)</text><text class="t" x="223" y="130">高約為 \(r\)</text>
+              <text class="s" x="291" y="35">交錯排列後，愈切愈細，愈接近平行四邊形</text>
+            </svg>
+            <p class="memory-caption">這只能作為「切得很細時」的直覺說明：上下鋸齒會越來越平。正式證明需要極限或更完整的面積理論。</p>
+          </div>
+        </article>
+      </div>
+      <div class="callout warn"><strong>最重要的界線：</strong>不要說「圓的半徑和弧長本來就是互相垂直的底和高」，那是錯的。\(\dfrac12RL\) 是扇形面積公式；「切很多小扇形再交錯排」只能幫助理解為什麼會出現 \(\pi r\times r\)。</div>
+    </section>
+
+    <section class="section" id="check">
+      <h2>5. 自我檢查：從觀察到計算</h2>
+      <p class="section-intro">先自行完成，再展開答案。答題時先寫出你用的是哪一個規律，能避免把 \(r\)、\(R\) 和垂直高混在一起。</p>
+      <div class="quiz-grid">
+        <article class="quiz-card">
+          <span class="level basic">基礎</span>
+          <h3>六角柱</h3>
+          <p>一個六角柱有幾個點、幾條邊、幾個面？</p>
+          <details><summary>查看答案</summary><div class="answer">\[\text{點}=2\times6=12,\quad \text{邊}=3\times6=18,\quad \text{面}=6+2=8\]</div></details>
+        </article>
+        <article class="quiz-card">
+          <span class="level advanced">進階</span>
+          <h3>七角錐</h3>
+          <p>一個七角錐有幾個點、幾條邊、幾個面？</p>
+          <details><summary>查看答案</summary><div class="answer">\[\text{點}=7+1=8,\quad \text{邊}=2\times7=14,\quad \text{面}=7+1=8\]</div></details>
+        </article>
+        <article class="quiz-card">
+          <span class="level challenge">挑戰</span>
+          <h3>圓錐展開與表面積</h3>
+          <p>圓錐底面半徑 \(r=6\)、母線長 \(R=10\)。求扇形圓心角、側面積與表面積。</p>
+          <details><summary>查看答案</summary><div class="answer">\[\theta=\frac6{10}\times360^\circ=216^\circ\]\[A_{\text{側}}=\pi\times6\times10=60\pi,\qquad A_{\text{表}}=60\pi+36\pi=96\pi\]</div></details>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="teacher-use">
+      <h2>老師投影使用建議：一節課的操作節奏</h2>
+      <div class="teacher-flow">
+        <div><strong>1. 先分辨（3 分鐘）</strong>投影兩張立體圖，只問「有幾個底面？」讓學生先說出角柱、角錐的結構差異。</div>
+        <div><strong>2. 填表（7 分鐘）</strong>請學生先做三角柱、三角錐兩列；答錯不立刻說數字，而是追問「底面和被遮住的邊有沒有算？」</div>
+        <div><strong>3. 找規律（6 分鐘）</strong>完成六列後才開啟 \(n\) 的規律，讓學生對照每一項從哪一部分而來。</div>
+        <div><strong>4. 攤開圓錐（8 分鐘）</strong>先調整 \(r,R\) 讓學生預測扇形變大或變小，再從弧長相等推出 \(\theta\) 與表面積。</div>
+      </div>
+      <div class="callout good"><strong>下課前一句話：</strong>「角柱、角錐先看底面；圓錐則把側面攤平。公式裡的每個字母，都要能在圖上找到它。」</div>
+    </section>
+
+    <p class="back-row"><a class="back" href="./index.html#j6">← 回到數學小遊戲教學首頁</a></p>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+      const byId = (id) => document.getElementById(id);
+      let mathQueue = Promise.resolve();
+      function typeset(node) {
+        if (!window.MathJax?.typesetPromise || !node) return;
+        mathQueue = mathQueue.then(() => {
+          window.MathJax.typesetClear?.([node]);
+          return window.MathJax.typesetPromise([node]);
+        }).catch((error) => console.error('MathJax rendering failed:', error));
+      }
+
+      document.querySelectorAll('.count-input').forEach((input) => {
+        const status = input.nextElementSibling;
+        const checkInput = () => {
+          const value = input.value.trim();
+          input.classList.remove('is-correct', 'is-wrong');
+          status.className = 'cell-status';
+          if (!value) { status.textContent = ''; return; }
+          if (Number(value) === Number(input.dataset.answer)) {
+            input.classList.add('is-correct');
+            status.classList.add('correct');
+            status.textContent = '答對';
+          } else {
+            input.classList.add('is-wrong');
+            status.classList.add('wrong');
+            status.textContent = '再觀察';
+          }
+        };
+        input.addEventListener('input', checkInput);
+        input.addEventListener('change', checkInput);
+      });
+
+      const baseRadius = byId('base-radius');
+      const slantHeight = byId('slant-height');
+      function polar(cx, cy, radius, degrees) {
+        const radians = (degrees - 90) * Math.PI / 180;
+        return { x: cx + radius * Math.cos(radians), y: cy + radius * Math.sin(radians) };
+      }
+      function formatNumber(value) {
+        return Number.isInteger(value) ? String(value) : value.toFixed(1);
+      }
+      function renderConeNet() {
+        let r = Number(baseRadius.value);
+        let R = Number(slantHeight.value);
+        if (R <= r) {
+          R = r + 1;
+          slantHeight.value = String(R);
+        }
+        byId('r-value').textContent = r;
+        byId('R-value').textContent = R;
+        const theta = 360 * r / R;
+        const centerX = 475;
+        const centerY = 198;
+        const sectorRadius = 126;
+        const start = polar(centerX, centerY, sectorRadius, 0);
+        const end = polar(centerX, centerY, sectorRadius, theta);
+        const largeArc = theta > 180 ? 1 : 0;
+        byId('sector-shape').setAttribute('d', `M ${centerX} ${centerY} L ${start.x.toFixed(2)} ${start.y.toFixed(2)} A ${sectorRadius} ${sectorRadius} 0 ${largeArc} 1 ${end.x.toFixed(2)} ${end.y.toFixed(2)} Z`);
+        byId('sector-radius-line').setAttribute('x2', start.x.toFixed(2));
+        byId('sector-radius-line').setAttribute('y2', start.y.toFixed(2));
+        byId('sector-r-label').setAttribute('x', (centerX + 10).toFixed(2));
+        byId('sector-r-label').setAttribute('y', (centerY - sectorRadius / 2).toFixed(2));
+        byId('sector-angle-label').textContent = `扇形圓心角 θ = ${formatNumber(theta)}°`;
+        byId('sector-arc-label').textContent = `弧長 = 底面圓周長 = 2π × ${r}`;
+        const displayedBaseRadius = 70 * r / R;
+        byId('base-circle').setAttribute('r', displayedBaseRadius.toFixed(2));
+        byId('base-radius-line').setAttribute('x2', (665 + displayedBaseRadius).toFixed(2));
+        byId('base-r-label').setAttribute('x', (665 + displayedBaseRadius / 2 - 4).toFixed(2));
+        byId('base-r-label').setAttribute('y', (184).toFixed(2));
+        byId('angle-formula').innerHTML = `\\[\\theta=\\frac{r}{R}\\times360^\\circ=\\frac{${r}}{${R}}\\times360^\\circ=${formatNumber(theta)}^\\circ\\]`;
+        byId('area-formula').innerHTML = `\\[A_{\\text{側}}=\\pi rR=${r * R}\\pi,\\qquad A_{\\text{表}}=\\pi rR+\\pi r^2=${r * R + r * r}\\pi\\]`;
+        typeset(byId('angle-formula'));
+        typeset(byId('area-formula'));
+      }
+      baseRadius.addEventListener('input', renderConeNet);
+      slantHeight.addEventListener('input', renderConeNet);
+      renderConeNet();
+      window.addEventListener('load', () => {
+        typeset(document.body);
+      }, { once: true });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Not Not 邏輯方向挑戰</title>
+  <style>
+    :root {
+      --ink: #eff8ff;
+      --muted: #b9c9da;
+      --panel: rgba(12, 27, 49, .78);
+      --panel-line: rgba(176, 220, 255, .24);
+      --accent: #60d9ff;
+      --accent2: #ab7bff;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background: #071224;
+    }
+    button { font: inherit; }
+    button:focus-visible, a:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 3px;
+    }
+    .game-shell {
+      position: relative;
+      isolation: isolate;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 28%),
+        radial-gradient(circle at 83% 84%, color-mix(in srgb, var(--accent2) 25%, transparent), transparent 31%),
+        linear-gradient(155deg, #061527 0%, #122b45 49%, #1a334f 100%);
+      transition: background .45s ease;
+    }
+    .game-shell::before, .game-shell::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      z-index: -1;
+      inset: -8%;
+      opacity: .48;
+      background-image:
+        linear-gradient(45deg, transparent 46%, rgba(255,255,255,.13) 47% 53%, transparent 54%),
+        linear-gradient(45deg, transparent 46%, rgba(255,255,255,.09) 47% 53%, transparent 54%);
+      background-size: 98px 98px, 163px 163px;
+      background-position: 9px 15px, 42px 66px;
+      transform: rotate(11deg);
+      animation: drift 22s linear infinite;
+    }
+    .game-shell::after { animation-direction: reverse; animation-duration: 31s; opacity: .25; }
+    @keyframes drift { to { background-position: 270px 355px, -190px 250px; } }
+    .app {
+      width: min(100%, 1050px);
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 18px 20px calc(22px + var(--safe-bottom));
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      flex: 0 0 auto;
+      color: #041322;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+      box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 64%, transparent);
+      font-weight: 950;
+      font-size: 16px;
+      letter-spacing: -1px;
+    }
+    .brand h1 { margin: 0; font-size: clamp(22px, 4vw, 31px); letter-spacing: .02em; }
+    .brand p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+    .home-link, .tiny-button {
+      border: 1px solid var(--panel-line);
+      border-radius: 11px;
+      color: var(--ink);
+      background: rgba(4, 16, 31, .42);
+      padding: 9px 12px;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .home-link:hover, .tiny-button:hover { background: rgba(255,255,255,.12); }
+    .screen[hidden] { display: none; }
+    .intro {
+      max-width: 760px;
+      margin: 3vh auto 24px;
+      padding: clamp(21px, 5vw, 42px);
+      border: 1px solid var(--panel-line);
+      border-radius: 27px;
+      background: linear-gradient(145deg, rgba(11, 34, 61, .91), rgba(9, 16, 35, .77));
+      box-shadow: 0 25px 75px rgba(0,0,0,.2);
+      text-align: center;
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-weight: 900;
+      letter-spacing: .12em;
+      font-size: 13px;
+    }
+    .intro h2 { margin: 0; font-size: clamp(30px, 6vw, 51px); line-height: 1.18; }
+    .intro .lead { max-width: 580px; margin: 17px auto 0; color: var(--muted); line-height: 1.8; }
+    .logic-chip-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .logic-chip {
+      padding: 7px 11px;
+      border: 1px solid var(--panel-line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .logic-chip strong { color: var(--accent); }
+    .primary-button {
+      min-width: 180px;
+      border: 0;
+      border-radius: 13px;
+      padding: 13px 20px;
+      color: #061525;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      box-shadow: 0 10px 25px color-mix(in srgb, var(--accent) 29%, transparent);
+      font-weight: 950;
+      cursor: pointer;
+    }
+    .primary-button:hover { transform: translateY(-1px); filter: brightness(1.07); }
+    .world-heading { margin: 0 0 12px; font-size: clamp(23px, 4vw, 31px); }
+    .world-note { margin: 0 0 17px; color: var(--muted); line-height: 1.7; }
+    .world-strip {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(178px, 22%);
+      gap: 12px;
+      overflow-x: auto;
+      padding: 5px 3px 15px;
+      scroll-snap-type: x mandatory;
+      scrollbar-color: var(--accent) transparent;
+    }
+    .world-card {
+      position: relative;
+      min-height: 162px;
+      overflow: hidden;
+      scroll-snap-align: center;
+      border: 1px solid rgba(255,255,255,.17);
+      border-radius: 18px;
+      padding: 17px;
+      text-align: left;
+      color: #fff;
+      background: linear-gradient(142deg, var(--card-a), var(--card-b));
+      box-shadow: inset 0 1px rgba(255,255,255,.19), 0 9px 22px rgba(0,0,0,.2);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .world-card::after {
+      content: "";
+      position: absolute;
+      width: 105px;
+      height: 105px;
+      right: -36px;
+      bottom: -40px;
+      border: 18px solid rgba(255,255,255,.12);
+      transform: rotate(45deg);
+    }
+    .world-card:hover { transform: translateY(-3px); }
+    .world-card[aria-pressed="true"] { border: 3px solid #fff; transform: translateY(-4px); }
+    .world-symbol { display: block; margin-bottom: 18px; font-size: 30px; text-shadow: 0 2px 12px rgba(0,0,0,.3); }
+    .world-card strong { position: relative; z-index: 1; display: block; font-size: 22px; }
+    .world-card span { position: relative; z-index: 1; display: block; margin-top: 5px; opacity: .85; font-size: 13px; line-height: 1.45; }
+    .selected-world {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      margin: 8px 0 16px;
+      padding: 18px 20px;
+      border: 1px solid var(--panel-line);
+      border-radius: 17px;
+      background: var(--panel);
+    }
+    .selected-world h3 { margin: 0 0 5px; font-size: 23px; }
+    .selected-world p { margin: 0; color: var(--muted); line-height: 1.65; }
+    .world-rule {
+      max-width: 310px;
+      border-left: 3px solid var(--accent);
+      padding-left: 13px;
+      color: #e9f8ff;
+      font-weight: 750;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .difficulty-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .difficulty-card {
+      border: 1px solid var(--panel-line);
+      border-radius: 16px;
+      padding: 17px;
+      color: var(--ink);
+      background: rgba(7, 20, 39, .67);
+      text-align: left;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .difficulty-card:hover { background: rgba(255,255,255,.12); transform: translateY(-2px); }
+    .difficulty-card b { display: block; color: var(--accent); font-size: 26px; }
+    .difficulty-card strong { display: block; margin: 4px 0 7px; font-size: 19px; }
+    .difficulty-card span { display: block; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .tip {
+      margin: 16px 0 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: #cceeff;
+      background: rgba(73, 163, 226, .13);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+    .play-head {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin: 3vh 0 12px;
+    }
+    .play-head > :last-child { justify-self: end; }
+    .world-tag { margin: 0; font-weight: 900; color: var(--accent); }
+    .world-tag small { display: block; margin-top: 3px; color: var(--muted); font-weight: 600; }
+    .progress { display: flex; gap: 6px; justify-content: center; }
+    .progress-dot { width: 8px; height: 8px; border: 1px solid rgba(255,255,255,.72); transform: rotate(45deg); }
+    .progress-dot.done { background: #fff; }
+    .progress-dot.current { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .life-meter { margin: 0; color: #ffbac8; font-weight: 900; white-space: nowrap; }
+    .arena {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: min(61vh, 610px);
+      overflow: hidden;
+      border: 1px solid var(--panel-line);
+      border-radius: 27px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 100%),
+        rgba(4, 14, 30, .56);
+      background-size: 32px 32px;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .arena::before {
+      content: "";
+      position: absolute;
+      width: min(70vw, 580px);
+      aspect-ratio: 1;
+      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+      border-radius: 50%;
+      box-shadow: 0 0 80px color-mix(in srgb, var(--accent) 17%, transparent), inset 0 0 70px color-mix(in srgb, var(--accent2) 10%, transparent);
+      pointer-events: none;
+    }
+    .arena.is-good { animation: arenaGood .34s ease; }
+    .arena.is-bad { animation: arenaBad .38s ease; }
+    @keyframes arenaGood { 50% { background-color: rgba(70, 255, 181, .26); } }
+    @keyframes arenaBad { 25%,75% { transform: translateX(10px); } 50% { background-color: rgba(255, 65, 114, .25); transform: translateX(-10px); } }
+    .task-card {
+      position: relative;
+      z-index: 1;
+      width: min(82vw, 470px);
+      min-height: 282px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 23px;
+      border: 2px solid rgba(255,255,255,.91);
+      border-radius: 23px;
+      background: linear-gradient(150deg, rgba(25,49,78,.96), rgba(5,15,30,.96));
+      box-shadow: 0 0 0 11px rgba(255,255,255,.04), 0 22px 50px rgba(0,0,0,.35), inset 0 0 30px color-mix(in srgb, var(--accent) 12%, transparent);
+      text-align: center;
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    .task-card.is-concealed .task-main, .task-card.is-concealed .task-help { opacity: 0; }
+    .task-card.is-concealed::after { content: "？"; position: absolute; font-size: 84px; color: rgba(255,255,255,.75); }
+    .task-caption { margin: 0 0 5px; color: var(--muted); font-size: 14px; font-weight: 800; letter-spacing: .07em; }
+    .task-main { margin: 0; font-size: clamp(45px, 11vw, 83px); font-weight: 950; line-height: 1.08; letter-spacing: .03em; transition: opacity .22s ease; }
+    .task-main.color-word { color: var(--task-color); text-shadow: 0 0 22px color-mix(in srgb, var(--task-color) 55%, transparent); }
+    .task-help { min-height: 28px; margin: 13px 0 0; color: #d9eafb; font-size: 16px; line-height: 1.6; transition: opacity .22s ease; }
+    .trail { position: absolute; z-index: 2; width: 112px; height: 15px; border-radius: 99px; background: linear-gradient(90deg, transparent, var(--accent), #fff); opacity: 0; pointer-events: none; transform-origin: 0 50%; }
+    .trail.show { animation: dash .38s ease-out both; }
+    @keyframes dash { from { opacity: 0; transform: scaleX(.12); } 38% { opacity: 1; } to { opacity: 0; transform: scaleX(1.15); } }
+    .swipe-message {
+      position: absolute;
+      inset: auto 14px 14px;
+      z-index: 3;
+      min-height: 26px;
+      margin: 0;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 800;
+      pointer-events: none;
+    }
+    .swipe-message.good { color: #9affc9; }
+    .swipe-message.bad { color: #ffb0be; }
+    .controls-note { margin: 14px 0 9px; text-align: center; color: var(--muted); font-size: 14px; }
+    .direction-buttons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+    .direction-button {
+      min-height: 65px;
+      border: 1px solid var(--panel-line);
+      border-radius: 14px;
+      color: #fff;
+      background: rgba(255,255,255,.08);
+      font-size: clamp(25px, 5vw, 35px);
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .direction-button:hover { background: color-mix(in srgb, var(--accent) 25%, rgba(255,255,255,.12)); }
+    .end-card {
+      max-width: 610px;
+      margin: 7vh auto 0;
+      padding: 34px 25px;
+      border: 1px solid var(--panel-line);
+      border-radius: 25px;
+      background: linear-gradient(145deg, rgba(11,35,61,.94), rgba(6,14,30,.86));
+      text-align: center;
+      box-shadow: 0 26px 65px rgba(0,0,0,.28);
+    }
+    .end-card .result-symbol { margin: 0; font-size: 65px; }
+    .end-card h2 { margin: 7px 0; font-size: 32px; }
+    .end-card p { margin: 0 auto 20px; max-width: 450px; color: var(--muted); line-height: 1.75; }
+    .end-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+    .end-actions .tiny-button { color: var(--ink); }
+    @media (max-width: 680px) {
+      .app { padding: 12px 12px calc(15px + var(--safe-bottom)); }
+      .topbar { margin-bottom: 11px; }
+      .brand p { display: none; }
+      .intro { margin-top: 12px; border-radius: 20px; }
+      .world-strip { grid-auto-columns: minmax(168px, 67vw); }
+      .selected-world { grid-template-columns: 1fr; gap: 12px; }
+      .difficulty-grid { grid-template-columns: 1fr; }
+      .difficulty-card { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; }
+      .difficulty-card b { grid-row: span 2; }
+      .difficulty-card strong { margin: 0; }
+      .difficulty-card span { grid-column: 2; }
+      .play-head { grid-template-columns: 1fr auto; }
+      .progress { grid-column: 1 / -1; grid-row: 2; }
+      .arena { min-height: min(57vh, 530px); border-radius: 21px; }
+      .task-card { min-height: 245px; }
+      .direction-buttons { gap: 7px; }
+      .direction-button { min-height: 57px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game-shell" id="gameShell">
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">NOT</div>
+          <div>
+            <h1>Not Not 方向挑戰</h1>
+            <p>看懂指令，再用手指滑出正確方向</p>
+          </div>
+        </div>
+        <a class="home-link" href="./index.html">← 回主頁</a>
+      </header>
+
+      <section class="screen" id="startScreen" aria-labelledby="introTitle">
+        <div class="intro">
+          <p class="eyebrow">邏輯暖身・手勢反應</p>
+          <h2 id="introTitle">不是「不要往上」，<br>那要往哪裡？</h2>
+          <p class="lead">這是一個把「否定」變成方向判斷的小遊戲。可用手指在中央區域滑動，也可點下方方向鍵或用鍵盤方向鍵操作。</p>
+          <div class="logic-chip-row" aria-label="遊戲會練習的邏輯">
+            <span class="logic-chip">往上 → <strong>↑</strong></span>
+            <span class="logic-chip">不要往上 → <strong>≠ ↑</strong></span>
+            <span class="logic-chip">不要「不要往上」 → <strong>↑</strong></span>
+          </div>
+          <button class="primary-button" id="openWorlds" type="button">選擇世界開始</button>
+        </div>
+      </section>
+
+      <section class="screen" id="worldScreen" hidden aria-labelledby="worldTitle">
+        <h2 class="world-heading" id="worldTitle">選擇挑戰世界</h2>
+        <p class="world-note">先從「起點世界」熟悉操作；每個世界都保留三種試玩長度，方便課堂暖身或自己挑戰。</p>
+        <div class="world-strip" id="worldStrip" aria-label="挑戰世界清單"></div>
+        <section class="selected-world" aria-live="polite">
+          <div>
+            <h3 id="selectedWorldName"></h3>
+            <p id="selectedWorldDesc"></p>
+          </div>
+          <div class="world-rule" id="selectedWorldRule"></div>
+        </section>
+        <div class="difficulty-grid" id="difficultyGrid" aria-label="選擇挑戰長度"></div>
+        <p class="tip"><strong>教學小提醒：</strong>答錯時先看回饋，再自己說一次理由。例如「不要往右」不是只能往左，而是上、下、左都可以。</p>
+      </section>
+
+      <section class="screen" id="playScreen" hidden aria-label="遊戲畫面">
+        <div class="play-head">
+          <button class="tiny-button" id="backToWorlds" type="button">← 世界選單</button>
+          <div class="progress" id="progress" aria-label="關卡進度"></div>
+          <div>
+            <p class="world-tag" id="playingWorldName"></p>
+            <p class="life-meter" id="lifeMeter" aria-live="polite"></p>
+          </div>
+        </div>
+        <section class="arena" id="arena" aria-label="在此區域向上、下、左、右滑動" tabindex="0">
+          <div class="trail" id="trail" aria-hidden="true"></div>
+          <div class="task-card" id="taskCard">
+            <p class="task-caption" id="taskCaption"></p>
+            <p class="task-main" id="taskMain"></p>
+            <p class="task-help" id="taskHelp"></p>
+          </div>
+          <p class="swipe-message" id="swipeMessage" aria-live="polite">在中央卡片上滑動，或使用下方按鈕。</p>
+        </section>
+        <p class="controls-note">手指滑動優先；也可點按鈕或按鍵盤方向鍵。</p>
+        <div class="direction-buttons" id="directionButtons" aria-label="方向按鈕"></div>
+      </section>
+
+      <section class="screen" id="endScreen" hidden aria-live="polite">
+        <div class="end-card">
+          <p class="result-symbol" id="resultSymbol" aria-hidden="true">✦</p>
+          <h2 id="resultTitle"></h2>
+          <p id="resultText"></p>
+          <div class="end-actions">
+            <button class="primary-button" id="retryButton" type="button">再玩一次</button>
+            <button class="tiny-button" id="chooseWorldButton" type="button">換一個世界</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const DIRECTIONS = [
+        { id: 'up', label: '上', arrow: '↑', color: '#62dcff', shape: '△', phrase: '抬頭看天空' },
+        { id: 'right', label: '右', arrow: '→', color: '#ff9a63', shape: '◇', phrase: '向右招手' },
+        { id: 'down', label: '下', arrow: '↓', color: '#b98bff', shape: '▽', phrase: '踏回地面' },
+        { id: 'left', label: '左', arrow: '←', color: '#ff7199', shape: '○', phrase: '向左轉彎' }
+      ];
+      const BY_ID = Object.fromEntries(DIRECTIONS.map((direction) => [direction.id, direction]));
+      const EVERY_DIRECTION = DIRECTIONS.map((direction) => direction.id);
+      const DIFFICULTIES = [
+        { id: 'normal', label: '正常', count: 10, detail: '10 題，先熟悉規則' },
+        { id: 'hard', label: '困難', count: 20, detail: '20 題，節奏更快' },
+        { id: 'challenge', label: '超難', count: 30, detail: '30 題，連續專注到底' }
+      ];
+      const WORLDS = [
+        { id: 'start', title: '起點世界', symbol: '✦', subtitle: '先把方向感打穩', description: '直接讀方向、直接滑動。適合第一次玩或全班一起做暖身。', rule: '看到「往上」就向上滑；先讓手勢和方向對得起來。', a: '#19506b', b: '#a26477' },
+        { id: 'negation', title: '否定世界', symbol: '¬', subtitle: '不要，就是排除', description: '練習「不要往某方向」：只要不往被禁止的方向就正確。', rule: '「不要往右」代表上、下、左都可以；不是只剩左。', a: '#8b384e', b: '#1aa9d8' },
+        { id: 'proverb', title: '諺言世界', symbol: '☄', subtitle: '把語句轉成方向', description: '先讀短句中的位置線索，再把語意換成方向。', rule: '例如「抬頭看天空」代表上；先理解句子，再動手。', a: '#6f260e', b: '#197269' },
+        { id: 'continuous', title: '連續世界', symbol: '⇢', subtitle: '兩步要照順序', description: '同一張卡會給兩個方向；每一步都要做對，才能前進。', rule: '「先上，再右」要先滑上，接著才滑右；次序不能交換。', a: '#63007b', b: '#26367e' },
+        { id: 'shadow', title: '無影門世界', symbol: '◐', subtitle: '提示會短暫消失', description: '指令只亮一下，接著憑剛剛看到的內容作答。', rule: '記住方向後再滑；看不清時別亂猜，先停一拍回想。', a: '#151515', b: '#5d5d62' },
+        { id: 'double-not', title: '不可能世界', symbol: '¬¬', subtitle: '雙重否定回到原方向', description: '練習最核心的「not not」：兩次否定抵消，答案回到原本方向。', rule: '「不要『不要往左』」的答案就是左。', a: '#655d15', b: '#f18411' },
+        { id: 'shape', title: '色盲世界', symbol: '△', subtitle: '不靠顏色也能判斷', description: '改用形狀符號代表方向；不用分辨顏色也可以公平挑戰。', rule: '△＝上、◇＝右、▽＝下、○＝左；只看形狀。', a: '#064f21', b: '#b14b2d' },
+        { id: 'color', title: '色彩世界', symbol: '●', subtitle: '看顏色，不看文字', description: '文字和顏色故意不一致，要依顏色代表的方向作答。', rule: '青＝上、橙＝右、紫＝下、粉＝左；文字只是干擾。', a: '#005b69', b: '#d9ec17' },
+        { id: 'void', title: '虛空世界', symbol: '∅', subtitle: '混合邏輯與記憶', description: '混合直接方向、否定、雙重否定與短暫提示，是最後的綜合挑戰。', rule: '先辨認規則，再決定方向；速度排在理解之後。', a: '#151515', b: '#686868' }
+      ];
+      const WORLD_BY_ID = Object.fromEntries(WORLDS.map((world) => [world.id, world]));
+      const els = {
+        shell: document.getElementById('gameShell'),
+        start: document.getElementById('startScreen'),
+        worlds: document.getElementById('worldScreen'),
+        play: document.getElementById('playScreen'),
+        end: document.getElementById('endScreen'),
+        strip: document.getElementById('worldStrip'),
+        selectedName: document.getElementById('selectedWorldName'),
+        selectedDesc: document.getElementById('selectedWorldDesc'),
+        selectedRule: document.getElementById('selectedWorldRule'),
+        difficultyGrid: document.getElementById('difficultyGrid'),
+        playWorld: document.getElementById('playingWorldName'),
+        life: document.getElementById('lifeMeter'),
+        progress: document.getElementById('progress'),
+        arena: document.getElementById('arena'),
+        taskCard: document.getElementById('taskCard'),
+        caption: document.getElementById('taskCaption'),
+        main: document.getElementById('taskMain'),
+        help: document.getElementById('taskHelp'),
+        message: document.getElementById('swipeMessage'),
+        trail: document.getElementById('trail'),
+        directionButtons: document.getElementById('directionButtons'),
+        resultSymbol: document.getElementById('resultSymbol'),
+        resultTitle: document.getElementById('resultTitle'),
+        resultText: document.getElementById('resultText')
+      };
+      let selectedWorldId = 'start';
+      let game = null;
+      let swipeStart = null;
+      let concealTimer = null;
+      let advanceTimer = null;
+
+      function pick(list) {
+        return list[Math.floor(Math.random() * list.length)];
+      }
+      function otherDirections(directionId) {
+        return EVERY_DIRECTION.filter((id) => id !== directionId);
+      }
+      function normalRound(directionId = pick(EVERY_DIRECTION)) {
+        const direction = BY_ID[directionId];
+        return { type: 'normal', steps: [[directionId]], caption: '直接方向', main: `往${direction.label}`, help: `向${direction.label}滑動 ${direction.arrow}`, explanation: `看到「往${direction.label}」，就向${direction.label}滑動。` };
+      }
+      function negationRound(directionId = pick(EVERY_DIRECTION)) {
+        const direction = BY_ID[directionId];
+        return { type: 'negation', steps: [otherDirections(directionId)], caption: '否定指令', main: `不要往${direction.label}`, help: '選任何一個「不是」這個方向的滑法', explanation: `「不要往${direction.label}」表示不選${direction.label}；其餘三個方向都正確。` };
+      }
+      function doubleNotRound(directionId = pick(EVERY_DIRECTION)) {
+        const direction = BY_ID[directionId];
+        return { type: 'double-not', steps: [[directionId]], caption: '雙重否定', main: `不要「不要往${direction.label}」`, help: '兩次「不要」會抵消', explanation: `「不要『不要往${direction.label}』」等於往${direction.label}。` };
+      }
+      function sequenceRound() {
+        const first = pick(EVERY_DIRECTION);
+        let second = pick(EVERY_DIRECTION);
+        while (second === first) second = pick(EVERY_DIRECTION);
+        return { type: 'sequence', steps: [[first], [second]], caption: '連續指令', main: `先${BY_ID[first].label}，再${BY_ID[second].label}`, help: `第 1 步：向${BY_ID[first].label}${BY_ID[first].arrow}`, explanation: `順序是先${BY_ID[first].label}後${BY_ID[second].label}，不能交換。` };
+      }
+      function phraseRound() {
+        const direction = pick(DIRECTIONS);
+        return { type: 'phrase', steps: [[direction.id]], caption: '語句提示', main: direction.phrase, help: '把語句中的位置線索換成方向', explanation: `「${direction.phrase}」的方向線索是${direction.label}。` };
+      }
+      function shadowRound() {
+        const round = normalRound();
+        round.type = 'shadow';
+        round.caption = '記憶提示・稍後遮住';
+        round.concealMs = 850;
+        round.help = '先記住，再作答';
+        return round;
+      }
+      function shapeRound() {
+        const direction = pick(DIRECTIONS);
+        return { type: 'shape', steps: [[direction.id]], caption: '形狀方向', main: direction.shape, help: '△＝上　◇＝右　▽＝下　○＝左', explanation: `符號 ${direction.shape} 代表${direction.label}。` };
+      }
+      function colorRound() {
+        const answer = pick(DIRECTIONS);
+        let distractor = pick(DIRECTIONS);
+        while (distractor.id === answer.id) distractor = pick(DIRECTIONS);
+        return { type: 'color', steps: [[answer.id]], caption: '看顏色，不看文字', main: distractor.label, help: '青＝上　橙＝右　紫＝下　粉＝左', taskColor: answer.color, explanation: `這個字的顏色代表${answer.label}，文字「${distractor.label}」是干擾。` };
+      }
+      function voidRound(index) {
+        const patterns = [normalRound, negationRound, doubleNotRound, shadowRound, sequenceRound];
+        const round = patterns[index % patterns.length]();
+        if (round.type === 'normal') round.caption = '虛空混合・直接方向';
+        if (round.type === 'negation') round.caption = '虛空混合・否定';
+        if (round.type === 'double-not') round.caption = '虛空混合・雙重否定';
+        return round;
+      }
+      function makeRound(worldId, index) {
+        switch (worldId) {
+          case 'start': return normalRound();
+          case 'negation': return negationRound();
+          case 'proverb': return phraseRound();
+          case 'continuous': return sequenceRound();
+          case 'shadow': return shadowRound();
+          case 'double-not': return doubleNotRound();
+          case 'shape': return shapeRound();
+          case 'color': return colorRound();
+          case 'void': return voidRound(index);
+          default: return normalRound();
+        }
+      }
+      function setTheme(world) {
+        els.shell.style.setProperty('--accent', world.id === 'color' ? '#ddff1e' : world.id === 'double-not' ? '#ffc44c' : '#60d9ff');
+        els.shell.style.setProperty('--accent2', world.id === 'negation' ? '#ff6f9b' : world.id === 'continuous' ? '#ba7dff' : '#7bc8ff');
+        els.shell.style.background = `radial-gradient(circle at 18% 18%, ${world.a} 0%, transparent 32%), radial-gradient(circle at 83% 84%, ${world.b} 0%, transparent 34%), linear-gradient(155deg, #061527 0%, ${world.a} 53%, ${world.b} 130%)`;
+      }
+      function showScreen(name) {
+        clearTimeout(concealTimer);
+        clearTimeout(advanceTimer);
+        ['start', 'worlds', 'play', 'end'].forEach((screen) => { els[screen].hidden = screen !== name; });
+        window.scrollTo(0, 0);
+        els.shell.scrollTop = 0;
+      }
+      function renderWorlds() {
+        const world = WORLD_BY_ID[selectedWorldId];
+        setTheme(world);
+        els.strip.innerHTML = '';
+        WORLDS.forEach((item) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'world-card';
+          button.dataset.world = item.id;
+          button.setAttribute('aria-pressed', String(item.id === selectedWorldId));
+          button.style.setProperty('--card-a', item.a);
+          button.style.setProperty('--card-b', item.b);
+          button.innerHTML = `<span class="world-symbol" aria-hidden="true">${item.symbol}</span><strong>${item.title}</strong><span>${item.subtitle}</span>`;
+          button.addEventListener('click', () => {
+            selectedWorldId = item.id;
+            renderWorlds();
+            button.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+          });
+          els.strip.appendChild(button);
+        });
+        els.selectedName.textContent = world.title;
+        els.selectedDesc.textContent = world.description;
+        els.selectedRule.textContent = world.rule;
+        els.difficultyGrid.innerHTML = '';
+        DIFFICULTIES.forEach((difficulty) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'difficulty-card';
+          button.innerHTML = `<b>${difficulty.count}</b><strong>${difficulty.label}</strong><span>${difficulty.detail}</span>`;
+          button.addEventListener('click', () => startGame(selectedWorldId, difficulty));
+          els.difficultyGrid.appendChild(button);
+        });
+      }
+      function renderProgress() {
+        const shown = Math.min(game.count, 12);
+        els.progress.innerHTML = '';
+        for (let index = 0; index < shown; index += 1) {
+          const dot = document.createElement('span');
+          dot.className = 'progress-dot';
+          if (index < game.index) dot.classList.add('done');
+          if (index === game.index) dot.classList.add('current');
+          els.progress.appendChild(dot);
+        }
+        if (game.count > shown) {
+          const extra = document.createElement('small');
+          extra.textContent = ` ${game.index + 1}/${game.count}`;
+          els.progress.appendChild(extra);
+        }
+      }
+      function renderRound() {
+        const round = game.rounds[game.index];
+        const step = game.step;
+        els.playWorld.innerHTML = `${game.world.title}<small>第 ${game.index + 1} / ${game.count} 題</small>`;
+        els.life.textContent = `❤ ${game.lives}　連對 ${game.streak}`;
+        els.caption.textContent = round.caption;
+        els.main.textContent = round.main;
+        els.main.classList.toggle('color-word', Boolean(round.taskColor));
+        els.main.style.setProperty('--task-color', round.taskColor || 'var(--ink)');
+        els.help.textContent = round.type === 'sequence' && step === 1 ? `第 2 步：向${BY_ID[round.steps[1][0]].label}${BY_ID[round.steps[1][0]].arrow}` : round.help;
+        els.taskCard.classList.remove('is-concealed');
+        els.message.textContent = step === 0 ? '在中央卡片上滑動，或使用下方按鈕。' : '第一步正確，立刻完成第二步。';
+        els.message.className = 'swipe-message';
+        renderProgress();
+        if (round.concealMs) {
+          concealTimer = setTimeout(() => {
+            if (game && game.rounds[game.index] === round) {
+              els.taskCard.classList.add('is-concealed');
+              els.message.textContent = '提示已遮住：憑記憶滑動。';
+            }
+          }, round.concealMs);
+        }
+      }
+      function startGame(worldId, difficulty) {
+        const world = WORLD_BY_ID[worldId];
+        setTheme(world);
+        game = {
+          world,
+          difficulty,
+          count: difficulty.count,
+          index: 0,
+          step: 0,
+          lives: 3,
+          streak: 0,
+          answered: false,
+          rounds: Array.from({ length: difficulty.count }, (_, index) => makeRound(worldId, index))
+        };
+        showScreen('play');
+        renderRound();
+        els.arena.focus({ preventScroll: true });
+        els.shell.scrollTop = 0;
+      }
+      function animateTrail(directionId) {
+        const angle = { right: 0, down: 90, left: 180, up: -90 }[directionId];
+        els.trail.classList.remove('show');
+        els.trail.style.left = '50%';
+        els.trail.style.top = '50%';
+        els.trail.style.transform = `rotate(${angle}deg)`;
+        requestAnimationFrame(() => els.trail.classList.add('show'));
+      }
+      function pulseArena(type) {
+        els.arena.classList.remove('is-good', 'is-bad');
+        requestAnimationFrame(() => els.arena.classList.add(type === 'good' ? 'is-good' : 'is-bad'));
+      }
+      function endGame(won) {
+        const recordKey = 'not-not-direction-best';
+        const oldBest = Number(localStorage.getItem(recordKey) || 0);
+        const completed = game.index + (won ? 1 : 0);
+        if (completed > oldBest) localStorage.setItem(recordKey, String(completed));
+        els.resultSymbol.textContent = won ? '✦' : '↻';
+        els.resultTitle.textContent = won ? '這個世界完成了！' : '先停一下，再重新判讀';
+        els.resultText.textContent = won
+          ? `你完成了 ${game.world.title}的 ${game.difficulty.label}挑戰，共 ${game.count} 題。最高單次完成題數：${Math.max(oldBest, completed)}。`
+          : `這次完成 ${completed} / ${game.count} 題。遇到「不要」時，先把不可以的方向劃掉，再選剩下的方向。`;
+        showScreen('end');
+      }
+      function handleDirection(directionId) {
+        if (!game || game.answered) return;
+        const round = game.rounds[game.index];
+        const isCorrect = round.steps[game.step].includes(directionId);
+        animateTrail(directionId);
+        clearTimeout(concealTimer);
+        if (!isCorrect) {
+          game.lives -= 1;
+          game.streak = 0;
+          pulseArena('bad');
+          els.taskCard.classList.remove('is-concealed');
+          els.message.textContent = `這次不對：${round.explanation}`;
+          els.message.className = 'swipe-message bad';
+          els.life.textContent = `❤ ${game.lives}　連對 ${game.streak}`;
+          if (game.lives <= 0) {
+            game.answered = true;
+            advanceTimer = setTimeout(() => endGame(false), 1550);
+          } else {
+            advanceTimer = setTimeout(() => renderRound(), 1650);
+          }
+          return;
+        }
+        pulseArena('good');
+        game.streak += 1;
+        if (game.step < round.steps.length - 1) {
+          game.step += 1;
+          els.message.textContent = '第一步正確！接著完成第二步。';
+          els.message.className = 'swipe-message good';
+          advanceTimer = setTimeout(renderRound, 460);
+          return;
+        }
+        game.answered = true;
+        els.message.textContent = `正確！${round.explanation}`;
+        els.message.className = 'swipe-message good';
+        advanceTimer = setTimeout(() => {
+          game.index += 1;
+          game.step = 0;
+          game.answered = false;
+          if (game.index >= game.count) endGame(true);
+          else renderRound();
+        }, 680);
+      }
+      function renderDirectionButtons() {
+        els.directionButtons.innerHTML = '';
+        DIRECTIONS.forEach((direction) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'direction-button';
+          button.textContent = direction.arrow;
+          button.title = `向${direction.label}`;
+          button.setAttribute('aria-label', `向${direction.label}`);
+          button.addEventListener('click', () => handleDirection(direction.id));
+          els.directionButtons.appendChild(button);
+        });
+      }
+      function directionFromDelta(dx, dy) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < 26) return null;
+        if (Math.abs(dx) > Math.abs(dy)) return dx > 0 ? 'right' : 'left';
+        return dy > 0 ? 'down' : 'up';
+      }
+      els.arena.addEventListener('pointerdown', (event) => {
+        if (!game || game.answered) return;
+        swipeStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+        els.arena.setPointerCapture?.(event.pointerId);
+      });
+      els.arena.addEventListener('pointerup', (event) => {
+        if (!swipeStart || swipeStart.pointerId !== event.pointerId) return;
+        const directionId = directionFromDelta(event.clientX - swipeStart.x, event.clientY - swipeStart.y);
+        swipeStart = null;
+        if (directionId) handleDirection(directionId);
+        else {
+          els.message.textContent = '再滑長一點：往上、下、左或右其中一個方向。';
+          els.message.className = 'swipe-message';
+        }
+      });
+      els.arena.addEventListener('pointercancel', () => { swipeStart = null; });
+      els.arena.addEventListener('keydown', (event) => {
+        const keyMap = { ArrowUp: 'up', ArrowRight: 'right', ArrowDown: 'down', ArrowLeft: 'left' };
+        if (keyMap[event.key]) {
+          event.preventDefault();
+          handleDirection(keyMap[event.key]);
+        }
+      });
+      document.getElementById('openWorlds').addEventListener('click', () => { renderWorlds(); showScreen('worlds'); });
+      document.getElementById('backToWorlds').addEventListener('click', () => { renderWorlds(); showScreen('worlds'); });
+      document.getElementById('chooseWorldButton').addEventListener('click', () => { renderWorlds(); showScreen('worlds'); });
+      document.getElementById('retryButton').addEventListener('click', () => startGame(game.world.id, game.difficulty));
+      renderDirectionButtons();
+      setTheme(WORLD_BY_ID[selectedWorldId]);
+    })();
+  </script>
+</body>
+</html>
