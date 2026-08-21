@@ -259,6 +259,9 @@
       cursor: default;
       box-shadow: inset 0 0 0 2px rgba(15, 118, 110, .45);
     }
+    .number-cell.hinted {
+      box-shadow: inset 0 0 0 3px rgba(217, 119, 6, .92);
+    }
     .number-cell:disabled { opacity: 1; }
     .number-cell.wrong { animation: wrong-flash .48s ease both; }
     @keyframes wrong-flash {
@@ -455,8 +458,8 @@
             <span class="control-label">作答模式</span>
             <div class="mode-switch" role="group" aria-label="選擇作答模式">
               <button class="mode-button" id="practiceMode" type="button" aria-pressed="true">練習模式</button>
-              <button class="mode-button" id="gameMode" type="button" aria-pressed="false">遊戲模式・3 次機會</button>
-              <button class="mode-button" id="quickMode" type="button" aria-pressed="false">快速模式・3 次機會＋自動揭示</button>
+              <button class="mode-button" id="gameMode" type="button" aria-pressed="false">遊戲模式・依行數給心</button>
+              <button class="mode-button" id="quickMode" type="button" aria-pressed="false">快速模式・依行數給心＋自動揭示</button>
               <button class="mode-button" id="quickAddonMode" type="button" aria-pressed="false">快速外掛模式・反向扣除</button>
             </div>
           </div>
@@ -508,16 +511,17 @@
             <li>每列與每欄的「已選和」都要剛好等於目標。紅色表示超過，綠色表示已剛好達標。</li>
             <li>選<strong>有色：列＋欄＋區塊</strong>時，每一個同色連通區也有自己的目標和，格子左上角的 <strong>Σ</strong> 會標在該區塊的起點。</li>
             <li>選 <strong>21 × 21</strong> 時，手機請在棋盤區<strong>左右滑動</strong>查看完整欄位；頁面其他部分不會跟著橫向移動。</li>
-            <li><strong>遊戲模式</strong>中，每次標○或Ⅹ都會立即判定。答對會鎖定格子；答錯扣一顆心，三次機會用完就自動開始新題。</li>
-            <li><strong>快速模式</strong>和遊戲模式一樣：每次標○或Ⅹ都會立即判定，答錯扣一顆心，三次錯誤後自動換新題。差別是答對後，若已找齊某一列、某一欄或某一色塊的全部正確○或全部正確Ⅹ，該組其餘格就會自動顯示並鎖定；顯示後會連鎖檢查其他組。</li>
+            <li><strong>遊戲模式</strong>中，每次標○或Ⅹ都會立即判定。起始心數等於棋盤的行數，例如 4 × 4 有 4 顆心、21 × 21 有 21 顆心；答錯扣一顆心，心用完就自動開始新題。</li>
+            <li><strong>快速模式</strong>和遊戲模式一樣：每次標○或Ⅹ都會立即判定，起始心數等於棋盤行數，答錯扣一顆心。差別是答對後，若已找齊某一列、某一欄或某一色塊的全部正確○或全部正確Ⅹ，該組其餘格就會自動顯示並鎖定；顯示後會連鎖檢查其他組。</li>
             <li><strong>快速外掛模式</strong>保留快速模式的所有規則，並在<strong>每一欄下方</strong>顯示「扣除Ⅹ後的欄總和」，在<strong>每一列右方</strong>顯示「扣除Ⅹ後的列總和」。當目標接近該行或該列的原始總和時，可改想「還要扣掉多少」。</li>
+            <li>在遊戲、快速與快速外掛模式中，按<strong>提示</strong>會扣一顆心，並隨機顯示一格正確的○或Ⅹ；為保留最後一次作答機會，剩最後一顆心時不能再使用提示。</li>
           </ol>
           <p class="mistake">常見錯誤：只湊好某一列，就忘了同一格也同時影響它所在的欄（以及彩色模式中的區塊）。每選一個數，至少回頭看兩個方向。</p>
         </div>
       </details>
 
       <aside class="teacher-note">
-        <strong>教學使用建議：</strong>先用 4 × 4 的彩色<strong>練習模式</strong>，要求學生每做一次○／Ⅹ判斷都說出列、欄、色塊的理由；接著用同樣有三次機會的<strong>快速模式</strong>，讓學生體會「找齊一組就能推完剩下格子」；目標接近全盤總和時，切換<strong>快速外掛模式</strong>，讓學生從「還要扣多少」反推；最後再改為<strong>遊戲模式</strong>，檢查學生能否完全靠自己穩定排除不可能的格子。可一路擴大到 21 × 21。
+        <strong>教學使用建議：</strong>先用 4 × 4 的彩色<strong>練習模式</strong>，要求學生每做一次○／Ⅹ判斷都說出列、欄、色塊的理由；接著用起始心數等於行數的<strong>快速模式</strong>，讓學生體會「找齊一組就能推完剩下格子」；目標接近全盤總和時，切換<strong>快速外掛模式</strong>，讓學生從「還要扣多少」反推；最後再改為<strong>遊戲模式</strong>，檢查學生能否完全靠自己穩定排除不可能的格子。可一路擴大到 21 × 21。
       </aside>
       <a class="back" href="./index.html#other">← 回到數學小遊戲首頁</a>
     </div>
@@ -581,6 +585,7 @@
         marks: [],
         locked: [],
         revealed: [],
+        hinted: [],
         regions: [],
         solution: [],
         rowTargets: [],
@@ -589,7 +594,8 @@
         startedAt: null,
         elapsedMs: 0,
         completed: false,
-        lives: 3,
+        lives: 4,
+        maxLives: 4,
         wrongCell: '',
         timerId: null,
         restartTimer: null
@@ -730,6 +736,7 @@
         state.marks = emptyGrid(state.size, '');
         state.locked = emptyGrid(state.size, false);
         state.revealed = emptyGrid(state.size, false);
+        state.hinted = emptyGrid(state.size, false);
         state.rowTargets = Array.from({ length: state.size }, (_, row) => sumForRow(row, state.solution));
         state.columnTargets = Array.from({ length: state.size }, (_, col) => sumForColumn(col, state.solution));
         const regionCount = Math.max(...state.regions.flat()) + 1;
@@ -737,14 +744,15 @@
         state.startedAt = null;
         state.elapsedMs = 0;
         state.completed = false;
-        state.lives = 3;
+        state.maxLives = state.size;
+        state.lives = state.maxLives;
         state.wrongCell = '';
         state.markerTool = 'o';
         const denseBoardTip = state.size >= 16 ? ' 21 × 21 棋盤較寬；手機可在棋盤區左右滑動查看完整欄位。' : '';
         setMessage(state.gameMode
-          ? `遊戲模式開始：選○或Ⅹ後會立刻判定。答錯會扣一顆心，三次錯誤後自動換新題。${denseBoardTip}`
+          ? `遊戲模式開始：本題有 ${state.maxLives} 顆心（和棋盤行數相同）。選○或Ⅹ後會立刻判定；答錯扣一顆心，心用完後自動換新題。${denseBoardTip}`
           : isQuickRevealMode()
-            ? `${quickModeName()}開始：同樣只有三次機會，選○或Ⅹ後會立刻判定；答對後找齊任一列、欄或色塊的全部正確○或Ⅹ，就會自動揭示該組其餘格。${state.quickAddonMode ? ' 每一欄下方與每一列右方會同步顯示扣除Ⅹ後的總和。' : ''}${denseBoardTip}`
+            ? `${quickModeName()}開始：本題有 ${state.maxLives} 顆心（和棋盤行數相同）。選○或Ⅹ後會立刻判定；答對後找齊任一列、欄或色塊的全部正確○或Ⅹ，就會自動揭示該組其餘格。${state.quickAddonMode ? ' 每一欄下方與每一列右方會同步顯示扣除Ⅹ後的總和。' : ''}${denseBoardTip}`
             : `練習模式：先找目標較小、容易湊出的列或欄，再利用○／Ⅹ標記排除選項。${denseBoardTip}`);
         render();
       }
@@ -885,18 +893,20 @@
             const mark = state.marks[row][col];
             const isLocked = state.locked[row][col];
             const isRevealed = state.revealed[row][col];
+            const isHinted = state.hinted[row][col];
             const cell = document.createElement('button');
             cell.type = 'button';
-            cell.className = `number-cell ${state.colorMode ? 'color-cell' : 'plain-cell'}${mark === 'o' ? ' selected marked-o' : ''}${mark === 'x' ? ' marked-x' : ''}${isLocked ? ' locked' : ''}${isRevealed ? ' revealed' : ''}${state.wrongCell === cellKey(row, col) ? ' wrong' : ''}`;
+            cell.className = `number-cell ${state.colorMode ? 'color-cell' : 'plain-cell'}${mark === 'o' ? ' selected marked-o' : ''}${mark === 'x' ? ' marked-x' : ''}${isLocked ? ' locked' : ''}${isRevealed ? ' revealed' : ''}${isHinted ? ' hinted' : ''}${state.wrongCell === cellKey(row, col) ? ' wrong' : ''}`;
             cell.dataset.row = row;
             cell.dataset.col = col;
             cell.dataset.mark = mark || 'none';
             cell.dataset.locked = String(isLocked);
             cell.dataset.revealed = String(isRevealed);
+            cell.dataset.hinted = String(isHinted);
             cell.disabled = state.completed || (isScoredMode() && isLocked);
             cell.setAttribute('aria-pressed', String(mark !== ''));
             const markLabel = mark === 'o' ? '已標記○，納入加總' : mark === 'x' ? '已標記Ⅹ，不納入加總' : '尚未標記';
-            cell.setAttribute('aria-label', `第 ${row + 1} 列第 ${col + 1} 欄，數字 ${state.values[row][col]}，${markLabel}${isLocked ? '，判定正確並鎖定' : ''}${isRevealed ? `，${quickModeName()}已自動顯示並鎖定` : ''}`);
+            cell.setAttribute('aria-label', `第 ${row + 1} 列第 ${col + 1} 欄，數字 ${state.values[row][col]}，${markLabel}${isLocked ? '，判定正確並鎖定' : ''}${isRevealed ? `，${quickModeName()}已自動顯示並鎖定` : ''}${isHinted ? '，提示已顯示並鎖定' : ''}`);
             if (state.colorMode) {
               const color = regionColor(regionId);
               cell.style.setProperty('--region-bg', color.bg);
@@ -949,9 +959,16 @@
             : `${counts.rows + counts.columns + counts.regions} / ${counts.total}`;
         modeStatus.textContent = state.gameMode ? '遊戲' : state.quickAddonMode ? '快速外掛' : state.quickMode ? '快速' : '練習';
         lifeStatus.classList.toggle('lives', isScoredMode());
-        lifeStatus.textContent = isScoredMode()
-          ? `${'♥'.repeat(state.lives)}${'♡'.repeat(3 - state.lives)}・剩 ${state.lives} 次`
-          : '可反覆嘗試';
+        if (isScoredMode()) {
+          const heartMeter = state.maxLives <= 8
+            ? `${'♥'.repeat(state.lives)}${'♡'.repeat(state.maxLives - state.lives)}`
+            : `♥ ${state.lives} / ${state.maxLives}`;
+          lifeStatus.textContent = heartMeter;
+          lifeStatus.setAttribute('aria-label', `剩餘 ${state.lives} / ${state.maxLives} 顆心`);
+        } else {
+          lifeStatus.textContent = '可反覆嘗試';
+          lifeStatus.removeAttribute('aria-label');
+        }
         timerStatus.textContent = formatTime(state.elapsedMs);
       }
 
@@ -965,6 +982,8 @@
         circleToolButton.setAttribute('aria-pressed', String(state.markerTool === 'o'));
         crossToolButton.setAttribute('aria-pressed', String(state.markerTool === 'x'));
         clearButton.textContent = isScoredMode() ? '重新開始本題' : '清除本次標記';
+        hintButton.textContent = isScoredMode() ? '提示：扣 1 ♥ 隨機顯示一格' : '提示：先看哪個條件？';
+        hintButton.disabled = isScoredMode() && (state.completed || state.lives <= 1 || state.locked.flat().every(Boolean));
       }
 
       function beginTimerIfNeeded() {
@@ -1015,12 +1034,12 @@
           state.completed = true;
           stopTimer();
           render();
-          setMessage('三次機會已用完，這題會自動重新開始。先回想剛才哪個列、欄或色塊的條件沒有一起檢查。', 'warning');
+          setMessage('心已用完，這題會自動重新開始。先回想剛才哪個列、欄或色塊的條件沒有一起檢查。', 'warning');
           state.restartTimer = window.setTimeout(buildPuzzle, 1000);
           return;
         }
         render();
-        setMessage(`這格的○／Ⅹ判定不正確，扣一顆心。還有 ${state.lives} 次機會；先從同一列、同一欄${state.colorMode ? '與色塊' : ''}的目標和重新檢查。`, 'warning');
+        setMessage(`這格的○／Ⅹ判定不正確，扣一顆心。還有 ${state.lives} / ${state.maxLives} 顆心；先從同一列、同一欄${state.colorMode ? '與色塊' : ''}的目標和重新檢查。`, 'warning');
         window.setTimeout(() => {
           if (state.wrongCell === cellKey(row, col) && !state.completed) {
             state.wrongCell = '';
@@ -1062,7 +1081,7 @@
         state.completed = true;
         stopTimer();
         render();
-        setMessage(`全部 ${state.size * state.size} 格的○／Ⅹ都判定正確！你還保有 ${state.lives} 次機會，完成時間 ${formatTime(state.elapsedMs)}。`, 'success');
+        setMessage(`全部 ${state.size * state.size} 格的○／Ⅹ都判定正確！你還保有 ${state.lives} / ${state.maxLives} 顆心，完成時間 ${formatTime(state.elapsedMs)}。`, 'success');
       }
 
       function setMessage(text, kind = '') {
@@ -1099,19 +1118,21 @@
           state.marks = emptyGrid(state.size, '');
           state.locked = emptyGrid(state.size, false);
           state.revealed = emptyGrid(state.size, false);
+          state.hinted = emptyGrid(state.size, false);
           state.startedAt = null;
           state.elapsedMs = 0;
           state.completed = false;
-          state.lives = 3;
+          state.lives = state.maxLives;
           state.wrongCell = '';
           stopTimer();
           render();
-          setMessage(`已重新開始這一題，三次機會已恢復。${isQuickRevealMode() ? `${quickModeName()}會在答對後協助揭示已確定的列、欄或色塊。` : ''}`);
+          setMessage(`已重新開始這一題，${state.maxLives} 顆心已恢復。${isQuickRevealMode() ? `${quickModeName()}會在答對後協助揭示已確定的列、欄或色塊。` : ''}`);
           return;
         }
         if (state.completed) return;
         state.marks = emptyGrid(state.size, '');
         state.revealed = emptyGrid(state.size, false);
+        state.hinted = emptyGrid(state.size, false);
         state.startedAt = null;
         state.elapsedMs = 0;
         stopTimer();
@@ -1122,13 +1143,13 @@
       function checkCurrent() {
         if (state.gameMode) {
           const correctMarks = state.locked.flat().filter(Boolean).length;
-          setMessage(`遊戲模式會在每次標○／Ⅹ後立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} 次機會。`);
+          setMessage(`遊戲模式會在每次標○／Ⅹ後立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} / ${state.maxLives} 顆心。`);
           return;
         }
         if (isQuickRevealMode()) {
           const correctMarks = state.locked.flat().filter(Boolean).length;
           const revealedCells = state.revealed.flat().filter(Boolean).length;
-          setMessage(`${quickModeName()}和遊戲模式一樣會立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} 次機會；其中 ${revealedCells} 格由完成列、欄或色塊後自動顯示。${state.quickAddonMode ? '可查看每一欄下方與每一列右方的扣後總和，進行反向檢查。' : ''}`);
+          setMessage(`${quickModeName()}和遊戲模式一樣會立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} / ${state.maxLives} 顆心；其中 ${revealedCells} 格由完成列、欄或色塊後自動顯示。${state.quickAddonMode ? '可查看每一欄下方與每一列右方的扣後總和，進行反向檢查。' : ''}`);
           return;
         }
         if (isSolved()) {
@@ -1145,6 +1166,10 @@
       }
 
       function giveHint() {
+        if (isScoredMode()) {
+          giveScoredHint();
+          return;
+        }
         const options = [];
         state.rowTargets.forEach((target, row) => {
           const now = sumForRow(row);
@@ -1168,6 +1193,47 @@
         const clue = options[0];
         const difference = clue.target - clue.now;
         setMessage(`建議先看「${clue.label}」：目前已選和是 ${clue.now}，目標是 ${clue.target}，${difference > 0 ? `還差 ${difference}` : `超過 ${Math.abs(difference)}`}。提示不會直接圈出答案。`, difference < 0 ? 'warning' : '');
+      }
+
+      function giveScoredHint() {
+        if (state.completed) return;
+        if (state.lives <= 1) {
+          setMessage(`剩最後一顆心，不能再消耗提示；先用列、欄${state.colorMode ? '與色塊' : ''}的目標和做最後一次判斷。`, 'warning');
+          return;
+        }
+        const candidates = [];
+        for (let row = 0; row < state.size; row += 1) {
+          for (let col = 0; col < state.size; col += 1) {
+            if (!state.locked[row][col]) candidates.push({ row, col });
+          }
+        }
+        if (!candidates.length) {
+          if (isQuickRevealMode()) finishQuick();
+          else finishGame();
+          return;
+        }
+
+        beginTimerIfNeeded();
+        const { row, col } = candidates[Math.floor(Math.random() * candidates.length)];
+        const expectedMark = state.solution[row][col] ? 'o' : 'x';
+        state.lives -= 1;
+        state.marks[row][col] = expectedMark;
+        state.locked[row][col] = true;
+        state.hinted[row][col] = true;
+        state.wrongCell = '';
+        const quickReveals = isQuickRevealMode() ? applyQuickReveals() : [];
+        render();
+
+        if (state.locked.flat().every(Boolean)) {
+          if (isQuickRevealMode()) finishQuick();
+          else finishGame();
+          return;
+        }
+        const markText = expectedMark === 'o' ? '○（納入加總）' : 'Ⅹ（不納入加總）';
+        const revealText = quickReveals.length
+          ? `，並觸發 ${quickReveals.length} 組快速揭示`
+          : '';
+        setMessage(`提示已扣除 1 顆心：第 ${row + 1} 列第 ${col + 1} 欄應標 ${markText}，並已鎖定。剩 ${state.lives} / ${state.maxLives} 顆心${revealText}。`, 'success');
       }
 
       function setColorMode(colorMode) {
