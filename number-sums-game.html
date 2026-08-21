@@ -151,6 +151,8 @@
       width: min(1100px, 100%);
       min-width: 400px;
     }
+    .puzzle-layout.addon-mode { grid-template-columns: 78px minmax(300px, 1fr) 78px; grid-template-rows: 70px minmax(300px, 1fr) 70px; }
+    .puzzle-layout.dense-board.addon-mode { grid-template-columns: 64px minmax(330px, 1fr) 64px; grid-template-rows: 60px minmax(330px, 1fr) 60px; }
     .corner-label {
       display: grid;
       place-items: center;
@@ -163,12 +165,19 @@
       line-height: 1.3;
       text-align: center;
     }
-    .column-targets, .row-targets, .number-board {
+    .column-targets, .row-targets, .column-reverse-targets, .row-reverse-targets, .number-board {
       display: grid;
       gap: 3px;
     }
-    .column-targets, .number-board { grid-template-columns: repeat(var(--size), minmax(0, 1fr)); }
-    .row-targets { grid-template-rows: repeat(var(--size), minmax(0, 1fr)); }
+    .column-targets, .column-reverse-targets, .number-board { grid-template-columns: repeat(var(--size), minmax(0, 1fr)); }
+    .row-targets, .row-reverse-targets { grid-template-rows: repeat(var(--size), minmax(0, 1fr)); }
+    .corner-label { grid-column: 1; grid-row: 1; }
+    .column-targets { grid-column: 2; grid-row: 1; }
+    .row-targets { grid-column: 1; grid-row: 2; }
+    .number-board { grid-column: 2; grid-row: 2; }
+    .column-reverse-targets, .row-reverse-targets { display: none; }
+    .puzzle-layout.addon-mode .column-reverse-targets { display: grid; grid-column: 2; grid-row: 3; }
+    .puzzle-layout.addon-mode .row-reverse-targets { display: grid; grid-column: 3; grid-row: 2; }
     .target {
       display: grid;
       place-content: center;
@@ -271,6 +280,12 @@
     .number-cell.color-cell.selected { color: #19324d; }
     .number-cell.color-cell.selected::before { border-color: var(--region-ink); }
     .number-cell.plain-cell.selected::before { border-color: #2563eb; }
+    .reverse-line-target { border-color: #67e8f9; color: #0e7490; background: #ecfeff; }
+    .reverse-line-target small { color: #0f766e; }
+    .reverse-line-target .now { color: #0f766e; }
+    .reverse-line-target.needs-cross { border-color: #fcd34d; color: #92400e; background: #fffbeb; }
+    .reverse-line-target.too-low { border-color: #fecaca; color: #b91c1c; background: #fff1f2; }
+    .reverse-line-target.matched { border-color: #86efac; color: #166534; background: #f0fdf4; }
     .region-label {
       position: absolute;
       top: 2px;
@@ -376,6 +391,8 @@
       .board-card { padding: 9px; }
       .puzzle-layout { grid-template-columns: 51px minmax(286px, 1fr); grid-template-rows: 52px minmax(286px, 1fr); gap: 4px; min-width: 337px; }
       .puzzle-layout.dense-board { grid-template-columns: 44px minmax(390px, 1fr); grid-template-rows: 40px minmax(390px, 1fr); gap: 3px; min-width: 437px; }
+      .puzzle-layout.addon-mode { grid-template-columns: 44px minmax(286px, 1fr) 44px; grid-template-rows: 52px minmax(286px, 1fr) 52px; min-width: 382px; }
+      .puzzle-layout.dense-board.addon-mode { grid-template-columns: 44px minmax(390px, 1fr) 44px; grid-template-rows: 40px minmax(390px, 1fr) 40px; min-width: 481px; }
       .target b { font-size: 17px; }
       .target small, .target .now { font-size: 8px; }
       .number-board { border-width: 2px; border-radius: 9px; }
@@ -440,6 +457,7 @@
               <button class="mode-button" id="practiceMode" type="button" aria-pressed="true">練習模式</button>
               <button class="mode-button" id="gameMode" type="button" aria-pressed="false">遊戲模式・3 次機會</button>
               <button class="mode-button" id="quickMode" type="button" aria-pressed="false">快速模式・3 次機會＋自動揭示</button>
+              <button class="mode-button" id="quickAddonMode" type="button" aria-pressed="false">快速外掛模式・反向扣除</button>
             </div>
           </div>
           <button class="primary-button" id="newGameButton" type="button">換一題</button>
@@ -467,6 +485,8 @@
           <div class="column-targets" id="columnTargets" aria-label="欄目標"></div>
           <div class="row-targets" id="rowTargets" aria-label="列目標"></div>
           <div class="number-board" id="numberBoard" aria-label="數字棋盤"></div>
+          <div class="column-reverse-targets" id="columnReverseTargets" aria-label="扣除Ⅹ後的欄總和"></div>
+          <div class="row-reverse-targets" id="rowReverseTargets" aria-label="扣除Ⅹ後的列總和"></div>
         </div>
         <div class="legend" id="legend">
           <span><i class="legend-mark"></i>○：選取、納入加總</span>
@@ -490,13 +510,14 @@
             <li>選 <strong>21 × 21</strong> 時，手機請在棋盤區<strong>左右滑動</strong>查看完整欄位；頁面其他部分不會跟著橫向移動。</li>
             <li><strong>遊戲模式</strong>中，每次標○或Ⅹ都會立即判定。答對會鎖定格子；答錯扣一顆心，三次機會用完就自動開始新題。</li>
             <li><strong>快速模式</strong>和遊戲模式一樣：每次標○或Ⅹ都會立即判定，答錯扣一顆心，三次錯誤後自動換新題。差別是答對後，若已找齊某一列、某一欄或某一色塊的全部正確○或全部正確Ⅹ，該組其餘格就會自動顯示並鎖定；顯示後會連鎖檢查其他組。</li>
+            <li><strong>快速外掛模式</strong>保留快速模式的所有規則，並在<strong>每一欄下方</strong>顯示「扣除Ⅹ後的欄總和」，在<strong>每一列右方</strong>顯示「扣除Ⅹ後的列總和」。當目標接近該行或該列的原始總和時，可改想「還要扣掉多少」。</li>
           </ol>
           <p class="mistake">常見錯誤：只湊好某一列，就忘了同一格也同時影響它所在的欄（以及彩色模式中的區塊）。每選一個數，至少回頭看兩個方向。</p>
         </div>
       </details>
 
       <aside class="teacher-note">
-        <strong>教學使用建議：</strong>先用 4 × 4 的彩色<strong>練習模式</strong>，要求學生每做一次○／Ⅹ判斷都說出列、欄、色塊的理由；接著用同樣有三次機會的<strong>快速模式</strong>，讓學生體會「找齊一組就能推完剩下格子」；最後再改為<strong>遊戲模式</strong>，檢查學生能否完全靠自己穩定排除不可能的格子。可一路擴大到 21 × 21。
+        <strong>教學使用建議：</strong>先用 4 × 4 的彩色<strong>練習模式</strong>，要求學生每做一次○／Ⅹ判斷都說出列、欄、色塊的理由；接著用同樣有三次機會的<strong>快速模式</strong>，讓學生體會「找齊一組就能推完剩下格子」；目標接近全盤總和時，切換<strong>快速外掛模式</strong>，讓學生從「還要扣多少」反推；最後再改為<strong>遊戲模式</strong>，檢查學生能否完全靠自己穩定排除不可能的格子。可一路擴大到 21 × 21。
       </aside>
       <a class="back" href="./index.html#other">← 回到數學小遊戲首頁</a>
     </div>
@@ -510,6 +531,7 @@
       const practiceModeButton = document.querySelector('#practiceMode');
       const gameModeButton = document.querySelector('#gameMode');
       const quickModeButton = document.querySelector('#quickMode');
+      const quickAddonModeButton = document.querySelector('#quickAddonMode');
       const circleToolButton = document.querySelector('#circleTool');
       const crossToolButton = document.querySelector('#crossTool');
       const newGameButton = document.querySelector('#newGameButton');
@@ -520,6 +542,8 @@
       const rowTargets = document.querySelector('#rowTargets');
       const columnTargets = document.querySelector('#columnTargets');
       const numberBoard = document.querySelector('#numberBoard');
+      const columnReverseTargets = document.querySelector('#columnReverseTargets');
+      const rowReverseTargets = document.querySelector('#rowReverseTargets');
       const legend = document.querySelector('#legend');
       const difficultyStatus = document.querySelector('#difficultyStatus');
       const progressStatus = document.querySelector('#progressStatus');
@@ -551,6 +575,7 @@
         colorMode: false,
         gameMode: false,
         quickMode: false,
+        quickAddonMode: false,
         markerTool: 'o',
         values: [],
         marks: [],
@@ -569,6 +594,18 @@
         timerId: null,
         restartTimer: null
       };
+
+      function isQuickRevealMode() {
+        return state.quickMode || state.quickAddonMode;
+      }
+
+      function isScoredMode() {
+        return state.gameMode || isQuickRevealMode();
+      }
+
+      function quickModeName() {
+        return state.quickAddonMode ? '快速外掛模式' : '快速模式';
+      }
 
       function shuffle(list) {
         const copy = [...list];
@@ -662,6 +699,14 @@
         return state.values.reduce((sum, row, rowIndex) => sum + (shouldAdd(mask[rowIndex][col]) ? row[col] : 0), 0);
       }
 
+      function sumAfterCrossForRow(row) {
+        return state.values[row].reduce((sum, value, col) => sum + (state.marks[row][col] === 'x' ? 0 : value), 0);
+      }
+
+      function sumAfterCrossForColumn(col) {
+        return state.values.reduce((sum, row, rowIndex) => sum + (state.marks[rowIndex][col] === 'x' ? 0 : row[col]), 0);
+      }
+
       function sumForRegion(id, mask = state.marks) {
         let sum = 0;
         for (let row = 0; row < state.size; row += 1) {
@@ -698,8 +743,8 @@
         const denseBoardTip = state.size >= 16 ? ' 21 × 21 棋盤較寬；手機可在棋盤區左右滑動查看完整欄位。' : '';
         setMessage(state.gameMode
           ? `遊戲模式開始：選○或Ⅹ後會立刻判定。答錯會扣一顆心，三次錯誤後自動換新題。${denseBoardTip}`
-          : state.quickMode
-            ? `快速模式開始：同樣只有三次機會，選○或Ⅹ後會立刻判定；答對後找齊任一列、欄或色塊的全部正確○或Ⅹ，就會自動揭示該組其餘格。${denseBoardTip}`
+          : isQuickRevealMode()
+            ? `${quickModeName()}開始：同樣只有三次機會，選○或Ⅹ後會立刻判定；答對後找齊任一列、欄或色塊的全部正確○或Ⅹ，就會自動揭示該組其餘格。${state.quickAddonMode ? ' 每一欄下方與每一列右方會同步顯示扣除Ⅹ後的總和。' : ''}${denseBoardTip}`
             : `練習模式：先找目標較小、容易湊出的列或欄，再利用○／Ⅹ標記排除選項。${denseBoardTip}`);
         render();
       }
@@ -715,6 +760,15 @@
         targetBox.className = `target ${targetClass(now, target)}`;
         targetBox.setAttribute('aria-label', `${label}：已選 ${now}，目標 ${target}`);
         targetBox.innerHTML = `<small>${label}</small><b>${target}</b><span class="now">${now} / ${target}</span>`;
+        return targetBox;
+      }
+
+      function createReverseTarget(label, now, target) {
+        const targetBox = document.createElement('div');
+        const stateClass = now === target ? 'matched' : now > target ? 'needs-cross' : 'too-low';
+        targetBox.className = `target reverse-line-target ${stateClass}`;
+        targetBox.setAttribute('aria-label', `${label}：扣除Ⅹ後總和 ${now}，目標 ${target}`);
+        targetBox.innerHTML = `<small>${label} 扣後</small><b>${now}</b><span class="now">目標 ${target}</span>`;
         return targetBox;
       }
 
@@ -802,9 +856,12 @@
       function render() {
         puzzleLayout.style.setProperty('--size', state.size);
         puzzleLayout.classList.toggle('dense-board', state.size >= 16);
+        puzzleLayout.classList.toggle('addon-mode', state.quickAddonMode);
         numberBoard.classList.toggle('color-board', state.colorMode);
         rowTargets.replaceChildren();
         columnTargets.replaceChildren();
+        rowReverseTargets.replaceChildren();
+        columnReverseTargets.replaceChildren();
         numberBoard.replaceChildren();
 
         for (let col = 0; col < state.size; col += 1) {
@@ -812,6 +869,14 @@
         }
         for (let row = 0; row < state.size; row += 1) {
           rowTargets.append(createTarget(`列 ${row + 1}`, sumForRow(row), state.rowTargets[row]));
+        }
+        if (state.quickAddonMode) {
+          for (let col = 0; col < state.size; col += 1) {
+            columnReverseTargets.append(createReverseTarget(`欄 ${col + 1}`, sumAfterCrossForColumn(col), state.columnTargets[col]));
+          }
+          for (let row = 0; row < state.size; row += 1) {
+            rowReverseTargets.append(createReverseTarget(`列 ${row + 1}`, sumAfterCrossForRow(row), state.rowTargets[row]));
+          }
         }
 
         for (let row = 0; row < state.size; row += 1) {
@@ -828,10 +893,10 @@
             cell.dataset.mark = mark || 'none';
             cell.dataset.locked = String(isLocked);
             cell.dataset.revealed = String(isRevealed);
-            cell.disabled = state.completed || ((state.gameMode || state.quickMode) && isLocked);
+            cell.disabled = state.completed || (isScoredMode() && isLocked);
             cell.setAttribute('aria-pressed', String(mark !== ''));
             const markLabel = mark === 'o' ? '已標記○，納入加總' : mark === 'x' ? '已標記Ⅹ，不納入加總' : '尚未標記';
-            cell.setAttribute('aria-label', `第 ${row + 1} 列第 ${col + 1} 欄，數字 ${state.values[row][col]}，${markLabel}${isLocked ? '，判定正確並鎖定' : ''}${isRevealed ? '，快速模式已自動顯示並鎖定' : ''}`);
+            cell.setAttribute('aria-label', `第 ${row + 1} 列第 ${col + 1} 欄，數字 ${state.values[row][col]}，${markLabel}${isLocked ? '，判定正確並鎖定' : ''}${isRevealed ? `，${quickModeName()}已自動顯示並鎖定` : ''}`);
             if (state.colorMode) {
               const color = regionColor(regionId);
               cell.style.setProperty('--region-bg', color.bg);
@@ -879,12 +944,12 @@
         const revealedCells = state.revealed.flat().filter(Boolean).length;
         progressStatus.textContent = state.gameMode
           ? `${correctMarks} / ${state.size * state.size} 格正確`
-          : state.quickMode
+          : isQuickRevealMode()
             ? `${correctMarks} / ${state.size * state.size} 格正確・自動揭示 ${revealedCells} 格`
             : `${counts.rows + counts.columns + counts.regions} / ${counts.total}`;
-        modeStatus.textContent = state.gameMode ? '遊戲' : state.quickMode ? '快速' : '練習';
-        lifeStatus.classList.toggle('lives', state.gameMode || state.quickMode);
-        lifeStatus.textContent = state.gameMode || state.quickMode
+        modeStatus.textContent = state.gameMode ? '遊戲' : state.quickAddonMode ? '快速外掛' : state.quickMode ? '快速' : '練習';
+        lifeStatus.classList.toggle('lives', isScoredMode());
+        lifeStatus.textContent = isScoredMode()
           ? `${'♥'.repeat(state.lives)}${'♡'.repeat(3 - state.lives)}・剩 ${state.lives} 次`
           : '可反覆嘗試';
         timerStatus.textContent = formatTime(state.elapsedMs);
@@ -893,12 +958,13 @@
       function updateControls() {
         plainModeButton.setAttribute('aria-pressed', String(!state.colorMode));
         colorModeButton.setAttribute('aria-pressed', String(state.colorMode));
-        practiceModeButton.setAttribute('aria-pressed', String(!state.gameMode && !state.quickMode));
+        practiceModeButton.setAttribute('aria-pressed', String(!isScoredMode()));
         gameModeButton.setAttribute('aria-pressed', String(state.gameMode));
         quickModeButton.setAttribute('aria-pressed', String(state.quickMode));
+        quickAddonModeButton.setAttribute('aria-pressed', String(state.quickAddonMode));
         circleToolButton.setAttribute('aria-pressed', String(state.markerTool === 'o'));
         crossToolButton.setAttribute('aria-pressed', String(state.markerTool === 'x'));
-        clearButton.textContent = state.gameMode || state.quickMode ? '重新開始本題' : '清除本次標記';
+        clearButton.textContent = isScoredMode() ? '重新開始本題' : '清除本次標記';
       }
 
       function beginTimerIfNeeded() {
@@ -909,12 +975,12 @@
       }
 
       function markCell(row, col, tool) {
-        const isScoredMode = state.gameMode || state.quickMode;
-        if (state.completed || (isScoredMode && state.locked[row][col])) return;
+        const scoredMode = isScoredMode();
+        if (state.completed || (scoredMode && state.locked[row][col])) return;
         beginTimerIfNeeded();
         const nextMark = state.marks[row][col] === tool ? '' : tool;
 
-        if (!isScoredMode) {
+        if (!scoredMode) {
           state.marks[row][col] = nextMark;
           state.wrongCell = '';
           render();
@@ -927,15 +993,15 @@
           state.marks[row][col] = nextMark;
           state.locked[row][col] = true;
           state.wrongCell = '';
-          const quickReveals = state.quickMode ? applyQuickReveals() : [];
+          const quickReveals = isQuickRevealMode() ? applyQuickReveals() : [];
           render();
           if (state.locked.flat().every(Boolean)) {
-            if (state.quickMode) finishQuick();
+            if (isQuickRevealMode()) finishQuick();
             else finishGame();
-          } else if (state.quickMode && quickReveals.length) {
+          } else if (isQuickRevealMode() && quickReveals.length) {
             const firstReveal = quickReveals[0];
             const chainText = quickReveals.length > 1 ? `，並連鎖揭示 ${quickReveals.length - 1} 組` : '';
-            setMessage(`快速模式：${firstReveal.label} 的全部正確 ${firstReveal.trigger} 已找出，已自動顯示其餘 ${firstReveal.count} 格${chainText}。`, 'success');
+            setMessage(`${quickModeName()}：${firstReveal.label} 的全部正確 ${firstReveal.trigger} 已找出，已自動顯示其餘 ${firstReveal.count} 格${chainText}。`, 'success');
           } else {
             setMessage(`判定正確！這格應標 ${expectedMark === 'o' ? '○，納入加總' : 'Ⅹ，排除'}。`, 'success');
           }
@@ -989,7 +1055,7 @@
         state.completed = true;
         stopTimer();
         render();
-        setMessage(`快速模式完成！所有格子的○／Ⅹ都已顯示正確，完成時間 ${formatTime(state.elapsedMs)}。`, 'success');
+        setMessage(`${quickModeName()}完成！所有格子的○／Ⅹ都已顯示正確，完成時間 ${formatTime(state.elapsedMs)}。`, 'success');
       }
 
       function finishGame() {
@@ -1028,7 +1094,7 @@
       }
 
       function clearSelections() {
-        if (state.gameMode || state.quickMode) {
+        if (isScoredMode()) {
           clearRestartTimer();
           state.marks = emptyGrid(state.size, '');
           state.locked = emptyGrid(state.size, false);
@@ -1040,7 +1106,7 @@
           state.wrongCell = '';
           stopTimer();
           render();
-          setMessage(`已重新開始這一題，三次機會已恢復。${state.quickMode ? '快速模式會在答對後協助揭示已確定的列、欄或色塊。' : ''}`);
+          setMessage(`已重新開始這一題，三次機會已恢復。${isQuickRevealMode() ? `${quickModeName()}會在答對後協助揭示已確定的列、欄或色塊。` : ''}`);
           return;
         }
         if (state.completed) return;
@@ -1059,10 +1125,10 @@
           setMessage(`遊戲模式會在每次標○／Ⅹ後立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} 次機會。`);
           return;
         }
-        if (state.quickMode) {
+        if (isQuickRevealMode()) {
           const correctMarks = state.locked.flat().filter(Boolean).length;
           const revealedCells = state.revealed.flat().filter(Boolean).length;
-          setMessage(`快速模式和遊戲模式一樣會立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} 次機會；其中 ${revealedCells} 格由完成列、欄或色塊後自動顯示。`);
+          setMessage(`${quickModeName()}和遊戲模式一樣會立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} 次機會；其中 ${revealedCells} 格由完成列、欄或色塊後自動顯示。${state.quickAddonMode ? '可查看每一欄下方與每一列右方的扣後總和，進行反向檢查。' : ''}`);
           return;
         }
         if (isSolved()) {
@@ -1112,6 +1178,7 @@
       function setPlayMode(mode) {
         state.gameMode = mode === 'game';
         state.quickMode = mode === 'quick';
+        state.quickAddonMode = mode === 'addon';
         buildPuzzle();
       }
 
@@ -1127,6 +1194,7 @@
       practiceModeButton.addEventListener('click', () => setPlayMode('practice'));
       gameModeButton.addEventListener('click', () => setPlayMode('game'));
       quickModeButton.addEventListener('click', () => setPlayMode('quick'));
+      quickAddonModeButton.addEventListener('click', () => setPlayMode('addon'));
       circleToolButton.addEventListener('click', () => setMarkerTool('o'));
       crossToolButton.addEventListener('click', () => setMarkerTool('x'));
       newGameButton.addEventListener('click', buildPuzzle);
