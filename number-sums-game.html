@@ -29,7 +29,7 @@
       background: linear-gradient(145deg, #e0f2fe 0%, #f8fafc 48%, #fef3c7 100%);
     }
     .app {
-      width: min(1040px, 100%);
+      width: min(1180px, 100%);
       margin: 0 auto;
       overflow: hidden;
       border: 1px solid #cbd9ec;
@@ -70,6 +70,8 @@
       gap: 12px 18px;
     }
     .control-group { display: grid; gap: 6px; }
+    .answer-mode-group { flex: 1 1 510px; min-width: 0; }
+    .answer-mode-group .mode-switch { max-width: 100%; }
     .control-label { color: var(--sub); font-size: 14px; font-weight: 800; }
     select, button { font: inherit; }
     select {
@@ -99,7 +101,7 @@
     .primary-button:hover { background: var(--primary-dark); }
     .game-status {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
       gap: 10px;
       margin: 16px 0;
     }
@@ -135,12 +137,19 @@
     .puzzle-layout {
       --size: 4;
       display: grid;
-      grid-template-columns: 70px minmax(260px, 1fr);
-      grid-template-rows: 65px minmax(260px, 1fr);
+      grid-template-columns: 78px minmax(300px, 1fr);
+      grid-template-rows: 70px minmax(300px, 1fr);
       gap: 7px;
-      width: min(780px, 100%);
-      min-width: 360px;
+      width: min(900px, 100%);
+      min-width: 390px;
       margin: 0 auto;
+    }
+    .puzzle-layout.dense-board {
+      grid-template-columns: 64px minmax(330px, 1fr);
+      grid-template-rows: 60px minmax(330px, 1fr);
+      gap: 5px;
+      width: min(1100px, 100%);
+      min-width: 400px;
     }
     .corner-label {
       display: grid;
@@ -204,15 +213,15 @@
     .number-cell::before {
       position: absolute;
       z-index: -1;
-      width: 66%;
-      height: 66%;
+      width: 56%;
+      height: 56%;
       border: 0 solid currentColor;
       border-radius: 50%;
       content: "";
       transition: border-width .12s ease, transform .12s ease;
     }
     .number-cell.selected { color: #0f3f80; }
-    .number-cell.selected::before { border-width: 4px; transform: scale(1.05); }
+    .number-cell.selected::before { border-width: 3px; transform: scale(1.03); }
     .number-cell.selected::after {
       position: absolute;
       right: 6px;
@@ -222,7 +231,42 @@
       font-size: clamp(11px, 2.4vw, 17px);
       font-weight: 900;
     }
-    .number-cell.color-cell { color: #203a56; background: var(--region-bg); }
+    .number-cell.marked-x { color: #94a3b8; }
+    .number-cell.marked-x::before {
+      z-index: 2;
+      width: auto;
+      height: auto;
+      border: 0;
+      color: #be123c;
+      content: "Ⅹ";
+      font-size: clamp(23px, 5.3vw, 43px);
+      font-weight: 900;
+      line-height: 1;
+      transform: none;
+    }
+    .number-cell.marked-x > span:last-child { opacity: .34; }
+    .number-cell.locked { cursor: not-allowed; }
+    .number-cell.revealed {
+      cursor: default;
+      box-shadow: inset 0 0 0 2px rgba(15, 118, 110, .45);
+    }
+    .number-cell:disabled { opacity: 1; }
+    .number-cell.wrong { animation: wrong-flash .48s ease both; }
+    @keyframes wrong-flash {
+      0%, 100% { background: inherit; }
+      45% { background: #fecaca; color: #9f1239; }
+    }
+    .number-board.color-board { gap: 1px; background: #d5e1ee; }
+    .number-cell.color-cell {
+      color: #203a56;
+      background: var(--region-bg);
+      border-style: solid;
+      border-color: var(--region-border);
+      border-top-width: var(--region-edge-top, 0);
+      border-right-width: var(--region-edge-right, 0);
+      border-bottom-width: var(--region-edge-bottom, 0);
+      border-left-width: var(--region-edge-left, 0);
+    }
     .number-cell.color-cell:hover { filter: brightness(.97); }
     .number-cell.color-cell.selected { color: #19324d; }
     .number-cell.color-cell.selected::before { border-color: var(--region-ink); }
@@ -231,16 +275,29 @@
       position: absolute;
       top: 2px;
       left: 3px;
-      z-index: 1;
+      z-index: 4;
       max-width: calc(100% - 4px);
       overflow: hidden;
       color: var(--region-ink);
+      padding: 1px 2px;
+      border-radius: 4px;
+      background: rgba(255,255,255,.76);
       font-size: clamp(8px, 1.7vw, 12px);
       font-weight: 900;
       line-height: 1;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .dense-board .target { padding: 1px; }
+    .dense-board .target b { margin: 1px 0; font-size: clamp(11px, 2vw, 18px); }
+    .dense-board .target small, .dense-board .target .now { font-size: 8px; }
+    .dense-board .number-board { border-width: 2px; border-radius: 9px; }
+    .dense-board .number-cell { font-size: clamp(11px, 2.1vw, 20px); }
+    .dense-board .number-cell::before { width: 68%; height: 68%; }
+    .dense-board .number-cell.selected::before { border-width: 2px; }
+    .dense-board .number-cell.selected::after { right: 2px; bottom: 1px; font-size: 10px; }
+    .dense-board .number-cell.marked-x::before { font-size: clamp(13px, 2.5vw, 25px); }
+    .dense-board .region-label { top: 1px; left: 1px; padding: 0 1px; font-size: clamp(6px, .8vw, 9px); }
     .legend {
       display: flex;
       flex-wrap: wrap;
@@ -268,6 +325,30 @@
       border-radius: 5px;
       background: linear-gradient(135deg, #fbb6ce, #bae6fd, #bbf7d0, #fef08a);
     }
+    .legend-cross {
+      display: inline-grid;
+      width: 18px;
+      height: 18px;
+      margin: 0 5px -4px 0;
+      place-items: center;
+      border-radius: 5px;
+      color: #be123c;
+      background: #fff1f2;
+      font-size: 22px;
+      font-style: normal;
+      line-height: 1;
+    }
+    .marker-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px 12px;
+      margin: 0 0 14px;
+    }
+    .marker-toolbar .control-label { margin-right: 2px; }
+    .marker-tip { color: #52667f; font-size: 13px; font-weight: 700; }
+    .lives { color: #dc2626; letter-spacing: .04em; }
     .game-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 16px; }
     .how-to { margin-top: 18px; padding: 0 16px; }
     .how-to summary { padding: 14px 0; cursor: pointer; font-weight: 900; }
@@ -293,11 +374,21 @@
       .status-chip { padding: 8px; }
       .status-chip strong { font-size: 15px; }
       .board-card { padding: 9px; }
-      .puzzle-layout { grid-template-columns: 57px minmax(245px, 1fr); grid-template-rows: 52px minmax(245px, 1fr); gap: 4px; min-width: 306px; }
+      .puzzle-layout { grid-template-columns: 51px minmax(286px, 1fr); grid-template-rows: 52px minmax(286px, 1fr); gap: 4px; min-width: 337px; }
+      .puzzle-layout.dense-board { grid-template-columns: 44px minmax(390px, 1fr); grid-template-rows: 40px minmax(390px, 1fr); gap: 3px; min-width: 437px; }
       .target b { font-size: 17px; }
       .target small, .target .now { font-size: 8px; }
       .number-board { border-width: 2px; border-radius: 9px; }
-      .number-cell.selected::before { border-width: 3px; }
+      .number-cell.selected::before { border-width: 2px; }
+      .dense-board .target b { margin: 0; font-size: 10px; }
+      .dense-board .target small, .dense-board .target .now { font-size: 6px; }
+      .dense-board .number-cell { font-size: 10px; }
+      .dense-board .number-cell.selected::before { border-width: 1px; }
+      .dense-board .number-cell.selected::after { display: none; }
+      .dense-board .number-cell.marked-x::before { font-size: 13px; }
+      .dense-board .region-label { font-size: 6px; }
+      .marker-toolbar { align-items: stretch; }
+      .marker-tip { width: 100%; text-align: center; }
       .how-to { padding: 0 13px; }
     }
   </style>
@@ -321,6 +412,19 @@
               <option value="6">進階：6 × 6</option>
               <option value="7">挑戰：7 × 7</option>
               <option value="8">高手：8 × 8</option>
+              <option value="9">菁英：9 × 9</option>
+              <option value="10">魔王：10 × 10</option>
+              <option value="11">11 × 11</option>
+              <option value="12">12 × 12</option>
+              <option value="13">13 × 13</option>
+              <option value="14">14 × 14</option>
+              <option value="15">15 × 15</option>
+              <option value="16">16 × 16</option>
+              <option value="17">17 × 17</option>
+              <option value="18">18 × 18</option>
+              <option value="19">19 × 19</option>
+              <option value="20">20 × 20</option>
+              <option value="21">終極：21 × 21</option>
             </select>
           </div>
           <div class="control-group">
@@ -330,6 +434,14 @@
               <button class="mode-button" id="colorMode" type="button" aria-pressed="false">有色：列＋欄＋區塊</button>
             </div>
           </div>
+          <div class="control-group answer-mode-group">
+            <span class="control-label">作答模式</span>
+            <div class="mode-switch" role="group" aria-label="選擇作答模式">
+              <button class="mode-button" id="practiceMode" type="button" aria-pressed="true">練習模式</button>
+              <button class="mode-button" id="gameMode" type="button" aria-pressed="false">遊戲模式・3 次機會</button>
+              <button class="mode-button" id="quickMode" type="button" aria-pressed="false">快速模式・3 次機會＋自動揭示</button>
+            </div>
+          </div>
           <button class="primary-button" id="newGameButton" type="button">換一題</button>
         </div>
       </section>
@@ -337,11 +449,19 @@
       <section class="game-status" aria-label="遊戲進度">
         <div class="status-chip"><span>目前難度</span><strong id="difficultyStatus">4 × 4</strong></div>
         <div class="status-chip"><span>已完成條件</span><strong id="progressStatus">0 / 8</strong></div>
+        <div class="status-chip"><span>作答模式</span><strong id="modeStatus">練習</strong></div>
+        <div class="status-chip"><span>標記狀態</span><strong id="lifeStatus">可反覆嘗試</strong></div>
         <div class="status-chip"><span>計時</span><strong id="timerStatus">00:00</strong></div>
       </section>
       <p class="message" id="message" role="status" aria-live="polite">先從一個目標較小、可快速湊出的列或欄開始；每次點選後都觀察加總變化。</p>
 
       <section class="board-card" aria-label="Number Sums 棋盤">
+        <div class="marker-toolbar" role="group" aria-label="選擇棋盤標記">
+          <span class="control-label">目前標記</span>
+          <button class="mode-button" id="circleTool" type="button" aria-pressed="true">○ 選入加總</button>
+          <button class="mode-button" id="crossTool" type="button" aria-pressed="false">Ⅹ 排除</button>
+          <span class="marker-tip">桌機可直接按右鍵標記Ⅹ；手機、平板請用這兩個按鈕切換。</span>
+        </div>
         <div class="puzzle-layout" id="puzzleLayout">
           <div class="corner-label">列目標<br>欄目標</div>
           <div class="column-targets" id="columnTargets" aria-label="欄目標"></div>
@@ -349,12 +469,13 @@
           <div class="number-board" id="numberBoard" aria-label="數字棋盤"></div>
         </div>
         <div class="legend" id="legend">
-          <span><i class="legend-mark"></i>藍色圈：已選取、要納入加總</span>
+          <span><i class="legend-mark"></i>○：選取、納入加總</span>
+          <span><i class="legend-cross">Ⅹ</i>Ⅹ：排除、不納入加總</span>
         </div>
         <div class="game-actions">
           <button class="secondary-button" id="checkButton" type="button">檢查目前加總</button>
           <button class="secondary-button" id="hintButton" type="button">提示：先看哪個條件？</button>
-          <button class="secondary-button" id="clearButton" type="button">清除本次選取</button>
+          <button class="secondary-button" id="clearButton" type="button">清除本次標記</button>
         </div>
       </section>
 
@@ -363,16 +484,19 @@
         <div class="how-to-content">
           <ol>
             <li>外側的大數字是<strong>目標和</strong>；不是要把整列或整欄所有數字都加起來。</li>
-            <li>點一下格子把它圈起來，表示「這個數字要算進去」；再點一次可取消。</li>
+            <li>先用上方工具選擇 <strong>○</strong> 或 <strong>Ⅹ</strong>。○ 表示「這個數字要算進去」；Ⅹ 表示「確定排除」。同一種標記再點一次可取消。</li>
             <li>每列與每欄的「已選和」都要剛好等於目標。紅色表示超過，綠色表示已剛好達標。</li>
             <li>選<strong>有色：列＋欄＋區塊</strong>時，每一個同色連通區也有自己的目標和，格子左上角的 <strong>Σ</strong> 會標在該區塊的起點。</li>
+            <li>選 <strong>21 × 21</strong> 時，手機請在棋盤區<strong>左右滑動</strong>查看完整欄位；頁面其他部分不會跟著橫向移動。</li>
+            <li><strong>遊戲模式</strong>中，每次標○或Ⅹ都會立即判定。答對會鎖定格子；答錯扣一顆心，三次機會用完就自動開始新題。</li>
+            <li><strong>快速模式</strong>和遊戲模式一樣：每次標○或Ⅹ都會立即判定，答錯扣一顆心，三次錯誤後自動換新題。差別是答對後，若已找齊某一列、某一欄或某一色塊的全部正確○或全部正確Ⅹ，該組其餘格就會自動顯示並鎖定；顯示後會連鎖檢查其他組。</li>
           </ol>
           <p class="mistake">常見錯誤：只湊好某一列，就忘了同一格也同時影響它所在的欄（以及彩色模式中的區塊）。每選一個數，至少回頭看兩個方向。</p>
         </div>
       </details>
 
       <aside class="teacher-note">
-        <strong>教學使用建議：</strong>先用 4 × 4 的彩色模式，請學生說出「這一格同時屬於哪一列、哪一欄、哪一色塊」；熟悉交叉條件後，再切到無色模式，讓學生練習只靠列欄加總做逆推。可由基礎、進階到挑戰逐步加大棋盤。
+        <strong>教學使用建議：</strong>先用 4 × 4 的彩色<strong>練習模式</strong>，要求學生每做一次○／Ⅹ判斷都說出列、欄、色塊的理由；接著用同樣有三次機會的<strong>快速模式</strong>，讓學生體會「找齊一組就能推完剩下格子」；最後再改為<strong>遊戲模式</strong>，檢查學生能否完全靠自己穩定排除不可能的格子。可一路擴大到 21 × 21。
       </aside>
       <a class="back" href="./index.html#other">← 回到數學小遊戲首頁</a>
     </div>
@@ -383,6 +507,11 @@
       const sizeSelect = document.querySelector('#sizeSelect');
       const plainModeButton = document.querySelector('#plainMode');
       const colorModeButton = document.querySelector('#colorMode');
+      const practiceModeButton = document.querySelector('#practiceMode');
+      const gameModeButton = document.querySelector('#gameMode');
+      const quickModeButton = document.querySelector('#quickMode');
+      const circleToolButton = document.querySelector('#circleTool');
+      const crossToolButton = document.querySelector('#crossTool');
       const newGameButton = document.querySelector('#newGameButton');
       const clearButton = document.querySelector('#clearButton');
       const checkButton = document.querySelector('#checkButton');
@@ -394,29 +523,39 @@
       const legend = document.querySelector('#legend');
       const difficultyStatus = document.querySelector('#difficultyStatus');
       const progressStatus = document.querySelector('#progressStatus');
+      const modeStatus = document.querySelector('#modeStatus');
+      const lifeStatus = document.querySelector('#lifeStatus');
       const timerStatus = document.querySelector('#timerStatus');
       const message = document.querySelector('#message');
 
       const regionColors = [
-        { bg: '#fecdd3', ink: '#9f1239' },
-        { bg: '#fbcfe8', ink: '#9d174d' },
-        { bg: '#bfdbfe', ink: '#1d4ed8' },
-        { bg: '#bbf7d0', ink: '#166534' },
-        { bg: '#fde68a', ink: '#92400e' },
-        { bg: '#ddd6fe', ink: '#5b21b6' },
-        { bg: '#bae6fd', ink: '#0c4a6e' },
-        { bg: '#fed7aa', ink: '#9a3412' },
-        { bg: '#ccfbf1', ink: '#115e59' },
-        { bg: '#e9d5ff', ink: '#6b21a8' },
-        { bg: '#d9f99d', ink: '#3f6212' },
-        { bg: '#c7d2fe', ink: '#3730a3' }
+        { bg: '#fda4af', ink: '#9f1239', border: '#be123c' },
+        { bg: '#f9a8d4', ink: '#9d174d', border: '#be185d' },
+        { bg: '#7dd3fc', ink: '#0c4a6e', border: '#0284c7' },
+        { bg: '#86efac', ink: '#166534', border: '#15803d' },
+        { bg: '#fde68a', ink: '#854d0e', border: '#ca8a04' },
+        { bg: '#c4b5fd', ink: '#5b21b6', border: '#7c3aed' },
+        { bg: '#5eead4', ink: '#115e59', border: '#0f766e' },
+        { bg: '#fdba74', ink: '#9a3412', border: '#c2410c' },
+        { bg: '#a5f3fc', ink: '#155e75', border: '#0891b2' },
+        { bg: '#ddd6fe', ink: '#6b21a8', border: '#9333ea' },
+        { bg: '#bef264', ink: '#3f6212', border: '#4d7c0f' },
+        { bg: '#a5b4fc', ink: '#3730a3', border: '#4f46e5' },
+        { bg: '#f0abfc', ink: '#86198f', border: '#c026d3' },
+        { bg: '#fcd34d', ink: '#78350f', border: '#d97706' },
+        { bg: '#67e8f9', ink: '#155e75', border: '#0891b2' }
       ];
 
       const state = {
         size: 4,
         colorMode: false,
+        gameMode: false,
+        quickMode: false,
+        markerTool: 'o',
         values: [],
-        selected: [],
+        marks: [],
+        locked: [],
+        revealed: [],
         regions: [],
         solution: [],
         rowTargets: [],
@@ -425,7 +564,10 @@
         startedAt: null,
         elapsedMs: 0,
         completed: false,
-        timerId: null
+        lives: 3,
+        wrongCell: '',
+        timerId: null,
+        restartTimer: null
       };
 
       function shuffle(list) {
@@ -508,25 +650,30 @@
         }
       }
 
-      function sumForRow(row, mask = state.selected) {
-        return state.values[row].reduce((sum, value, col) => sum + (mask[row][col] ? value : 0), 0);
+      function shouldAdd(mark) {
+        return mark === true || mark === 'o';
       }
 
-      function sumForColumn(col, mask = state.selected) {
-        return state.values.reduce((sum, row, rowIndex) => sum + (mask[rowIndex][col] ? row[col] : 0), 0);
+      function sumForRow(row, mask = state.marks) {
+        return state.values[row].reduce((sum, value, col) => sum + (shouldAdd(mask[row][col]) ? value : 0), 0);
       }
 
-      function sumForRegion(id, mask = state.selected) {
+      function sumForColumn(col, mask = state.marks) {
+        return state.values.reduce((sum, row, rowIndex) => sum + (shouldAdd(mask[rowIndex][col]) ? row[col] : 0), 0);
+      }
+
+      function sumForRegion(id, mask = state.marks) {
         let sum = 0;
         for (let row = 0; row < state.size; row += 1) {
           for (let col = 0; col < state.size; col += 1) {
-            if (state.regions[row][col] === id && mask[row][col]) sum += state.values[row][col];
+            if (state.regions[row][col] === id && shouldAdd(mask[row][col])) sum += state.values[row][col];
           }
         }
         return sum;
       }
 
       function buildPuzzle() {
+        clearRestartTimer();
         stopTimer();
         state.size = Number(sizeSelect.value);
         state.values = Array.from({ length: state.size }, () => Array.from({ length: state.size }, () => Math.floor(Math.random() * 9) + 1));
@@ -535,7 +682,9 @@
         ensureAtLeastOnePerLine(state.solution, state.size);
         ensureAtLeastOnePerRegion(state.solution, state.regions, state.size);
         ensureAtLeastOnePerLine(state.solution, state.size);
-        state.selected = emptyGrid(state.size);
+        state.marks = emptyGrid(state.size, '');
+        state.locked = emptyGrid(state.size, false);
+        state.revealed = emptyGrid(state.size, false);
         state.rowTargets = Array.from({ length: state.size }, (_, row) => sumForRow(row, state.solution));
         state.columnTargets = Array.from({ length: state.size }, (_, col) => sumForColumn(col, state.solution));
         const regionCount = Math.max(...state.regions.flat()) + 1;
@@ -543,7 +692,15 @@
         state.startedAt = null;
         state.elapsedMs = 0;
         state.completed = false;
-        setMessage('新題目準備好了。先找目標較小、容易湊出的列或欄，再利用交叉條件排除選項。');
+        state.lives = 3;
+        state.wrongCell = '';
+        state.markerTool = 'o';
+        const denseBoardTip = state.size >= 16 ? ' 21 × 21 棋盤較寬；手機可在棋盤區左右滑動查看完整欄位。' : '';
+        setMessage(state.gameMode
+          ? `遊戲模式開始：選○或Ⅹ後會立刻判定。答錯會扣一顆心，三次錯誤後自動換新題。${denseBoardTip}`
+          : state.quickMode
+            ? `快速模式開始：同樣只有三次機會，選○或Ⅹ後會立刻判定；答對後找齊任一列、欄或色塊的全部正確○或Ⅹ，就會自動揭示該組其餘格。${denseBoardTip}`
+            : `練習模式：先找目標較小、容易湊出的列或欄，再利用○／Ⅹ標記排除選項。${denseBoardTip}`);
         render();
       }
 
@@ -570,8 +727,82 @@
         return '';
       }
 
+      function regionColor(regionId) {
+        if (regionId < regionColors.length) return regionColors[regionId];
+        const hue = (regionId * 137.508) % 360;
+        return {
+          bg: `hsl(${hue} 78% 80%)`,
+          ink: `hsl(${hue} 68% 24%)`,
+          border: `hsl(${hue} 72% 38%)`
+        };
+      }
+
+      function addRegionOutline(cell, row, col, regionId, color) {
+        const edgeWidth = state.size >= 16 ? '2px' : '3px';
+        cell.style.setProperty('--region-border', color.border);
+        cell.style.setProperty('--region-edge-top', row === 0 || state.regions[row - 1][col] !== regionId ? edgeWidth : '0');
+        cell.style.setProperty('--region-edge-right', col === state.size - 1 || state.regions[row][col + 1] !== regionId ? edgeWidth : '0');
+        cell.style.setProperty('--region-edge-bottom', row === state.size - 1 || state.regions[row + 1][col] !== regionId ? edgeWidth : '0');
+        cell.style.setProperty('--region-edge-left', col === 0 || state.regions[row][col - 1] !== regionId ? edgeWidth : '0');
+      }
+
+      function conditionGroups() {
+        const groups = [];
+        for (let row = 0; row < state.size; row += 1) {
+          groups.push({
+            label: `第 ${row + 1} 列`,
+            cells: Array.from({ length: state.size }, (_, col) => ({ row, col }))
+          });
+        }
+        for (let col = 0; col < state.size; col += 1) {
+          groups.push({
+            label: `第 ${col + 1} 欄`,
+            cells: Array.from({ length: state.size }, (_, row) => ({ row, col }))
+          });
+        }
+        if (state.colorMode) {
+          state.regionTargets.forEach((target, id) => {
+            const cells = [];
+            for (let row = 0; row < state.size; row += 1) {
+              for (let col = 0; col < state.size; col += 1) {
+                if (state.regions[row][col] === id) cells.push({ row, col });
+              }
+            }
+            groups.push({ label: `色塊 Σ ${target}`, cells });
+          });
+        }
+        return groups;
+      }
+
+      function applyQuickReveals() {
+        const revealLog = [];
+        let changed = true;
+        while (changed) {
+          changed = false;
+          conditionGroups().forEach((group) => {
+            const circleCells = group.cells.filter(({ row, col }) => state.solution[row][col]);
+            const crossCells = group.cells.filter(({ row, col }) => !state.solution[row][col]);
+            const circlesComplete = circleCells.length > 0 && circleCells.every(({ row, col }) => state.marks[row][col] === 'o');
+            const crossesComplete = crossCells.length > 0 && crossCells.every(({ row, col }) => state.marks[row][col] === 'x');
+            if (!circlesComplete && !crossesComplete) return;
+            const cellsToReveal = group.cells.filter(({ row, col }) => state.marks[row][col] !== (state.solution[row][col] ? 'o' : 'x'));
+            if (!cellsToReveal.length) return;
+            cellsToReveal.forEach(({ row, col }) => {
+              state.marks[row][col] = state.solution[row][col] ? 'o' : 'x';
+              state.locked[row][col] = true;
+              state.revealed[row][col] = true;
+            });
+            revealLog.push({ label: group.label, trigger: circlesComplete ? '○' : 'Ⅹ', count: cellsToReveal.length });
+            changed = true;
+          });
+        }
+        return revealLog;
+      }
+
       function render() {
         puzzleLayout.style.setProperty('--size', state.size);
+        puzzleLayout.classList.toggle('dense-board', state.size >= 16);
+        numberBoard.classList.toggle('color-board', state.colorMode);
         rowTargets.replaceChildren();
         columnTargets.replaceChildren();
         numberBoard.replaceChildren();
@@ -586,17 +817,26 @@
         for (let row = 0; row < state.size; row += 1) {
           for (let col = 0; col < state.size; col += 1) {
             const regionId = state.regions[row][col];
+            const mark = state.marks[row][col];
+            const isLocked = state.locked[row][col];
+            const isRevealed = state.revealed[row][col];
             const cell = document.createElement('button');
             cell.type = 'button';
-            cell.className = `number-cell ${state.colorMode ? 'color-cell' : 'plain-cell'}${state.selected[row][col] ? ' selected' : ''}`;
+            cell.className = `number-cell ${state.colorMode ? 'color-cell' : 'plain-cell'}${mark === 'o' ? ' selected marked-o' : ''}${mark === 'x' ? ' marked-x' : ''}${isLocked ? ' locked' : ''}${isRevealed ? ' revealed' : ''}${state.wrongCell === cellKey(row, col) ? ' wrong' : ''}`;
             cell.dataset.row = row;
             cell.dataset.col = col;
-            cell.setAttribute('aria-pressed', String(state.selected[row][col]));
-            cell.setAttribute('aria-label', `第 ${row + 1} 列第 ${col + 1} 欄，數字 ${state.values[row][col]}，${state.selected[row][col] ? '已選取' : '未選取'}`);
+            cell.dataset.mark = mark || 'none';
+            cell.dataset.locked = String(isLocked);
+            cell.dataset.revealed = String(isRevealed);
+            cell.disabled = state.completed || ((state.gameMode || state.quickMode) && isLocked);
+            cell.setAttribute('aria-pressed', String(mark !== ''));
+            const markLabel = mark === 'o' ? '已標記○，納入加總' : mark === 'x' ? '已標記Ⅹ，不納入加總' : '尚未標記';
+            cell.setAttribute('aria-label', `第 ${row + 1} 列第 ${col + 1} 欄，數字 ${state.values[row][col]}，${markLabel}${isLocked ? '，判定正確並鎖定' : ''}${isRevealed ? '，快速模式已自動顯示並鎖定' : ''}`);
             if (state.colorMode) {
-              const color = regionColors[regionId % regionColors.length];
+              const color = regionColor(regionId);
               cell.style.setProperty('--region-bg', color.bg);
               cell.style.setProperty('--region-ink', color.ink);
+              addRegionOutline(cell, row, col, regionId, color);
               if (firstRegionCell(regionId) === cellKey(row, col)) {
                 const label = document.createElement('span');
                 label.className = 'region-label';
@@ -607,14 +847,20 @@
             const value = document.createElement('span');
             value.textContent = state.values[row][col];
             cell.append(value);
-            cell.addEventListener('click', () => toggleCell(row, col));
+            cell.addEventListener('click', () => markCell(row, col, state.markerTool));
+            cell.addEventListener('contextmenu', (event) => {
+              event.preventDefault();
+              markCell(row, col, 'x');
+            });
             numberBoard.append(cell);
           }
         }
 
+        const markLegend = '<span><i class="legend-mark"></i>○：選取、納入加總</span><span><i class="legend-cross">Ⅹ</i>Ⅹ：排除、不納入加總</span>';
         legend.innerHTML = state.colorMode
-          ? '<span><i class="legend-mark"></i>藍色圈：已選取、要納入加總</span><span><i class="legend-color"></i>同色區塊：也要滿足左上角 Σ 目標</span>'
-          : '<span><i class="legend-mark"></i>藍色圈：已選取、要納入加總</span>';
+          ? `${markLegend}<span><i class="legend-color"></i>同色區塊：也要滿足左上角 Σ 目標</span>`
+          : markLegend;
+        updateControls();
         updateStatus();
       }
 
@@ -628,24 +874,93 @@
       function updateStatus() {
         const counts = completedCounts();
         difficultyStatus.textContent = `${state.size} × ${state.size}${state.colorMode ? '・彩色' : '・無色'}`;
-        progressStatus.textContent = `${counts.rows + counts.columns + counts.regions} / ${counts.total}`;
+        const correctMarks = state.locked.flat().filter(Boolean).length;
+        const markedCells = state.marks.flat().filter((mark) => mark !== '').length;
+        const revealedCells = state.revealed.flat().filter(Boolean).length;
+        progressStatus.textContent = state.gameMode
+          ? `${correctMarks} / ${state.size * state.size} 格正確`
+          : state.quickMode
+            ? `${correctMarks} / ${state.size * state.size} 格正確・自動揭示 ${revealedCells} 格`
+            : `${counts.rows + counts.columns + counts.regions} / ${counts.total}`;
+        modeStatus.textContent = state.gameMode ? '遊戲' : state.quickMode ? '快速' : '練習';
+        lifeStatus.classList.toggle('lives', state.gameMode || state.quickMode);
+        lifeStatus.textContent = state.gameMode || state.quickMode
+          ? `${'♥'.repeat(state.lives)}${'♡'.repeat(3 - state.lives)}・剩 ${state.lives} 次`
+          : '可反覆嘗試';
         timerStatus.textContent = formatTime(state.elapsedMs);
       }
 
-      function toggleCell(row, col) {
-        if (state.completed) return;
+      function updateControls() {
+        plainModeButton.setAttribute('aria-pressed', String(!state.colorMode));
+        colorModeButton.setAttribute('aria-pressed', String(state.colorMode));
+        practiceModeButton.setAttribute('aria-pressed', String(!state.gameMode && !state.quickMode));
+        gameModeButton.setAttribute('aria-pressed', String(state.gameMode));
+        quickModeButton.setAttribute('aria-pressed', String(state.quickMode));
+        circleToolButton.setAttribute('aria-pressed', String(state.markerTool === 'o'));
+        crossToolButton.setAttribute('aria-pressed', String(state.markerTool === 'x'));
+        clearButton.textContent = state.gameMode || state.quickMode ? '重新開始本題' : '清除本次標記';
+      }
+
+      function beginTimerIfNeeded() {
         if (!state.startedAt) {
           state.startedAt = Date.now() - state.elapsedMs;
           startTimer();
         }
-        state.selected[row][col] = !state.selected[row][col];
-        render();
-        if (isSolved()) {
+      }
+
+      function markCell(row, col, tool) {
+        const isScoredMode = state.gameMode || state.quickMode;
+        if (state.completed || (isScoredMode && state.locked[row][col])) return;
+        beginTimerIfNeeded();
+        const nextMark = state.marks[row][col] === tool ? '' : tool;
+
+        if (!isScoredMode) {
+          state.marks[row][col] = nextMark;
+          state.wrongCell = '';
+          render();
+          if (isSolved()) finishPractice();
+          return;
+        }
+
+        const expectedMark = state.solution[row][col] ? 'o' : 'x';
+        if (nextMark === expectedMark) {
+          state.marks[row][col] = nextMark;
+          state.locked[row][col] = true;
+          state.wrongCell = '';
+          const quickReveals = state.quickMode ? applyQuickReveals() : [];
+          render();
+          if (state.locked.flat().every(Boolean)) {
+            if (state.quickMode) finishQuick();
+            else finishGame();
+          } else if (state.quickMode && quickReveals.length) {
+            const firstReveal = quickReveals[0];
+            const chainText = quickReveals.length > 1 ? `，並連鎖揭示 ${quickReveals.length - 1} 組` : '';
+            setMessage(`快速模式：${firstReveal.label} 的全部正確 ${firstReveal.trigger} 已找出，已自動顯示其餘 ${firstReveal.count} 格${chainText}。`, 'success');
+          } else {
+            setMessage(`判定正確！這格應標 ${expectedMark === 'o' ? '○，納入加總' : 'Ⅹ，排除'}。`, 'success');
+          }
+          return;
+        }
+
+        state.marks[row][col] = '';
+        state.wrongCell = cellKey(row, col);
+        state.lives -= 1;
+        if (state.lives <= 0) {
           state.completed = true;
           stopTimer();
           render();
-          setMessage(`全部條件都剛好達標！完成 ${state.size} × ${state.size} ${state.colorMode ? '彩色區塊' : '列欄'}挑戰，用時 ${formatTime(state.elapsedMs)}。`, 'success');
+          setMessage('三次機會已用完，這題會自動重新開始。先回想剛才哪個列、欄或色塊的條件沒有一起檢查。', 'warning');
+          state.restartTimer = window.setTimeout(buildPuzzle, 1000);
+          return;
         }
+        render();
+        setMessage(`這格的○／Ⅹ判定不正確，扣一顆心。還有 ${state.lives} 次機會；先從同一列、同一欄${state.colorMode ? '與色塊' : ''}的目標和重新檢查。`, 'warning');
+        window.setTimeout(() => {
+          if (state.wrongCell === cellKey(row, col) && !state.completed) {
+            state.wrongCell = '';
+            render();
+          }
+        }, 480);
       }
 
       function isSolved() {
@@ -653,6 +968,35 @@
         const columnsDone = state.columnTargets.every((target, col) => sumForColumn(col) === target);
         const regionsDone = !state.colorMode || state.regionTargets.every((target, id) => sumForRegion(id) === target);
         return rowsDone && columnsDone && regionsDone;
+      }
+
+      function isQuickSolved() {
+        return state.marks.flat().every((mark, index) => {
+          const row = Math.floor(index / state.size);
+          const col = index % state.size;
+          return mark === (state.solution[row][col] ? 'o' : 'x');
+        });
+      }
+
+      function finishPractice() {
+        state.completed = true;
+        stopTimer();
+        render();
+        setMessage(`全部條件都剛好達標！完成 ${state.size} × ${state.size} ${state.colorMode ? '彩色區塊' : '列欄'}挑戰，用時 ${formatTime(state.elapsedMs)}。`, 'success');
+      }
+
+      function finishQuick() {
+        state.completed = true;
+        stopTimer();
+        render();
+        setMessage(`快速模式完成！所有格子的○／Ⅹ都已顯示正確，完成時間 ${formatTime(state.elapsedMs)}。`, 'success');
+      }
+
+      function finishGame() {
+        state.completed = true;
+        stopTimer();
+        render();
+        setMessage(`全部 ${state.size * state.size} 格的○／Ⅹ都判定正確！你還保有 ${state.lives} 次機會，完成時間 ${formatTime(state.elapsedMs)}。`, 'success');
       }
 
       function setMessage(text, kind = '') {
@@ -678,17 +1022,49 @@
         state.timerId = null;
       }
 
+      function clearRestartTimer() {
+        if (state.restartTimer !== null) window.clearTimeout(state.restartTimer);
+        state.restartTimer = null;
+      }
+
       function clearSelections() {
+        if (state.gameMode || state.quickMode) {
+          clearRestartTimer();
+          state.marks = emptyGrid(state.size, '');
+          state.locked = emptyGrid(state.size, false);
+          state.revealed = emptyGrid(state.size, false);
+          state.startedAt = null;
+          state.elapsedMs = 0;
+          state.completed = false;
+          state.lives = 3;
+          state.wrongCell = '';
+          stopTimer();
+          render();
+          setMessage(`已重新開始這一題，三次機會已恢復。${state.quickMode ? '快速模式會在答對後協助揭示已確定的列、欄或色塊。' : ''}`);
+          return;
+        }
         if (state.completed) return;
-        state.selected = emptyGrid(state.size);
+        state.marks = emptyGrid(state.size, '');
+        state.revealed = emptyGrid(state.size, false);
         state.startedAt = null;
         state.elapsedMs = 0;
         stopTimer();
         render();
-        setMessage('已清除所有圈選。目標不變，可以換一條思路重新推。');
+        setMessage('已清除所有○／Ⅹ標記。目標不變，可以換一條思路重新推。');
       }
 
       function checkCurrent() {
+        if (state.gameMode) {
+          const correctMarks = state.locked.flat().filter(Boolean).length;
+          setMessage(`遊戲模式會在每次標○／Ⅹ後立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} 次機會。`);
+          return;
+        }
+        if (state.quickMode) {
+          const correctMarks = state.locked.flat().filter(Boolean).length;
+          const revealedCells = state.revealed.flat().filter(Boolean).length;
+          setMessage(`快速模式和遊戲模式一樣會立刻判定。目前已正確鎖定 ${correctMarks} / ${state.size * state.size} 格，剩餘 ${state.lives} 次機會；其中 ${revealedCells} 格由完成列、欄或色塊後自動顯示。`);
+          return;
+        }
         if (isSolved()) {
           setMessage(`全部條件都剛好達標！完成時間 ${formatTime(state.elapsedMs)}。`, 'success');
           return;
@@ -728,16 +1104,31 @@
         setMessage(`建議先看「${clue.label}」：目前已選和是 ${clue.now}，目標是 ${clue.target}，${difference > 0 ? `還差 ${difference}` : `超過 ${Math.abs(difference)}`}。提示不會直接圈出答案。`, difference < 0 ? 'warning' : '');
       }
 
-      function setMode(colorMode) {
+      function setColorMode(colorMode) {
         state.colorMode = colorMode;
-        plainModeButton.setAttribute('aria-pressed', String(!colorMode));
-        colorModeButton.setAttribute('aria-pressed', String(colorMode));
         buildPuzzle();
       }
 
+      function setPlayMode(mode) {
+        state.gameMode = mode === 'game';
+        state.quickMode = mode === 'quick';
+        buildPuzzle();
+      }
+
+      function setMarkerTool(tool) {
+        state.markerTool = tool;
+        updateControls();
+        setMessage(tool === 'o' ? '目前使用○：點選的數字會納入加總。' : '目前使用Ⅹ：點選的數字會標為排除，不納入加總。');
+      }
+
       sizeSelect.addEventListener('change', buildPuzzle);
-      plainModeButton.addEventListener('click', () => setMode(false));
-      colorModeButton.addEventListener('click', () => setMode(true));
+      plainModeButton.addEventListener('click', () => setColorMode(false));
+      colorModeButton.addEventListener('click', () => setColorMode(true));
+      practiceModeButton.addEventListener('click', () => setPlayMode('practice'));
+      gameModeButton.addEventListener('click', () => setPlayMode('game'));
+      quickModeButton.addEventListener('click', () => setPlayMode('quick'));
+      circleToolButton.addEventListener('click', () => setMarkerTool('o'));
+      crossToolButton.addEventListener('click', () => setMarkerTool('x'));
       newGameButton.addEventListener('click', buildPuzzle);
       clearButton.addEventListener('click', clearSelections);
       checkButton.addEventListener('click', checkCurrent);
