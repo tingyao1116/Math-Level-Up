@@ -368,6 +368,7 @@
     .marker-tip { color: #52667f; font-size: 13px; font-weight: 700; }
     .lives { color: #dc2626; letter-spacing: .04em; }
     .game-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 16px; }
+    .focus-mode-button { display: none; }
     .how-to { margin-top: 18px; padding: 0 16px; }
     .how-to summary { padding: 14px 0; cursor: pointer; font-weight: 900; }
     .how-to-content { padding: 0 0 15px; color: #334155; line-height: 1.75; }
@@ -408,8 +409,92 @@
       .dense-board .number-cell.marked-x::before { font-size: 13px; }
       .dense-board .region-label { font-size: 6px; }
       .marker-toolbar { align-items: stretch; }
-      .marker-tip { width: 100%; text-align: center; }
+      .marker-tip { width: 100%; text-align: center; font-size: 12px; }
+      .message {
+        block-size: 58px;
+        min-height: 58px;
+        margin-bottom: 12px;
+        padding: 8px 10px;
+        overflow: auto;
+        overscroll-behavior: contain;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      .focus-mode-button {
+        position: fixed;
+        z-index: 12;
+        top: calc(10px + env(safe-area-inset-top));
+        right: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        border: 1px solid rgba(255, 255, 255, .72);
+        border-radius: 999px;
+        padding: 6px 10px;
+        color: #fff;
+        background: rgba(15, 23, 42, .72);
+        box-shadow: 0 3px 10px rgba(15, 23, 42, .18);
+        font-size: 12px;
+        font-weight: 900;
+      }
       .how-to { padding: 0 13px; }
+    }
+    @media (max-width: 620px), (max-height: 600px) {
+      body.focus-play {
+        padding: 0;
+        overflow: hidden;
+        background: #f4f8ff;
+      }
+      body.focus-play .app {
+        width: 100%;
+        min-height: 100dvh;
+        height: 100dvh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      body.focus-play .hero,
+      body.focus-play .control-card,
+      body.focus-play .how-to,
+      body.focus-play .teacher-note,
+      body.focus-play .back { display: none; }
+      body.focus-play .content {
+        display: grid;
+        grid-template-rows: auto 58px minmax(0, 1fr);
+        gap: 8px;
+        height: 100dvh;
+        min-height: 0;
+        padding: 8px;
+        overflow: hidden;
+      }
+      body.focus-play .game-status {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
+        margin: 0;
+      }
+      body.focus-play .status-chip { padding: 6px; }
+      body.focus-play .status-chip span { font-size: 11px; }
+      body.focus-play .status-chip strong { font-size: 14px; }
+      body.focus-play .message { margin: 0; }
+      body.focus-play .board-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        height: auto;
+        padding: 8px;
+        overflow: auto;
+        overscroll-behavior: contain;
+      }
+      body.focus-play .puzzle-layout { flex: 0 0 auto; }
+      body.focus-play .focus-mode-button {
+        top: auto;
+        right: calc(10px + env(safe-area-inset-right));
+        bottom: calc(10px + env(safe-area-inset-bottom));
+        color: #1e3a8a;
+        background: #fff;
+        border-color: #bfdbfe;
+      }
     }
   </style>
 </head>
@@ -481,7 +566,7 @@
           <span class="control-label">目前標記</span>
           <button class="mode-button" id="circleTool" type="button" aria-pressed="true">○ 選入加總</button>
           <button class="mode-button" id="crossTool" type="button" aria-pressed="false">Ⅹ 排除</button>
-          <span class="marker-tip">桌機可直接按右鍵標記Ⅹ；手機、平板請用這兩個按鈕切換。</span>
+          <span class="marker-tip" title="桌機可按右鍵標記Ⅹ；手機、平板請用○／Ⅹ按鈕切換。">右鍵＝Ⅹ；手機用按鈕切換。</span>
         </div>
         <div class="puzzle-layout" id="puzzleLayout">
           <div class="corner-label">列目標<br>欄目標</div>
@@ -525,6 +610,7 @@
       </aside>
       <a class="back" href="./index.html#other">← 回到數學小遊戲首頁</a>
     </div>
+    <button class="focus-mode-button" id="focusModeButton" type="button" aria-pressed="false">⛶ 專注</button>
   </main>
 
   <script>
@@ -542,6 +628,7 @@
       const clearButton = document.querySelector('#clearButton');
       const checkButton = document.querySelector('#checkButton');
       const hintButton = document.querySelector('#hintButton');
+      const focusModeButton = document.querySelector('#focusModeButton');
       const puzzleLayout = document.querySelector('#puzzleLayout');
       const rowTargets = document.querySelector('#rowTargets');
       const columnTargets = document.querySelector('#columnTargets');
@@ -600,6 +687,7 @@
         timerId: null,
         restartTimer: null
       };
+      let focusFullscreenActive = false;
 
       function isQuickRevealMode() {
         return state.quickMode || state.quickAddonMode;
@@ -984,6 +1072,7 @@
         clearButton.textContent = isScoredMode() ? '重新開始本題' : '清除本次標記';
         hintButton.textContent = isScoredMode() ? '提示：扣 1 ♥ 隨機顯示一格' : '提示：先看哪個條件？';
         hintButton.disabled = isScoredMode() && (state.completed || state.lives <= 1 || state.locked.flat().every(Boolean));
+        updateFocusModeButton();
       }
 
       function beginTimerIfNeeded() {
@@ -1087,6 +1176,7 @@
       function setMessage(text, kind = '') {
         message.textContent = text;
         message.className = `message${kind ? ` ${kind}` : ''}`;
+        message.scrollTop = 0;
       }
 
       function formatTime(milliseconds) {
@@ -1251,7 +1341,34 @@
       function setMarkerTool(tool) {
         state.markerTool = tool;
         updateControls();
-        setMessage(tool === 'o' ? '目前使用○：點選的數字會納入加總。' : '目前使用Ⅹ：點選的數字會標為排除，不納入加總。');
+        setMessage(tool === 'o' ? '已切換：○ 選入' : '已切換：Ⅹ 排除');
+      }
+
+      function updateFocusModeButton() {
+        const isFocused = document.body.classList.contains('focus-play');
+        focusModeButton.textContent = isFocused ? '× 離開' : '⛶ 專注';
+        focusModeButton.setAttribute('aria-pressed', String(isFocused));
+        focusModeButton.setAttribute('aria-label', isFocused ? '離開專注遊玩' : '進入專注遊玩');
+      }
+
+      async function toggleFocusMode() {
+        const willFocus = !document.body.classList.contains('focus-play');
+        document.body.classList.toggle('focus-play', willFocus);
+        updateFocusModeButton();
+        if (willFocus) {
+          try {
+            await document.documentElement.requestFullscreen?.();
+            focusFullscreenActive = Boolean(document.fullscreenElement);
+          } catch (error) {
+            // 某些手機瀏覽器不支援網頁全螢幕，仍保留固定的專注遊玩版面。
+            focusFullscreenActive = false;
+          }
+        } else if (document.fullscreenElement) {
+          focusFullscreenActive = false;
+          await document.exitFullscreen();
+        } else {
+          focusFullscreenActive = false;
+        }
       }
 
       sizeSelect.addEventListener('change', buildPuzzle);
@@ -1267,6 +1384,18 @@
       clearButton.addEventListener('click', clearSelections);
       checkButton.addEventListener('click', checkCurrent);
       hintButton.addEventListener('click', giveHint);
+      focusModeButton.addEventListener('click', toggleFocusMode);
+      document.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement) {
+          focusFullscreenActive = true;
+          return;
+        }
+        if (focusFullscreenActive && document.body.classList.contains('focus-play')) {
+          document.body.classList.remove('focus-play');
+          updateFocusModeButton();
+        }
+        focusFullscreenActive = false;
+      });
       buildPuzzle();
     })();
   </script>

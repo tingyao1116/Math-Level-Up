@@ -251,6 +251,7 @@
     }
 
     .hole.parked::after { content: "已放回"; color: #216447; }
+    .hole.hinted-hole { outline: 4px solid #68b77a; outline-offset: 3px; }
 
     @keyframes holePulse { 50% { filter: brightness(1.19); transform: translate(-50%, -50%) scale(1.06); } }
 
@@ -258,7 +259,7 @@
       z-index: 35;
       width: clamp(37px, 5.1vw, 51px);
       border: 3px solid #70352c;
-      cursor: pointer;
+      cursor: default;
       color: transparent;
       background:
         radial-gradient(circle at 35% 30%, #ffb19b 0 10%, transparent 12%),
@@ -330,6 +331,8 @@
       background: radial-gradient(circle at 35% 30%, #ffc0a8 0 10%, transparent 12%), radial-gradient(circle at center, #cc5750 0 34%, #9a393a 36% 49%, #e78970 51% 64%, #6a2c29 66%);
       box-shadow: inset 0 0 0 3px rgba(255,220,180,.28);
       color: transparent;
+      display: block;
+      pointer-events: none;
       animation: land .22s ease-out both;
     }
 
@@ -464,7 +467,7 @@
         <aside class="side-panel">
           <section class="storage-card" aria-labelledby="storageTitle">
             <h2 id="storageTitle">可重複使用的暫存架</h2>
-            <p>預設只有 <b>2 格</b>。空間不足時再選 3 或 4 格；點暫存螺絲後，再點亮起的原始螺絲孔，就能放回並釋放一格。</p>
+            <p>預設只有 <b>2 格</b>。空間不足時再選 3 或 4 格；只要直接點亮起的原始螺絲孔，就會自動放回一顆暫存螺絲並釋放一格。</p>
             <div id="capacityButtons" class="capacity-row" aria-label="暫存格數量"></div>
             <div id="storageSlots" class="storage-slots" aria-live="polite"></div>
             <p class="return-note"><b>綠圈空孔</b>代表木條已移開、可以放回螺絲。</p>
@@ -683,7 +686,6 @@
         stored: [],
         parked: new Map(),
         capacity: 2,
-        selectedStored: "",
         hintPiece: "",
         hintHole: "",
         startedAt: null,
@@ -815,8 +817,8 @@
         }).join("");
 
         const holeHtml = allScrews().filter(isHoleExposed).map(hole => {
-          const highlighted = state.selectedStored && (state.hintHole === hole.id || !state.hintHole) ? "hinted-hole" : "";
-          return `<button class="hole ${highlighted}" type="button" data-hole-id="${hole.id}" style="--x:${hole.x}%; --y:${hole.y}%;" aria-label="將暫存螺絲放回空白螺絲孔">放回螺絲</button>`;
+          const highlighted = state.stored.length && (state.hintHole === hole.id || !state.hintHole) ? "hinted-hole" : "";
+          return `<button class="hole ${highlighted}" type="button" data-hole-id="${hole.id}" style="--x:${hole.x}%; --y:${hole.y}%;" aria-label="直接將一顆暫存螺絲放回空白螺絲孔">放回螺絲</button>`;
         }).join("");
 
         const parkedHtml = [...state.parked.entries()].map(([holeId]) => {
@@ -838,10 +840,9 @@
         storageSlots.innerHTML = Array.from({ length: state.capacity }, (_, index) => {
           const screwId = state.stored[index];
           return screwId
-            ? `<div class="storage-slot"><button class="slot-screw ${state.selectedStored === screwId ? "selected" : ""}" type="button" data-store-id="${screwId}" aria-label="選擇暫存螺絲放回原始孔">選擇暫存螺絲</button></div>`
+            ? `<div class="storage-slot" aria-label="暫存中的螺絲；點綠圈空孔即可自動放回"><span class="slot-screw" aria-hidden="true">暫存螺絲</span></div>`
             : `<div class="storage-slot empty" aria-label="空白暫存格"></div>`;
         }).join("");
-        storageSlots.querySelectorAll("[data-store-id]").forEach(button => button.addEventListener("click", () => selectStored(button.dataset.storeId)));
       }
 
       function renderMission() {
@@ -874,14 +875,13 @@
         const itemScrew = findScrew(id);
         if (!itemScrew || state.removed.has(id)) return;
         if (availableSlots() <= 0) {
-          setMessage("暫存架已滿。請點一顆暫存螺絲，再點綠圈的空白原始孔放回；或視需要擴充成 3、4 格。", "warn");
+          setMessage("暫存架已滿。直接點綠圈的空白原始孔，就會自動放回一顆螺絲；或視需要擴充成 3、4 格。", "warn");
           render();
           return;
         }
         startTimer();
         state.removed.add(id);
         state.stored.push(id);
-        state.selectedStored = "";
         state.hintPiece = "";
         state.hintHole = "";
         const remaining = remainingScrews(itemScrew.piece).length;
@@ -899,32 +899,17 @@
         render();
       }
 
-      function selectStored(id) {
-        state.selectedStored = state.selectedStored === id ? "" : id;
-        state.hintHole = "";
-        if (state.selectedStored) {
-          const firstHole = allScrews().find(isHoleExposed);
-          state.hintHole = firstHole?.id || "";
-          setMessage(firstHole ? "已選取暫存螺絲：請點綠圈空白原始孔放回，這一格就會重新可用。" : "目前沒有露出的空孔；再讓一塊木條旋轉或下落，就能放回螺絲。", firstHole ? "ok" : "warn");
-        } else {
-          setMessage("已取消選取暫存螺絲。", "");
-        }
-        render();
-      }
-
       function returnScrew(holeId) {
-        if (!state.selectedStored) {
-          setMessage("先點暫存架中的一顆螺絲，再點綠圈空白原始孔。", "warn");
+        if (!state.stored.length) {
+          setMessage("暫存架目前沒有螺絲可放回。", "warn");
           render();
           return;
         }
         if (!isHoleExposed(findScrew(holeId))) return;
-        const storedId = state.selectedStored;
-        state.stored = state.stored.filter(id => id !== storedId);
+        const storedId = state.stored.shift();
         state.parked.set(holeId, storedId);
-        state.selectedStored = "";
         state.hintHole = "";
-        setMessage("螺絲已放回原始孔，暫存架重新空出一格！", "ok");
+        setMessage("螺絲已自動放回原始孔，暫存架重新空出一格！", "ok");
         render();
       }
 
@@ -940,10 +925,10 @@
       }
 
       function showHint() {
-        if (state.selectedStored) {
+        if (state.stored.length) {
           const availableHole = allScrews().find(isHoleExposed);
           state.hintHole = availableHole?.id || "";
-          setMessage(availableHole ? "提示：已把可放回的第一個綠圈孔標亮，點它即可釋放暫存格。" : "提示：還沒有空孔。優先把只剩一顆螺絲的零件再拆一顆，或清除支撐物。", availableHole ? "ok" : "warn");
+          setMessage(availableHole ? "提示：已把可放回的第一個綠圈孔標亮，直接點它即可釋放暫存格。" : "提示：還沒有空孔。優先把只剩一顆螺絲的零件再拆一顆，或清除支撐物。", availableHole ? "ok" : "warn");
           render();
           return;
         }
@@ -956,7 +941,7 @@
         if (!target) return;
         state.hintPiece = target.item.id;
         const need = target.remaining;
-        const extra = availableSlots() >= 1 ? "先拆它的一顆螺絲，觀察它會不會旋轉或下落。" : "暫存已滿，先選暫存螺絲並放回綠圈孔。";
+        const extra = availableSlots() >= 1 ? "先拆它的一顆螺絲，觀察它會不會旋轉或下落。" : "暫存已滿，直接點綠圈空孔放回一顆螺絲。";
         setMessage(`提示：留意「${target.item.name}」，它目前還有 ${need} 顆螺絲。${extra}`, "ok");
         render();
       }
@@ -971,7 +956,6 @@
         state.stored = [];
         state.parked = new Map();
         state.capacity = 2;
-        state.selectedStored = "";
         state.hintPiece = "";
         state.hintHole = "";
         state.elapsed = 0;

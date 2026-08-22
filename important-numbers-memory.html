@@ -202,6 +202,22 @@
       font-weight: 800;
       font-size: 14px;
     }
+    .choice-area { margin-top: 12px; }
+    .choice-title { margin: 0 0 7px; color: var(--sub); font-size: 14px; font-weight: 800; }
+    .choice-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .choice {
+      width: 100%;
+      min-height: 48px;
+      border-color: #99f6e4;
+      color: var(--brand-dark);
+      background: #fff;
+      text-align: left;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .choice:hover { border-color: var(--brand); background: #f0fdfa; }
+    .choice.correct { border-color: #86efac; color: var(--good); background: var(--good-bg); }
+    .choice.incorrect { border-color: #fda4af; color: var(--bad); background: var(--bad-bg); }
+    .choice:disabled { cursor: default; opacity: 1; transform: none; }
     .hidden { display: none; }
     .steps { display: grid; gap: 8px; counter-reset: plan; }
     .step {
@@ -224,6 +240,7 @@
       .wrap { padding: 14px; }
       .warmup, .practice-layout { grid-template-columns: 1fr; }
       .pair-row { grid-template-columns: repeat(5, 1fr); }
+      .choice-options { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -332,6 +349,16 @@
               </tbody>
             </table>
           </div>
+        </article>
+
+        <article class="card">
+          <div class="tag blue">次方轉換</div>
+          <h3>展開與還原：先分清「值」和「指數」</h3>
+          <p>展開題是由 <code>a<sup>n</sup></code> 求數值；還原題則由數值找回底數或指數。先辨認題目在問哪一種，不要只看到數字就急著乘。</p>
+          <div class="formula"><code>2<sup>−5</sup>=1/2<sup>5</sup>=1/32</code>　負次方表示<strong>取倒數</strong>，不是把答案改成負數。</div>
+          <div class="formula"><code>a<sup>0</sup>=1</code>（<code>a≠0</code>）　　<code>a<sup>−n</sup>=1/a<sup>n</sup></code></div>
+          <div class="teacher-note"><strong>作答順序：</strong>先看底數，再看指數的正、零、負；若是負次方，先求正次方的值，再寫倒數。還原題則問「底數要做幾次方才得到這個值？」</div>
+          <div class="error-note"><strong>最常見錯誤：</strong><code>2<sup>−5</sup></code> 不是 <code>−32</code>，也不是 <code>32</code>；正確是 <code>1/32</code>。負號在<strong>指數</strong>上，作用是倒數。</div>
         </article>
 
         <article class="card">
@@ -476,7 +503,11 @@
               <option value="scaling">基礎｜2×5、4×25、8×125</option>
               <option value="square5">進階｜尾數是 5 的平方</option>
               <option value="squares">進階｜11～32 的平方數</option>
-              <option value="powers">進階｜2 的冪次</option>
+              <option value="powers">進階｜2 的正次方（心算記憶 1～10）</option>
+              <option value="squareConvert">次方選擇｜11～32 的平方：展開／還原</option>
+              <option value="power2Convert">次方選擇｜2 的次方：−12～12 展開／還原</option>
+              <option value="power3Convert">次方選擇｜3 的次方：−6～6 展開／還原</option>
+              <option value="power56Convert">次方選擇｜5、6 的次方：−4～4 展開／還原</option>
               <option value="composite">進階｜合數快速辨認</option>
               <option value="sub2singleborrow">心算減法｜二位數 − 個位數（需借位）</option>
               <option value="sub2easy">心算減法｜二位數 − 二位數（不借位）</option>
@@ -506,11 +537,17 @@
           </div>
           <div class="tag blue" id="practiceTag">基礎練習</div>
           <div class="practice-question" id="practiceQuestion">按「出一題」開始。</div>
-          <label for="answerInput">你的答案</label>
-          <input id="answerInput" inputmode="numeric" autocomplete="off" placeholder="輸入數字後按檢查答案">
-          <div class="tools">
-            <button class="button" id="checkAnswer" type="button">檢查答案</button>
-            <button class="button secondary" id="revealAnswer" type="button">顯示答案</button>
+          <div id="numericAnswerArea">
+            <label for="answerInput">你的答案</label>
+            <input id="answerInput" inputmode="numeric" autocomplete="off" placeholder="輸入數字後按檢查答案">
+            <div class="tools">
+              <button class="button" id="checkAnswer" type="button">檢查答案</button>
+              <button class="button secondary" id="revealAnswer" type="button">顯示答案</button>
+            </div>
+          </div>
+          <div class="choice-area hidden" id="choiceArea">
+            <p class="choice-title">選擇最正確的答案：</p>
+            <div class="choice-options" id="choiceOptions" role="group" aria-label="答案選項"></div>
           </div>
           <div class="feedback" id="feedback" aria-live="polite">選好題型後按「出一題」。</div>
         </div>
@@ -528,11 +565,11 @@
           </div>
           <div>
             <h3>課後自學</h3>
-            <p>每天只選一組：平方、2 的冪次或百分率。答題時先遮住表格，累積連對 5 題再換下一組。</p>
+            <p>每天只選一組：平方、2 的次方或指定底數的正負次方。答題時先遮住表格，累積連對 5 題再換下一組。</p>
           </div>
           <div>
             <h3>錯題診斷</h3>
-            <p>減法常錯就回到「補到 10」；平方常錯就從最近錨點用奇數差推進。不要只重算答案，要回到缺掉的數字關係。</p>
+            <p>減法常錯就回到「補到 10」；平方常錯就從最近錨點用奇數差推進；負次方常錯就先寫成倒數。不要只重算答案，要回到缺掉的數字關係。</p>
           </div>
         </div>
       </div>
@@ -576,12 +613,101 @@
     const feedback = document.getElementById("feedback");
     const scoreText = document.getElementById("scoreText");
     const streakText = document.getElementById("streakText");
+    const numericAnswerArea = document.getElementById("numericAnswerArea");
+    const choiceArea = document.getElementById("choiceArea");
+    const choiceOptions = document.getElementById("choiceOptions");
     let current = null;
     let correct = 0;
     let total = 0;
     let streak = 0;
 
     function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    const superscriptMap = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+    function powerText(base, exponent) {
+      return `${base}${String(exponent).split("").map(character => superscriptMap[character]).join("")}`;
+    }
+    function powerValue(base, exponent) {
+      return exponent < 0 ? `1/${base ** (-exponent)}` : String(base ** exponent);
+    }
+    function shuffle(items) {
+      const copy = [...items];
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const other = randomInt(0, index);
+        [copy[index], copy[other]] = [copy[other], copy[index]];
+      }
+      return copy;
+    }
+    function choiceSet(correctAnswer, distractors) {
+      const values = [];
+      [correctAnswer, ...distractors].forEach(value => {
+        const text = String(value);
+        if (!values.includes(text)) values.push(text);
+      });
+      return shuffle(values.slice(0, 4));
+    }
+    function makeSquareConvertQuestion() {
+      const n = randomInt(11, 32);
+      const value = n * n;
+      const expand = Math.random() < 0.5;
+      if (expand) {
+        return {
+          tag: "次方選擇・平方展開",
+          q: `${n}² = ？`,
+          answer: String(value),
+          choices: choiceSet(value, [(n - 1) ** 2, (n + 1) ** 2, -value]),
+          hint: "先從 15²、20²、25²、30² 等附近錨點想起，再用相鄰平方差奇數補過去。",
+          explain: `${n}²=${n}×${n}=${value}。`
+        };
+      }
+      const nearby = [-2, -1, 1, 2].map(offset => n + offset).filter(candidate => candidate >= 11 && candidate <= 32);
+      while (nearby.length < 3) {
+        const candidate = randomInt(11, 32);
+        if (candidate !== n && !nearby.includes(candidate)) nearby.push(candidate);
+      }
+      return {
+        tag: "次方選擇・平方還原",
+        q: `□² = ${value}（□ 為 11～32 的正整數）`,
+        answer: String(n),
+        choices: choiceSet(n, nearby),
+        hint: "這題不是求平方值，而是從平方值找回原來的正整數。",
+        explain: `因為 ${n}×${n}=${value}，所以 □=${n}。`
+      };
+    }
+    function makePowerConvertQuestion(base, minExponent, maxExponent, label) {
+      const exponent = randomInt(minExponent, maxExponent);
+      const value = powerValue(base, exponent);
+      const expand = Math.random() < 0.5;
+      if (expand) {
+        let distractors;
+        if (exponent < 0) {
+          const positiveValue = base ** (-exponent);
+          distractors = [`-${positiveValue}`, String(positiveValue), `-1/${positiveValue}`];
+        } else if (exponent === 0) {
+          distractors = ["0", String(base), "-1"];
+        } else {
+          const positiveValue = base ** exponent;
+          distractors = [`1/${positiveValue}`, `-${positiveValue}`, String(base ** (exponent - 1))];
+        }
+        const negativeNote = exponent < 0 ? "負次方要先取倒數，指數的負號不代表答案為負數。" : "正次方表示同一底數連乘；零次方要記得是 1。";
+        return {
+          tag: `次方選擇・${label}展開`,
+          q: `${powerText(base, exponent)} = ？`,
+          answer: value,
+          choices: choiceSet(value, distractors),
+          hint: exponent < 0 ? `先算 ${powerText(base, -exponent)}，再取倒數。` : `先判斷指數 ${exponent} 是正、零或負，再決定連乘或倒數。`,
+          explain: exponent < 0 ? `${powerText(base, exponent)}=1/${powerText(base, -exponent)}=${value}。${negativeNote}` : `${powerText(base, exponent)}=${value}。${negativeNote}`
+        };
+      }
+      const exponentDistractors = exponent === 0 ? [-1, 1, 2] : [-exponent, exponent - 1, exponent + 1];
+      return {
+        tag: `次方選擇・${label}還原`,
+        q: `${value} = ${base}^□`,
+        answer: String(exponent),
+        choices: choiceSet(exponent, exponentDistractors),
+        hint: "先判斷右邊是整數還是分數；分數通常對應負次方。",
+        explain: `${powerText(base, exponent)}=${value}，所以 □=${exponent}。${exponent < 0 ? "分數值代表指數要是負數。" : "由數值還原時，要找的是指數，不是再把數字做一次運算。"}`
+      };
+    }
     function digitNoBorrowPair(digits) {
       let top = "";
       let bottom = "";
@@ -641,6 +767,19 @@
           const n = randomInt(1, 10);
           return { tag: "進階・2 的冪次", q: `2${"⁰¹²³⁴⁵⁶⁷⁸⁹"[n] || "¹⁰"} = ？`, answer: 2 ** n, hint: "每往下一次指數，數值就加倍。", explain: `2 的 ${n} 次方是 ${2 ** n}。可從 2¹⁰=1024 往回除以 2，或從 2¹=2 往前加倍。` };
         },
+        squareConvert() {
+          return makeSquareConvertQuestion();
+        },
+        power2Convert() {
+          return makePowerConvertQuestion(2, -12, 12, "2 的次方");
+        },
+        power3Convert() {
+          return makePowerConvertQuestion(3, -6, 6, "3 的次方");
+        },
+        power56Convert() {
+          const base = Math.random() < 0.5 ? 5 : 6;
+          return makePowerConvertQuestion(base, -4, 4, `${base} 的次方`);
+        },
         composite() {
           const list = [
             { n: 51, factor: 3, text: "51=3×17" }, { n: 57, factor: 3, text: "57=3×19" },
@@ -684,13 +823,48 @@
       feedback.textContent = text;
       feedback.className = `feedback${state ? ` ${state}` : ""}`;
     }
+    function renderAnswerMode() {
+      const hasChoices = Array.isArray(current.choices);
+      numericAnswerArea.classList.toggle("hidden", hasChoices);
+      choiceArea.classList.toggle("hidden", !hasChoices);
+      choiceOptions.replaceChildren();
+      if (!hasChoices) return;
+      current.choices.forEach(choice => {
+        const button = document.createElement("button");
+        button.className = "choice";
+        button.type = "button";
+        button.textContent = choice;
+        button.addEventListener("click", () => checkChoice(choice, button));
+        choiceOptions.append(button);
+      });
+    }
+    function checkChoice(choice, selectedButton) {
+      if (!current || !Array.isArray(current.choices)) return;
+      const isCorrect = String(choice) === String(current.answer);
+      total += 1;
+      choiceOptions.querySelectorAll(".choice").forEach(button => {
+        button.disabled = true;
+        if (button.textContent === String(current.answer)) button.classList.add("correct");
+        else if (button === selectedButton) button.classList.add("incorrect");
+      });
+      if (isCorrect) {
+        correct += 1;
+        streak += 1;
+        setFeedback(`答對了！${current.explain}`, "good");
+      } else {
+        streak = 0;
+        setFeedback(`這題答案是 ${current.answer}。${current.explain}`, "bad");
+      }
+      updateScore();
+    }
     function newQuestion() {
       current = makeQuestion(practiceType.value);
       practiceTag.textContent = current.tag;
       practiceQuestion.textContent = current.q;
       answerInput.value = "";
+      renderAnswerMode();
       setFeedback("先想規律，再輸入答案。需要時可按「看提示」。");
-      answerInput.focus();
+      if (!current.choices) answerInput.focus();
     }
     function revealAnswer() {
       if (!current) return setFeedback("請先按「出一題」。", "bad");
@@ -698,6 +872,7 @@
     }
     function checkAnswer() {
       if (!current) return setFeedback("請先按「出一題」。", "bad");
+      if (current.choices) return setFeedback("這一題請直接點選你認為正確的選項。", "bad");
       const raw = answerInput.value.trim().replace(/,/g, "");
       if (!/^-?\d+(\.\d+)?$/.test(raw)) return setFeedback("請輸入數字答案。", "bad");
       total += 1;
