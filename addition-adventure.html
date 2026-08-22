@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="chapter-code" content="other">
+  <title>四則運算衝刺闖關・加減乘除與餘數</title>
+  <style>
+    :root {
+      --navy: #253b62;
+      --navy-deep: #172640;
+      --paper: #f4e4be;
+      --paper-light: #fff7df;
+      --ink: #2a2930;
+      --muted: #665f55;
+      --gold: #e69b22;
+      --gold-light: #ffd66c;
+      --red: #b83f46;
+      --green: #187455;
+      --line: rgba(48, 41, 32, .25);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: #182744; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 15% 6%, rgba(255,255,255,.18), transparent 28%),
+        linear-gradient(145deg, #1d3155, #42608a 54%, #213553);
+    }
+    button, a { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, a:focus-visible { outline: 4px solid #fff; outline-offset: 3px; }
+    [hidden] { display: none !important; }
+    .shell { width: min(100%, 980px); min-height: 100vh; margin: 0 auto; background: var(--paper); box-shadow: 0 0 55px rgba(0,0,0,.3); overflow: hidden; }
+    .topbar {
+      position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: max(15px, env(safe-area-inset-top, 0px)) clamp(14px, 4vw, 34px) 15px; color: #fff;
+      background: linear-gradient(120deg, var(--navy-deep), var(--navy) 58%, #4a6389);
+      border-bottom: 4px solid #141d2e;
+    }
+    .topbar::after { content: ""; position: absolute; right: -5%; bottom: -13px; width: 55%; height: 18px; background: inherit; clip-path: polygon(0 0,100% 0,100% 38%,78% 72%,57% 40%,35% 86%,14% 46%,0 72%); }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-mark { display: grid; place-items: center; width: 39px; height: 39px; flex: 0 0 auto; border: 2px solid rgba(255,255,255,.72); border-radius: 12px; color: #422b13; background: var(--gold-light); box-shadow: inset 0 0 0 3px rgba(255,255,255,.32); font-weight: 950; }
+    .brand strong { display: block; font-size: clamp(17px, 3vw, 23px); letter-spacing: .03em; }
+    .brand small { display: block; margin-top: 1px; color: #d7e3f8; font-size: 12px; }
+    .home-link, .restart-link { border: 1px solid rgba(255,255,255,.52); border-radius: 999px; padding: 8px 12px; color: #fff; background: rgba(10,20,38,.22); text-decoration: none; font-weight: 800; white-space: nowrap; }
+    .home-link:hover, .restart-link:hover { background: rgba(255,255,255,.16); }
+    .page { position: relative; min-height: calc(100vh - 77px); padding: clamp(28px, 5vw, 52px) clamp(15px, 4vw, 34px) calc(34px + var(--safe-bottom)); overflow: hidden; }
+    .page::before, .page::after { content: ""; pointer-events: none; position: absolute; inset: 0; }
+    .page::before { opacity: .28; background-image: repeating-linear-gradient(84deg, transparent 0 6px, rgba(89,64,31,.035) 7px 8px), repeating-linear-gradient(12deg, transparent 0 21px, rgba(255,255,255,.18) 22px 24px); mix-blend-mode: multiply; }
+    .page::after { inset: 10px; border: 1px solid rgba(104,66,20,.16); box-shadow: inset 0 0 45px rgba(103,56,14,.12); }
+    .page > * { position: relative; z-index: 1; }
+    .profile-card, .rules-card, .stage-card, .game-card, .result-card { border: 2px solid rgba(50,41,29,.58); border-radius: 18px; background: rgba(255,249,225,.67); box-shadow: 0 4px 0 rgba(80,58,29,.14), inset 0 0 0 3px rgba(255,255,255,.3); }
+    .profile-card { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 14px; padding: 14px 17px; margin-bottom: 22px; }
+    .level-orb { display: grid; place-items: center; width: 58px; height: 58px; border: 3px solid #624212; border-radius: 50%; color: #2d2116; background: radial-gradient(circle at 34% 25%, #fff5bb 0 14%, var(--gold-light) 42%, #d68a1b 100%); box-shadow: inset 0 0 0 3px rgba(255,255,255,.45); font-weight: 950; font-size: 21px; }
+    .profile-card p, .profile-card h2 { margin: 0; }
+    .profile-card h2 { font-size: 16px; }
+    .profile-card p { margin-top: 3px; color: var(--muted); font-size: 13px; }
+    .xp-track, .score-track { height: 11px; overflow: hidden; margin-top: 9px; border: 1px solid rgba(72,47,18,.4); border-radius: 999px; background: rgba(94,66,31,.17); }
+    .xp-fill, .score-fill { width: 0; height: 100%; border-radius: inherit; transition: width .25s ease; }
+    .xp-fill { background: linear-gradient(90deg, #e99722, #ffe57e); }
+    .profile-total { color: var(--muted); text-align: right; font-size: 12px; font-weight: 800; }
+    .intro { max-width: 760px; margin: 0 auto 25px; text-align: center; }
+    .eyebrow { margin: 0 0 8px; color: #9a5319; font-weight: 950; letter-spacing: .12em; font-size: 13px; }
+    h1 { margin: 0; font-family: Georgia, "Times New Roman", "Noto Serif TC", serif; font-size: clamp(32px, 7vw, 54px); line-height: 1.15; }
+    .intro .lead { margin: 13px auto 0; max-width: 660px; color: #4f4940; font-size: clamp(15px, 2.6vw, 18px); line-height: 1.8; }
+    .selector-card { max-width: 900px; margin: 0 auto 15px; padding: 15px 17px; border: 2px solid rgba(50,41,29,.58); border-radius: 18px; background: rgba(255,249,225,.67); box-shadow: 0 4px 0 rgba(80,58,29,.14), inset 0 0 0 3px rgba(255,255,255,.3); }
+    .selector-card h2 { margin: 0; font-size: 17px; }
+    .selector-card > p { margin: 4px 0 11px; color: #62594d; font-size: 13px; line-height: 1.6; }
+    .choice-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px; }
+    .course-choice, .type-choice { border: 2px solid rgba(70,50,26,.45); border-radius: 12px; padding: 11px 12px; color: #4a3822; background: rgba(255,255,255,.48); text-align: left; font-weight: 900; transition: transform .14s, background .14s, border-color .14s; }
+    .course-choice span, .type-choice span { display: block; margin-top: 3px; color: #746550; font-size: 12px; font-weight: 700; line-height: 1.45; }
+    .course-choice:hover, .type-choice:hover { transform: translateY(-2px); background: #fff8d9; }
+    .course-choice[aria-pressed="true"], .type-choice[aria-pressed="true"] { border-color: #2f6383; color: #153c57; background: linear-gradient(135deg,#e8f8ff,#cceaf4); box-shadow: inset 0 0 0 2px rgba(255,255,255,.7); }
+    .course-choice[aria-pressed="true"]::before { content: "✓ "; color: #08705b; }
+    .type-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+    .type-choice { min-height: 75px; padding: 9px 10px; font-size: 14px; }
+    .type-choice.mix { border-color: #b77418; background: linear-gradient(135deg,rgba(255,244,182,.82),rgba(255,218,110,.45)); }
+    .type-choice b { color: #a04e10; }
+    .type-choice:disabled { cursor: not-allowed; opacity: .48; transform: none; }
+    .type-choice:disabled:hover { transform: none; background: rgba(255,255,255,.48); }
+    .curriculum-note { margin: 11px 0 0; padding: 9px 11px; border-left: 4px solid #3d7b82; color: #4d554e; background: rgba(229,248,244,.68); font-size: 13px; line-height: 1.65; }
+    .review-card { max-width: 900px; margin: 0 auto 15px; padding: 15px 17px; border: 2px solid rgba(139,68,26,.48); border-radius: 18px; background: linear-gradient(135deg, rgba(255,246,208,.82), rgba(255,225,174,.52)); box-shadow: 0 4px 0 rgba(117,71,24,.12), inset 0 0 0 3px rgba(255,255,255,.28); }
+    .review-card h2 { margin: 0; color: #6e3e16; font-size: 17px; }
+    .review-card > p { margin: 4px 0 10px; color: #6b5946; font-size: 13px; line-height: 1.6; }
+    .review-list { display: grid; gap: 8px; }
+    .review-empty { margin: 0; padding: 10px 12px; border-radius: 11px; color: #5f654c; background: rgba(255,255,255,.5); font-size: 13px; font-weight: 800; }
+    .review-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 11px; border: 1px solid rgba(124,72,24,.28); border-radius: 11px; background: rgba(255,255,255,.56); }
+    .review-item strong { display: block; color: #563313; font-size: 14px; }
+    .review-item span { display: block; margin-top: 2px; color: #7a644d; font-size: 12px; font-weight: 700; }
+    .review-challenge { flex: 0 0 auto; border: 1px solid #855015; border-radius: 999px; padding: 7px 10px; color: #4c2a0e; background: linear-gradient(#ffe99b, #edb54b); box-shadow: 0 2px 0 #a66c21; font-size: 12px; font-weight: 950; }
+    .review-challenge:active { transform: translateY(1px); box-shadow: 0 1px 0 #a66c21; }
+    .stage-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 900px; margin: 0 auto; }
+    .stage-card { position: relative; display: flex; flex-direction: column; min-height: 267px; padding: 18px; text-align: left; transition: transform .16s ease, box-shadow .16s ease; }
+    .stage-card:hover { transform: translateY(-4px); box-shadow: 0 8px 0 rgba(80,58,29,.16); }
+    .stage-card::before { content: ""; position: absolute; top: 11px; right: 12px; width: 15px; height: 15px; border-radius: 50%; background: var(--stage-color); box-shadow: 0 0 0 4px rgba(255,255,255,.44); }
+    .stage-card.easy { --stage-color: #42a86d; }
+    .stage-card.medium { --stage-color: #e79b28; }
+    .stage-card.hard { --stage-color: #bc4c58; }
+    .stage-clear-count { align-self: flex-start; margin-bottom: 6px; border: 1px solid rgba(99,79,43,.34); border-radius: 999px; padding: 4px 8px; color: #725018; background: rgba(255,233,153,.6); font-size: 12px; font-weight: 950; }
+    .stage-number { color: var(--stage-color); font-size: 12px; font-weight: 950; letter-spacing: .11em; }
+    .stage-card h2 { margin: 7px 0 6px; font-size: clamp(21px, 3vw, 26px); }
+    .stage-card p { margin: 0; color: #554e43; font-size: 14px; line-height: 1.65; }
+    .stage-example { margin: 17px 0; padding: 9px 10px; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); color: #342b22; font-family: Georgia, "Times New Roman", serif; font-size: clamp(22px, 4vw, 29px); font-weight: 800; text-align: center; }
+    .stage-meta { margin-top: auto; color: #6b5a40; font-size: 12px; font-weight: 800; line-height: 1.65; }
+    .start-button, .secondary-button { width: 100%; border: 2px solid #553412; border-radius: 12px; padding: 11px 12px; color: #382310; background: linear-gradient(#ffe88d, #e6a32a); box-shadow: 0 3px 0 #855015; font-weight: 950; }
+    .start-button { margin-top: 11px; }
+    .start-button:hover, .secondary-button:hover { filter: brightness(1.06); transform: translateY(-1px); }
+    .start-button:active, .secondary-button:active { transform: translateY(2px); box-shadow: 0 1px 0 #855015; }
+    .rules-card { max-width: 900px; margin: 24px auto 0; padding: 16px 19px; }
+    .rules-card h2 { margin: 0; font-size: 18px; }
+    .rule-list { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px; margin: 12px 0 0; padding: 0; list-style: none; }
+    .rule-list li { padding: 8px 10px; border-left: 4px solid #db941f; color: #554d42; background: rgba(255,255,255,.38); font-size: 13px; line-height: 1.55; }
+    .rule-list strong { color: #2e2b28; }
+    .farming-note { margin: 13px 0 0; color: #72552b; font-size: 12px; line-height: 1.65; }
+    .game-wrap { max-width: 830px; margin: 0 auto; }
+    .hud { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 9px; margin-bottom: 13px; }
+    .hud-item { min-width: 0; padding: 10px 8px; border: 2px solid rgba(18,30,52,.73); border-radius: 12px; color: #fff; background: linear-gradient(140deg, #314d78, #213653); box-shadow: inset 0 0 0 2px rgba(255,255,255,.11); text-align: center; }
+    .hud-item span { display: block; color: #d5e1f5; font-size: 11px; font-weight: 800; }
+    .hud-item strong { display: block; margin-top: 2px; overflow: hidden; font-size: clamp(17px, 3.7vw, 25px); text-overflow: ellipsis; white-space: nowrap; }
+    .heart { color: #ffb2b5; letter-spacing: .08em; }
+    .game-card { min-height: 525px; padding: clamp(19px, 5vw, 42px) clamp(15px, 5vw, 53px); text-align: center; }
+    .question-kind { display: inline-block; margin: 0; border: 1px solid rgba(72,46,16,.5); border-radius: 999px; padding: 5px 11px; color: #6b4318; background: rgba(255,222,135,.48); font-size: 13px; font-weight: 950; }
+    .question { display: grid; min-height: 142px; place-items: center; margin: 14px 0 6px; color: #2a2930; font-family: Georgia, "Times New Roman", "Noto Serif TC", serif; font-size: clamp(37px, 10vw, 72px); font-weight: 800; letter-spacing: .03em; line-height: 1.2; }
+    .question.text-question { font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif; font-size: clamp(29px, 7.5vw, 53px); }
+    .question-note { min-height: 24px; margin: 0 0 13px; color: #6b6255; font-size: 13px; font-weight: 700; }
+    .question-score { margin: 0 auto 20px; max-width: 510px; padding: 10px 12px; border-top: 1px dashed rgba(75,52,20,.45); border-bottom: 1px dashed rgba(75,52,20,.45); }
+    .score-row { display: flex; justify-content: space-between; gap: 8px; color: #5b4932; font-size: 13px; font-weight: 900; }
+    .score-row b { color: #b15d16; }
+    .score-track { margin-top: 7px; height: 10px; }
+    .score-fill { width: 100%; background: linear-gradient(90deg, #e04e4e, #f0ad2e 48%, #44a872); transition: width .08s linear; }
+    .answers { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; max-width: 620px; margin: 0 auto; }
+    .answer {
+      min-height: 91px; border: 3px solid #3b3936; border-radius: 13px; color: #28272a; background: rgba(255,250,229,.75); box-shadow: inset 0 0 0 3px rgba(147,102,41,.1), 0 3px 0 rgba(61,47,31,.45); font-family: Georgia, "Times New Roman", "Noto Serif TC", serif; font-size: clamp(25px, 5.5vw, 39px); font-weight: 800; transition: transform .12s, background .12s; }
+    .answer:hover:not(:disabled) { transform: translateY(-2px); background: #fff9db; }
+    .answer:active:not(:disabled) { transform: translateY(2px); box-shadow: inset 0 0 0 3px rgba(147,102,41,.1), 0 1px 0 rgba(61,47,31,.45); }
+    .answer:disabled { cursor: default; }
+    .answer.correct { border-color: #177250; color: #0a5138; background: #c9f1d2; }
+    .answer.incorrect { border-color: #a93440; color: #841f2b; background: #ffd6d8; }
+    .feedback { min-height: 56px; max-width: 630px; margin: 17px auto 0; padding: 10px 13px; border-radius: 10px; color: #5f513e; background: rgba(255,255,255,.37); font-size: 14px; font-weight: 700; line-height: 1.55; }
+    .feedback.good { color: #07573a; background: #d9f5df; }
+    .feedback.bad { color: #811f2c; background: #ffe0e0; }
+    .result-card { max-width: 670px; margin: 0 auto; padding: clamp(22px, 6vw, 44px); text-align: center; }
+    .result-symbol { display: grid; place-items: center; width: 80px; height: 80px; margin: 0 auto 10px; border: 3px solid #704614; border-radius: 50%; color: #45311e; background: radial-gradient(circle at 35% 26%, #fff8c5, #ffcf4b 52%, #d8831b); box-shadow: inset 0 0 0 4px rgba(255,255,255,.45); font-size: 42px; }
+    .result-symbol.fail { color: #fff; border-color: #7c3035; background: radial-gradient(circle at 35% 26%, #ffb4b1, #d7565c 54%, #8f2d37); }
+    .result-card h1 { font-size: clamp(29px, 6vw, 43px); }
+    .result-lead { margin: 10px auto 20px; color: #584e40; line-height: 1.75; }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin: 15px 0; }
+    .summary-grid div { padding: 11px 6px; border: 1px solid rgba(72,54,31,.3); border-radius: 11px; background: rgba(255,255,255,.42); }
+    .summary-grid span { display: block; color: #746652; font-size: 12px; font-weight: 800; }
+    .summary-grid strong { display: block; margin-top: 2px; color: #342c23; font-size: clamp(19px,4vw,25px); }
+    .xp-breakdown { margin: 16px 0; padding: 13px 14px; border: 1px dashed rgba(96,60,16,.64); border-radius: 11px; color: #5e4b32; background: rgba(255,225,145,.32); text-align: left; font-size: 13px; line-height: 1.8; }
+    .xp-breakdown b { color: #985211; }
+    .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 19px; }
+    .secondary-button { color: #2f486b; border-color: #263b5d; background: linear-gradient(#edf5ff,#bcd0e9); box-shadow: 0 3px 0 #4d6688; }
+    .new-level { margin-top: 13px; padding: 10px; border: 2px solid #b77616; border-radius: 10px; color: #71410c; background: #fff1ae; font-weight: 950; }
+    @media (max-width: 680px) {
+      .topbar { padding-bottom: 16px; }
+      .brand small { display: none; }
+      .profile-card { grid-template-columns: auto minmax(0,1fr); }
+      .profile-total { grid-column: 2; text-align: left; }
+      .stage-grid, .rule-list, .type-grid { grid-template-columns: 1fr; }
+      .choice-row { grid-template-columns: 1fr; }
+      .review-item { align-items: flex-start; flex-direction: column; }
+      .review-challenge { width: 100%; }
+      .stage-card { min-height: 0; }
+      .stage-example { margin: 11px 0; }
+      .game-card { min-height: 500px; }
+      .hud { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 420px) {
+      .topbar { gap: 7px; padding-inline: 11px; }
+      .brand-mark { width: 34px; height: 34px; }
+      .brand strong { font-size: 16px; }
+      .home-link, .restart-link { padding: 7px 9px; font-size: 12px; }
+      .page { padding-inline: 11px; }
+      .answers { gap: 7px; }
+      .answer { min-height: 78px; border-width: 2px; }
+      .result-actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">＋</span>
+        <div><strong id="brandTitle">數字運算衝刺</strong><small id="brandSub">第一關：加法，先算準再加快</small></div>
+      </div>
+      <a class="home-link" href="./index.html#other">← 回遊戲首頁</a>
+    </header>
+
+    <section class="page" id="startScreen">
+      <section class="profile-card" aria-label="玩家等級、經驗值與通關數">
+        <div class="level-orb" id="levelOrb">Lv.1</div>
+        <div>
+          <h2 id="profileTitle">運算見習生</h2>
+          <p id="profileText">離下一級還差 100 XP</p>
+          <div class="xp-track" aria-hidden="true"><div class="xp-fill" id="xpFill"></div></div>
+        </div>
+        <div class="profile-total" id="profileTotal">累積 0 XP</div>
+      </section>
+
+      <div class="intro">
+        <p class="eyebrow">10 題・4 選 1・三條生命</p>
+        <h1 id="introTitle">第一關：先加得準，再加得快</h1>
+        <p class="lead" id="introLead">每題一開始分數最高，時間經過會慢慢下降。截圖中的「直接算」、「找相同的和」、「最大／最小」、「補上未知數」都會納入編排；10 題結束時，答得越快，分數和經驗值越高。</p>
+      </div>
+
+      <section class="review-card" aria-labelledby="reviewHeading">
+        <h2 id="reviewHeading">錯題挑戰提醒</h2>
+        <p>答錯的題型會留在這裡；先從次數較多的類型再挑戰一次，讓練習更有方向。</p>
+        <div class="review-list" id="reviewList" aria-live="polite"></div>
+      </section>
+
+      <section class="selector-card" aria-labelledby="courseHeading">
+        <h2 id="courseHeading">先選運算關卡</h2>
+        <p>所有題組共用玩家等級。愈後面的運算、較高難度與餘數除法都有更高的基礎 XP。</p>
+        <div class="choice-row" role="group" aria-label="選擇運算關卡">
+          <button class="course-choice" type="button" data-course="addition" aria-pressed="true">第一關：加法<span>湊十、進位、三到四個加數與正負數相加</span></button>
+          <button class="course-choice" type="button" data-course="subtraction" aria-pressed="false">第二關：減法<span>退位、連續減法、未知數與「減去負數」</span></button>
+          <button class="course-choice" type="button" data-course="multiplication" aria-pressed="false">第三關：乘法<span>一位數乘法 → 兩位數 × 一位數 → 兩位數 × 兩位數</span></button>
+          <button class="course-choice" type="button" data-course="division" aria-pressed="false">第四關：除法（整除）<span>三位數 ÷ 一位數，再進到三位數 ÷ 二位數</span></button>
+          <button class="course-choice" type="button" data-course="remainderDivision" aria-pressed="false">餘數除法：獨立題組<span>商與餘數分開判讀；不混入整除題</span></button>
+          <button class="course-choice" type="button" data-course="unknownTraining" aria-pressed="false">第六關：未知數訓練<span>把加減乘除的缺項題集中練習</span></button>
+        </div>
+      </section>
+
+      <section class="selector-card" aria-labelledby="typeHeading">
+        <h2 id="typeHeading">再選題型：綜合編排或單一專練</h2>
+        <p>選「綜合編排」會按概念由淺入深安排 10 題，通關 XP 額外 <b>＋30%</b>；也可以只練一種題型。</p>
+        <div class="type-grid" role="group" aria-label="選擇練習題型">
+          <button class="type-choice mix" type="button" data-mode="mix" aria-pressed="true">綜合編排 <b>XP ×1.30</b><span>直接算 → 比較 → 未知數 → 多步／正負數</span></button>
+          <button class="type-choice" type="button" data-mode="direct" aria-pressed="false">直接計算<span>集中練習這一種運算規則</span></button>
+          <button class="type-choice" type="button" data-mode="equivalent" aria-pressed="false">相同結果<span>找出最後結果與題目相同的算式</span></button>
+          <button class="type-choice" type="button" data-mode="extremum" aria-pressed="false">最大／最小<span>比較四個算式的最後結果</span></button>
+          <button class="type-choice" type="button" data-mode="unknown" aria-pressed="false">未知數<span>用反運算找回缺少的數</span></button>
+          <button class="type-choice" type="button" data-mode="signed" aria-pressed="false">正負數<span>練習含正、負數的加減乘除</span></button>
+        </div>
+        <p class="curriculum-note" id="curriculumNote">綜合編排的後段才會出現三／四個數與正負數，先確定前面的基本計算已經穩定。</p>
+      </section>
+
+      <section class="stage-grid" id="difficultyPicker" aria-label="選擇難度">
+        <article class="stage-card easy">
+          <span class="stage-clear-count" data-stage-clear="easy">通關 0 次</span>
+          <span class="stage-number" data-stage-number="easy">關卡 1・建議 Lv.1</span>
+          <h2 data-stage-title="easy">容易：湊十暖身</h2>
+          <p data-stage-description="easy">個位數相加，答案主要在 10 到 19。先練熟湊十與十幾的數感。</p>
+          <div class="stage-example" data-stage-example="easy">8 ＋ 7</div>
+          <div class="stage-meta" data-stage-meta="easy"></div>
+          <button class="start-button" type="button" data-start="easy">開始容易闖關</button>
+        </article>
+        <article class="stage-card medium">
+          <span class="stage-clear-count" data-stage-clear="medium">通關 0 次</span>
+          <span class="stage-number" data-stage-number="medium">關卡 3・建議 Lv.3</span>
+          <h2 data-stage-title="medium">中等：兩位數進位</h2>
+          <p data-stage-description="medium">把個位湊成十，再把進位加到十位；每一題都安排至少一次進位。</p>
+          <div class="stage-example" data-stage-example="medium">38 ＋ 47</div>
+          <div class="stage-meta" data-stage-meta="medium"></div>
+          <button class="start-button" type="button" data-start="medium">開始中等闖關</button>
+        </article>
+        <article class="stage-card hard">
+          <span class="stage-clear-count" data-stage-clear="hard">通關 0 次</span>
+          <span class="stage-number" data-stage-number="hard">關卡 5・建議 Lv.5</span>
+          <h2 data-stage-title="hard">困難：三位數連續進位</h2>
+          <p data-stage-description="hard">練習從個位一路進到百位；後段可到四個加數。</p>
+          <div class="stage-example" data-stage-example="hard">468 ＋ 357 ＋ 126</div>
+          <div class="stage-meta" data-stage-meta="hard"></div>
+          <button class="start-button" type="button" data-start="hard">開始困難闖關</button>
+        </article>
+      </section>
+
+      <section class="rules-card" aria-labelledby="ruleHeading">
+        <h2 id="ruleHeading">闖關規則與升級方式</h2>
+        <ul class="rule-list">
+          <li><strong>10 題完成：</strong>每題四個選項；答錯會扣一條生命並直接換下一題。</li>
+          <li><strong>時間就是分數：</strong>本題分數會逐秒下降，但不會歸零；先求正確，再求快。</li>
+          <li><strong>經驗值看難度：</strong>高難度、後面的運算題組、餘數除法與綜合編排的 XP 都較高，滿三條生命還有額外獎勵。</li>
+        </ul>
+        <p class="farming-note" id="farmingNote">為避免只刷前面關卡：玩家等級高於關卡建議等級時，XP 會依差距打折；差距越大，折扣越多，最低仍保留 15%。紀錄只儲存在這台裝置的瀏覽器中。</p>
+      </section>
+    </section>
+
+    <section class="page" id="gameScreen" hidden>
+      <div class="game-wrap">
+        <section class="hud" aria-label="本局狀態">
+          <div class="hud-item"><span>進度</span><strong id="hudProgress">1 / 10</strong></div>
+          <div class="hud-item"><span>生命</span><strong class="heart" id="hudLives">❤ ❤ ❤</strong></div>
+          <div class="hud-item"><span>總分</span><strong id="hudScore">0</strong></div>
+          <div class="hud-item"><span>總時間</span><strong id="hudTime">00:00</strong></div>
+        </section>
+        <section class="game-card" aria-live="polite">
+          <p class="question-kind" id="questionKind">計算題</p>
+          <div class="question" id="question" aria-label="題目"></div>
+          <p class="question-note" id="questionNote"></p>
+          <div class="question-score" aria-label="本題分數倒數">
+            <div class="score-row"><span>本題積分會隨時間下降</span><b id="questionPoints">0 分</b></div>
+            <div class="score-track" aria-hidden="true"><div class="score-fill" id="scoreFill"></div></div>
+          </div>
+          <div class="answers" id="answers" aria-label="四個答案選項"></div>
+          <p class="feedback" id="feedback" role="status">選一個你認為正確的答案。小提醒：先看個位數是否需要湊成十。</p>
+        </section>
+      </div>
+    </section>
+
+    <section class="page" id="resultScreen" hidden>
+      <section class="result-card">
+        <div class="result-symbol" id="resultSymbol" aria-hidden="true">★</div>
+        <h1 id="resultTitle">完成加法闖關！</h1>
+        <p class="result-lead" id="resultLead"></p>
+        <div class="summary-grid" aria-label="本局成績">
+          <div><span>完成題數</span><strong id="resultCompleted">10 / 10</strong></div>
+          <div><span>總分</span><strong id="resultScore">0</strong></div>
+          <div><span>總時間</span><strong id="resultTime">00:00</strong></div>
+        </div>
+        <div class="xp-breakdown" id="xpBreakdown"></div>
+        <div class="new-level" id="newLevel" hidden></div>
+        <div class="result-actions">
+          <button class="start-button" id="retryButton" type="button">再玩一次</button>
+          <button class="secondary-button" id="chooseButton" type="button">選擇其他難度</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const TOTAL_QUESTIONS = 10;
+      const PROFILE_KEY = 'addition-adventure-profile-v1';
+      const DIFFICULTIES = {
+        easy: { id: 'easy', short: '容易', stage: 1, startScore: 1000, floorScore: 250, decaySeconds: 12, xpBase: 15, xpSpeed: 15, xpLife: 2 },
+        medium: { id: 'medium', short: '中等', stage: 3, startScore: 1450, floorScore: 360, decaySeconds: 17, xpBase: 50, xpSpeed: 35, xpLife: 4 },
+        hard: { id: 'hard', short: '困難', stage: 5, startScore: 1950, floorScore: 480, decaySeconds: 23, xpBase: 95, xpSpeed: 60, xpLife: 6 }
+      };
+      const COURSES = {
+        addition: {
+          id: 'addition', number: 1, name: '加法', operation: 'addition', stageOffset: 0, xpBonus: 0, resultWord: '和',
+          title: '第一關：先加得準，再加得快', lead: '加法會從湊十、進位開始，逐步加入三到四個加數與正負數相加。先掌握一段一段加，再把速度拉起來。',
+          stageCopy: {
+            easy: { title: '容易：湊十暖身', description: '個位數相加，答案主要在 10 到 19。先練熟湊十與十幾的數感。', example: '8 ＋ 7' },
+            medium: { title: '中等：兩位數進位', description: '把個位湊成十，再把進位加到十位；後段會出現第三個加數。', example: '38 ＋ 47 ＋ 6' },
+            hard: { title: '困難：三位數多步加法', description: '從個位一路進到百位，最後可連續加三到四個數與負數。', example: '468 ＋ 357 ＋ 126' }
+          }
+        },
+        subtraction: {
+          id: 'subtraction', number: 2, name: '減法', operation: 'subtraction', stageOffset: 1, xpBonus: 12, resultWord: '差',
+          title: '第二關：先減得穩，再處理負數', lead: '減法會從十幾減法、借位開始，逐步加入連續減法、未知數與「減去負數」。每一步都要由左到右算清楚。',
+          stageCopy: {
+            easy: { title: '容易：十幾減法', description: '先看 10 還剩多少；後段開始認識減後可以小於 0。', example: '13 − 8' },
+            medium: { title: '中等：兩位數借位', description: '個位不夠減時，向十位借 1 個十；後段增加第三個減數。', example: '52 − 37 − 6' },
+            hard: { title: '困難：三位數連續減法', description: '處理連續借位、三到四個數，以及減去負數的符號意義。', example: '503 − 278 − 46 − 19' }
+          }
+        },
+        multiplication: {
+          id: 'multiplication', number: 3, name: '乘法', operation: 'multiplication', stageOffset: 2, xpBonus: 24, resultWord: '積',
+          title: '第三關：乘法，先拆開再合起來', lead: '乘法的數字刻意不做太大：中等最多兩位數乘一位數，困難最多兩位數乘兩位數。可以用分配律拆成好算的部分，但最後仍要完整合併。',
+          stageCopy: {
+            easy: { title: '容易：一位數乘法', description: '熟練乘法表，先用重複加法或倍數關係想清楚。', example: '7 × 8' },
+            medium: { title: '中等：兩位數 × 一位數', description: '只到兩位數乘一位數；可拆成十位與個位分別乘。', example: '36 × 7' },
+            hard: { title: '困難：兩位數 × 兩位數', description: '最高到兩位數乘兩位數；用分配律或直式，確認四個部分都算到。', example: '24 × 36' }
+          }
+        },
+        division: {
+          id: 'division', number: 4, name: '除法（整除）', operation: 'division', stageOffset: 3, xpBonus: 36, resultWord: '商',
+          title: '第四關：整除，先想乘法再除', lead: '這一關只出整除題，商一定是整數。中等固定練三位數除一位數；困難固定練三位數除二位數，數字不再往上加大。',
+          stageCopy: {
+            easy: { title: '容易：小數字整除', description: '從乘法表反想：幾個除數會剛好組成被除數？', example: '48 ÷ 6' },
+            medium: { title: '中等：三位數 ÷ 一位數', description: '被除數固定三位數、除數一位數；先估商，再逐位檢查。', example: '864 ÷ 8' },
+            hard: { title: '困難：三位數 ÷ 二位數', description: '被除數固定三位數、除數二位數；用估商與乘回檢查。', example: '936 ÷ 24' }
+          }
+        },
+        remainderDivision: {
+          id: 'remainderDivision', number: 5, name: '餘數除法', operation: 'division', remainder: true, stageOffset: 4, xpBonus: 48, resultWord: '商與餘數',
+          title: '餘數除法：商算完，還要檢查餘數', lead: '這是一套和整除分開的題組。每題都要同時選商與餘數，並記住最重要的檢查：餘數一定小於除數。',
+          stageCopy: {
+            easy: { title: '容易：小數字有餘數', description: '先找到最多可以分成幾組，再看剩下幾個。', example: '29 ÷ 4＝商 7 餘 1' },
+            medium: { title: '中等：三位數 ÷ 一位數', description: '被除數固定三位數、除數一位數；商和餘數缺一不可。', example: '527 ÷ 6＝商 87 餘 5' },
+            hard: { title: '困難：三位數 ÷ 二位數', description: '被除數固定三位數、除數二位數；先估商後，務必驗算餘數。', example: '983 ÷ 24＝商 40 餘 23' }
+          }
+        },
+        unknownTraining: {
+          id: 'unknownTraining', number: 6, name: '未知數訓練', operation: 'unknown', unknownTraining: true, stageOffset: 5, xpBonus: 60, resultWord: '未知數',
+          title: '第六關：未知數，從等式兩邊找回缺少的數', lead: '把加、減、乘、除的缺項題集中練習。先看等號兩邊的關係，再用反運算找回 ？；每一題都可以代回原式驗算。',
+          stageCopy: {
+            easy: { title: '容易：加減未知數', description: '從十幾的加減題開始，練習用加法和減法互相反推。', example: '？ ＋ 7＝15' },
+            medium: { title: '中等：加減乘混合未知數', description: '加入兩位數進退位與兩位數 × 一位數；先辨認要用哪一種反運算。', example: '？ × 6＝252' },
+            hard: { title: '困難：四則未知數綜合', description: '三位數加減、兩位數 × 兩位數與三位數除法輪流出現；答完務必代回驗算。', example: '864 ÷ ？＝24' }
+          }
+        }
+      };
+      const PRACTICE_MODES = {
+        mix: { id: 'mix', label: '綜合編排', multiplier: 1.3, detail: '固定十題概念順序，通關 XP ×1.30。' },
+        direct: { id: 'direct', label: '直接計算', multiplier: 1, detail: '只練直接計算，讓基本規則變成反射動作。' },
+        equivalent: { id: 'equivalent', label: '相同結果', multiplier: 1, detail: '只練找出最後結果相同的算式。' },
+        extremum: { id: 'extremum', label: '最大／最小', multiplier: 1, detail: '只練比較四個算式的最後結果。' },
+        unknown: { id: 'unknown', label: '未知數', multiplier: 1, detail: '只練反推缺少的數。' },
+        signed: { id: 'signed', label: '正負數', multiplier: 1, detail: '只練正、負數與符號規則。' }
+      };
+      const MIX_SEQUENCE = ['direct', 'direct', 'equivalent', 'extremum', 'unknown', 'direct', 'equivalent', 'unknown', 'signed', 'signed'];
+      const LEVEL_NAMES = ['運算見習生', '湊十練習生', '進退位小隊員', '兩位數高手', '百位數探索者', '多步運算家', '心算導航員', '數感鍊金師', '計算大師'];
+      const E = {
+        start: document.querySelector('#startScreen'), game: document.querySelector('#gameScreen'), result: document.querySelector('#resultScreen'),
+        levelOrb: document.querySelector('#levelOrb'), profileTitle: document.querySelector('#profileTitle'), profileText: document.querySelector('#profileText'), profileTotal: document.querySelector('#profileTotal'), xpFill: document.querySelector('#xpFill'),
+        brandTitle: document.querySelector('#brandTitle'), brandSub: document.querySelector('#brandSub'), introTitle: document.querySelector('#introTitle'), introLead: document.querySelector('#introLead'), curriculumNote: document.querySelector('#curriculumNote'), reviewList: document.querySelector('#reviewList'), difficultyPicker: document.querySelector('#difficultyPicker'),
+        courseButtons: Array.from(document.querySelectorAll('[data-course]')), modeButtons: Array.from(document.querySelectorAll('[data-mode]')), startButtons: Array.from(document.querySelectorAll('[data-start]')),
+        stageMetas: Array.from(document.querySelectorAll('[data-stage-meta]')), stageClears: Array.from(document.querySelectorAll('[data-stage-clear]')), stageNumbers: Array.from(document.querySelectorAll('[data-stage-number]')), stageTitles: Array.from(document.querySelectorAll('[data-stage-title]')), stageDescriptions: Array.from(document.querySelectorAll('[data-stage-description]')), stageExamples: Array.from(document.querySelectorAll('[data-stage-example]')), farmingNote: document.querySelector('#farmingNote'),
+        hudProgress: document.querySelector('#hudProgress'), hudLives: document.querySelector('#hudLives'), hudScore: document.querySelector('#hudScore'), hudTime: document.querySelector('#hudTime'),
+        questionKind: document.querySelector('#questionKind'), question: document.querySelector('#question'), questionNote: document.querySelector('#questionNote'), questionPoints: document.querySelector('#questionPoints'), scoreFill: document.querySelector('#scoreFill'), answers: document.querySelector('#answers'), feedback: document.querySelector('#feedback'),
+        resultSymbol: document.querySelector('#resultSymbol'), resultTitle: document.querySelector('#resultTitle'), resultLead: document.querySelector('#resultLead'), resultCompleted: document.querySelector('#resultCompleted'), resultScore: document.querySelector('#resultScore'), resultTime: document.querySelector('#resultTime'), xpBreakdown: document.querySelector('#xpBreakdown'), newLevel: document.querySelector('#newLevel'), retry: document.querySelector('#retryButton'), choose: document.querySelector('#chooseButton')
+      };
+      let profile = readProfile();
+      let game = null;
+      let clock = null;
+      let advanceTimer = null;
+      let selectedCourseId = 'addition';
+      let selectedModeId = 'mix';
+
+      function readProfile() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
+          if (saved && Number.isFinite(saved.level) && Number.isFinite(saved.xp) && Number.isFinite(saved.totalXp)) {
+            const records = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+            return {
+              level: Math.max(1, Math.floor(saved.level)), xp: Math.max(0, Math.floor(saved.xp)), totalXp: Math.max(0, Math.floor(saved.totalXp)),
+              bestScores: records(saved.bestScores), totalClears: Math.max(0, Math.floor(Number(saved.totalClears) || 0)), clearCounts: records(saved.clearCounts), errorCounts: records(saved.errorCounts)
+            };
+          }
+        } catch (_) { /* localStorage may be unavailable. */ }
+        return { level: 1, xp: 0, totalXp: 0, bestScores: {}, totalClears: 0, clearCounts: {}, errorCounts: {} };
+      }
+
+      function saveProfile() {
+        try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch (_) { /* Playable without storage. */ }
+      }
+
+      function xpNeeded(level) { return 55 + level * 45; }
+      function levelName(level) { return LEVEL_NAMES[Math.min(LEVEL_NAMES.length - 1, Math.max(0, level - 1))] || `運算大師 Lv.${level}`; }
+      function farmingMultiplier(level, stage) { return Math.max(.15, 1 - Math.max(0, level - stage) * .15); }
+      function formatNumber(value) { return Math.round(value).toLocaleString('zh-TW'); }
+      function displayNumber(value) { return value < 0 ? `−${Math.abs(value)}` : String(value); }
+      function numberAtom(value) { return value < 0 ? `(${displayNumber(value)})` : displayNumber(value); }
+      function elapsedText(milliseconds) {
+        const seconds = Math.max(0, Math.floor(milliseconds / 1000));
+        return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+      }
+      function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+      function pick(items) { return items[randomInt(0, items.length - 1)]; }
+      function shuffle(items) {
+        const result = [...items];
+        for (let index = result.length - 1; index > 0; index -= 1) {
+          const swap = randomInt(0, index);
+          [result[index], result[swap]] = [result[swap], result[index]];
+        }
+        return result;
+      }
+      function reviewTargetFor(course, question) {
+        if (course.unknownTraining || question.kind.startsWith('未知數') || question.kind.startsWith('補上')) return 'unknown';
+        if (question.kind.startsWith('找相同')) return 'equivalent';
+        if (question.kind.startsWith('哪一個')) return 'extremum';
+        if (question.kind === '正負數運算') return 'signed';
+        return 'direct';
+      }
+      function recordMistake(question) {
+        if (!game || !question) return;
+        const modeId = reviewTargetFor(game.course, question);
+        const key = `${game.course.id}:${modeId}`;
+        profile.errorCounts[key] = Math.max(0, Math.floor(Number(profile.errorCounts[key]) || 0)) + 1;
+        saveProfile();
+      }
+      function reviewEntries() {
+        return Object.entries(profile.errorCounts)
+          .map(([key, value]) => {
+            const [courseId, modeId] = key.split(':');
+            const course = COURSES[courseId];
+            const mode = PRACTICE_MODES[modeId];
+            const count = Math.max(0, Math.floor(Number(value) || 0));
+            return course && mode && count > 0 ? { course, mode, count } : null;
+          })
+          .filter(Boolean)
+          .sort((left, right) => right.count - left.count || left.course.number - right.course.number)
+          .slice(0, 3);
+      }
+      function renderReviewList() {
+        E.reviewList.replaceChildren();
+        const entries = reviewEntries();
+        if (!entries.length) {
+          const empty = document.createElement('p');
+          empty.className = 'review-empty';
+          empty.textContent = '目前還沒有錯題紀錄。完成第一局後，這裡會告訴你下一個值得挑戰的題型。';
+          E.reviewList.append(empty);
+          return;
+        }
+        entries.forEach((entry) => {
+          const row = document.createElement('div');
+          row.className = 'review-item';
+          const text = document.createElement('div');
+          const title = document.createElement('strong');
+          title.textContent = `第${entry.course.number}關・${entry.course.name}：${entry.mode.label}`;
+          const detail = document.createElement('span');
+          detail.textContent = `累積答錯 ${formatNumber(entry.count)} 次；現在就用專練把這個題型練穩。`;
+          text.append(title, detail);
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'review-challenge';
+          button.textContent = '去挑戰';
+          button.setAttribute('aria-label', `挑戰第${entry.course.number}關${entry.course.name}的${entry.mode.label}`);
+          button.addEventListener('click', () => {
+            selectedCourseId = entry.course.id;
+            selectedModeId = entry.mode.id;
+            updateProfile();
+            E.difficultyPicker.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+          row.append(text, button);
+          E.reviewList.append(row);
+        });
+      }
+      function additionExpression(values) { return values.map(numberAtom).join(' ＋ '); }
+      function subtractionExpression(values) { return values.map((value, index) => index === 0 ? numberAtom(value) : `− ${numberAtom(value)}`).join(' '); }
+      function multiplicationExpression(values) { return values.map(numberAtom).join(' × '); }
+      function divisionExpression(values) { return `${numberAtom(values[0])} ÷ ${numberAtom(values[1])}`; }
+      function expressionFor(course, values) {
+        if (course.operation === 'addition') return additionExpression(values);
+        if (course.operation === 'subtraction') return subtractionExpression(values);
+        if (course.operation === 'multiplication') return multiplicationExpression(values);
+        return divisionExpression(values);
+      }
+      function resultFor(course, values) {
+        if (course.operation === 'addition') return values.reduce((sum, value) => sum + value, 0);
+        if (course.operation === 'subtraction') return values.slice(1).reduce((sum, value) => sum - value, values[0]);
+        if (course.operation === 'multiplication') return values.reduce((product, value) => product * value, 1);
+        return Math.trunc(values[0] / values[1]);
+      }
+      function numericOptions(answer, magnitude) {
+        const offsets = magnitude === 'easy' ? [-1, 1, -2, 2, -3, 3] : magnitude === 'medium' ? [-1, 1, -10, 10, -11, 11, -20, 20] : [-1, 1, -10, 10, -100, 100, -101, 101, -110, 110];
+        const wrong = shuffle(offsets).map((offset) => answer + offset).filter((value) => value !== answer);
+        return shuffle([answer, ...wrong.slice(0, 3)]).map((value) => ({ label: displayNumber(value), correct: value === answer }));
+      }
+      function remainderLabel(quotient, remainder) { return `商 ${displayNumber(quotient)}，餘 ${remainder}`; }
+      function remainderOptions(quotient, remainder, divisor) {
+        const candidates = [
+          { quotient, remainder },
+          { quotient: quotient + 1, remainder },
+          { quotient: Math.max(0, quotient - 1), remainder },
+          { quotient, remainder: (remainder + 1) % divisor },
+          { quotient: quotient + 1, remainder: (remainder + 2) % divisor },
+          { quotient: Math.max(0, quotient - 1), remainder: (remainder + divisor - 1) % divisor }
+        ];
+        const unique = [];
+        const seen = new Set();
+        candidates.forEach((item) => {
+          const key = `${item.quotient}:${item.remainder}`;
+          if (!seen.has(key)) { seen.add(key); unique.push(item); }
+        });
+        return shuffle(unique.slice(0, 4)).map((item) => ({ label: remainderLabel(item.quotient, item.remainder), correct: item.quotient === quotient && item.remainder === remainder }));
+      }
+      function pairForEasy() {
+        let a, b;
+        do { a = randomInt(1, 9); b = randomInt(1, 9); } while (a + b < 10 || a + b > 18);
+        return [a, b];
+      }
+      function pairForMedium() {
+        let a, b;
+        do { a = randomInt(12, 78); b = randomInt(14, 89); } while (a % 10 + b % 10 < 10);
+        return [a, b];
+      }
+      function carryCount(a, b) {
+        let carries = 0, carry = 0, left = a, right = b;
+        while (left || right) {
+          const sum = left % 10 + right % 10 + carry;
+          if (sum >= 10) carries += 1;
+          carry = sum >= 10 ? 1 : 0;
+          left = Math.floor(left / 10);
+          right = Math.floor(right / 10);
+        }
+        return carries;
+      }
+      function pairForHard() {
+        let a, b;
+        do { a = randomInt(125, 899); b = randomInt(125, 899); } while (carryCount(a, b) < 2);
+        return [a, b];
+      }
+      function pairForAddition(difficulty) {
+        if (difficulty.id === 'easy') return pairForEasy();
+        if (difficulty.id === 'medium') return pairForMedium();
+        return pairForHard();
+      }
+      function borrowCount(a, b) {
+        let borrows = 0, borrow = 0, left = a, right = b;
+        while (left || right) {
+          if (left % 10 - borrow < right % 10) { borrows += 1; borrow = 1; } else borrow = 0;
+          left = Math.floor(left / 10); right = Math.floor(right / 10);
+        }
+        return borrows;
+      }
+      function pairForSubtraction(difficulty) {
+        let a, b;
+        if (difficulty.id === 'easy') return [randomInt(7, 19), randomInt(1, 9)];
+        if (difficulty.id === 'medium') {
+          do { a = randomInt(35, 98); b = randomInt(12, Math.min(79, a - 1)); } while (a % 10 >= b % 10);
+          return [a, b];
+        }
+        do { a = randomInt(320, 899); b = randomInt(125, Math.min(699, a - 1)); } while (borrowCount(a, b) < 2);
+        return [a, b];
+      }
+      function magnitudeFor(difficulty) { return difficulty.id === 'easy' ? 9 : difficulty.id === 'medium' ? 60 : 420; }
+      function signedValue(difficulty) { const value = randomInt(1, magnitudeFor(difficulty)); return Math.random() < .5 ? -value : value; }
+      function termCount(difficulty, index, signed) {
+        if (signed) return difficulty.id === 'easy' ? 3 : difficulty.id === 'medium' ? (index % 2 ? 4 : 3) : 4;
+        if (difficulty.id === 'easy') return index >= 7 ? 3 : 2;
+        if (difficulty.id === 'medium') return index >= 5 ? 3 : 2;
+        return index >= 3 ? (index % 2 ? 4 : 3) : 2;
+      }
+      function additionValues(difficulty, count, signed) {
+        if (!signed && count === 2) return pairForAddition(difficulty);
+        let values, total;
+        do {
+          values = signed ? Array.from({ length: count }, () => signedValue(difficulty)) : [...pairForAddition(difficulty), ...Array.from({ length: count - 2 }, () => randomInt(1, magnitudeFor(difficulty)))];
+          total = values.reduce((sum, value) => sum + value, 0);
+        } while (total === 0 || (signed && (!values.some((value) => value < 0) || !values.some((value) => value > 0))));
+        return values;
+      }
+      function subtractionValues(difficulty, count, signed) {
+        if (!signed && count === 2) return pairForSubtraction(difficulty);
+        let values, total;
+        do {
+          values = signed ? Array.from({ length: count }, () => signedValue(difficulty)) : [...pairForSubtraction(difficulty), ...Array.from({ length: count - 2 }, () => randomInt(1, magnitudeFor(difficulty)))];
+          total = values.slice(1).reduce((sum, value) => sum - value, values[0]);
+        } while (total === 0 || (signed && !values.slice(1).some((value) => value < 0)));
+        return values;
+      }
+      function multiplicationValues(difficulty, signed) {
+        let left, right;
+        if (difficulty.id === 'easy') { left = randomInt(2, 9); right = randomInt(2, 9); }
+        else if (difficulty.id === 'medium') { left = randomInt(12, 99); right = randomInt(2, 9); }
+        else { left = randomInt(12, 99); right = randomInt(12, 99); }
+        if (signed) {
+          if (Math.random() < .5) left = -left;
+          if (Math.random() < .5) right = -right;
+          if (left > 0 && right > 0) left = -left;
+        }
+        return [left, right];
+      }
+      function multiplicationRange(difficulty) {
+        if (difficulty.id === 'easy') return { leftMin: 2, leftMax: 9, rightMin: 2, rightMax: 9 };
+        if (difficulty.id === 'medium') return { leftMin: 12, leftMax: 99, rightMin: 2, rightMax: 9 };
+        return { leftMin: 12, leftMax: 99, rightMin: 12, rightMax: 99 };
+      }
+      function multiplicationAlternatives(difficulty, values) {
+        const range = multiplicationRange(difficulty);
+        const product = values[0] * values[1];
+        const originalKey = [...values].sort((left, right) => left - right).join(':');
+        const alternatives = [];
+        for (let right = range.rightMin; right <= range.rightMax; right += 1) {
+          if (product % right !== 0) continue;
+          const left = product / right;
+          const candidateKey = [left, right].sort((first, second) => first - second).join(':');
+          if (left >= range.leftMin && left <= range.leftMax && candidateKey !== originalKey) alternatives.push([left, right]);
+        }
+        return alternatives;
+      }
+      function multiplicationEquivalentSpec(difficulty, index) {
+        let original;
+        let alternatives = [];
+        for (let attempts = 0; attempts < 120 && !alternatives.length; attempts += 1) {
+          original = directSpec(COURSES.multiplication, difficulty, index + attempts, false, 2);
+          alternatives = multiplicationAlternatives(difficulty, original.values);
+        }
+        if (alternatives.length) return { original, same: pick(alternatives) };
+        const fallback = difficulty.id === 'easy'
+          ? { original: [3, 8], same: [4, 6] }
+          : difficulty.id === 'medium'
+            ? { original: [12, 6], same: [18, 4] }
+            : { original: [24, 36], same: [18, 48] };
+        original = { values: fallback.original, total: fallback.original[0] * fallback.original[1], remainder: 0, prompt: multiplicationExpression(fallback.original), signed: false, count: 2 };
+        return { original, same: fallback.same };
+      }
+      function divisionBounds(difficulty) {
+        if (difficulty.id === 'easy') return { divisorMin: 2, divisorMax: 9, dividendMin: 10, dividendMax: 99 };
+        if (difficulty.id === 'medium') return { divisorMin: 2, divisorMax: 9, dividendMin: 100, dividendMax: 999 };
+        return { divisorMin: 10, divisorMax: 99, dividendMin: 100, dividendMax: 999 };
+      }
+      function divisionValues(difficulty, hasRemainder, signed) {
+        const bounds = divisionBounds(difficulty);
+        let divisor, quotient, remainder, dividend;
+        do {
+          divisor = randomInt(bounds.divisorMin, bounds.divisorMax);
+          remainder = hasRemainder ? randomInt(1, divisor - 1) : 0;
+          const minQuotient = Math.max(1, Math.ceil((bounds.dividendMin - remainder) / divisor));
+          const maxQuotient = Math.floor((bounds.dividendMax - remainder) / divisor);
+          quotient = randomInt(minQuotient, maxQuotient);
+          dividend = quotient * divisor + remainder;
+        } while (dividend < bounds.dividendMin || dividend > bounds.dividendMax);
+        if (signed && !hasRemainder) {
+          if (Math.random() < .5) divisor = -divisor;
+          if (Math.random() < .5) quotient = -quotient;
+          dividend = divisor * quotient;
+        }
+        return { values: [dividend, divisor], quotient, remainder };
+      }
+      function divisionSameValues(difficulty, original) {
+        const bounds = divisionBounds(difficulty);
+        const quotient = original.total;
+        const remainder = original.remainder || 0;
+        const candidates = [];
+        for (let divisor = bounds.divisorMin; divisor <= bounds.divisorMax; divisor += 1) {
+          const dividend = quotient * divisor + remainder;
+          if (divisor !== Math.abs(original.values[1]) && dividend >= bounds.dividendMin && dividend <= bounds.dividendMax) candidates.push([dividend, divisor]);
+        }
+        return candidates.length ? pick(candidates) : [original.values[0], original.values[1]];
+      }
+      function directSpec(course, difficulty, index, signed = false, countOverride = null) {
+        const count = countOverride || termCount(difficulty, index, signed);
+        let values, remainder = 0;
+        if (course.operation === 'addition') values = additionValues(difficulty, count, signed);
+        else if (course.operation === 'subtraction') values = subtractionValues(difficulty, count, signed);
+        else if (course.operation === 'multiplication') values = multiplicationValues(difficulty, signed);
+        else {
+          const division = divisionValues(difficulty, Boolean(course.remainder), signed && !course.remainder);
+          values = division.values;
+          remainder = division.remainder;
+        }
+        return { values, total: resultFor(course, values), remainder, prompt: expressionFor(course, values), signed, count };
+      }
+      function directNote(course, difficulty, signed, count) {
+        if (signed) {
+          if (course.operation === 'addition') return '正數往右、負數往左；可以把正數和負數分別加總，再合併。';
+          if (course.operation === 'subtraction') return '看到「減去負數」時，要把它想成加上相反數；由左到右一步一步算。';
+          if (course.operation === 'multiplication') return '先看負號個數：一個負號得負，兩個負號得正。';
+          return '先看負號個數，再利用「除法是乘法的反運算」檢查商。';
+        }
+        if (course.operation === 'addition') return difficulty.id === 'easy' ? '先找哪兩個數可以湊成 10。' : '從個位開始；超過 9 時，記得把進位帶到下一位。';
+        if (course.operation === 'subtraction') return difficulty.id === 'easy' ? '把 10 當作基準，想想還差多少。' : '個位不夠減時，向左邊借 1 個十（或百）再算。';
+        if (course.operation === 'multiplication') return difficulty.id === 'easy' ? '把乘法想成幾個一樣的數相加，或直接回想乘法表。' : difficulty.id === 'medium' ? '先把兩位數拆成十位和個位，分別乘一位數。' : '可以用分配律拆成四個部分，或用直式逐步相乘。';
+        if (course.remainder) return '先找最大的整數商；最後檢查「餘數一定小於除數」。';
+        return difficulty.id === 'easy' ? '除法可反過來想：除數乘商，會不會回到被除數？' : '先估商，再乘回去檢查是否剛好等於被除數。';
+      }
+      function makeDirect(course, difficulty, index, signed = false) {
+        const spec = directSpec(course, difficulty, index, signed);
+        const kind = course.remainder ? '餘數除法' : signed ? '正負數運算' : (course.operation === 'addition' || course.operation === 'subtraction') && spec.count >= 3 ? `${spec.count}數${course.name}` : '直接計算';
+        const options = course.remainder ? remainderOptions(spec.total, spec.remainder, spec.values[1]) : numericOptions(spec.total, difficulty.id);
+        const answerText = course.remainder ? remainderLabel(spec.total, spec.remainder) : displayNumber(spec.total);
+        return { kind, prompt: spec.prompt, note: directNote(course, difficulty, signed, spec.count), options, answerText };
+      }
+      function makeMissing(course, difficulty, index, signed = false) {
+        const spec = directSpec(course, difficulty, index, signed, 2);
+        const [a, b] = spec.values;
+        if (course.operation === 'addition') {
+          return { kind: '補上未知數', prompt: `${numberAtom(a)} ＋ ？＝ ${displayNumber(spec.total)}`, note: signed ? '把已知數移到另一邊時，要連同正負號一起看。' : '把已知的加數從總和拿掉，就知道缺多少。', options: numericOptions(b, difficulty.id), answerText: displayNumber(b) };
+        }
+        if (course.operation === 'subtraction' && index % 2) {
+          return { kind: '補上未知數', prompt: `？ − ${numberAtom(b)} ＝ ${displayNumber(spec.total)}`, note: '想成「結果再加回減數」，就能找回原來的數。', options: numericOptions(a, difficulty.id), answerText: displayNumber(a) };
+        }
+        if (course.operation === 'subtraction') return { kind: '補上未知數', prompt: `${numberAtom(a)} − ？＝ ${displayNumber(spec.total)}`, note: signed ? '減去負數時，符號不能漏看。' : '把「原來的數」減掉「結果」，就知道減了多少。', options: numericOptions(b, difficulty.id), answerText: displayNumber(b) };
+        if (course.operation === 'multiplication') return { kind: '補上未知數', prompt: `？ × ${numberAtom(b)} ＝ ${displayNumber(spec.total)}`, note: '乘法未知數可以用「積 ÷ 已知因數」反推。', options: numericOptions(a, difficulty.id), answerText: displayNumber(a) };
+        if (course.remainder) {
+          return { kind: '補上被除數', prompt: `？ ÷ ${numberAtom(b)} ＝ ${remainderLabel(spec.total, spec.remainder)}`, note: '用「除數 × 商 ＋ 餘數」找回被除數。', options: numericOptions(a, difficulty.id), answerText: displayNumber(a) };
+        }
+        if (index % 2) return { kind: '補上被除數', prompt: `？ ÷ ${numberAtom(b)} ＝ ${displayNumber(spec.total)}`, note: '把「除數 × 商」算回去，就能找回被除數。', options: numericOptions(a, difficulty.id), answerText: displayNumber(a) };
+        return { kind: '補上除數', prompt: `${numberAtom(a)} ÷ ？＝ ${displayNumber(spec.total)}`, note: '除法未知數可用「被除數 ÷ 商」反推，再乘回檢查。', options: numericOptions(b, difficulty.id), answerText: displayNumber(b) };
+      }
+      function equivalentSpec(course, difficulty, index, signed) {
+        let original = directSpec(course, difficulty, index, signed, 2);
+        if (course.operation === 'addition') {
+          while (original.values[0] === original.values[1]) original = directSpec(course, difficulty, index, signed, 2);
+          return { original, same: [original.values[1], original.values[0]] };
+        }
+        if (course.operation === 'multiplication') return multiplicationEquivalentSpec(difficulty, index);
+        if (course.operation === 'division') return { original, same: divisionSameValues(difficulty, original) };
+        const delta = signed ? pick([-4, -3, -2, 2, 3, 4]) : randomInt(1, Math.max(2, Math.floor(magnitudeFor(difficulty) / 4)));
+        return { original, same: [original.values[0] + delta, original.values[1] + delta] };
+      }
+      function makeEquivalent(course, difficulty, index, signed = false) {
+        const { original, same } = equivalentSpec(course, difficulty, index, signed);
+        const values = [{ values: same, total: original.total, remainder: original.remainder || 0 }];
+        const totals = new Set([`${original.total}:${original.remainder || 0}`]);
+        while (values.length < 4) {
+          const candidate = directSpec(course, difficulty, index + values.length, signed, 2);
+          const key = `${candidate.total}:${candidate.remainder || 0}`;
+          if (!totals.has(key)) { values.push(candidate); totals.add(key); }
+        }
+        return {
+          kind: `找相同的${course.resultWord}`, prompt: original.prompt,
+          note: course.operation === 'multiplication' ? '相同的積可以有不同的因數組合；請算出積，不要只把兩個因數前後交換。' : `選出最後結果和題目一樣的${course.resultWord}；不要只看數字大小。`,
+          options: shuffle(values).map((item) => ({ label: expressionFor(course, item.values), correct: item.total === original.total && (item.remainder || 0) === (original.remainder || 0) })), answerText: expressionFor(course, same)
+        };
+      }
+      function makeExtremum(course, difficulty, index, signed = false) {
+        const values = [], results = new Set();
+        while (values.length < 4) {
+          const item = directSpec(course, difficulty, index + values.length, signed, 2);
+          const value = course.remainder ? item.remainder : item.total;
+          if (!results.has(value)) { values.push(item); results.add(value); }
+        }
+        const maximum = Math.random() < .5;
+        const target = maximum ? Math.max(...values.map((item) => course.remainder ? item.remainder : item.total)) : Math.min(...values.map((item) => course.remainder ? item.remainder : item.total));
+        return {
+          kind: course.remainder ? (maximum ? '哪一個餘數最大？' : '哪一個餘數最小？') : (maximum ? '哪一個結果最大？' : '哪一個結果最小？'),
+          prompt: course.remainder ? (maximum ? '最大的餘數是？' : '最小的餘數是？') : (maximum ? '最大的結果是？' : '最小的結果是？'), textPrompt: true,
+          note: course.remainder ? '每一題都要先算商與餘數；最後比較餘數，並確認它小於除數。' : signed ? '負數比 0 小；先看最後結果的正負，再比較大小。' : '先估十位（或百位），再比較個位，會比逐題重算更快。',
+          options: shuffle(values).map((item) => ({ label: expressionFor(course, item.values), correct: (course.remainder ? item.remainder : item.total) === target })), answerText: expressionFor(course, values.find((item) => (course.remainder ? item.remainder : item.total) === target).values)
+        };
+      }
+      function makeUnknownTraining(difficulty, index) {
+        const operationIds = difficulty.id === 'easy'
+          ? ['addition', 'subtraction']
+          : difficulty.id === 'medium'
+            ? ['addition', 'subtraction', 'multiplication']
+            : ['addition', 'subtraction', 'multiplication', 'division'];
+        const sourceCourse = COURSES[operationIds[index % operationIds.length]];
+        const question = makeMissing(sourceCourse, difficulty, index, false);
+        return {
+          ...question,
+          kind: `未知數・${sourceCourse.name}`,
+          note: `先判斷這是${sourceCourse.name}的哪一個數缺少，再用反運算找回來；最後代回原式驗算。`
+        };
+      }
+      function questionFor(course, difficulty, mode, index) {
+        if (course.unknownTraining) return makeUnknownTraining(difficulty, index);
+        const nextType = mode.id === 'mix' ? MIX_SEQUENCE[index % MIX_SEQUENCE.length] : mode.id;
+        const type = course.remainder && nextType === 'signed' ? 'direct' : nextType;
+        if (type === 'direct') return makeDirect(course, difficulty, index);
+        if (type === 'equivalent') return makeEquivalent(course, difficulty, index);
+        if (type === 'extremum') return makeExtremum(course, difficulty, index);
+        if (type === 'unknown') return makeMissing(course, difficulty, index);
+        return makeDirect(course, difficulty, index, true);
+      }
+
+      function updateProfile() {
+        const needed = xpNeeded(profile.level);
+        const course = COURSES[selectedCourseId];
+        if (course.remainder && selectedModeId === 'signed') selectedModeId = 'direct';
+        if (course.unknownTraining) selectedModeId = 'unknown';
+        const mode = PRACTICE_MODES[selectedModeId];
+        E.levelOrb.textContent = `Lv.${profile.level}`;
+        E.profileTitle.textContent = levelName(profile.level);
+        E.profileText.textContent = `本級 ${profile.xp} / ${needed} XP，離下一級還差 ${Math.max(0, needed - profile.xp)} XP`;
+        E.profileTotal.textContent = `累積 ${formatNumber(profile.totalXp)} XP ・通關 ${formatNumber(profile.totalClears)} 次`;
+        E.xpFill.style.width = `${Math.min(100, profile.xp / needed * 100)}%`;
+        E.brandTitle.textContent = '數字運算衝刺';
+        E.brandSub.textContent = `第${course.number}關：${course.name}・${mode.label}`;
+        E.introTitle.textContent = course.title;
+        E.introLead.textContent = course.lead;
+        E.courseButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.course === course.id)));
+        E.modeButtons.forEach((button) => {
+          const unavailable = (course.remainder && button.dataset.mode === 'signed') || (course.unknownTraining && button.dataset.mode !== 'unknown');
+          button.disabled = unavailable;
+          button.setAttribute('aria-pressed', String(!unavailable && button.dataset.mode === mode.id));
+        });
+        if (course.unknownTraining) {
+          E.curriculumNote.textContent = '這是未知數專練：容易輪流出現加減；中等加入乘法；困難再加入整除。每題的固定步驟是「選反運算 → 求出？→ 代回驗算」。';
+        } else if (mode.id === 'mix') {
+          E.curriculumNote.textContent = course.remainder
+            ? '綜合編排順序：第 1–2 題商與餘數 → 第 3 題相同商與餘數 → 第 4 題比較餘數 → 第 5 題補上被除數 → 第 6–8 題綜合檢查 → 第 9–10 題再次驗算餘數。通關 XP ×1.30。'
+            : '綜合編排順序：第 1–2 題直接算 → 第 3 題相同結果 → 第 4 題最大／最小 → 第 5 題未知數 → 第 6 題加強直接算 → 第 7–8 題比較與未知數 → 第 9–10 題正負數。通關 XP ×1.30。';
+        } else if (course.operation === 'multiplication' && mode.id === 'direct') {
+          E.curriculumNote.textContent = '只練乘法：容易是一位數 × 一位數；中等固定兩位數 × 一位數；困難固定兩位數 × 兩位數。';
+        } else if (course.operation === 'division' && course.remainder && mode.id === 'direct') {
+          E.curriculumNote.textContent = '只練有餘數除法：每次都要同時寫出商和餘數，並檢查「餘數小於除數」。';
+        } else if (course.operation === 'division' && mode.id === 'direct') {
+          E.curriculumNote.textContent = '只練整除：中等固定三位數 ÷ 一位數，困難固定三位數 ÷ 二位數；用除數乘回去驗算。';
+        } else {
+          E.curriculumNote.textContent = `${mode.detail} 想練哪一種觀念，就可以先從這一種開始。`;
+        }
+        E.stageNumbers.forEach((element) => {
+          const difficulty = DIFFICULTIES[element.dataset.stageNumber];
+          const stage = difficulty.stage + course.stageOffset;
+          element.textContent = `關卡 ${stage}・建議 Lv.${stage}`;
+        });
+        E.stageClears.forEach((element) => {
+          const difficultyId = element.dataset.stageClear;
+          const clears = Math.max(0, Math.floor(Number(profile.clearCounts[`${course.id}:${difficultyId}`]) || 0));
+          element.textContent = `通關 ${formatNumber(clears)} 次`;
+        });
+        E.stageTitles.forEach((element) => { element.textContent = course.stageCopy[element.dataset.stageTitle].title; });
+        E.stageDescriptions.forEach((element) => { element.textContent = course.stageCopy[element.dataset.stageDescription].description; });
+        E.stageExamples.forEach((element) => { element.textContent = course.stageCopy[element.dataset.stageExample].example; });
+        E.stageMetas.forEach((element) => {
+          const difficulty = DIFFICULTIES[element.dataset.stageMeta];
+          const ratio = farmingMultiplier(profile.level, difficulty.stage + course.stageOffset);
+          const rawMin = Math.round((difficulty.xpBase + course.xpBonus) * mode.multiplier);
+          const rawMax = Math.round((difficulty.xpBase + course.xpBonus + difficulty.xpSpeed + 3 * difficulty.xpLife) * mode.multiplier);
+          element.innerHTML = `每局最高 ${difficulty.startScore.toLocaleString('zh-TW')} 分<br>成功可得約 ${rawMin}～${rawMax} XP<br>目前 XP 效率：<b>${Math.round(ratio * 100)}%</b>`;
+        });
+        E.startButtons.forEach((button) => { const difficulty = DIFFICULTIES[button.dataset.start]; button.textContent = `開始${difficulty.short}${course.name}闖關`; });
+        E.farmingNote.textContent = profile.level > 1
+          ? `目前 Lv.${profile.level}：高於關卡建議等級時，XP 會每差 1 級再少 15%，最低仍保留 15%。${course.name}第${course.number}關與綜合編排本身都有加成；越後面的難度，才是更有效率的升級訓練。紀錄只儲存在這台裝置的瀏覽器中。`
+          : `越困難的題目、後面的運算題組、餘數除法與綜合編排都會給更多 XP。為避免只刷前面關卡：玩家等級高於關卡建議等級時，XP 會依差距打折，最低仍保留 15%。紀錄只儲存在這台裝置的瀏覽器中。`;
+        renderReviewList();
+      }
+      function show(screen) {
+        clearInterval(clock); clock = null;
+        clearTimeout(advanceTimer); advanceTimer = null;
+        E.start.hidden = screen !== 'start'; E.game.hidden = screen !== 'game'; E.result.hidden = screen !== 'result';
+        window.scrollTo(0, 0);
+      }
+      function currentQuestionScore() {
+        if (!game || !game.questionStartedAt) return 0;
+        const elapsed = performance.now() - game.questionStartedAt;
+        const ratio = Math.min(1, elapsed / (game.difficulty.decaySeconds * 1000));
+        return Math.round(game.difficulty.startScore - (game.difficulty.startScore - game.difficulty.floorScore) * ratio);
+      }
+      function updateHud() {
+        if (!game) return;
+        const elapsed = performance.now() - game.startedAt;
+        E.hudProgress.textContent = `${Math.min(game.index + 1, TOTAL_QUESTIONS)} / ${TOTAL_QUESTIONS}`;
+        E.hudLives.textContent = Array.from({ length: 3 }, (_, index) => index < game.lives ? '❤' : '♡').join(' ');
+        E.hudScore.textContent = formatNumber(game.score);
+        E.hudTime.textContent = elapsedText(elapsed);
+        const points = currentQuestionScore();
+        E.questionPoints.textContent = `${formatNumber(points)} 分`;
+        E.scoreFill.style.width = `${Math.max(0, (points - game.difficulty.floorScore) / (game.difficulty.startScore - game.difficulty.floorScore) * 100)}%`;
+      }
+      function startGame(difficultyId) {
+        const difficulty = DIFFICULTIES[difficultyId];
+        const course = COURSES[selectedCourseId];
+        const mode = PRACTICE_MODES[selectedModeId];
+        clearTimeout(advanceTimer);
+        game = { difficulty, course, mode, stage: difficulty.stage + course.stageOffset, index: 0, score: 0, lives: 3, startedAt: performance.now(), questionStartedAt: 0, question: null, locked: false, answered: 0 };
+        show('game');
+        renderQuestion();
+        clock = setInterval(updateHud, 80);
+      }
+      function renderQuestion() {
+        if (!game) return;
+        game.question = questionFor(game.course, game.difficulty, game.mode, game.index);
+        game.questionStartedAt = performance.now();
+        game.locked = false;
+        const question = game.question;
+        E.questionKind.textContent = question.kind;
+        E.question.textContent = question.prompt;
+        E.question.classList.toggle('text-question', Boolean(question.textPrompt));
+        E.questionNote.textContent = question.note;
+        E.answers.replaceChildren();
+        question.options.forEach((option) => {
+          const button = document.createElement('button');
+          button.type = 'button'; button.className = 'answer'; button.textContent = option.label;
+          button.setAttribute('aria-label', `選項：${option.label}`);
+          button.addEventListener('click', () => chooseAnswer(option, button));
+          E.answers.append(button);
+        });
+        E.feedback.className = 'feedback';
+        if (game.course.unknownTraining) {
+          E.feedback.textContent = '先看 ？ 缺少的是哪一個位置，再選擇相反的運算；最後記得代回原式。';
+        } else if (game.course.operation === 'addition') {
+          E.feedback.textContent = game.difficulty.id === 'easy' ? '選一個你認為正確的答案。先找能湊成 10 的數。' : '先算個位，再把進位帶到下一位。';
+        } else if (game.course.operation === 'subtraction') {
+          E.feedback.textContent = game.difficulty.id === 'easy' ? '選一個你認為正確的答案。先把 10 當作基準。' : '先算個位；不夠減時，記得向左邊借 1。';
+        } else if (game.course.operation === 'multiplication') {
+          E.feedback.textContent = game.difficulty.id === 'easy' ? '選一個你認為正確的答案。可以回想乘法表或想成重複加法。' : '先拆成好算的部分，或用直式相乘；別只看數字大小。';
+        } else if (game.course.remainder) {
+          E.feedback.textContent = '選一個你認為正確的答案。記得：餘數一定比除數小。';
+        } else {
+          E.feedback.textContent = '選一個你認為正確的答案。先估商，再用除數乘回去檢查。';
+        }
+        updateHud();
+      }
+      function chooseAnswer(option, selectedButton) {
+        if (!game || game.locked) return;
+        game.locked = true;
+        const points = currentQuestionScore();
+        const buttons = Array.from(E.answers.querySelectorAll('.answer'));
+        buttons.forEach((button) => { button.disabled = true; });
+        if (option.correct) {
+          selectedButton.classList.add('correct');
+          game.score += points;
+          E.feedback.className = 'feedback good';
+          E.feedback.textContent = `答對！本題獲得 ${formatNumber(points)} 分。`;
+        } else {
+          selectedButton.classList.add('incorrect');
+          const correctButton = buttons.find((button, index) => game.question.options[index].correct);
+          if (correctButton) correctButton.classList.add('correct');
+          game.lives -= 1;
+          recordMistake(game.question);
+          E.feedback.className = 'feedback bad';
+          E.feedback.textContent = `這次不對，扣 1 條生命。正確答案是「${game.question.answerText}」。`;
+        }
+        game.answered += 1;
+        updateHud();
+        advanceTimer = setTimeout(() => {
+          if (!game) return;
+          if (game.lives <= 0) endGame(false);
+          else if (game.answered >= TOTAL_QUESTIONS) endGame(true);
+          else { game.index += 1; renderQuestion(); }
+        }, option.correct ? 620 : 1100);
+      }
+      function awardXp() {
+        const scoreRate = Math.min(1, game.score / (TOTAL_QUESTIONS * game.difficulty.startScore));
+        const base = game.difficulty.xpBase;
+        const courseBonus = game.course.xpBonus;
+        const speed = Math.round(game.difficulty.xpSpeed * scoreRate);
+        const life = game.lives * game.difficulty.xpLife;
+        const beforeModeBonus = base + courseBonus + speed + life;
+        const beforeDiscount = Math.round(beforeModeBonus * game.mode.multiplier);
+        const multiplier = farmingMultiplier(profile.level, game.stage);
+        const gained = Math.max(1, Math.round(beforeDiscount * multiplier));
+        const oldLevel = profile.level;
+        profile.xp += gained;
+        profile.totalXp += gained;
+        while (profile.xp >= xpNeeded(profile.level)) {
+          profile.xp -= xpNeeded(profile.level);
+          profile.level += 1;
+        }
+        const recordKey = `${game.course.id}:${game.mode.id}:${game.difficulty.id}`;
+        profile.bestScores[recordKey] = Math.max(Number(profile.bestScores[recordKey] || 0), game.score);
+        const clearKey = `${game.course.id}:${game.difficulty.id}`;
+        profile.clearCounts[clearKey] = Math.max(0, Math.floor(Number(profile.clearCounts[clearKey]) || 0)) + 1;
+        profile.totalClears += 1;
+        saveProfile();
+        return { base, courseBonus, speed, life, beforeModeBonus, beforeDiscount, multiplier, gained, oldLevel, newLevel: profile.level, recordKey, clearCount: profile.clearCounts[clearKey], totalClears: profile.totalClears };
+      }
+      function endGame(won) {
+        clearInterval(clock); clock = null;
+        const elapsed = performance.now() - game.startedAt;
+        const completed = game.answered;
+        let xp = null;
+        if (won) xp = awardXp();
+        E.resultSymbol.textContent = won ? (game.lives === 3 ? '★' : '✦') : '×';
+        E.resultSymbol.classList.toggle('fail', !won);
+        E.resultTitle.textContent = won ? (game.lives === 3 ? '滿生命通關！' : `完成${game.course.name}闖關！`) : '生命用完了';
+        E.resultLead.textContent = won
+          ? `你完成了「第${game.course.number}關・${game.difficulty.short}${game.course.name}・${game.mode.label}」的 10 題挑戰。這局重點是：先讓算式正確，再慢慢把每題反應時間縮短。`
+          : `你完成了 ${completed} / ${TOTAL_QUESTIONS} 題。先回看剛才亮出的正確答案；${game.course.unknownTraining ? '未知數題先決定要用哪一個反運算，求出後一定代回原式。' : game.course.operation === 'addition' ? '進位題要從個位開始一步一步帶過去。' : game.course.operation === 'subtraction' ? '減法題要確認每一步的借位與正負號。' : game.course.remainder ? '餘數題要檢查：被除數＝除數×商＋餘數，而且餘數小於除數。' : game.course.operation === 'division' ? '整除題先估商，再用除數乘回去驗算。' : '乘法題可拆成十位、個位，或用直式逐步相乘。'}`;
+        E.resultCompleted.textContent = `${completed} / ${TOTAL_QUESTIONS}`;
+        E.resultScore.textContent = formatNumber(game.score);
+        E.resultTime.textContent = elapsedText(elapsed);
+        if (xp) {
+          const multiplierText = `${Math.round(xp.multiplier * 100)}%`;
+          const modeText = game.mode.multiplier > 1 ? `；綜合編排 ×${game.mode.multiplier.toFixed(2)}` : '';
+          E.xpBreakdown.innerHTML = `本局經驗值：<b>＋${xp.gained} XP</b><br>難度基礎 ${xp.base} ＋ 第${game.course.number}關加成 ${xp.courseBonus} ＋ 速度 ${xp.speed} ＋ 生命 ${xp.life} ＝ ${xp.beforeModeBonus} XP${modeText}，得到 ${xp.beforeDiscount} XP；目前關卡效率 ${multiplierText}。<br>這個難度已通關 ${formatNumber(xp.clearCount)} 次；總通關 ${formatNumber(xp.totalClears)} 次。此組合最高紀錄：${formatNumber(profile.bestScores[xp.recordKey])} 分。`;
+          if (xp.newLevel > xp.oldLevel) {
+            E.newLevel.hidden = false;
+            E.newLevel.textContent = `升級！Lv.${xp.oldLevel} → Lv.${xp.newLevel}：${levelName(xp.newLevel)}`;
+          } else E.newLevel.hidden = true;
+        } else {
+          const retryFocus = game.course.unknownTraining ? '選對反運算，並把答案代回等式驗算' : game.course.operation === 'addition' ? '個位相加與進位' : game.course.operation === 'subtraction' ? '個位減法、借位與正負號' : game.course.remainder ? '商、餘數與「餘數小於除數」' : game.course.operation === 'division' ? '估商後乘回檢查' : '拆數相乘或直式相乘';
+          E.xpBreakdown.textContent = `本局尚未完成 10 題，因此不獲得 XP。重新挑戰時，先把「${retryFocus}」當成固定檢查步驟。`;
+          E.newLevel.hidden = true;
+        }
+        updateProfile();
+        show('result');
+      }
+
+      E.courseButtons.forEach((button) => button.addEventListener('click', () => {
+        selectedCourseId = button.dataset.course;
+        if (COURSES[selectedCourseId].remainder && selectedModeId === 'signed') selectedModeId = 'direct';
+        updateProfile();
+      }));
+      E.modeButtons.forEach((button) => button.addEventListener('click', () => { selectedModeId = button.dataset.mode; updateProfile(); }));
+      E.startButtons.forEach((button) => button.addEventListener('click', () => startGame(button.dataset.start)));
+      E.retry.addEventListener('click', () => {
+        if (game) { selectedCourseId = game.course.id; selectedModeId = game.mode.id; }
+        startGame(game?.difficulty.id || 'easy');
+      });
+      E.choose.addEventListener('click', () => { updateProfile(); show('start'); });
+      updateProfile();
+    })();
+  </script>
+</body>
+</html>

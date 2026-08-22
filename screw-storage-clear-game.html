@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>螺絲暫存重力拆板挑戰</title>
+  <style>
+    :root {
+      --ink: #302018;
+      --sub: #725744;
+      --wood-dark: #62301f;
+      --gold: #f8c85b;
+      --gold-light: #ffedb4;
+      --board: #f3c66b;
+      --red: #b64340;
+      --green: #237858;
+      --blue: #2e7692;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background:
+        repeating-linear-gradient(90deg, rgba(55, 19, 12, .09) 0 3px, transparent 3px 76px),
+        radial-gradient(circle at 15% 6%, rgba(255, 229, 154, .28), transparent 21rem),
+        linear-gradient(135deg, #57291d, #8b4b31 48%, #57281c);
+    }
+
+    button, select { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #135c79; outline-offset: 3px; }
+
+    .app { width: min(1200px, 100%); margin: 0 auto; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+      color: #fff9e7;
+    }
+
+    .home-link, .gold-button, .level-select, .capacity-button {
+      border: 2px solid rgba(75, 35, 20, .54);
+      border-radius: 12px;
+      background: linear-gradient(#ffe0a0, #e9a64e);
+      box-shadow: inset 0 2px rgba(255,255,255,.58), 0 3px 0 rgba(72, 31, 18, .55);
+      color: #552a1b;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .home-link, .gold-button { padding: 9px 12px; }
+    .gold-button, .capacity-button { cursor: pointer; }
+    .gold-button:hover, .capacity-button:hover, .home-link:hover, .level-select:hover { filter: brightness(1.06); }
+
+    .title-block { text-align: right; }
+    h1 { margin: 0; font-size: clamp(25px, 4.4vw, 40px); letter-spacing: .04em; text-shadow: 0 2px 0 rgba(48,20,11,.8); }
+    .title-block p { margin: 1px 0 0; color: #ffe8ad; font-size: 14px; font-weight: 700; }
+
+    .game-shell {
+      overflow: hidden;
+      border: 5px solid #63331f;
+      border-radius: 25px;
+      background: #fff7e3;
+      box-shadow: 0 18px 42px rgba(27, 10, 5, .38), inset 0 0 0 3px #f5d783;
+    }
+
+    .game-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 13px 17px;
+      border-bottom: 2px solid #d29b4a;
+      background: linear-gradient(90deg, #fff1c2, #ffe09c 49%, #f4c169);
+    }
+
+    .level-tools, .meters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .level-tools label { font-weight: 900; }
+    .level-select { max-width: min(340px, 70vw); cursor: pointer; padding: 8px 10px; }
+
+    .meter {
+      min-width: 84px;
+      border: 2px solid #9d512f;
+      border-radius: 12px;
+      background: #80351f;
+      color: #fff9e8;
+      padding: 5px 9px;
+      text-align: center;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .meter b { display: block; font-size: 20px; }
+    .meter span { color: #ffe4a2; font-size: 12px; }
+
+    .game-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 305px;
+      gap: 16px;
+      padding: 17px;
+    }
+
+    .board-wrap { min-width: 0; }
+
+    .board {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      width: 100%;
+      min-height: 455px;
+      aspect-ratio: 1 / .82;
+      border: 5px solid #6e3d22;
+      border-radius: 24px;
+      background:
+        repeating-linear-gradient(0deg, rgba(115, 58, 22, .1) 0 2px, transparent 2px 22px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.17) 0 1px, transparent 1px 40px),
+        linear-gradient(135deg, #ffe79d, var(--board));
+      box-shadow: inset 0 0 0 4px #ffe9a7, inset 0 0 40px rgba(103, 54, 21, .2), 0 5px 0 #472416;
+    }
+
+    .board::before {
+      content: "↓ 重力方向";
+      position: absolute;
+      right: 15px;
+      top: 13px;
+      z-index: 2;
+      border-radius: 999px;
+      background: rgba(101, 53, 31, .76);
+      color: #fff2c5;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      pointer-events: none;
+    }
+
+    .piece {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      z-index: var(--z);
+      width: var(--w);
+      height: var(--h);
+      border: 3px solid rgba(70, 29, 17, .8);
+      transform: translate(-50%, -50%) rotate(var(--r));
+      transform-origin: center;
+      box-shadow: inset 0 2px 5px rgba(255,255,255,.25), inset 0 -5px 9px rgba(55,18,9,.27), 0 5px 7px rgba(52, 25, 12, .26);
+      pointer-events: none;
+      transition: left .55s cubic-bezier(.18,.85,.26,1), top .55s cubic-bezier(.18,.85,.26,1), transform .55s cubic-bezier(.18,.85,.26,1), opacity .45s ease, filter .2s ease;
+    }
+
+    .piece.wood {
+      background:
+        repeating-linear-gradient(82deg, rgba(74, 32, 18, .16) 0 1px, transparent 1px 11px),
+        linear-gradient(180deg, #df9a5d, #ad5935 55%, #73331e);
+    }
+
+    .piece.metal {
+      background:
+        repeating-linear-gradient(100deg, rgba(255,255,255,.38) 0 2px, rgba(89, 110, 119, .12) 2px 9px),
+        linear-gradient(180deg, #d7e5e7, #91aab0 55%, #587379);
+    }
+
+    .piece.bracket { clip-path: polygon(0 0, 100% 0, 100% 37%, 42% 37%, 42% 100%, 0 100%); }
+    .piece.triangle { clip-path: polygon(4% 94%, 51% 4%, 96% 94%); }
+    .piece.round { border-radius: 48% 25% 43% 25%; }
+    .piece.hinted { filter: drop-shadow(0 0 9px #fff49f) brightness(1.14); }
+    .piece.swinging { filter: saturate(1.1) brightness(1.08); }
+    .piece.blocked { filter: saturate(.82) brightness(.92); }
+    .piece.falling { opacity: 0; transform: translate(-50%, -50%) rotate(var(--r)) scale(.92); }
+
+    .piece-name {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: rgba(53, 25, 15, .83);
+      font-size: clamp(11px, 1.55vw, 16px);
+      font-weight: 900;
+      letter-spacing: .09em;
+      text-shadow: 0 1px rgba(255,255,255,.25);
+    }
+
+    .metal .piece-name { color: rgba(22, 51, 61, .92); }
+
+    .motion-tag {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 5px);
+      transform: translateX(-50%) rotate(calc(var(--r) * -1));
+      white-space: nowrap;
+      border: 1px solid rgba(73, 34, 20, .6);
+      border-radius: 999px;
+      background: #fff0aa;
+      color: #754022;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .motion-tag.block { background: #d9e6e9; color: #355a63; }
+
+    .hole, .screw {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      aspect-ratio: 1;
+    }
+
+    .hole {
+      z-index: 25;
+      width: clamp(31px, 4.5vw, 44px);
+      border: 3px dashed #a05b31;
+      background: radial-gradient(circle, #69402d 0 30%, #f6d58b 32% 53%, #9a5530 55% 100%);
+      box-shadow: inset 0 2px 3px rgba(39,14,7,.7), 0 1px rgba(255,250,210,.85);
+      cursor: pointer;
+      color: transparent;
+      animation: holePulse 1.5s ease-in-out infinite;
+    }
+
+    .hole::after {
+      content: "放回";
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 2px);
+      transform: translateX(-50%);
+      color: #724226;
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .hole.parked {
+      border-style: solid;
+      cursor: default;
+      animation: none;
+      background: radial-gradient(circle at 35% 30%, #ffb49b 0 10%, transparent 12%), radial-gradient(circle at center, #cc5550 0 29%, #96393a 31% 44%, #e17f69 46% 59%, #74302d 61% 100%);
+      box-shadow: inset 0 0 0 3px rgba(255,217,174,.35), 0 2px 0 rgba(95,43,29,.65);
+    }
+
+    .hole.parked::after { content: "已放回"; color: #216447; }
+
+    @keyframes holePulse { 50% { filter: brightness(1.19); transform: translate(-50%, -50%) scale(1.06); } }
+
+    .screw {
+      z-index: 35;
+      width: clamp(37px, 5.1vw, 51px);
+      border: 3px solid #70352c;
+      cursor: pointer;
+      color: transparent;
+      background:
+        radial-gradient(circle at 35% 30%, #ffb19b 0 10%, transparent 12%),
+        radial-gradient(circle at center, #c84e4b 0 29%, #8f3739 31% 44%, #e17c68 46% 59%, #74312d 61% 100%);
+      box-shadow: inset 0 0 0 3px rgba(255,214,169,.35), 0 3px 0 rgba(95,43,29,.65), 0 5px 8px rgba(73,35,19,.35);
+    }
+
+    .screw::after, .slot-screw::after, .hole.parked::before {
+      content: "+";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #742b2c;
+      font-family: Arial, sans-serif;
+      font-size: clamp(23px, 3.3vw, 34px);
+      font-weight: 900;
+      text-shadow: 0 1px rgba(255,255,255,.3);
+      transform: rotate(9deg);
+    }
+
+    .screw:hover { filter: brightness(1.17); transform: translate(-50%, -50%) scale(1.08); }
+
+    .side-panel { display: flex; flex-direction: column; gap: 12px; }
+
+    .storage-card, .mission-card, .tip-card {
+      border: 2px solid #bd8244;
+      border-radius: 17px;
+      background: linear-gradient(145deg, #fff4d1, #f6ce7c);
+      box-shadow: inset 0 2px rgba(255,255,255,.62), 0 3px 0 rgba(134, 73, 39, .24);
+      padding: 13px;
+    }
+
+    .storage-card h2, .mission-card h2, .tip-card h2 { margin: 0 0 6px; font-size: 19px; }
+    .storage-card p, .mission-card p, .tip-card p { margin: 0; color: #704331; font-size: 14px; line-height: 1.58; }
+
+    .capacity-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 10px; }
+    .capacity-button { padding: 6px 3px; font-size: 13px; }
+    .capacity-button.selected { border-color: #296b55; background: linear-gradient(#d7f0c6, #8dca8b); color: #174b38; }
+
+    .storage-slots {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 11px;
+    }
+
+    .storage-slot {
+      position: relative;
+      display: grid;
+      min-height: 68px;
+      place-items: center;
+      overflow: hidden;
+      border: 3px solid #7b4027;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #9f4e2f, #642b20);
+      box-shadow: inset 0 2px 4px rgba(17,7,4,.55), 0 2px 0 rgba(255,242,197,.55);
+    }
+
+    .storage-slot.empty::after { content: "空白暫存"; color: #f9d995; font-size: 12px; font-weight: 900; }
+
+    .slot-screw {
+      position: relative;
+      width: 44px;
+      aspect-ratio: 1;
+      border: 3px solid #6c302b;
+      border-radius: 50%;
+      cursor: pointer;
+      background: radial-gradient(circle at 35% 30%, #ffc0a8 0 10%, transparent 12%), radial-gradient(circle at center, #cc5750 0 34%, #9a393a 36% 49%, #e78970 51% 64%, #6a2c29 66%);
+      box-shadow: inset 0 0 0 3px rgba(255,220,180,.28);
+      color: transparent;
+      animation: land .22s ease-out both;
+    }
+
+    .slot-screw.selected { outline: 4px solid #67b87b; outline-offset: 3px; transform: scale(1.08); }
+    .slot-screw::after { font-size: 28px; }
+    @keyframes land { from { transform: translateY(-17px) scale(.72); } to { transform: translateY(0) scale(1); } }
+
+    .return-note { margin-top: 9px !important; border-top: 1px solid rgba(112,67,49,.3); padding-top: 8px; }
+    .return-note b { color: #1d7051; }
+
+    .mission-list { display: grid; gap: 7px; margin: 10px 0 0; padding: 0; list-style: none; }
+    .mission-list li { display: flex; gap: 8px; align-items: start; color: #5e3828; font-size: 14px; line-height: 1.42; }
+    .mission-list li::before { content: "○"; color: #94462d; font-size: 18px; line-height: 1; }
+    .mission-list li.done::before { content: "✓"; color: var(--green); font-weight: 900; }
+    .mission-list li.done { color: #226047; font-weight: 800; }
+
+    .tip-card { border-color: #8cb896; background: #edf8ea; }
+    .tip-card p { color: #315a42; }
+
+    .status {
+      display: flex;
+      align-items: center;
+      min-height: 51px;
+      margin: 0 17px 17px;
+      border: 2px solid #ca9b57;
+      border-radius: 13px;
+      background: #fffaf0;
+      color: #68422e;
+      padding: 10px 13px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .status.ok { border-color: #61a07c; background: #effaf2; color: #216447; }
+    .status.warn { border-color: #d08251; background: #fff2df; color: #9b3f23; }
+
+    .teaching-notes {
+      margin-top: 18px;
+      border: 3px solid rgba(255,230,167,.72);
+      border-radius: 19px;
+      background: rgba(255,248,232,.97);
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(37, 13, 7, .22);
+    }
+
+    .teaching-notes h2 { margin: 0 0 9px; font-size: 22px; }
+    .teaching-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .teaching-grid section { border-left: 4px solid #cf8e3c; padding: 4px 0 4px 11px; }
+    .teaching-grid h3 { margin: 0 0 5px; font-size: 16px; }
+    .teaching-grid p { margin: 0; color: #644b3f; font-size: 14px; line-height: 1.65; }
+
+    .finish-dialog {
+      position: fixed;
+      z-index: 90;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(54, 23, 14, .68);
+    }
+
+    .finish-dialog[hidden] { display: none; }
+    .finish-card {
+      width: min(430px, 100%);
+      border: 5px solid #6c3822;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #fff5cf, #f7c967);
+      box-shadow: 0 18px 42px rgba(0,0,0,.36), inset 0 0 0 3px #fff1b5;
+      padding: 26px;
+      text-align: center;
+    }
+
+    .finish-card .stars { color: #e58e20; font-size: 42px; letter-spacing: .08em; }
+    .finish-card h2 { margin: 6px 0; font-size: 28px; }
+    .finish-card p { margin: 0 0 15px; color: #70422d; line-height: 1.65; }
+    .finish-card button { width: 100%; }
+
+    @media (max-width: 850px) {
+      body { padding: 12px; }
+      .game-layout { grid-template-columns: 1fr; padding: 12px; }
+      .side-panel { display: grid; grid-template-columns: 1.12fr 1fr; }
+      .tip-card { grid-column: 1 / -1; }
+      .status { margin: 0 12px 12px; }
+      .teaching-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 540px) {
+      .topbar, .game-head { align-items: stretch; flex-direction: column; }
+      .title-block { text-align: left; }
+      .meters { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .meter { min-width: 0; }
+      .board { min-height: 320px; border-width: 4px; }
+      .side-panel { display: flex; }
+      .storage-slots { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .storage-slot { min-height: 57px; }
+      .storage-slot.empty::after { font-size: 10px; writing-mode: vertical-rl; }
+      .piece-name { font-size: 10px; letter-spacing: .04em; }
+      .motion-tag { font-size: 9px; padding: 1px 4px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <a class="home-link" href="./index.html#other">← 回到遊戲首頁</a>
+      <div class="title-block">
+        <h1>螺絲暫存重力拆板挑戰</h1>
+        <p>暫存格可重複使用；拆螺絲後，看木條如何旋轉、下落與被擋住。</p>
+      </div>
+    </header>
+
+    <section class="game-shell" aria-label="螺絲暫存重力拆板遊戲">
+      <div class="game-head">
+        <div class="level-tools">
+          <label for="levelSelect">關卡：</label>
+          <select id="levelSelect" class="level-select" aria-label="選擇關卡"></select>
+          <button id="hintButton" class="gold-button" type="button">給我提示</button>
+          <button id="restartButton" class="gold-button" type="button">重新開始</button>
+        </div>
+        <div class="meters" aria-label="本局資訊">
+          <div class="meter"><b id="timeValue">00:00</b><span>時間</span></div>
+          <div class="meter"><b id="removedValue">0 / 0</b><span>已掉落</span></div>
+          <div class="meter"><b id="storageValue">0 / 2</b><span>暫存使用</span></div>
+        </div>
+      </div>
+
+      <div class="game-layout">
+        <section class="board-wrap" aria-label="拆板區">
+          <div id="board" class="board" aria-label="木條、鐵片、螺絲孔與可拆除螺絲的遊戲板"></div>
+        </section>
+
+        <aside class="side-panel">
+          <section class="storage-card" aria-labelledby="storageTitle">
+            <h2 id="storageTitle">可重複使用的暫存架</h2>
+            <p>預設只有 <b>2 格</b>。空間不足時再選 3 或 4 格；點暫存螺絲後，再點亮起的原始螺絲孔，就能放回並釋放一格。</p>
+            <div id="capacityButtons" class="capacity-row" aria-label="暫存格數量"></div>
+            <div id="storageSlots" class="storage-slots" aria-live="polite"></div>
+            <p class="return-note"><b>綠圈空孔</b>代表木條已移開、可以放回螺絲。</p>
+          </section>
+
+          <section class="mission-card" aria-labelledby="missionTitle">
+            <h2 id="missionTitle">本關重點</h2>
+            <p id="missionLead"></p>
+            <ul id="missionList" class="mission-list"></ul>
+          </section>
+
+          <section class="tip-card" aria-labelledby="tipTitle">
+            <h2 id="tipTitle">物理規則</h2>
+            <p>剩一顆螺絲時，零件會繞固定點往下轉；完全鬆開後會下落。若下方還有零件，會先被擋住；清掉支撐物後，它會再落下。</p>
+          </section>
+        </aside>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="teaching-notes" aria-labelledby="teachingTitle">
+      <h2 id="teachingTitle">可直接帶課的觀察提問</h2>
+      <div class="teaching-grid">
+        <section>
+          <h3>暫存格為什麼能重複使用？</h3>
+          <p>請學生比較「螺絲暫存在架上」與「螺絲已放回露出的孔」：螺絲數量沒變，但有限的暫存位置又空出來了。</p>
+        </section>
+        <section>
+          <h3>重力改變了什麼？</h3>
+          <p>只剩一個固定點的木條不會憑空消失，而是會繞著那顆螺絲轉向地面。請先預測它轉後會露出哪一個孔。</p>
+        </section>
+        <section>
+          <h3>最常見的失誤</h3>
+          <p>暫存格滿了就以為死局。先找綠圈空孔放回一顆螺絲；或選擇 3、4 格擴充，再觀察被擋住的木條能否連鎖下落。</p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="finishDialog" class="finish-dialog" role="dialog" aria-modal="true" aria-labelledby="finishTitle" hidden>
+    <section class="finish-card">
+      <div class="stars" aria-hidden="true">★ ★ ★</div>
+      <h2 id="finishTitle">重力拆板完成！</h2>
+      <p id="finishText"></p>
+      <button id="nextLevelButton" class="gold-button" type="button">下一關</button>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const screw = (id, x, y) => ({ id, x, y });
+      const piece = (id, name, material, x, y, w, h, r, z, screws, motion = {}, shape = "bar") => ({ id, name, material, x, y, w, h, r, z, screws, motion, shape });
+      const swing = (x, y, r, blocker = "", blocked = null) => ({ swing: { free: { x, y, r }, blocker, blocked } });
+      const fall = (blocker = "", rest = null) => ({ fall: { blocker, rest } });
+
+      const levels = [
+        {
+          title: "第 1 關｜兩格暫存的第一步",
+          goal: "先拆橫木條的兩顆螺絲，再把其中一顆放回露出的孔，體驗「暫存格可重複使用」。",
+          recommended: 2,
+          pieces: [
+            piece("a", "橫木條", "wood", 46, 33, 54, 9, -8, 3, [screw("a1", 21, 36), screw("a2", 70, 29)], swing(22, 57, 82)),
+            piece("b", "小鐵片", "metal", 61, 66, 22, 26, 7, 2, [screw("b1", 61, 66)], {}, "round")
+          ]
+        },
+        {
+          title: "第 2 關｜轉動後才露出孔",
+          goal: "先讓斜木條只剩一顆固定螺絲。它往下轉後，原本被蓋住的孔才會亮起。",
+          recommended: 2,
+          pieces: [
+            piece("a", "斜木條", "wood", 35, 32, 48, 9, -22, 4, [screw("a1", 14, 41), screw("a2", 55, 23)], swing(16, 54, 86)),
+            piece("b", "短鐵條", "metal", 68, 43, 38, 9, 18, 2, [screw("b1", 51, 37), screw("b2", 84, 48)], swing(82, 64, 88)),
+            piece("c", "小木片", "wood", 49, 76, 25, 11, 0, 1, [screw("c1", 49, 76)])
+          ]
+        },
+        {
+          title: "第 3 關｜先轉、再下落",
+          goal: "三塊零件都能下落，但請先規劃怎麼把暫存螺絲放回已露出的孔。",
+          recommended: 2,
+          pieces: [
+            piece("a", "上木條", "wood", 38, 25, 52, 9, 9, 4, [screw("a1", 13, 21), screw("a2", 63, 29)], swing(15, 50, 90)),
+            piece("b", "中鐵片", "metal", 55, 49, 25, 30, -8, 2, [screw("b1", 54, 38), screw("b2", 56, 61)], swing(68, 66, 84), "round"),
+            piece("c", "底木條", "wood", 46, 79, 50, 9, -10, 1, [screw("c1", 22, 83), screw("c2", 70, 75)], swing(73, 91, 85))
+          ]
+        },
+        {
+          title: "第 4 關｜被擋住的第一塊",
+          goal: "上方木條鬆開後會掉到下方鐵片上。先清掉鐵片，它才會連鎖落下。",
+          recommended: 2,
+          pieces: [
+            piece("a", "上方木條", "wood", 46, 28, 56, 9, -4, 5, [screw("a1", 20, 30), screw("a2", 72, 26)], fall("b", { x: 46, y: 55, r: -4 })),
+            piece("b", "承接鐵片", "metal", 48, 62, 62, 10, 5, 2, [screw("b1", 20, 60), screw("b2", 76, 65)], swing(76, 81, 89)),
+            piece("c", "小木片", "wood", 26, 84, 22, 10, 0, 1, [screw("c1", 26, 84)])
+          ]
+        },
+        {
+          title: "第 5 關｜兩個支撐層",
+          goal: "第一塊木條會先停在第二層；拆掉第二層後，注意兩塊零件是否一起往下掉。",
+          recommended: 2,
+          pieces: [
+            piece("a", "頂層木條", "wood", 50, 21, 62, 9, 8, 6, [screw("a1", 20, 17), screw("a2", 80, 25)], fall("b", { x: 50, y: 42, r: 8 })),
+            piece("b", "第二層鐵條", "metal", 46, 49, 55, 9, -11, 4, [screw("b1", 20, 54), screw("b2", 72, 44)], fall("c", { x: 46, y: 69, r: -11 })),
+            piece("c", "底木條", "wood", 54, 76, 58, 10, 14, 2, [screw("c1", 27, 69), screw("c2", 81, 83)], swing(83, 91, 91)),
+            piece("d", "側鐵片", "metal", 18, 77, 18, 25, 0, 1, [screw("d1", 18, 77)], {}, "round")
+          ]
+        },
+        {
+          title: "第 6 關｜L 型鐵片",
+          goal: "L 型鐵片也會受重力影響。它轉開後，別忘記用原始孔回收暫存格。",
+          recommended: 2,
+          pieces: [
+            piece("a", "L 型鐵片", "metal", 32, 34, 35, 27, 0, 5, [screw("a1", 20, 24), screw("a2", 21, 48)], swing(24, 59, 89), "bracket"),
+            piece("b", "長木條", "wood", 62, 41, 58, 9, -19, 4, [screw("b1", 35, 51), screw("b2", 88, 31)], swing(90, 56, 88)),
+            piece("c", "三角鐵片", "metal", 53, 73, 31, 23, 0, 2, [screw("c1", 53, 70), screw("c2", 41, 82)], fall("d", { x: 53, y: 87, r: 0 }), "triangle"),
+            piece("d", "底木片", "wood", 63, 90, 37, 9, 0, 1, [screw("d1", 63, 90)])
+          ]
+        },
+        {
+          title: "第 7 關｜交錯但不亂拆",
+          goal: "四條交錯零件共享畫面。兩格就能解，但需要利用旋轉後露出的孔。",
+          recommended: 2,
+          pieces: [
+            piece("a", "左斜木條", "wood", 30, 34, 50, 9, 31, 6, [screw("a1", 9, 22), screw("a2", 51, 46)], swing(10, 48, 90)),
+            piece("b", "右斜鐵條", "metal", 69, 34, 50, 9, -31, 5, [screw("b1", 48, 46), screw("b2", 90, 22)], swing(91, 48, 90)),
+            piece("c", "中木條", "wood", 50, 55, 65, 9, 7, 4, [screw("c1", 20, 51), screw("c2", 80, 59)], fall("d", { x: 50, y: 72, r: 7 })),
+            piece("d", "底鐵條", "metal", 50, 79, 66, 10, -6, 2, [screw("d1", 20, 82), screw("d2", 80, 76)], swing(80, 91, 90)),
+            piece("e", "小木片", "wood", 15, 71, 19, 10, 0, 1, [screw("e1", 15, 71)])
+          ]
+        },
+        {
+          title: "第 8 關｜三顆螺絲的長木條",
+          goal: "長木條有三顆螺絲。先用兩格讓它旋轉，露出孔後把螺絲放回，才有空間拆最後一顆。",
+          recommended: 2,
+          pieces: [
+            piece("a", "三孔長木條", "wood", 50, 32, 76, 10, -8, 6, [screw("a1", 15, 37), screw("a2", 50, 32), screw("a3", 85, 27)], swing(16, 58, 88)),
+            piece("b", "直鐵片", "metal", 73, 61, 18, 34, 10, 4, [screw("b1", 70, 46), screw("b2", 76, 76)], swing(88, 77, 90), "round"),
+            piece("c", "底木條", "wood", 42, 79, 52, 9, 14, 2, [screw("c1", 17, 73), screw("c2", 67, 85)], swing(68, 91, 90)),
+            piece("d", "小鐵片", "metal", 25, 60, 22, 11, 0, 1, [screw("d1", 25, 60)])
+          ]
+        },
+        {
+          title: "第 9 關｜建議擴充到三格",
+          goal: "兩格能慢慢周轉；想減少搬回次數，可以先按暫存架的「3 格擴充」。",
+          recommended: 3,
+          pieces: [
+            piece("a", "上木條", "wood", 41, 22, 58, 9, 16, 7, [screw("a1", 13, 14), screw("a2", 69, 30)], fall("b", { x: 41, y: 43, r: 16 })),
+            piece("b", "中鐵條", "metal", 58, 48, 66, 9, -17, 6, [screw("b1", 27, 58), screw("b2", 89, 38)], swing(89, 64, 89)),
+            piece("c", "左木條", "wood", 28, 60, 46, 9, 54, 5, [screw("c1", 14, 42), screw("c2", 42, 78)], swing(14, 65, 89)),
+            piece("d", "三角鐵片", "metal", 52, 76, 30, 23, 0, 3, [screw("d1", 52, 72), screw("d2", 39, 84)], fall("e", { x: 52, y: 88, r: 0 }), "triangle"),
+            piece("e", "底木片", "wood", 70, 89, 43, 9, 0, 1, [screw("e1", 70, 89)])
+          ]
+        },
+        {
+          title: "第 10 關｜兩次連鎖下落",
+          goal: "先後清掉支撐物，讓三層零件逐步下落。擴充格數後也別忘記可放回螺絲孔。",
+          recommended: 3,
+          pieces: [
+            piece("a", "第一層木條", "wood", 49, 18, 68, 9, -5, 7, [screw("a1", 16, 21), screw("a2", 82, 15)], fall("b", { x: 49, y: 37, r: -5 })),
+            piece("b", "第二層鐵條", "metal", 48, 43, 64, 9, 8, 6, [screw("b1", 17, 38), screw("b2", 79, 48)], fall("c", { x: 48, y: 61, r: 8 })),
+            piece("c", "第三層木條", "wood", 51, 66, 62, 9, -10, 5, [screw("c1", 21, 71), screw("c2", 81, 61)], fall("d", { x: 51, y: 81, r: -10 })),
+            piece("d", "底鐵片", "metal", 50, 85, 61, 10, 6, 3, [screw("d1", 21, 82), screw("d2", 79, 88)], swing(80, 92, 90)),
+            piece("e", "左側木片", "wood", 15, 62, 18, 25, 0, 2, [screw("e1", 15, 62)], {}, "round")
+          ]
+        },
+        {
+          title: "第 11 關｜四格自由規劃",
+          goal: "這關零件多、孔也多。先選 4 格暫存，觀察哪一條會旋轉、哪一片會被承接。",
+          recommended: 4,
+          pieces: [
+            piece("a", "紅木條", "wood", 29, 24, 46, 9, -27, 8, [screw("a1", 9, 34), screw("a2", 49, 14)], swing(10, 49, 90)),
+            piece("b", "藍鐵條", "metal", 71, 24, 46, 9, 27, 7, [screw("b1", 51, 14), screw("b2", 91, 34)], swing(91, 49, 90)),
+            piece("c", "上長木條", "wood", 50, 45, 72, 9, 7, 6, [screw("c1", 16, 41), screw("c2", 50, 45), screw("c3", 84, 49)], fall("d", { x: 50, y: 60, r: 7 })),
+            piece("d", "中鐵條", "metal", 49, 65, 66, 9, -11, 5, [screw("d1", 18, 71), screw("d2", 80, 59)], fall("e", { x: 49, y: 78, r: -11 })),
+            piece("e", "底木條", "wood", 51, 84, 68, 10, 8, 3, [screw("e1", 19, 79), screw("e2", 83, 89)], swing(83, 92, 90)),
+            piece("f", "左鐵片", "metal", 17, 72, 20, 25, 0, 2, [screw("f1", 17, 72)], {}, "round")
+          ]
+        },
+        {
+          title: "第 12 關｜重力拆板大挑戰",
+          goal: "六塊零件、三層支撐。暫存 2、3、4 格都能使用；請找出最順的旋轉、回收、下落順序。",
+          recommended: 4,
+          pieces: [
+            piece("a", "最上層木條", "wood", 50, 16, 75, 9, 3, 9, [screw("a1", 14, 14), screw("a2", 50, 16), screw("a3", 86, 18)], fall("b", { x: 50, y: 31, r: 3 })),
+            piece("b", "上鐵條", "metal", 50, 37, 70, 9, -8, 8, [screw("b1", 17, 42), screw("b2", 83, 32)], fall("c", { x: 50, y: 50, r: -8 })),
+            piece("c", "交叉木條", "wood", 32, 58, 56, 9, 39, 7, [screw("c1", 10, 40), screw("c2", 54, 76)], swing(11, 66, 89)),
+            piece("d", "交叉鐵條", "metal", 68, 58, 56, 9, -39, 6, [screw("d1", 46, 76), screw("d2", 90, 40)], swing(90, 66, 89)),
+            piece("e", "承接木條", "wood", 50, 74, 73, 9, 5, 5, [screw("e1", 15, 71), screw("e2", 50, 74), screw("e3", 85, 77)], fall("f", { x: 50, y: 87, r: 5 })),
+            piece("f", "底鐵片", "metal", 50, 91, 67, 10, -3, 3, [screw("f1", 18, 93), screw("f2", 82, 89)], swing(82, 94, 90))
+          ]
+        }
+      ];
+
+      const board = document.getElementById("board");
+      const levelSelect = document.getElementById("levelSelect");
+      const restartButton = document.getElementById("restartButton");
+      const hintButton = document.getElementById("hintButton");
+      const timeValue = document.getElementById("timeValue");
+      const removedValue = document.getElementById("removedValue");
+      const storageValue = document.getElementById("storageValue");
+      const capacityButtons = document.getElementById("capacityButtons");
+      const storageSlots = document.getElementById("storageSlots");
+      const missionLead = document.getElementById("missionLead");
+      const missionList = document.getElementById("missionList");
+      const status = document.getElementById("status");
+      const finishDialog = document.getElementById("finishDialog");
+      const finishText = document.getElementById("finishText");
+      const nextLevelButton = document.getElementById("nextLevelButton");
+
+      const state = {
+        levelIndex: 0,
+        removed: new Set(),
+        cleared: new Set(),
+        falling: new Set(),
+        resting: new Set(),
+        stored: [],
+        parked: new Map(),
+        capacity: 2,
+        selectedStored: "",
+        hintPiece: "",
+        hintHole: "",
+        startedAt: null,
+        elapsed: 0,
+        timer: null,
+        message: "預設只有 2 格暫存。先拆一顆螺絲，觀察木條會不會往下轉，並找出亮起的原始螺絲孔。",
+        tone: ""
+      };
+
+      function currentLevel() { return levels[state.levelIndex]; }
+      function allScrews() { return currentLevel().pieces.flatMap(item => item.screws.map(itemScrew => ({ ...itemScrew, piece: item }))); }
+      function findScrew(id) { return allScrews().find(item => item.id === id); }
+      function remainingScrews(item) { return item.screws.filter(itemScrew => !state.removed.has(itemScrew.id)); }
+      function availableSlots() { return state.capacity - state.stored.length; }
+      function formatTime(ms) {
+        const seconds = Math.floor(ms / 1000);
+        return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+      }
+
+      function setMessage(message, tone = "") { state.message = message; state.tone = tone; }
+
+      function startTimer() {
+        if (state.startedAt !== null) return;
+        state.startedAt = Date.now() - state.elapsed;
+        state.timer = window.setInterval(() => {
+          state.elapsed = Date.now() - state.startedAt;
+          timeValue.textContent = formatTime(state.elapsed);
+        }, 250);
+      }
+
+      function stopTimer() {
+        if (state.startedAt !== null) state.elapsed = Date.now() - state.startedAt;
+        state.startedAt = null;
+        window.clearInterval(state.timer);
+        state.timer = null;
+      }
+
+      function isActive(item) { return !state.cleared.has(item.id); }
+
+      function gravityPivotPose(item, anchor) {
+        const startRadians = item.r * Math.PI / 180;
+        const dx = anchor.x - item.x;
+        const dy = anchor.y - item.y;
+        const localX = Math.cos(startRadians) * dx + Math.sin(startRadians) * dy;
+        const localY = -Math.sin(startRadians) * dx + Math.cos(startRadians) * dy;
+        const targetR = localX <= 0 ? 90 : -90;
+        const targetRadians = targetR * Math.PI / 180;
+        const pivotOffsetX = Math.cos(targetRadians) * localX - Math.sin(targetRadians) * localY;
+        const pivotOffsetY = Math.sin(targetRadians) * localX + Math.cos(targetRadians) * localY;
+        return { x: anchor.x - pivotOffsetX, y: anchor.y - pivotOffsetY, r: targetR };
+      }
+
+      function poseFor(item) {
+        const remaining = remainingScrews(item);
+        const defaultPose = { x: item.x, y: item.y, r: item.r, mode: "fixed" };
+        if (state.falling.has(item.id)) return { x: item.x, y: 123, r: item.r + 12, mode: "falling" };
+        if (remaining.length === 0 && state.resting.has(item.id)) {
+          const rest = item.motion.fall?.rest || { x: item.x, y: Math.min(91, item.y + 22), r: item.r };
+          return { ...rest, mode: "blocked" };
+        }
+        if (remaining.length === 1 && item.motion.swing) {
+          const motion = item.motion.swing;
+          const blockerActive = motion.blocker && currentLevel().pieces.some(other => other.id === motion.blocker && isActive(other));
+          if (blockerActive) return { ...(motion.blocked || gravityPivotPose(item, remaining[0])), mode: "blocked" };
+          return { ...gravityPivotPose(item, remaining[0]), mode: "swing" };
+        }
+        return defaultPose;
+      }
+
+      function pointCoveredByPiece(item, x, y) {
+        if (!isActive(item) || state.falling.has(item.id)) return false;
+        const pose = poseFor(item);
+        const radians = pose.r * Math.PI / 180;
+        const dx = x - pose.x;
+        const dy = y - pose.y;
+        const localX = Math.cos(radians) * dx + Math.sin(radians) * dy;
+        const localY = -Math.sin(radians) * dx + Math.cos(radians) * dy;
+        return Math.abs(localX) <= item.w / 2 + 1.2 && Math.abs(localY) <= item.h / 2 + 1.2;
+      }
+
+      function isHoleExposed(hole) {
+        if (!state.removed.has(hole.id) || state.parked.has(hole.id)) return false;
+        return !currentLevel().pieces.some(item => pointCoveredByPiece(item, hole.x, hole.y));
+      }
+
+      function settleGravity() {
+        let scheduled = false;
+        currentLevel().pieces.forEach(item => {
+          if (!isActive(item) || remainingScrews(item).length !== 0 || state.falling.has(item.id)) return;
+          const blocker = item.motion.fall?.blocker;
+          const blockerActive = blocker && currentLevel().pieces.some(other => other.id === blocker && isActive(other));
+          if (blockerActive) {
+            state.resting.add(item.id);
+            return;
+          }
+          state.resting.delete(item.id);
+          state.falling.add(item.id);
+          scheduled = true;
+          window.setTimeout(() => {
+            state.falling.delete(item.id);
+            state.cleared.add(item.id);
+            setMessage(`${item.name} 已受重力帶離遊戲板；它原本的螺絲孔現在可以使用。`, "ok");
+            settleGravity();
+            render();
+            checkComplete();
+          }, 560);
+        });
+        return scheduled;
+      }
+
+      function checkComplete() {
+        if (state.cleared.size !== currentLevel().pieces.length) return;
+        stopTimer();
+        setMessage("所有木條與鐵片都已掉出遊戲板！", "ok");
+        render();
+        finishText.textContent = `你在 ${formatTime(state.elapsed)} 內完成第 ${state.levelIndex + 1} 關。你已經能同時規劃暫存、螺絲回收與重力連鎖。`;
+        nextLevelButton.textContent = state.levelIndex === levels.length - 1 ? "回到第 1 關" : "前往下一關";
+        finishDialog.hidden = false;
+      }
+
+      function renderBoard() {
+        const activePieces = currentLevel().pieces.filter(isActive);
+        const pieceHtml = activePieces.map(item => {
+          const pose = poseFor(item);
+          const tag = pose.mode === "swing" ? "重力旋轉 ↓" : pose.mode === "blocked" ? "被下方零件擋住" : "";
+          return `<div class="piece ${item.material} ${item.shape} ${pose.mode} ${state.hintPiece === item.id ? "hinted" : ""}" style="--x:${pose.x}%; --y:${pose.y}%; --w:${item.w}%; --h:${item.h}%; --r:${pose.r}deg; --z:${item.z};">
+            <span class="piece-name">${item.name}</span>${tag ? `<span class="motion-tag ${pose.mode === "blocked" ? "block" : ""}">${tag}</span>` : ""}
+          </div>`;
+        }).join("");
+
+        const holeHtml = allScrews().filter(isHoleExposed).map(hole => {
+          const highlighted = state.selectedStored && (state.hintHole === hole.id || !state.hintHole) ? "hinted-hole" : "";
+          return `<button class="hole ${highlighted}" type="button" data-hole-id="${hole.id}" style="--x:${hole.x}%; --y:${hole.y}%;" aria-label="將暫存螺絲放回空白螺絲孔">放回螺絲</button>`;
+        }).join("");
+
+        const parkedHtml = [...state.parked.entries()].map(([holeId]) => {
+          const hole = findScrew(holeId);
+          return `<span class="hole parked" style="--x:${hole.x}%; --y:${hole.y}%;" aria-label="已放回的螺絲"></span>`;
+        }).join("");
+
+        const screwHtml = activePieces.flatMap(item => remainingScrews(item).map(itemScrew => `
+          <button class="screw" type="button" data-board-screw-id="${itemScrew.id}" style="--x:${itemScrew.x}%; --y:${itemScrew.y}%;" aria-label="拆除${item.name}的一顆螺絲">拆除螺絲</button>`)).join("");
+
+        board.innerHTML = pieceHtml + holeHtml + parkedHtml + screwHtml;
+        board.querySelectorAll("[data-board-screw-id]").forEach(button => button.addEventListener("click", () => removeBoardScrew(button.dataset.boardScrewId)));
+        board.querySelectorAll("[data-hole-id]").forEach(button => button.addEventListener("click", () => returnScrew(button.dataset.holeId)));
+      }
+
+      function renderStorage() {
+        capacityButtons.innerHTML = [2, 3, 4].map(capacity => `<button class="capacity-button ${state.capacity === capacity ? "selected" : ""}" type="button" data-capacity="${capacity}">${capacity} 格${capacity === 2 ? "基本" : "擴充"}</button>`).join("");
+        capacityButtons.querySelectorAll("[data-capacity]").forEach(button => button.addEventListener("click", () => setCapacity(Number(button.dataset.capacity))));
+        storageSlots.innerHTML = Array.from({ length: state.capacity }, (_, index) => {
+          const screwId = state.stored[index];
+          return screwId
+            ? `<div class="storage-slot"><button class="slot-screw ${state.selectedStored === screwId ? "selected" : ""}" type="button" data-store-id="${screwId}" aria-label="選擇暫存螺絲放回原始孔">選擇暫存螺絲</button></div>`
+            : `<div class="storage-slot empty" aria-label="空白暫存格"></div>`;
+        }).join("");
+        storageSlots.querySelectorAll("[data-store-id]").forEach(button => button.addEventListener("click", () => selectStored(button.dataset.storeId)));
+      }
+
+      function renderMission() {
+        const level = currentLevel();
+        missionLead.textContent = `${level.goal}（建議：${level.recommended} 格暫存）`;
+        missionList.innerHTML = level.pieces.map(item => {
+          const done = state.cleared.has(item.id);
+          const removed = item.screws.length - remainingScrews(item).length;
+          const stateText = done ? "已掉落清除" : state.resting.has(item.id) ? "已鬆開，暫時被擋住" : `已拆 ${removed} / ${item.screws.length} 顆`;
+          return `<li class="${done ? "done" : ""}">${item.name}：${stateText}</li>`;
+        }).join("");
+      }
+
+      function renderStats() {
+        timeValue.textContent = formatTime(state.elapsed);
+        removedValue.textContent = `${state.cleared.size} / ${currentLevel().pieces.length}`;
+        storageValue.textContent = `${state.stored.length} / ${state.capacity}`;
+        status.textContent = state.message;
+        status.className = `status ${state.tone}`.trim();
+      }
+
+      function render() {
+        renderBoard();
+        renderStorage();
+        renderMission();
+        renderStats();
+      }
+
+      function removeBoardScrew(id) {
+        const itemScrew = findScrew(id);
+        if (!itemScrew || state.removed.has(id)) return;
+        if (availableSlots() <= 0) {
+          setMessage("暫存架已滿。請點一顆暫存螺絲，再點綠圈的空白原始孔放回；或視需要擴充成 3、4 格。", "warn");
+          render();
+          return;
+        }
+        startTimer();
+        state.removed.add(id);
+        state.stored.push(id);
+        state.selectedStored = "";
+        state.hintPiece = "";
+        state.hintHole = "";
+        const remaining = remainingScrews(itemScrew.piece).length;
+        if (remaining === 1) {
+          const movement = itemScrew.piece.motion.swing ? "木條將繞最後一顆螺絲往下旋轉；留意剛露出的綠圈孔。" : "零件還有一顆固定螺絲，暫時不會掉落。";
+          setMessage(`${itemScrew.piece.name} 剩 1 顆螺絲。${movement}`, "ok");
+        } else if (remaining === 0) {
+          const blocker = itemScrew.piece.motion.fall?.blocker;
+          const blocked = blocker && currentLevel().pieces.some(item => item.id === blocker && isActive(item));
+          setMessage(blocked ? `${itemScrew.piece.name} 已鬆開，先落在下方零件上；清除支撐物後會繼續下落。` : `${itemScrew.piece.name} 已完全鬆開，正在受重力下落。`, blocked ? "warn" : "ok");
+          settleGravity();
+        } else {
+          setMessage(`螺絲已放入暫存；${itemScrew.piece.name} 還有 ${remaining} 顆固定螺絲。`, "");
+        }
+        render();
+      }
+
+      function selectStored(id) {
+        state.selectedStored = state.selectedStored === id ? "" : id;
+        state.hintHole = "";
+        if (state.selectedStored) {
+          const firstHole = allScrews().find(isHoleExposed);
+          state.hintHole = firstHole?.id || "";
+          setMessage(firstHole ? "已選取暫存螺絲：請點綠圈空白原始孔放回，這一格就會重新可用。" : "目前沒有露出的空孔；再讓一塊木條旋轉或下落，就能放回螺絲。", firstHole ? "ok" : "warn");
+        } else {
+          setMessage("已取消選取暫存螺絲。", "");
+        }
+        render();
+      }
+
+      function returnScrew(holeId) {
+        if (!state.selectedStored) {
+          setMessage("先點暫存架中的一顆螺絲，再點綠圈空白原始孔。", "warn");
+          render();
+          return;
+        }
+        if (!isHoleExposed(findScrew(holeId))) return;
+        const storedId = state.selectedStored;
+        state.stored = state.stored.filter(id => id !== storedId);
+        state.parked.set(holeId, storedId);
+        state.selectedStored = "";
+        state.hintHole = "";
+        setMessage("螺絲已放回原始孔，暫存架重新空出一格！", "ok");
+        render();
+      }
+
+      function setCapacity(capacity) {
+        if (capacity < state.stored.length) {
+          setMessage(`目前已有 ${state.stored.length} 顆暫存螺絲，無法縮回 ${capacity} 格。先把螺絲放回綠圈空孔。`, "warn");
+          render();
+          return;
+        }
+        state.capacity = capacity;
+        setMessage(`暫存架已調整為 ${capacity} 格。格子可重複使用，不必一開始就開最大。`, "ok");
+        render();
+      }
+
+      function showHint() {
+        if (state.selectedStored) {
+          const availableHole = allScrews().find(isHoleExposed);
+          state.hintHole = availableHole?.id || "";
+          setMessage(availableHole ? "提示：已把可放回的第一個綠圈孔標亮，點它即可釋放暫存格。" : "提示：還沒有空孔。優先把只剩一顆螺絲的零件再拆一顆，或清除支撐物。", availableHole ? "ok" : "warn");
+          render();
+          return;
+        }
+        const candidates = currentLevel().pieces
+          .filter(isActive)
+          .map(item => ({ item, remaining: remainingScrews(item).length }))
+          .filter(item => item.remaining > 0)
+          .sort((left, right) => left.remaining - right.remaining);
+        const target = candidates[0];
+        if (!target) return;
+        state.hintPiece = target.item.id;
+        const need = target.remaining;
+        const extra = availableSlots() >= 1 ? "先拆它的一顆螺絲，觀察它會不會旋轉或下落。" : "暫存已滿，先選暫存螺絲並放回綠圈孔。";
+        setMessage(`提示：留意「${target.item.name}」，它目前還有 ${need} 顆螺絲。${extra}`, "ok");
+        render();
+      }
+
+      function newGame(index = state.levelIndex) {
+        stopTimer();
+        state.levelIndex = index;
+        state.removed = new Set();
+        state.cleared = new Set();
+        state.falling = new Set();
+        state.resting = new Set();
+        state.stored = [];
+        state.parked = new Map();
+        state.capacity = 2;
+        state.selectedStored = "";
+        state.hintPiece = "";
+        state.hintHole = "";
+        state.elapsed = 0;
+        setMessage("預設為 2 格暫存。先拆螺絲，再觀察重力造成的旋轉、下落與露出的原始孔。", "");
+        levelSelect.value = String(index);
+        finishDialog.hidden = true;
+        render();
+      }
+
+      levelSelect.innerHTML = levels.map((level, index) => `<option value="${index}">${level.title}</option>`).join("");
+      levelSelect.addEventListener("change", () => newGame(Number(levelSelect.value)));
+      restartButton.addEventListener("click", () => newGame());
+      hintButton.addEventListener("click", showHint);
+      nextLevelButton.addEventListener("click", () => newGame((state.levelIndex + 1) % levels.length));
+      finishDialog.addEventListener("click", event => { if (event.target === finishDialog) finishDialog.hidden = true; });
+
+      newGame(0);
+    })();
+  </script>
+</body>
+</html>

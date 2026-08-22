@@ -58,6 +58,9 @@ window.MATH_PAGE_CHAPTER_CATALOG = {
   "maze-game.html": { "chapterCode": "other", "order": 10 },
   "memory-game.html": { "chapterCode": "other", "order": 20 },
   "number-sums-game.html": { "chapterCode": "other", "order": 30 },
+  "addition-adventure.html": { "chapterCode": "other", "order": 32 },
+  "unblock-me-game.html": { "chapterCode": "other", "order": 33 },
+  "number-pattern-logic-game.html": { "chapterCode": "other", "order": 34 },
   "not-not-game.html": { "chapterCode": "other", "order": 35 },
   "minesweeper-screenshot-solver.html": { "chapterCode": "other", "order": 40 },
   "queen-solver.html": { "chapterCode": "other", "order": 50 }

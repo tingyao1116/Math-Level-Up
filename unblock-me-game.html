@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <script src="./site-analytics.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>華容道：紅木條突圍</title>
+  <style>
+    :root {
+      --ink: #17324a;
+      --muted: #5f7283;
+      --paper: #fffaf1;
+      --line: #dfcfb4;
+      --blue: #0d7285;
+      --blue-dark: #075b6b;
+      --red: #d84b3e;
+      --wood-1: #f3c074;
+      --wood-2: #bd7639;
+      --board: #0b5970;
+      --shadow: 0 14px 32px rgba(42, 58, 65, .13);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 7% 5%, rgba(255, 222, 146, .45), transparent 26rem),
+        linear-gradient(145deg, #f4fbfb, #e9f1f5 58%, #f9efe0);
+    }
+    button { font: inherit; }
+    .app { width: min(1180px, calc(100% - 28px)); margin: 0 auto; padding: 28px 0 44px; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    h1 { margin: 0; font-size: clamp(30px, 5vw, 46px); line-height: 1.15; }
+    .lead { max-width: 760px; margin: 12px 0 0; color: var(--muted); font-size: 17px; line-height: 1.8; }
+    .return-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 9px 14px;
+      border: 1px solid #b9d0d7;
+      border-radius: 12px;
+      color: var(--blue-dark);
+      background: rgba(255,255,255,.78);
+      text-decoration: none;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .return-link:hover { background: #fff; }
+    .main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 18px; align-items: start; }
+    .game-card, .side-card, .learn-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.88);
+      box-shadow: var(--shadow);
+    }
+    .game-card { padding: 18px; }
+    .game-head { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .level-name { margin: 0; font-size: clamp(21px, 3vw, 28px); }
+    .rule-chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #584015;
+      background: #fff0c9;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .board-shell {
+      position: relative;
+      width: min(100%, 680px);
+      margin: 0 auto;
+      padding: 12px 20px 12px 12px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #d28e4b, #895020);
+      box-shadow: inset 0 0 0 3px rgba(255,238,199,.42), 0 12px 20px rgba(81,42,16,.22);
+    }
+    .exit-label {
+      position: absolute;
+      top: calc(33.333% - 16px);
+      right: -2px;
+      z-index: 3;
+      width: 42px;
+      padding: 3px 2px;
+      border-radius: 0 9px 9px 0;
+      color: #fff5d8;
+      background: #8b351f;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.12;
+      text-align: center;
+    }
+    #board {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: visible;
+      border: 4px solid #5a341a;
+      border-radius: 13px;
+      touch-action: none;
+      user-select: none;
+      background-color: var(--board);
+      background-image:
+        linear-gradient(rgba(255,255,255,.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px),
+        radial-gradient(circle at 30% 22%, rgba(101,224,235,.20), transparent 40%);
+      background-size: calc(100% / 6) calc(100% / 6), calc(100% / 6) calc(100% / 6), 100% 100%;
+    }
+    #board::after {
+      content: "";
+      position: absolute;
+      top: calc(33.333% - 3px);
+      right: -19px;
+      width: 22px;
+      height: calc(16.667% + 6px);
+      border-radius: 0 8px 8px 0;
+      background: #5a341a;
+      box-shadow: inset 4px 0 rgba(255,226,171,.3);
+    }
+    .piece {
+      position: absolute;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(93,46,17,.7);
+      border-radius: 11px;
+      color: rgba(88,43,14,.35);
+      cursor: grab;
+      touch-action: none;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.3), transparent 21%, rgba(116,56,18,.22) 73%, rgba(255,255,255,.18)),
+        repeating-linear-gradient(0deg, rgba(111,56,23,.05), rgba(111,56,23,.05) 2px, transparent 2px, transparent 7px),
+        linear-gradient(145deg, var(--wood-1), var(--wood-2));
+      box-shadow: inset 0 2px 2px rgba(255,250,219,.46), inset 0 -3px 4px rgba(84,39,15,.35), 0 4px 6px rgba(17,29,31,.31);
+      transition: left .15s ease, top .15s ease, transform .15s ease;
+    }
+    .piece::after {
+      content: "";
+      width: min(42%, 40px);
+      aspect-ratio: 1;
+      border: 2px solid rgba(88,43,14,.23);
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 4px rgba(255,240,186,.10);
+    }
+    .piece.vertical::after { width: min(48%, 42px); }
+    .piece.target {
+      z-index: 2;
+      border-color: #8d201b;
+      color: rgba(255,255,255,.4);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.32), transparent 24%, rgba(105,13,13,.18) 74%, rgba(255,255,255,.17)),
+        repeating-linear-gradient(0deg, rgba(116,9,9,.08), rgba(116,9,9,.08) 2px, transparent 2px, transparent 7px),
+        linear-gradient(145deg, #f16b55, var(--red));
+    }
+    .piece.dragging { z-index: 5; cursor: grabbing; transition: none; filter: brightness(1.06); }
+    .piece.escaping { z-index: 6; transition: transform .48s cubic-bezier(.2,.8,.2,1); }
+    .board-note { min-height: 29px; margin: 12px 4px 0; color: var(--muted); line-height: 1.55; }
+    .board-note strong { color: var(--blue-dark); }
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+    .control {
+      min-height: 42px;
+      padding: 8px 13px;
+      border: 1px solid #b7cbd0;
+      border-radius: 11px;
+      color: #16495a;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .control:hover { border-color: var(--blue); background: #effbfd; }
+    .control.primary { border-color: var(--blue); color: #fff; background: var(--blue); }
+    .control.primary:hover { background: var(--blue-dark); }
+    .control:focus-visible, .return-link:focus-visible, .level-button:focus-visible { outline: 3px solid #f0a34a; outline-offset: 3px; }
+    .side-column { display: grid; gap: 18px; }
+    .side-card { padding: 16px; }
+    .side-card h2, .learn-card h2 { margin: 0; font-size: 20px; }
+    .score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 13px; }
+    .metric { min-width: 0; padding: 11px; border-radius: 12px; background: #f2f8f8; }
+    .metric span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong { display: block; margin-top: 3px; color: var(--blue-dark); font-size: 25px; line-height: 1.12; }
+    #medalText { font-size: 17px; }
+    .levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 13px; }
+    .level-button {
+      min-height: 70px;
+      padding: 7px 4px;
+      border: 1px solid #c8d5d8;
+      border-radius: 11px;
+      color: var(--ink);
+      background: #fff;
+      cursor: pointer;
+      text-align: center;
+    }
+    .level-button:hover { background: #f0fbfc; }
+    .level-button.active { border-color: var(--blue); color: #fff; background: var(--blue); }
+    .level-button .number { display: block; font-weight: 900; }
+    .level-button .steps { display: block; margin-top: 2px; font-size: 12px; }
+    .level-button .medal { display: block; height: 16px; margin-top: 1px; font-size: 13px; }
+    .tier-key { margin: 13px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .learn-card { margin-top: 18px; padding: 19px; }
+    .learn-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 13px; }
+    .learn-item { min-width: 0; padding: 13px; border-radius: 13px; background: #f6fbfa; }
+    .learn-item h3 { margin: 0 0 7px; color: var(--blue-dark); font-size: 17px; }
+    .learn-item p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    details { margin-top: 15px; border-top: 1px dashed #c8d4d3; padding-top: 12px; }
+    summary { cursor: pointer; color: var(--blue-dark); font-weight: 900; }
+    details p, details ol { color: var(--muted); line-height: 1.75; }
+    details code { padding: 1px 4px; border-radius: 4px; color: #87491d; background: #fff2dc; }
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(12, 40, 48, .58);
+    }
+    .dialog-backdrop[hidden] { display: none; }
+    .dialog {
+      width: min(430px, 100%);
+      padding: 26px;
+      border: 2px solid #f0c270;
+      border-radius: 21px;
+      color: var(--ink);
+      background: #fffdf8;
+      box-shadow: 0 25px 55px rgba(0,0,0,.27);
+      text-align: center;
+    }
+    .dialog .big-medal { margin: 4px 0 6px; font-size: 61px; line-height: 1; }
+    .dialog h2 { margin: 0; font-size: 28px; }
+    .dialog p { margin: 11px 0 18px; color: var(--muted); line-height: 1.7; }
+    .dialog-actions { display: flex; justify-content: center; gap: 9px; flex-wrap: wrap; }
+    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } .side-column { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 640px) {
+      .app { width: min(100% - 18px, 1180px); padding-top: 18px; }
+      .hero { grid-template-columns: 1fr; gap: 12px; }
+      .return-link { justify-self: start; }
+      .game-card { padding: 11px; }
+      .board-shell { padding: 9px 16px 9px 9px; border-radius: 16px; }
+      .exit-label { right: -5px; width: 36px; font-size: 10px; }
+      .side-column, .learn-grid { grid-template-columns: 1fr; }
+      .score-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .metric { padding: 9px 6px; }
+      .metric strong { font-size: 20px; }
+      .metric span { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">空間推理・逆向規劃</p>
+        <h1>華容道：紅木條突圍</h1>
+        <p class="lead">又稱 Unblock Me。把紅色木條沿著水平方向滑到右側出口；每一次把同一根木條滑到新位置算 1 步。先找擋住出口的木條，再反推要替它騰出的空格。</p>
+      </div>
+      <a class="return-link" href="./index.html#other">← 回遊戲首頁</a>
+    </header>
+
+    <section class="main-grid" aria-label="華容道遊戲">
+      <section class="game-card">
+        <div class="game-head">
+          <h2 class="level-name" id="levelName">載入關卡中</h2>
+          <span class="rule-chip" id="tierChip">依最短步數分級</span>
+        </div>
+        <div class="board-shell">
+          <div class="exit-label" aria-hidden="true">右側<br>出口 →</div>
+          <div id="board" aria-label="6 乘 6 華容道棋盤。拖曳木條，讓紅色木條從右側出口離開。"></div>
+        </div>
+        <p class="board-note" id="boardNote" aria-live="polite"></p>
+        <div class="controls" aria-label="遊戲控制">
+          <button class="control primary" id="restartBtn" type="button">↻ 重新挑戰</button>
+          <button class="control" id="hintBtn" type="button">💡 提示下一步</button>
+          <button class="control" id="previousBtn" type="button">← 前一關</button>
+          <button class="control" id="nextBtn" type="button">下一關 →</button>
+        </div>
+      </section>
+
+      <aside class="side-column">
+        <section class="side-card" aria-labelledby="scoreTitle">
+          <h2 id="scoreTitle">本關紀錄</h2>
+          <div class="score-grid">
+            <div class="metric"><span>目前步數</span><strong id="movesText">0</strong></div>
+            <div class="metric"><span>最短步數</span><strong id="shortestText">—</strong></div>
+            <div class="metric"><span>本關難度</span><strong id="difficultyText">—</strong></div>
+            <div class="metric"><span>最佳獎牌</span><strong id="medalText">—</strong></div>
+          </div>
+        </section>
+        <section class="side-card" aria-labelledby="levelTitle">
+          <h2 id="levelTitle">選擇關卡</h2>
+          <div class="levels" id="levelList"></div>
+          <p class="tier-key">基礎：最短 1–5 步　進階：6–10 步　挑戰：11 步以上。每關都由搜尋程式先求出最短解，再決定標籤。</p>
+        </section>
+      </aside>
+    </section>
+
+    <section class="learn-card" aria-labelledby="learnTitle">
+      <h2 id="learnTitle">上手策略：先觀察，再移動</h2>
+      <div class="learn-grid">
+        <article class="learn-item">
+          <h3>① 只看出口這一列</h3>
+          <p>紅色木條右側若有直木條擋住，重點不是立刻移紅色，而是先問：那根直木條能往上或往下移嗎？</p>
+        </article>
+        <article class="learn-item">
+          <h3>② 替阻礙者找空位</h3>
+          <p>直木條要離開紅色那一列，兩端必須有連續空格；常要先移開另一根橫木條，這就是「先繞路、再清路」。</p>
+        </article>
+        <article class="learn-item">
+          <h3>③ 用最短解檢查</h3>
+          <p>通關後比較自己的步數與最短步數。剛好相同得金牌；多 1–2 步得銀牌；完成關卡則保留銅牌。</p>
+        </article>
+      </div>
+      <details>
+        <summary>老師／關卡製作者：怎麼安全地增加關卡？</summary>
+        <p>本頁的 <code>LEVELS</code> 是唯一的關卡來源：每關只記錄每根木條的「列、欄起點」。新增一筆相同格式的資料即可增加關卡；不要手填難度或最短步數。</p>
+        <ol>
+          <li>先確認 6 × 6 棋盤上木條沒有重疊，紅木條必須是第 1 根、橫放在第 3 列。</li>
+          <li>重新開頁後，內建廣度優先搜尋會枚舉所有合法滑法，取得「把紅木條滑出出口」所需的最短步數。</li>
+          <li>程式依結果自動標成基礎、進階或挑戰，並把金牌標準設為恰好最短步數。這樣關卡越多，難度仍有一致的依據。</li>
+        </ol>
+        <p><strong>常見錯誤：</strong>把同一根木條連續滑 2 格誤算成 2 步。本遊戲以一次拖曳為 1 步，和題庫的最短解定義完全一致。</p>
+      </details>
+    </section>
+  </main>
+
+  <div class="dialog-backdrop" id="winDialog" hidden role="dialog" aria-modal="true" aria-labelledby="winTitle">
+    <section class="dialog">
+      <div class="big-medal" id="winMedal">🏅</div>
+      <h2 id="winTitle">成功突圍！</h2>
+      <p id="winMessage"></p>
+      <div class="dialog-actions">
+        <button class="control primary" id="retryBtn" type="button">再挑戰一次</button>
+        <button class="control" id="dialogNextBtn" type="button">前往下一關</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const SIZE = 6;
+      const PIECES = [
+        { id: "target", label: "紅色木條", orientation: "H", length: 2, target: true },
+        { id: "a", label: "直木條 A", orientation: "V", length: 2 },
+        { id: "b", label: "直木條 B", orientation: "V", length: 2 },
+        { id: "c", label: "直木條 C", orientation: "V", length: 2 },
+        { id: "d", label: "直木條 D", orientation: "V", length: 2 },
+        { id: "e", label: "橫木條 E", orientation: "H", length: 2 },
+        { id: "f", label: "橫木條 F", orientation: "H", length: 2 },
+        { id: "g", label: "橫木條 G", orientation: "H", length: 2 },
+        { id: "h", label: "長直木條 H", orientation: "V", length: 3 },
+        { id: "i", label: "長直木條 I", orientation: "V", length: 3 },
+        { id: "j", label: "長橫木條 J", orientation: "H", length: 3 },
+        { id: "k", label: "長橫木條 K", orientation: "H", length: 3 }
+      ];
+
+      // 新增關卡時，只需要新增這個陣列中的一筆位置資料；不要手動填難度或最短步數。
+      // 每個位置為 [列, 欄]，順序必須與 PIECES 相同。
+      const LEVELS = [
+        { name: "出口初探", positions: [[2,1],[2,4],[3,0],[3,3],[0,1],[4,1],[0,3],[5,3],[2,5],[0,0],[5,0],[1,3]] },
+        { name: "轉出空檔", positions: [[2,2],[4,1],[0,4],[2,5],[0,3],[2,0],[4,2],[0,1],[2,4],[3,0],[5,2],[1,0]] },
+        { name: "交錯木條", positions: [[2,0],[0,2],[1,5],[1,4],[4,4],[3,3],[3,1],[0,3],[3,0],[3,5],[4,1],[5,1]] },
+        { name: "回頭再開路", positions: [[2,2],[0,0],[1,1],[0,5],[4,3],[5,1],[5,4],[0,3],[2,4],[2,5],[4,0],[3,0]] },
+        { name: "先退後進", positions: [[2,1],[4,2],[4,1],[3,4],[4,3],[5,4],[1,4],[1,0],[3,0],[2,5],[0,2],[3,1]] },
+        { name: "上下騰挪", positions: [[2,2],[4,1],[2,5],[3,3],[4,0],[5,4],[1,4],[0,3],[3,2],[2,4],[1,1],[0,0]] },
+        { name: "雙層阻礙", positions: [[2,2],[4,2],[3,1],[1,1],[2,4],[5,3],[0,0],[0,4],[1,5],[2,0],[4,3],[1,2]] },
+        { name: "轉角通道", positions: [[2,0],[4,1],[2,2],[1,4],[2,3],[3,4],[0,0],[0,2],[0,5],[3,0],[4,2],[5,2]] },
+        { name: "三步反推", positions: [[2,0],[4,4],[2,3],[0,0],[2,4],[0,3],[3,0],[4,1],[1,2],[2,5],[1,3],[5,0]] },
+        { name: "出口封鎖", positions: [[2,0],[3,3],[0,0],[2,4],[3,2],[4,4],[5,1],[0,2],[3,0],[1,5],[1,1],[5,3]] },
+        { name: "連鎖清路", positions: [[2,2],[3,3],[2,5],[0,5],[3,2],[1,0],[4,4],[1,2],[1,4],[3,0],[0,1],[5,2]] },
+        { name: "大師出口", positions: [[2,2],[2,4],[0,1],[4,2],[2,0],[4,4],[5,0],[5,3],[1,5],[2,1],[1,2],[0,3]] }
+      ];
+
+      const board = document.getElementById("board");
+      const levelName = document.getElementById("levelName");
+      const tierChip = document.getElementById("tierChip");
+      const boardNote = document.getElementById("boardNote");
+      const movesText = document.getElementById("movesText");
+      const shortestText = document.getElementById("shortestText");
+      const difficultyText = document.getElementById("difficultyText");
+      const medalText = document.getElementById("medalText");
+      const levelList = document.getElementById("levelList");
+      const winDialog = document.getElementById("winDialog");
+      const winMedal = document.getElementById("winMedal");
+      const winMessage = document.getElementById("winMessage");
+      const storageKey = "math-games-unblock-me-medals-v1";
+
+      let levelIndex = 0;
+      let state = [];
+      let moves = 0;
+      let completed = false;
+      let drag = null;
+      let medals = loadMedals();
+
+      function cloneState(source) {
+        return source.map(([row, col]) => [row, col]);
+      }
+
+      function encodeState(source) {
+        return source.map(([row, col]) => `${row}${col}`).join("");
+      }
+
+      function buildOccupancy(source, ignoredIndex = -1) {
+        const occupancy = Array.from({ length: SIZE }, () => Array(SIZE).fill(-1));
+        source.forEach(([row, col], index) => {
+          if (index === ignoredIndex) return;
+          const piece = PIECES[index];
+          for (let step = 0; step < piece.length; step += 1) {
+            const y = piece.orientation === "H" ? row : row + step;
+            const x = piece.orientation === "H" ? col + step : col;
+            occupancy[y][x] = index;
+          }
+        });
+        return occupancy;
+      }
+
+      function getLegalRange(source, pieceIndex) {
+        const [row, col] = source[pieceIndex];
+        const piece = PIECES[pieceIndex];
+        const occupancy = buildOccupancy(source, pieceIndex);
+        let min = piece.orientation === "H" ? col : row;
+        let max = min;
+
+        if (piece.orientation === "H") {
+          while (min > 0 && occupancy[row][min - 1] === -1) min -= 1;
+          while (max + piece.length < SIZE && occupancy[row][max + piece.length] === -1) max += 1;
+        } else {
+          while (min > 0 && occupancy[min - 1][col] === -1) min -= 1;
+          while (max + piece.length < SIZE && occupancy[max + piece.length][col] === -1) max += 1;
+        }
+        return { min, max };
+      }
+
+      function targetCanEscape(source) {
+        const [row, col] = source[0];
+        const occupancy = buildOccupancy(source, 0);
+        for (let x = col + PIECES[0].length; x < SIZE; x += 1) {
+          if (occupancy[row][x] !== -1) return false;
+        }
+        return true;
+      }
+
+      function getLegalMoves(source) {
+        const results = [];
+        source.forEach(([row, col], pieceIndex) => {
+          const piece = PIECES[pieceIndex];
+          const range = getLegalRange(source, pieceIndex);
+          const start = piece.orientation === "H" ? col : row;
+          for (let position = range.min; position <= range.max; position += 1) {
+            if (position === start) continue;
+            const next = cloneState(source);
+            next[pieceIndex] = piece.orientation === "H" ? [row, position] : [position, col];
+            results.push({
+              state: next,
+              pieceIndex,
+              direction: position < start ? (piece.orientation === "H" ? "左" : "上") : (piece.orientation === "H" ? "右" : "下"),
+              spaces: Math.abs(position - start)
+            });
+          }
+        });
+        return results;
+      }
+
+      // 廣度優先搜尋：所有邊的權重均為 1，所以第一次到出口就是最短步數。
+      // 目標木條一旦右方淨空，將它滑出出口也算最後 1 步。
+      function solveMinimumSteps(startState) {
+        const queue = [cloneState(startState)];
+        const distances = [0];
+        const seen = new Set([encodeState(startState)]);
+        for (let head = 0; head < queue.length; head += 1) {
+          const current = queue[head];
+          const distance = distances[head];
+          if (targetCanEscape(current)) return distance + 1;
+          for (const move of getLegalMoves(current)) {
+            const code = encodeState(move.state);
+            if (!seen.has(code)) {
+              seen.add(code);
+              queue.push(move.state);
+              distances.push(distance + 1);
+            }
+          }
+        }
+        return null;
+      }
+
+      function getTier(shortest) {
+        if (shortest <= 5) return { name: "基礎", detail: "看清出口阻礙", className: "basic" };
+        if (shortest <= 10) return { name: "進階", detail: "需要連鎖騰位", className: "advanced" };
+        return { name: "挑戰", detail: "需要多層反推", className: "challenge" };
+      }
+
+      function medalFor(moveCount, shortest) {
+        if (moveCount === shortest) return { key: "gold", icon: "🥇", name: "金牌" };
+        if (moveCount <= shortest + 2) return { key: "silver", icon: "🥈", name: "銀牌" };
+        return { key: "bronze", icon: "🥉", name: "銅牌" };
+      }
+
+      function loadMedals() {
+        try { return JSON.parse(localStorage.getItem(storageKey) || "{}"); }
+        catch { return {}; }
+      }
+
+      function saveMedal(index, medal) {
+        const rank = { bronze: 1, silver: 2, gold: 3 };
+        const old = medals[index];
+        if (!old || rank[medal.key] > rank[old]) {
+          medals[index] = medal.key;
+          try { localStorage.setItem(storageKey, JSON.stringify(medals)); }
+          catch { /* 儲存不可用時仍可正常遊玩 */ }
+        }
+      }
+
+      function storedMedal(index) {
+        const icon = { gold: "🥇", silver: "🥈", bronze: "🥉" };
+        return icon[medals[index]] || "";
+      }
+
+      function positionPiece(element, pieceIndex, row, col) {
+        const cell = board.clientWidth / SIZE;
+        const gap = Math.max(4, Math.min(8, cell * 0.075));
+        const piece = PIECES[pieceIndex];
+        element.style.left = `${col * cell + gap}px`;
+        element.style.top = `${row * cell + gap}px`;
+        element.style.width = `${(piece.orientation === "H" ? piece.length : 1) * cell - gap * 2}px`;
+        element.style.height = `${(piece.orientation === "V" ? piece.length : 1) * cell - gap * 2}px`;
+      }
+
+      function renderBoard() {
+        board.innerHTML = "";
+        state.forEach(([row, col], index) => {
+          const piece = PIECES[index];
+          const element = document.createElement("div");
+          element.className = `piece ${piece.orientation === "V" ? "vertical" : "horizontal"}${piece.target ? " target" : ""}`;
+          element.dataset.index = String(index);
+          element.setAttribute("aria-label", `${piece.label}，${piece.orientation === "H" ? "只能左右滑動" : "只能上下滑動"}`);
+          positionPiece(element, index, row, col);
+          board.append(element);
+        });
+      }
+
+      function renderLevels() {
+        levelList.innerHTML = "";
+        LEVELS.forEach((level, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `level-button${index === levelIndex ? " active" : ""}`;
+          button.setAttribute("aria-label", `第 ${index + 1} 關，最短 ${level.shortest} 步，${level.tier.name}${storedMedal(index) ? `，已獲得${storedMedal(index)}` : ""}`);
+          button.innerHTML = `<span class="number">第 ${index + 1} 關</span><span class="steps">最短 ${level.shortest} 步</span><span class="medal">${storedMedal(index)}</span>`;
+          button.addEventListener("click", () => setLevel(index));
+          levelList.append(button);
+        });
+      }
+
+      function updateStatus(message = "") {
+        const level = LEVELS[levelIndex];
+        movesText.textContent = String(moves);
+        shortestText.textContent = String(level.shortest);
+        difficultyText.textContent = level.tier.name;
+        medalText.textContent = storedMedal(levelIndex) || "未獲得";
+        levelName.textContent = `第 ${levelIndex + 1} 關・${level.name}`;
+        tierChip.textContent = `${level.tier.name}・最短 ${level.shortest} 步`;
+        boardNote.innerHTML = message || (completed
+          ? "<strong>紅色木條已經離開出口。</strong> 這一關的紀錄已更新。"
+          : `目前第 ${moves} 步。${level.tier.detail}；紅色木條右側一旦淨空，就能直接滑出。`);
+        renderLevels();
+      }
+
+      function setLevel(index) {
+        levelIndex = (index + LEVELS.length) % LEVELS.length;
+        state = cloneState(LEVELS[levelIndex].positions);
+        moves = 0;
+        completed = false;
+        drag = null;
+        winDialog.hidden = true;
+        renderBoard();
+        updateStatus();
+      }
+
+      function restartLevel() { setLevel(levelIndex); }
+
+      function startDrag(event) {
+        if (completed || event.button === 2) return;
+        const element = event.target.closest(".piece");
+        if (!element) return;
+        const pieceIndex = Number(element.dataset.index);
+        const [row, col] = state[pieceIndex];
+        const piece = PIECES[pieceIndex];
+        const range = getLegalRange(state, pieceIndex);
+        const cell = board.clientWidth / SIZE;
+        drag = {
+          element,
+          pieceIndex,
+          startX: event.clientX,
+          startY: event.clientY,
+          startPosition: piece.orientation === "H" ? col : row,
+          min: range.min,
+          max: range.max,
+          cell,
+          offset: 0
+        };
+        element.classList.add("dragging");
+        element.setPointerCapture?.(event.pointerId);
+        event.preventDefault();
+      }
+
+      function moveDrag(event) {
+        if (!drag || completed) return;
+        const piece = PIECES[drag.pieceIndex];
+        const raw = piece.orientation === "H" ? event.clientX - drag.startX : event.clientY - drag.startY;
+        const canExit = drag.pieceIndex === 0 && raw > 0 && targetCanEscape(state);
+        const minOffset = (drag.min - drag.startPosition) * drag.cell;
+        const maxOffset = canExit ? drag.cell * 1.2 : (drag.max - drag.startPosition) * drag.cell;
+        drag.offset = Math.max(minOffset, Math.min(maxOffset, raw));
+        drag.element.style.transform = piece.orientation === "H" ? `translateX(${drag.offset}px)` : `translateY(${drag.offset}px)`;
+        event.preventDefault();
+      }
+
+      function endDrag(event) {
+        if (!drag) return;
+        const activeDrag = drag;
+        drag = null;
+        const piece = PIECES[activeDrag.pieceIndex];
+        activeDrag.element.classList.remove("dragging");
+        activeDrag.element.releasePointerCapture?.(event.pointerId);
+
+        if (activeDrag.pieceIndex === 0 && activeDrag.offset > activeDrag.cell * .5 && targetCanEscape(state)) {
+          completeLevel(activeDrag.element, activeDrag.cell);
+          return;
+        }
+
+        const nextPosition = Math.max(activeDrag.min, Math.min(activeDrag.max,
+          activeDrag.startPosition + Math.round(activeDrag.offset / activeDrag.cell)));
+        if (nextPosition !== activeDrag.startPosition) {
+          const [row, col] = state[activeDrag.pieceIndex];
+          state[activeDrag.pieceIndex] = piece.orientation === "H" ? [row, nextPosition] : [nextPosition, col];
+          moves += 1;
+          renderBoard();
+          updateStatus(`<strong>${piece.label}</strong>向${nextPosition < activeDrag.startPosition ? (piece.orientation === "H" ? "左" : "上") : (piece.orientation === "H" ? "右" : "下")}滑動。現在是第 ${moves} 步。`);
+        } else {
+          activeDrag.element.style.transform = "";
+        }
+      }
+
+      function completeLevel(targetElement, cell) {
+        completed = true;
+        moves += 1;
+        targetElement.classList.add("escaping");
+        targetElement.style.transform = `translateX(${cell * 2}px)`;
+        const level = LEVELS[levelIndex];
+        const medal = medalFor(moves, level.shortest);
+        saveMedal(levelIndex, medal);
+        updateStatus();
+        window.setTimeout(() => {
+          winMedal.textContent = medal.icon;
+          winMessage.textContent = `本次 ${moves} 步；本關最短解是 ${level.shortest} 步。你獲得${medal.name}${moves === level.shortest ? "，完全走出最短解！" : "，下次可試著少走幾步。"}`;
+          winDialog.hidden = false;
+          document.getElementById("retryBtn").focus();
+        }, 360);
+      }
+
+      function showHint() {
+        if (completed) return;
+        const remaining = solveMinimumSteps(state);
+        if (targetCanEscape(state)) {
+          updateStatus("<strong>提示：</strong>紅色木條右側已經沒有阻礙，直接向右拖出出口即可。 ");
+          return;
+        }
+        const hint = getLegalMoves(state).find((move) => solveMinimumSteps(move.state) === remaining - 1);
+        if (!hint) {
+          updateStatus("<strong>提示：</strong>先重新觀察紅木條右側的直木條，找一根能騰出空格的橫木條。 ");
+          return;
+        }
+        updateStatus(`<strong>提示：</strong>先把${PIECES[hint.pieceIndex].label}向${hint.direction}滑 ${hint.spaces} 格。這會保留最短解的可能。`);
+      }
+
+      LEVELS.forEach((level) => {
+        level.shortest = solveMinimumSteps(level.positions);
+        level.tier = getTier(level.shortest);
+      });
+
+      board.addEventListener("pointerdown", startDrag);
+      board.addEventListener("pointermove", moveDrag);
+      board.addEventListener("pointerup", endDrag);
+      board.addEventListener("pointercancel", endDrag);
+      window.addEventListener("resize", () => { if (!drag) renderBoard(); });
+      document.getElementById("restartBtn").addEventListener("click", restartLevel);
+      document.getElementById("hintBtn").addEventListener("click", showHint);
+      document.getElementById("previousBtn").addEventListener("click", () => setLevel(levelIndex - 1));
+      document.getElementById("nextBtn").addEventListener("click", () => setLevel(levelIndex + 1));
+      document.getElementById("retryBtn").addEventListener("click", restartLevel);
+      document.getElementById("dialogNextBtn").addEventListener("click", () => setLevel(levelIndex + 1));
+      winDialog.addEventListener("click", (event) => { if (event.target === winDialog) winDialog.hidden = true; });
+
+      setLevel(0);
+    })();
+  </script>
+</body>
+</html>
